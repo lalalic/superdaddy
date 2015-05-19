@@ -1,0 +1,40 @@
+{
+  "name": "SuperDaddy",
+  "description": "Super Daddy",
+  "version": "0.1.0",
+  "author": {
+    "name": "Raymond Li",
+    "email": "lalalic@139.com"
+  },
+  "dependencies": {
+    "apromise": "git://github.com/lalalic/apromise",
+    "material-ui": ">=0.7.3",
+    "qili": "git://github.com/lalalic/dashboard",
+    "reactable": "^0.10.1"
+  },
+  "devDependencies": {
+    "adeamdify": "^0.1.1",
+    "babelify": "^6.0.2"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "directories": {
+    "lib": "./lib"
+  },
+  "engines": {
+    "node": ">= 0.4.4"
+  },
+  "scripts": {
+    "js": "watchify -d index.js -o www/index.js",
+    "css": "lessc lib/css/index.less www/index.css"
+  },
+  "readme": "README.md"
+}
