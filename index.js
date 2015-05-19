@@ -1,9 +1,5 @@
-var {init,User,React,Component,Router,Main}=require('dashboard');
-var routes=(
-     <Router name="main" path="/" handler={Entry}>
-
-     </Router>
- );
+var {init,User,React,Component,Router,Main}=require('dashboard'),
+    {Route, NotFoundRoute, Link, State, DefaultRoute} = Router;
 
 class Entry extends Component{
     render(){
@@ -17,6 +13,11 @@ class Entry extends Component{
 
 
 function onReady(){
+    var routes=(
+         <Route name="main" path="/" handler={Entry}>
+         </Route>
+     );
+
     init("http:","superdaddy", function(){
         Router.run(routes, function(Handler, state){
             React.render(<Handler
