@@ -7,18 +7,28 @@
     "email": "lalalic@139.com"
   },
   "dependencies": {
-    "apromise": "git://github.com/lalalic/apromise",
-    "material-ui": ">=0.7.3",
-    "qili": "git://github.com/lalalic/dashboard",
-    "reactable": "^0.10.1"
+    "apromise": "^0.1.3",
+    "babelify": "^6.0.2",
+    "dashboard": "git://github.com/lalalic/dashboard",
+    "material-ui": "0.7.5"
   },
   "devDependencies": {
-    "adeamdify": "^0.1.1",
-    "babelify": "^6.0.2"
+    "gulp": "^3.8.11",
+    "gulp-shell": "^0.4.1",
+    "reactify": "^1.1.1",
+    "restmock": "0.0.3"
+  },
+  "peerDependencies": {
+    "react": "0.13.x"
   },
   "browserify": {
     "transform": [
-      "babelify"
+      [
+        "babelify",
+        {
+          "stage": 1
+        }
+      ]
     ]
   },
   "keywords": [],
@@ -31,10 +41,6 @@
   },
   "engines": {
     "node": ">= 0.4.4"
-  },
-  "scripts": {
-    "js": "watchify -d index.js -o www/index.js",
-    "css": "lessc lib/css/index.less www/index.css"
   },
   "readme": "README.md"
 }

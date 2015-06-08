@@ -4607,3 +4607,32 @@ hr {
 .messager.error {
   color: red;
 }
+.empty {
+  text-align: center;
+  margin: 200px 50px;
+}
+.empty .mui-font-icon {
+  font-size: 48px;
+  color: lightgray;
+}
+.empty p {
+  color: lightgray;
+  font-size: x-large;
+  line-height: 1.5;
+}
+.mui-subheader:empty {
+  height: auto;
+}
+.child-photo {
+  text-align: center;
+}
+.child-photo img {
+  width: 150px;
+  height: 150px;
+}
+.comment {
+  margin: 10px;
+}
+.comment .mui-text-field {
+  width: 100%;
+}
