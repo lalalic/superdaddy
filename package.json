@@ -9,7 +9,7 @@
   "dependencies": {
     "apromise": "^0.1.3",
     "babelify": "^6.0.2",
-    "dashboard": "git://github.com/lalalic/dashboard",
+    "dashboard": "../dashboard",
     "material-ui": "0.7.5"
   },
   "devDependencies": {
