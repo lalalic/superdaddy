@@ -1,7 +1,7 @@
 require('restmock')
 
 var {init,User,React,Component,Router,Main,UI:{Comment}}=require('dashboard'),
-    {Route, Link, NotFoundRoute, DefaultRoute, HistoryLocation} = Router,
+    {Route, RouteHandler, Link, NotFoundRoute, DefaultRoute, HistoryLocation} = Router,
     {MenuItem}=require('material-ui'),
     Family=require('./lib/db/family'),
     Knowledge=require('./lib/db/knowledge'),
@@ -36,10 +36,12 @@ class Entry extends Component{
             onClick:User.logout})
 
         return (
-            <Main
+            <div
+                className="withFootbar"
                 title="Super Daddy"
-                quickActions={quickActions}
-            />
+                quickActions={quickActions}>
+                <RouteHandler/>
+            </div>
         )
     }
 }
@@ -48,12 +50,12 @@ Entry.contextTypes={router:React.PropTypes.func}
 
 ;(function onReady(){
     var routes=(
-         <Route name="main" path="/" handler={Entry}>
+         <Route name="home" path="/" handler={Entry}>
             <Route name="task" path="task/:_id" handler={require('./lib/task')}/>
             <Route name="family" path="family/:_id" handler={require('./lib/family')}/>
             <Route name="knowledges" handler={require('./lib/knowledges')}/>
             <Route name="knowledge" path="knowledge/:_id" handler={require('./lib/knowledge')}/>
-
+            <Route name="comment" path="comment/:type/:_id" handler={Comment}/>
             <NotFoundRoute handler={require("./lib/dashboard")}/>
          </Route>
      );

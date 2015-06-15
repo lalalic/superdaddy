@@ -22,6 +22,11 @@
             "response":"www/index.html"
         },
         {
+            "path":"/comment/*/*",
+            "type":"static",
+            "response":"www/index.html"
+        },
+        {
             "path":"/knowledges",
             "type":"static",
             "response":"www/index.html"

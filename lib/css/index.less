@@ -1,5 +1,8 @@
 @import "node_modules/dashboard/lib/css/index.less";
 
+@footbarHeight:50px;
+@footbarzIndex:10;
+
 .mui-subheader:empty{height:auto}
 
 .child-photo{
@@ -22,5 +25,50 @@
     margin:10px;
     .mui-text-field{
         width:100%;
+    }
+
+    .footbar div:nth-child(2){
+        width:70%
+    }
+}
+
+.footbar{
+    position:fixed;
+    bottom:0px;
+    background-color:white;
+    height:@footbarHeight;
+    z-index:@footbarzIndex;
+}
+
+.withFootbar{
+    margin-bottom:50px;
+}
+
+h1{
+    height: 100px;
+    background-color:darkorange;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+h2{
+    height: 80px;
+    background-color:darksalmon;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.post{
+    >*{
+        padding:10px
+    }
+}
+
+.mui-overlay.mui-is-shown{
+    .content{
+        position: fixed;
+        bottom: @footbarHeight;
+        background-color: white;
+        width: 100%;
+        border-bottom: 1px solid lightgray;
     }
 }
