@@ -17,3 +17,9 @@ gulp.task('javascript',shell.task('watchify -d index.js -o www/index.js'))
          * on watch tasks
          */
     })
+    .task('cordova',
+        shell.task(['cordova create cordova lalalic.superdaddy superdaddy',
+            'cd cordova',
+            'cordova platform add android',
+            'cordova plugin add com.triarc.sqlitePlugin',
+            ]))

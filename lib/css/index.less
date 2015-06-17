@@ -67,8 +67,44 @@ h2{
     .content{
         position: fixed;
         bottom: @footbarHeight;
-        background-color: white;
+        background-color: lightgray;
         width: 100%;
         border-bottom: 1px solid lightgray;
+    }
+}
+
+.families{
+    margin:10px;
+    list-style:none;
+    background-color:white;
+
+    .icon-no{
+        width:35px;
+        height:35px;
+        margin:5px;
+    }
+
+    img{
+        width:35px;
+        height:35px;
+        margin:5px;
+    }
+
+    >*{
+        margin:10px;
+        display:table;
+        width:100%;
+        line-height:2em;
+        border-bottom:1px dotted lightgray;
+
+        >*{
+            display:table-cell;
+            vertical-align:middle;
+
+            &:last-child{
+                width:70px;
+                text-align:center;
+            }
+        }
     }
 }
