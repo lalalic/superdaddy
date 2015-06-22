@@ -10,7 +10,7 @@
     "apromise": "^0.1.3",
     "babelify": "^6.0.2",
     "dashboard": "../dashboard",
-    "material-ui": "0.7.5"
+    "material-ui": "^0.9.1"
   },
   "devDependencies": {
     "gulp": "^3.8.11",
@@ -19,6 +19,7 @@
     "restmock": "0.1.x"
   },
   "peerDependencies": {
+    "material-ui": "0.9.x",
     "react": "0.13.x"
   },
   "browserify": {

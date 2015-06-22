@@ -2,10 +2,11 @@ require('restmock')
 
 var {init,User,React,Component,Router,Main,UI:{Comment}}=require('dashboard'),
     {Route, RouteHandler, Link, NotFoundRoute, DefaultRoute, HistoryLocation} = Router,
-    {MenuItem}=require('material-ui'),
+    {MenuItem,Styles:{ThemeManager}}=require('material-ui'),
     Family=require('./lib/db/family'),
     Knowledge=require('./lib/db/knowledge'),
-    Task=require('./lib/db/task');
+    Task=require('./lib/db/task'),
+    themeManager=new ThemeManager();
 
 
 class Entry extends Component{
@@ -17,29 +18,12 @@ class Entry extends Component{
             children:Family.children
         }
     }
+    getChildContext(){
+        return {muiTheme:themeManager.getCurrentTheme()}
+    }
     render(){
-        var quickActions=[],children=this.state.children;
-
-        quickActions.push({text:'knowledge', route:'knowledges'})
-
-        if(children && children.length){
-            var path=this.context.router.makePath
-            quickActions.push({text:'children',type:MenuItem.Types.SUBHEADER})
-            children.forEach(function(child){
-                quickActions.push({text:child.name,route:path('family',child)})
-            }.bind(this))
-        }
-
-        quickActions.push({type:MenuItem.Types.SUBHEADER, text:""})
-        quickActions.push({text:"logout",
-            iconClassName:'icon-log-out',
-            onClick:User.logout})
-
         return (
-            <div
-                className="withFootbar"
-                title="Super Daddy"
-                quickActions={quickActions}>
+            <div className="withFootbar">
                 <RouteHandler/>
             </div>
         )
@@ -47,12 +31,13 @@ class Entry extends Component{
 }
 
 Entry.contextTypes={router:React.PropTypes.func}
+Entry.childContextTypes={muiTheme:React.PropTypes.object}
 
 ;(function onReady(){
     var routes=(
          <Route name="home" path="/" handler={Entry}>
-            <Route name="task" path="task/:_id" handler={require('./lib/task')}/>
-            <Route name="family" path="family/:_id" handler={require('./lib/family')}/>
+            <Route name="task" path="task/:_id?" handler={require('./lib/task')}/>
+            <Route name="family" path="family/:_id?" handler={require('./lib/family')}/>
             <Route name="knowledges" handler={require('./lib/knowledges')}/>
             <Route name="knowledge" path="knowledge/:_id" handler={require('./lib/knowledge')}/>
             <Route name="comment" path="comment/:type/:_id" handler={Comment}/>
