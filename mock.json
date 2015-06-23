@@ -79,13 +79,23 @@
                         "_id":"1",
                         "title":"magic tile",
                         "content":"magic tile is fun",
+                        "summary":"magic tile is fun",
                         "goal":["imagination","coordination"],
                         "author":{
                             "_id":"lalalic",
                             "name":"lalalic"
                         },
                         "createdDate":"2015-07-12T03:05:21Z"
-                    }
+                    },
+                    "content":[{
+                            "photos":[],
+                            "desc":"这是一个好方法"
+                        },
+                        {
+                            "photos":[],
+                            "desc":"我也试一试"
+                        }
+                    ]
                 },
                 {
                     "_id":"2",
@@ -94,6 +104,7 @@
                         "_id":"1",
                         "title":"Boat",
                         "content":"magic tile is fun",
+                        "summary":"I like boat",
                         "goal":["read","expression"],
                         "author":{
                             "_id":"lalalic",
@@ -112,6 +123,7 @@
                     "_id":"1",
                     "title":"magic tile",
                     "content":"magic tile is fun",
+                    "summary":"magic tile is fun",
                     "goal":["imagination","coordination"],
                     "author":{
                         "_id":"lalalic",
@@ -123,6 +135,7 @@
                     "_id":"2",
                     "title":"Boat",
                     "content":"magic tile is fun",
+                    "summary":"magic tile is fun",
                     "goal":["imagination","coordination"],
                     "author":{
                         "_id":"lalalic",
@@ -134,6 +147,7 @@
                     "_id":"3",
                     "title":"drawing",
                     "content":"magic tile is fun",
+                    "summary":"magic tile is fun",
                     "goal":["imagination","coordination"],
                     "author":{
                         "_id":"lalalic",

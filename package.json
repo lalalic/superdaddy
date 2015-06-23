@@ -9,8 +9,7 @@
   "dependencies": {
     "apromise": "^0.1.3",
     "babelify": "^6.0.2",
-    "dashboard": "../dashboard",
-    "material-ui": "^0.9.1"
+    "dashboard": "../dashboard"
   },
   "devDependencies": {
     "gulp": "^3.8.11",
