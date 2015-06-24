@@ -1,4 +1,4 @@
-//require('restmock')
+require('restmock')
 
 var {init,User,React,Component,Router,Main,UI:{Comment}}=require('dashboard'),
     {Route, RouteHandler, Link, NotFoundRoute, DefaultRoute, HistoryLocation} = Router,
