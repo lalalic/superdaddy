@@ -1,4 +1,4 @@
-require('restmock')
+//require('restmock')
 
 var {init,User,React,Component,Router,Main,UI:{Comment}}=require('dashboard'),
     {Route, RouteHandler, Link, NotFoundRoute, DefaultRoute, HistoryLocation} = Router,
@@ -10,22 +10,16 @@ var {init,User,React,Component,Router,Main,UI:{Comment}}=require('dashboard'),
 
 
 class Entry extends Component{
-    constructor(props){
-        super(props)
-        this.state={
-            user:User.current,
-            child:Family.currentChild,
-            children:Family.children
-        }
-    }
     getChildContext(){
         return {muiTheme:themeManager.getCurrentTheme()}
     }
     render(){
         return (
-            <div className="withFootbar">
-                <RouteHandler/>
-            </div>
+            <Main.Light>
+                <div className="withFootbar">
+                    <RouteHandler/>
+                </div>
+            </Main.Light>
         )
     }
 }
