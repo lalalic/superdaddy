@@ -24,7 +24,6 @@ class Entry extends Component{
     }
 }
 
-Entry.contextTypes={router:React.PropTypes.func}
 Entry.childContextTypes={muiTheme:React.PropTypes.object}
 
 ;(function onReady(){
