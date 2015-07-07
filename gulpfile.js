@@ -20,6 +20,8 @@ gulp.task('javascript',shell.task('watchify -d index.js -o www/index.js --ignore
     .task('cordova',
         shell.task(['cordova create cordova lalalic.superdaddy superdaddy',
             'cd cordova',
-            'cordova platform add android',
-            'cordova plugin add com.triarc.sqlitePlugin',
+            'cordova platform add android ios',
+            'cordova plugin add https://github.com/litehelpers/Cordova-sqlite-storage'
+            'cordova plugin add cordova-plugin-camera',
+            'cordova plugin add https://github.com/vilic/cordova-plugin-wechat --variable APP_ID=xxxxx'
             ]))
