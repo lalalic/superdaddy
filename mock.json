@@ -7,6 +7,11 @@
             "response":"www"
         },
         {
+            "path":"/dashboard/*",
+            "type":"static",
+            "response":"www/index.html"
+        },
+        {
             "path":"/family/*",
             "type":"static",
             "response":"www/index.html"
@@ -74,7 +79,7 @@
             "response":[
                 {
                     "_id":"1",
-                    "when":"2015-08-01T08:00:00Z",
+                    "when":"2015-08-01T00:00:00Z",
                     "author":{
                         "_id":"lalalic",
                         "name":"lalalic"
@@ -105,7 +110,8 @@
                 },
                 {
                     "_id":"2",
-                    "when":"2015-08-01T08:00:00Z",
+                    "when":"2015-05-01T00:00:00Z",
+                    "started":"2015-05-01T20:00:00Z",
                     "author":{
                         "_id":"lalalic",
                         "name":"lalalic"
