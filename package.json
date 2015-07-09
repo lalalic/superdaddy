@@ -15,7 +15,8 @@
     "gulp": "^3.8.11",
     "gulp-shell": "^0.4.1",
     "reactify": "^1.1.1",
-    "restmock": "0.1.x"
+    "restmock": "0.1.x",
+    "uglifyify": "^3.0.1"
   },
   "peerDependencies": {
     "material-ui": "0.9.x",
@@ -28,7 +29,7 @@
         {
           "stage": 1
         }
-      ]
+    ]
     ]
   },
   "keywords": [],

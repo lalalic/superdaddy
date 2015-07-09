@@ -34,6 +34,7 @@ Entry.childContextTypes={muiTheme:React.PropTypes.object}
             <Route name="knowledges" handler={require('./lib/knowledges')}/>
             <Route name="knowledge" path="knowledge/:_id" handler={require('./lib/knowledge')}/>
             <Route name="comment" path="comment/:type/:_id" handler={Comment}/>
+            <Route name="dashboard" path="dashboard/:when?" handler={require("./lib/dashboard")}/>
             <NotFoundRoute handler={require("./lib/dashboard")}/>
          </Route>
      );

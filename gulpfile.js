@@ -10,7 +10,7 @@ gulp.task('javascript',shell.task('watchify -d index.js -o www/index.js --ignore
             })
     })
     .task('css',['watchcss'],shell.task('lessc lib/css/index.less www/index.css'))
-    .task('mock',shell.task('restmock'))
+    .task('mock',shell.task('"node_modules/.bin/restmock"'))
     .task('default',['mock','css','javascript'],function(){
         /*
          * can't be here since it's blocked by mock and javascript,
