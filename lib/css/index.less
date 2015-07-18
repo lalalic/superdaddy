@@ -40,6 +40,14 @@ h1{
     text-overflow:ellipsis;
     white-space:nowrap;
     margin:0px;
+
+    a{
+        text-decoration:none
+    }
+
+    li{
+        
+    }
 }
 
 h2{
@@ -51,3 +59,33 @@ h2{
 
 .icon-knowledges:before {
 content: "\f26c"; }
+
+.editor{
+    position:relative;
+    .readonly{
+        img{
+            width:100%;
+            padding:5px 50px
+        }
+        time{
+            font-size:xx-small;
+        }
+        p,textarea{
+            font-size:12px;
+        }
+    }
+    .adder{
+        position:absolute!important;
+        bottom:0;
+        right:0;
+        margin:0;
+        opacity:0.3;
+    }
+}
+
+summary{
+    margin: 10px;
+    background-color: #eee;
+    padding: 10px;
+    border-radius: 5px;
+}

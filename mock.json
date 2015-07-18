@@ -97,12 +97,13 @@
                         "createdAt":"2015-07-12T03:05:21Z"
                     },
                     "content":[{
-                            "photos":[],
+                            "photos":["http://www.js.xinhuanet.com/2015-07/16/1115946088_14370290155871n.jpg",
+                                "http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"],
                             "desc":"这是一个好方法",
                             "createdAt":"2015-07-12T03:05:21Z"
                         },
                         {
-                            "photos":[],
+                            "photos":["http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"],
                             "desc":"我也试一试",
                             "createdAt":"2015-07-13T03:05:21Z"
                         }
@@ -141,6 +142,11 @@
                     ]
                 }
             ]
+        },
+        {
+            "path":"/1/classes/task",
+            "type":"post",
+            "response":{}
         },
         {
             "path":"/1/classes/knowledge",
@@ -183,6 +189,17 @@
                     "createdAt":"2015-07-12T03:05:21Z"
                 }
             ]
+        },
+        {
+            "path":"/1/classes/task_comment",
+            "type":"post",
+            "response":{
+                "_id":"9",
+                "parent":"1",
+                "author":{"_id":"lalalic","name":"lalalic","thumbnail":""},
+                "createdAt":"2015-07-12T03:05:21Z",
+                "content":"new comment"
+            }
         },
         {
             "path":"/1/classes/task_comment",
