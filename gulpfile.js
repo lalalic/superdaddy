@@ -1,26 +1,25 @@
 var gulp=require('gulp'),
-    shell=require('gulp-shell'),
-    isWin=/^win/.test(process.platform);
+    shell=require('gulp-shell');
 
-gulp.task('javascript',shell.task('watchify -d index.js -o www/index.js --ignore jquery'))
-    .task('watchcss',function(){
-        gulp.watch(['lib/css/*','node_modules/dashboard/lib/css/*'],['css'])
-            .on('change',function(e){
-                console.log(e.path+' was '+e.type)
-            })
+gulp.task('javascript',shell.task('"node_modules/.bin/watchify" -d index.js -o www/index.js --ignore jquery'))
+    .task('allin1',function(){
+        var fs=require('fs')
+
+        var html=fs.readFileSync("www/index.html", 'utf8')
+        try{
+            var js=require('uglify-js').minify('www/index.js').code
+            var data=html.split(/<script.*\/script>/i)
+            data.splice(1,0,'<script>'+js+'</script>')
+
+            fs.writeFileSync("www/allin1.html", data.join(''), 'utf8')
+        }catch(error){}
     })
-    .task('css',['watchcss'],shell.task('lessc lib/css/index.less www/index.css'))
-    .task('watchmock', function(){
-		 gulp.watch(['mock.json'],['javascript'])
-	})
-    .task('mock',['watchmock'], shell.task('"node_modules/.bin/restmock"'))
-    .task('default',['mock','css','javascript'],function(){
-        /*
-         * can't be here since it's blocked by mock and javascript,
-         * so make seperated watch task, and make default task dependent
-         * on watch tasks
-         */
+    .task('watch', function(){
+         gulp.watch(['www/index.js','www/index.html'],['allin1'])
     })
+    .task('default',['watch'], shell.task('"node_modules/.bin/restmock"'))
+
+
     .task('cordovaCreate',shell.task(['cordova create cordova lalalic.superdaddy superdaddy --link-to=www']))
     .task('cordovaConfig', ['cordovaCreate'], function(){
         var fs=require('fs'),

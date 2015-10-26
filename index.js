@@ -1,4 +1,5 @@
 require('restmock')
+require('./lib/css/index.less')
 require('babel/polyfill')
 
 var {init,User,React,Component,Router,Main,UI:{Comment}}=require('dashboard'),
@@ -69,22 +70,24 @@ CurrentChild.contextTypes={router:React.PropTypes.func}
 ;(function onReady(){
     var routes=(
          <Route name="home" path="/" handler={Entry}>
-            <Route name="task" path="task/:_id?" handler={require('./lib/task')}/>
-            <Route name="baby" path="baby/:_id?" handler={require('./lib/baby')}/>
-            <Route name="knowledges" handler={require('./lib/knowledges')}/>
-            <Route name="knowledge" path="knowledge/:_id" handler={require('./lib/knowledge')}/>
-            <Route name="comment" path="comment/:type/:_id" handler={Comment}/>
-            <Route name="dashboard" path="dashboard/:when?" handler={require("./lib/dashboard")}/>
-            <NotFoundRoute handler={require("./lib/dashboard")}/>
+             <Route name="task" path="task/:_id?" handler={require('./lib/task')}/>
+             <Route name="baby" path="baby/:_id?" handler={require('./lib/baby')}/>
+             <Route name="knowledges" handler={require('./lib/knowledges')}/>
+             <Route name="knowledge" path="knowledge/:_id" handler={require('./lib/knowledge')}/>
+             <Route name="comment" path="comment/:type/:_id" handler={Comment}/>
+             <Route name="dashboard" path="dashboard/:when?" handler={require("./lib/dashboard")}/>
+             <NotFoundRoute handler={require("./lib/dashboard")}/>
          </Route>
      );
 
     init("http://localhost:9080/1/","superDaddy", function(db){
         Family.init().then(function(){
             Router.run(routes, (!window.cordova ? HistoryLocation : undefined),function(Handler, state){
+                var container=document.getElementById('app')
+                container.style.height=window.innerHeight+'px'
                 React.render(<Handler
                     params={state.params}
-                    query={state.query}/>, document.body)
+                    query={state.query}/>, container)
             })
         })
     })
