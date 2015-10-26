@@ -13,14 +13,25 @@ var {init,User,React,Component,Router,Main,UI:{Comment}}=require('dashboard'),
 
 
 class Entry extends Component{
+    constructor(props){
+        super(props)
+        this.state={child:Family.currentChild}
+    }
     getChildContext(){
         return {muiTheme:themeManager.getCurrentTheme()}
     }
+    componentDidMount(){
+        Family.event.on('change',this.__onCurrentchange=()=>this.setState({child:Family.currentChild}))
+    }
+
+    componentWillUnmount(){
+        Family.event.removeListener('change',this.__onCurrentchange)
+    }
     render(){
-        var floatAction,main
-        if(Family.currentChild){
-            floatAction=(<CurrentChild onChange={()=>this.forceUpdate()}/>)
-            main=(<RouteHandler/>)
+        var floatAction,main, {child}=this.state
+        if(child){
+            floatAction=(<CurrentChild child={child}/>)
+            main=(<RouteHandler child={child}/>)
         }else{
             main=(<Baby/>)
         }
@@ -43,22 +54,24 @@ class CurrentChild extends Component{
         return(
             <FloatingActionButton mini={true}
                 onClick={this.change.bind(this)}
-                style={{position:'fixed',top:10,right:10}}>
+                style={{position:'fixed',top:10,right:10, opacity:0.7, zIndex:9}}>
                 <Avatar src="http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"/>
             </FloatingActionButton>
         )
     }
+    componentWillReceiveProps(next){
+        if(next.child!=this.props.child)
+            this.forceUpdate()
+    }
     change(){
-        var current=Family.currentChild,
+        var current=this.props.child,
             children=Family.children,
             len=children.length;
         if(len<2)
             return;
 
         var index=children.indexOf(current)
-        Family.currentChild=children[index+1 % len]
-        var {onChange}=this.props
-        onChange()
+        Family.currentChild=children[(index+1) % len]
     }
 }
 CurrentChild.PropTypes={
