@@ -51,11 +51,17 @@ Entry.childContextTypes={muiTheme:React.PropTypes.object}
 
 class CurrentChild extends Component{
     render(){
+        var {child}=this.props, avatar
+        if(child.photo)
+            avatar=(<Avatar src={this.props.child.photo}/>)
+        else
+            avatar=(<div><span style={{fontSize:"xx-small"}}>{child.name}</span></div>)
+
         return(
             <FloatingActionButton mini={true}
                 onClick={this.change.bind(this)}
                 style={{position:'fixed',top:10,right:10, opacity:0.7, zIndex:9}}>
-                <Avatar src="http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"/>
+                {avatar}
             </FloatingActionButton>
         )
     }
