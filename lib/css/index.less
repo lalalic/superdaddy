@@ -1,10 +1,5 @@
 @import "node_modules/dashboard/lib/css/index";
 
-@footbarHeight:50px;
-@footbarzIndex:10;
-
-.mui-subheader:empty{height:auto}
-
 .child-photo{
     text-align:center;
 
@@ -12,18 +7,6 @@
         width:150px;
         height:150px;
     }
-}
-
-.footbar{
-    position:fixed;
-    bottom:0px;
-    background-color:white;
-    height:@footbarHeight;
-    z-index:@footbarzIndex;
-}
-
-.withFootbar{
-    margin-bottom:@footbarHeight;
 }
 
 
@@ -49,9 +32,6 @@ h2{
     text-overflow:ellipsis;
     white-space:nowrap;
 }
-
-.icon-knowledges:before {
-content: "\f26c"; }
 
 .editor{
     position:relative;
@@ -81,4 +61,13 @@ summary{
     background-color: #eee;
     padding: 10px;
     border-radius: 5px;
+}
+
+.knowledge{
+    img{
+        width:100%;
+        clear:both;
+        padding:20px;
+    }
+
 }

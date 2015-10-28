@@ -65,9 +65,8 @@ class CurrentChild extends Component{
             </FloatingActionButton>
         )
     }
-    componentWillReceiveProps(next){
-        if(next.child!=this.props.child)
-            this.forceUpdate()
+    shouldComponentUpdate(next){
+        return next.child!=this.props.child
     }
     change(){
         var current=this.props.child,

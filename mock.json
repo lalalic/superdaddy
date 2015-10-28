@@ -9,32 +9,32 @@
         {
             "path":"/dashboard/*",
             "type":"static",
-            "response":"www/index.html"
+            "response":"www"
         },
         {
             "path":"/family/*",
             "type":"static",
-            "response":"www/index.html"
+            "response":"www"
         },
         {
             "path":"/task/*",
             "type":"static",
-            "response":"www/index.html"
+            "response":"www"
         },
         {
             "path":"/knowledge/*",
             "type":"static",
-            "response":"www/index.html"
+            "response":"www"
         },
         {
             "path":"/comment/*/*",
             "type":"static",
-            "response":"www/index.html"
+            "response":"www"
         },
         {
             "path":"/knowledges",
             "type":"static",
-            "response":"www/index.html"
+            "response":"www"
         },
         {
             "path":"/1/test",
