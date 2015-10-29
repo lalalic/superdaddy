@@ -27,6 +27,11 @@
             "response":"www"
         },
         {
+            "path":"/create",
+            "type":"static",
+            "response":"www"
+        },
+        {
             "path":"/comment/*/*",
             "type":"static",
             "response":"www"
@@ -96,7 +101,7 @@
                         "title":"magic tile",
                         "content":"magic tile is fun",
                         "summary":"magic tile is fun",
-                        "goal":["imagination","coordination"],
+                        "category":["imagination","coordination"],
                         "author":{
                             "_id":"lalalic",
                             "name":"lalalic"
@@ -129,7 +134,7 @@
                         "title":"Boat",
                         "content":"magic tile is fun",
                         "summary":"I like boat",
-                        "goal":["read","expression"],
+                        "category":["read","expression"],
                         "author":{
                             "_id":"lalalic",
                             "name":"lalalic"
@@ -164,7 +169,7 @@
                     "title":"magic tile",
                     "content":"magic tile is fun",
                     "summary":"magic tile is fun",
-                    "goal":["imagination","coordination"],
+                    "category":["imagination","coordination"],
                     "author":{
                         "_id":"lalalic",
                         "name":"lalalic"
@@ -176,7 +181,7 @@
                     "title":"Boat",
                     "content":"magic tile is fun",
                     "summary":"magic tile is fun",
-                    "goal":["imagination","coordination"],
+                    "category":["imagination","coordination"],
                     "author":{
                         "_id":"lalalic",
                         "name":"lalalic"
@@ -188,7 +193,7 @@
                     "title":"drawing",
                     "content":"magic tile is fun",
                     "summary":"magic tile is fun",
-                    "goal":["imagination","coordination"],
+                    "category":["imagination","coordination"],
                     "author":{
                         "_id":"lalalic",
                         "name":"lalalic"
@@ -210,6 +215,51 @@
         },
         {
             "path":"/1/classes/task_comment",
+            "type":"get",
+            "response":[
+                    {
+                        "_id":"1",
+                        "parent":"1",
+                        "author":{"_id":"1","name":"lalalic","thumbnail":""},
+                        "createdAt":"2015-07-12T03:05:21Z",
+                        "content":"good"
+                    },
+                    {
+                        "_id":"2",
+                        "parent":"1",
+                        "author":{"_id":"1","name":"lalalic", "thumbnail":""},
+                        "createdAt":"2015-07-12T03:05:21Z",
+                        "content":"nice"
+                    },
+                    {
+                        "_id":"3",
+                        "parent":"1",
+                        "author":{"_id":"lalalic","name":"lalalic","thumbnail":""},
+                        "createdAt":"2015-07-12T03:05:21Z",
+                        "content":"good"
+                    },
+                    {
+                        "_id":"4",
+                        "parent":"1",
+                        "author":{"_id":"3","name":"lalalic", "thumbnail":""},
+                        "createdAt":"2015-07-12T03:05:21Z",
+                        "content":"nice"
+                    }
+                ]
+        },
+        {
+            "path":"/1/classes/knowledge_comment",
+            "type":"post",
+            "response":{
+                "_id":"9",
+                "parent":"1",
+                "author":{"_id":"lalalic","name":"lalalic","thumbnail":""},
+                "createdAt":"2015-07-12T03:05:21Z",
+                "content":"new knowledge_comment"
+            }
+        },
+        {
+            "path":"/1/classes/knowledge_comment",
             "type":"get",
             "response":[
                     {

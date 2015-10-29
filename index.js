@@ -51,7 +51,8 @@ Entry.childContextTypes={muiTheme:React.PropTypes.object}
 
 class CurrentChild extends Component{
     render(){
-        var {child}=this.props, avatar
+        var {child}=this.props, avatar,
+            style={position:'fixed',top:10,right:10, opacity:0.7, zIndex:9}
         if(child.photo)
             avatar=(<Avatar src={this.props.child.photo}/>)
         else
@@ -60,7 +61,7 @@ class CurrentChild extends Component{
         return(
             <FloatingActionButton mini={true}
                 onClick={this.change.bind(this)}
-                style={{position:'fixed',top:10,right:10, opacity:0.7, zIndex:9}}>
+                style={style}>
                 {avatar}
             </FloatingActionButton>
         )
@@ -92,6 +93,7 @@ CurrentChild.contextTypes={router:React.PropTypes.func}
              <Route name="baby" path="baby/:_id?" handler={require('./lib/baby')}/>
              <Route name="knowledges" handler={require('./lib/knowledges')}/>
              <Route name="knowledge" path="knowledge/:_id" handler={require('./lib/knowledge')}/>
+             <Route name="create" handler={require('./lib/newKnowledge')} />
              <Route name="comment" path="comment/:type/:_id" handler={Comment}/>
              <Route name="dashboard" path="dashboard/:when?" handler={require("./lib/dashboard")}/>
              <NotFoundRoute handler={require("./lib/dashboard")}/>
