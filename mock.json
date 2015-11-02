@@ -32,6 +32,16 @@
             "response":"www"
         },
         {
+            "path":"/account",
+            "type":"static",
+            "response":"www"
+        },
+        {
+            "path":"/setting",
+            "type":"static",
+            "response":"www"
+        },
+        {
             "path":"/comment/*/*",
             "type":"static",
             "response":"www"
@@ -66,7 +76,25 @@
                 "_id":"lalalic"
             }
         },
-
+        {
+            "path":"/1/files",
+            "type":"get",
+            "response":[{"crc32":"1"}]
+        },
+        {
+            "path":"/1/files/token",
+            "type":"get",
+            "response":{
+                "key":"filetoken"
+            }
+        },
+        {
+            "path":"/qiniu_upload",
+            "type":"post",
+            "response":{
+                "url":"https://qiniu.com/favorite.ico"
+            }
+        },
         {
             "path":"/1/classes/family",
             "type":"get",
@@ -201,6 +229,23 @@
                     "createdAt":"2015-07-12T03:05:21Z"
                 }
             ]
+        },
+        {
+            "path":"/1/classes/knowledge/1",
+            "type":"patch",
+            "response":{
+                "_id":"1",
+                "title":"Revised magic tile",
+                "content":"Revised magic tile is fun",
+                "summary":"Revised magic tile is fun",
+                "category":["imagination","coordination"],
+                "author":{
+                    "_id":"lalalic",
+                    "name":"lalalic"
+                },
+                "createdAt":"2015-07-12T03:05:21Z",
+                "modifiedAt":"2015-07-12T03:05:21Z"
+            }
         },
         {
             "path":"/1/classes/task_comment",
