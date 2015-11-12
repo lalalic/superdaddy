@@ -127,7 +127,7 @@
                     "knowledge":{
                         "_id":"1",
                         "title":"magic tile",
-                        "content":"magic tile is fun",
+                        "content":"magic <editable key=\"drawing\">drawing</editable>tile <editable key=\"filling\">filling color</editable>is fun",
                         "summary":"magic tile is fun",
                         "category":["imagination","coordination"],
                         "author":{
@@ -136,18 +136,21 @@
                         },
                         "createdAt":"2015-07-12T03:05:21Z"
                     },
-                    "content":[{
-                            "photos":["http://www.js.xinhuanet.com/2015-07/16/1115946088_14370290155871n.jpg",
-                                "http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"],
-                            "desc":"这是一个好方法",
-                            "createdAt":"2015-07-12T03:05:21Z"
-                        },
-                        {
-                            "photos":["http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"],
-                            "desc":"我也试一试",
-                            "createdAt":"2015-07-13T03:05:21Z"
-                        }
-                    ]
+                    "content":{
+                        "drawing":
+                            [{
+                                "photos":["http://www.js.xinhuanet.com/2015-07/16/1115946088_14370290155871n.jpg",
+                                    "http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"],
+                                "desc":"这是一个好方法",
+                                "createdAt":"2015-07-12T03:05:21Z"
+                            },
+                            {
+                                "photos":["http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"],
+                                "desc":"我也试一试",
+                                "createdAt":"2015-07-13T03:05:21Z"
+                            }]
+                    },
+                    "summary":[]
                 },
                 {
                     "_id":"2",
