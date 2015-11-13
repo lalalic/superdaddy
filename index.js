@@ -40,7 +40,9 @@ class Entry extends Component{
             <Main.Light>
                 <div className="withFootbar">
                     {floatAction}
+                    <div id="container">
                     {main}
+                    </div>
                 </div>
             </Main.Light>
         )
@@ -89,16 +91,17 @@ CurrentChild.contextTypes={router:React.PropTypes.func}
 ;(function onReady(){
     var routes=(
          <Route name="home" path="/" handler={Entry}>
-             <Route name="task" path="task/:_id?" handler={require('./lib/task')}/>
-             <Route name="baby" path="baby/:_id?" handler={require('./lib/baby')}/>
+             <Route name="task" path="task/:_id?/" handler={require('./lib/task')}/>
+             <Route name="baby" path="baby/:_id?/" handler={require('./lib/baby')}/>
              <Route name="knowledges" path="knowledges/" handler={require('./lib/knowledges')}/>
-             <Route name="knowledge" path="knowledge/:_id/" handler={require('./lib/knowledge')}/>
+             <Route name="knowledge" path="knowledge/:_id?/" handler={require('./lib/knowledge')}/>
              <Route name="create" path="create/" handler={require('./lib/newKnowledge')} />
              <Route name="comment" path="comment/:type/:_id/" handler={Comment}/>
              <Route name="account" path="account/" handler={require('./lib/account')} />
              <Route name="setting" path="setting/" handler={require('./lib/setting')} />
-             <Route name="dashboard" path="dashboard/:when?" handler={require("./lib/dashboard")}/>
-             <NotFoundRoute handler={require("./lib/dashboard")}/>
+             <Route name="dashboard" path="dashboard/:when?/" handler={require("./lib/dashboard")}/>
+             <Route name="publish" path="publish/:what?/" handler={require("./lib/publish")} />
+             <DefaultRoute handler={require("./lib/dashboard")}/>
          </Route>
      );
 
