@@ -33,39 +33,6 @@ h2{
     white-space:nowrap;
 }
 
-.editor{
-    position:relative;
-    .readonly{
-        img{
-            width:100%;
-            clear:both;
-            padding:5px 50px
-        }
-        time{
-            font-size:xx-small;
-            float: right;
-        }
-        p,textarea{
-            font-size:12px;
-        }
-        p{
-            padding:10px;
-        }
-    }
-    .section{
-        border:1px dotted lightgray;
-        textarea{
-            border-top: 1px dotted lightgray!important;
-        }
-    }
-    .adder{
-        position:absolute!important;
-        bottom:0;
-        right:0;
-        margin:0;
-        opacity:0.3;
-    }
-}
 
 summary{
     background-color: #eee;
@@ -75,10 +42,45 @@ summary{
 }
 
 .knowledge{
-    img{
+    img:not(.editor img){
         width:100%;
         clear:both;
         padding:20px;
     }
 
+    .editor{
+        position:relative;
+        .readonly{
+            img{
+                width:100%;
+                clear:both;
+                padding:5px 50px
+            }
+            time{
+                font-size:xx-small;
+                float: right;
+            }
+            p,textarea{
+                font-size:12px;
+            }
+            p{
+                padding:10px;
+            }
+        }
+        .section{
+            border:1px dotted lightgray;
+            textarea{
+                border-top: 1px dotted lightgray!important;
+            }
+            img{margin:1px}
+        }
+        .adder{
+            position:absolute!important;
+            bottom:0;
+            right:0;
+            margin:0;
+            opacity:0.3;
+        }
+
+    }
 }
