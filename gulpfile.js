@@ -1,7 +1,7 @@
 var gulp=require('gulp'),
     shell=require('gulp-shell');
 
-gulp.task('watch',shell.task('"node_modules/.bin/watchify" -d index.js -o www/index.js --ignore jquery'))
+gulp.task('build',shell.task('"node_modules/.bin/watchify" -d index.js -o www/index.js --ignore jquery'))
     .task('allin1',function(){
         var fs=require('fs')
 
@@ -17,6 +17,7 @@ gulp.task('watch',shell.task('"node_modules/.bin/watchify" -d index.js -o www/in
     .task('watchallin1', function(){
          gulp.watch(['www/index.js','www/index.html'],['allin1'])
     })
+    .task('test', shell.task('"node_modules/.bin/karma" start'))
     .task('default',['watchallin1'], shell.task('"node_modules/.bin/restmock"'))
 
 

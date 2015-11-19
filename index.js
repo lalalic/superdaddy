@@ -3,7 +3,7 @@ require('./lib/css/index.less')
 require('babel/polyfill')
 
 var {init,User,React,Component,Router,Main,UI:{Comment}}=require('dashboard'),
-    {Route, RouteHandler, Link, NotFoundRoute, DefaultRoute, HistoryLocation} = Router,
+    {Route, RouteHandler, Link, NotFoundRoute, DefaultRoute, HistoryLocation, HashLocation} = Router,
     {MenuItem,Styles:{ThemeManager}, FloatingActionButton, Avatar}=require('material-ui'),
     Family=require('./lib/db/family'),
     Knowledge=require('./lib/db/knowledge'),
@@ -89,8 +89,9 @@ CurrentChild.PropTypes={
 CurrentChild.contextTypes={router:React.PropTypes.func}
 
 ;(function onReady(){
-    var routes=(
-         <Route name="home" path="/" handler={Entry}>
+    var root="/",
+        routes=(
+         <Route name="home" path={root} handler={Entry}>
              <Route name="task" path="task/:_id?/" handler={require('./lib/task')}/>
              <Route name="baby" path="baby/:_id?/" handler={require('./lib/baby')}/>
              <Route name="knowledges" path="knowledges/" handler={require('./lib/knowledges')}/>
@@ -105,9 +106,12 @@ CurrentChild.contextTypes={router:React.PropTypes.func}
          </Route>
      );
 
+    function getHistory(){
+        return document.location.pathname==root ? HistoryLocation : HashLocation
+    }
     init("http://localhost:9080/1/","superDaddy", function(db){
         Family.init().then(function(){
-            Router.run(routes, (!window.cordova ? HistoryLocation : undefined),function(Handler, state){
+            Router.run(routes, getHistory(),function(Handler, state){
                 var container=document.getElementById('app')
                 container.style.height=window.innerHeight+'px'
                 React.render(<Handler
