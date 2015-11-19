@@ -19,6 +19,7 @@ gulp.task('build',shell.task('"node_modules/.bin/watchify" -d index.js -o www/in
     })
     .task('test', shell.task('"node_modules/.bin/karma" start'))
     .task('default',['watchallin1'], shell.task('"node_modules/.bin/restmock"'))
+    .task('karma', shell.task('"node_modules/.bin/karma" start'))
 
 
     .task('cordovaCreate',shell.task(['cordova create cordova lalalic.superdaddy superdaddy --link-to=www']))

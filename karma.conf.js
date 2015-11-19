@@ -1,4 +1,5 @@
 // Karma configuration
+
 // Generated on Thu Nov 19 2015 09:30:29 GMT+0800 (China Standard Time)
 
 module.exports = function(config) {
