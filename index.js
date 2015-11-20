@@ -91,7 +91,7 @@ CurrentChild.contextTypes={router:React.PropTypes.func}
 ;(function onReady(){
     var root="/",
         routes=(
-         <Route name="home" path={root} handler={Entry}>
+         <Route path={root} handler={Entry}>
              <Route name="task" path="task/:_id?/" handler={require('./lib/task')}/>
              <Route name="baby" path="baby/:_id?/" handler={require('./lib/baby')}/>
              <Route name="knowledges" path="knowledges/" handler={require('./lib/knowledges')}/>
@@ -109,15 +109,17 @@ CurrentChild.contextTypes={router:React.PropTypes.func}
     function getHistory(){
         return document.location.pathname==root ? HistoryLocation : HashLocation
     }
-    init("http://localhost:9080/1/","superDaddy", function(db){
-        Family.init().then(function(){
-            Router.run(routes, getHistory(),function(Handler, state){
-                var container=document.getElementById('app')
-                container.style.height=window.innerHeight+'px'
-                React.render(<Handler
-                    params={state.params}
-                    query={state.query}/>, container)
-            })
+    window.routed=new Promise((resolve, reject)=>{
+        init("http://localhost:9080/1/","superDaddy", function(db){
+            Family.init().then(function(){
+                Router.run(routes, getHistory(),function(Handler, state){
+                    var container=document.getElementById('app')
+                    container.style.height=window.innerHeight+'px'
+                    resolve(React.render(<Handler
+                        params={state.params}
+                        query={state.query}/>, container))
+                })
+            }, reject)
         })
     })
 })();

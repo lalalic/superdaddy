@@ -4,12 +4,21 @@ describe("route", function(){
         expect(tester).toBeTruthy()
     })
 
-    it("/", function(){
+    it("/", function(done){
         location=location.pathname+'#/'
-        tester.findRenderedDOMComponentWithClass()
+        window.routed.then((router)=>{
+            var entry=tester.findRenderedDOMComponentWithClass(router,"Entry")
+            expect(entry).toBeDefined()
+            done()
+        },()=>{fail();done()})
     })
 
     it("/knowledges/",function(){
         location=location.pathname+'#/knowledges/'
+        window.routed.then((router)=>{
+            var entry=tester.findRenderedDOMComponentWithClass(router,"Entry")
+            expect(entry).toBeDefined()
+            done()
+        },()=>{fail();done()})
     })
 })
