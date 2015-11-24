@@ -2,8 +2,8 @@ require('restmock')
 require('./lib/css/index.less')
 require('babel/polyfill')
 
-var {init,User,React,Component,Router,Main,UI:{Comment}}=require('dashboard'),
-    {Route, RouteHandler, Link, NotFoundRoute, DefaultRoute, HistoryLocation, HashLocation} = Router,
+var {init,User,React,Component,Router,QiliApp,UI:{Comment}}=require('dashboard'),
+    {Route, RouteHandler, DefaultRoute} = Router,
     {MenuItem,Styles:{ThemeManager}, FloatingActionButton, Avatar}=require('material-ui'),
     Family=require('./lib/db/family'),
     Knowledge=require('./lib/db/knowledge'),
@@ -12,7 +12,7 @@ var {init,User,React,Component,Router,Main,UI:{Comment}}=require('dashboard'),
     Baby=require('./lib/baby');
 
 
-class Entry extends Component{
+class SuperDaddy extends Component{
     constructor(props){
         super(props)
         this.state={child:Family.currentChild}
@@ -21,35 +21,25 @@ class Entry extends Component{
         return {muiTheme:themeManager.getCurrentTheme()}
     }
     componentDidMount(){
-        Family.event.on('change',this.__onCurrentchange=()=>this.setState({child:Family.currentChild}))
+        Family.event.on('change',()=>this.setState({child:Family.currentChild}))
     }
 
-    componentWillUnmount(){
-        Family.event.removeListener('change',this.__onCurrentchange)
-    }
     render(){
-        var floatAction,main, {child}=this.state
-        if(child){
-            floatAction=(<CurrentChild child={child}/>)
-            main=(<RouteHandler child={child}/>)
-        }else{
-            main=(<Baby/>)
-        }
-
+        var {child}=this.state
         return (
-            <Main.Light>
+            <QiliApp appId="SuperDaddy" init={()=>Family.init()}>
                 <div className="withFootbar">
-                    {floatAction}
+                    {child ? (<CurrentChild child={child}/>) : null}
                     <div id="container">
-                    {main}
+                    {child ? (<RouteHandler child={child}/>) : (<Baby child={Family.currentChild={}}/>)}
                     </div>
                 </div>
-            </Main.Light>
+            </QiliApp>
         )
     }
 }
 
-Entry.childContextTypes={muiTheme:React.PropTypes.object}
+SuperDaddy.childContextTypes={muiTheme:React.PropTypes.object}
 
 class CurrentChild extends Component{
     render(){
@@ -88,6 +78,24 @@ CurrentChild.PropTypes={
 
 CurrentChild.contextTypes={router:React.PropTypes.func}
 
+
+QiliApp.render(
+    <Route path="/" handler={SuperDaddy}>
+        <Route name="task" path="task/:_id?/" handler={require('./lib/task')}/>
+        <Route name="baby" path="baby/:_id?/" handler={require('./lib/baby')}/>
+        <Route name="knowledges" path="knowledges/" handler={require('./lib/knowledges')}/>
+        <Route name="knowledge" path="knowledge/:_id?/" handler={require('./lib/knowledge')}/>
+        <Route name="create" path="create/" handler={require('./lib/newKnowledge')} />
+        <Route name="comment" path="comment/:type/:_id/" handler={Comment}/>
+        <Route name="account" path="account/" handler={require('./lib/account')} />
+        <Route name="setting" path="setting/" handler={require('./lib/setting')} />
+        <Route name="dashboard" path="dashboard/:when?/" handler={require("./lib/dashboard")}/>
+        <Route name="publish" path="publish/:what?/" handler={require("./lib/publish")} />
+        <DefaultRoute handler={require("./lib/dashboard")}/>
+    </Route>
+)
+
+/*
 ;(function onReady(){
     var root="/",
         routes=(
@@ -123,3 +131,4 @@ CurrentChild.contextTypes={router:React.PropTypes.func}
         })
     })
 })();
+*/
