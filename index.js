@@ -29,8 +29,8 @@ class SuperDaddy extends Component{
         return (
             <QiliApp appId="SuperDaddy" init={()=>Family.init()}>
                 <div className="withFootbar">
-                    {child ? (<CurrentChild child={child}/>) : null}
                     <div id="container">
+                    {child ? (<CurrentChild child={child}/>) : null}
                     {child ? (<RouteHandler child={child}/>) : (<Baby child={Family.currentChild={}}/>)}
                     </div>
                 </div>
