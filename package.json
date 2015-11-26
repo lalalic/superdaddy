@@ -8,11 +8,13 @@
   },
   "dependencies": {
     "babel": "^5.6.14",
-    "dashboard": "../dashboard",
-    "docx4js":"../docx4js",
-    "react-tap-event-plugin":"0.1.6",
+    "docx4js": "../docx4js",
     "material-ui": "^0.10.0",
-    "react": "^0.13.x"
+    "qili-app": "file:..\\qili-app",
+    "qiliApp": "file:..\\qili-app",
+    "react": "^0.13.x",
+    "react-tap-event-plugin": "0.1.6",
+    "restmock": "^0.2.2"
   },
   "devDependencies": {
     "babelify": "^6.0.2",
@@ -24,23 +26,23 @@
     "uglify-js": "^2.4.24",
     "watchify": "^3.4.0",
     "karma": ">=0.13.15",
-    "karma-jasmine":"^0.3.6",
-    "karma-chrome-launcher":"^0.2.1"
+    "karma-jasmine": "^0.3.6",
+    "karma-chrome-launcher": "^0.2.1"
   },
   "browserify": {
     "transform": [
       [
-            "babelify",
-            {
-              "stage": 1
-            }
-        ],
-        [
-          "node-lessify",
-          {
-            "plugins": []
-          }
-        ]
+        "babelify",
+        {
+          "stage": 1
+        }
+      ],
+      [
+        "node-lessify",
+        {
+          "plugins": []
+        }
+      ]
     ]
   },
   "keywords": [],
