@@ -29,7 +29,7 @@ node_modules
 
 cordova
 
-www/index.css
-www/index.js
-www/allin1.html
 ~*
+
+www/*.js
+__*.js

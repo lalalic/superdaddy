@@ -29,7 +29,7 @@ class SuperDaddy extends QiliApp{
             floatAction=(<CurrentChild child={child}/>)
             content=(<RouteHandler child={child}/>)
         }else {
-            content=(<Baby child={Family.currentChild={}}/>)
+            content=(<Baby child={{}}/>)
         }
         return (
             <div className="withFootbar">
@@ -42,7 +42,7 @@ class SuperDaddy extends QiliApp{
     }
 }
 Object.assign(SuperDaddy.defaultProps,{
-    appId:"SuperDaddy",
+    appId:"ac78253917904d0ca54f2140993101ec",
     init:()=>Family.init()
 })
 
