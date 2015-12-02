@@ -1,13 +1,11 @@
 require('./lib/css/index.less')
 require('babel/polyfill')
 
-var {init,User,React,Component,Router,QiliApp,UI:{Comment}}=require('qili-app'),
+var {User,React,Component,Router,QiliApp,UI:{Comment}}=require('qili-app'),
     {Route, RouteHandler, DefaultRoute} = Router,
     {MenuItem, FloatingActionButton, Avatar}=require('material-ui'),
-    Family=require('./lib/db/family'),
-    Knowledge=require('./lib/db/knowledge'),
-    Task=require('./lib/db/task'),
-    Baby=require('./lib/baby');
+    {Family,Knowledge,Table,init}=require('./lib/db'),
+    Baby=require('./lib/baby')
 
 
 class SuperDaddy extends QiliApp{
@@ -30,7 +28,7 @@ class SuperDaddy extends QiliApp{
 }
 Object.assign(SuperDaddy.defaultProps,{
     appId:"4516b5a9b8bf4f63b2bca6c8798ae78d",
-    init:()=>Family.init()
+    init:()=>init()
 })
 
 class CurrentChild extends Component{
@@ -72,7 +70,7 @@ class CurrentChild extends Component{
 module.exports=QiliApp.render(
     <Route path="/" handler={SuperDaddy}>
         <Route name="task" path="task/:_id?/" handler={require('./lib/task')}/>
-        <Route name="baby" path="baby/:_id?/" handler={require('./lib/baby')}/>
+        <Route name="baby" path="baby/:_id?" handler={require('./lib/baby')}/>
         <Route name="knowledges" path="knowledges/" handler={require('./lib/knowledges')}/>
         <Route name="knowledge" path="knowledge/:_id?/" handler={require('./lib/knowledge')}/>
         <Route name="create" path="create/" handler={require('./lib/newKnowledge')} />
@@ -88,5 +86,6 @@ module.exports=QiliApp.render(
 
 /**
 * quickAction position doesn't change when resizing
-* new Child is strange
+* Done:new Child is strange -- controlled input use setState to hold change
+* init backend upload not start
 */
