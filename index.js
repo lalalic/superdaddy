@@ -4,8 +4,7 @@ require('babel/polyfill')
 var {User,React,Component,Router,QiliApp}=require('qili-app'),
     {Route, RouteHandler, DefaultRoute} = Router,
     {MenuItem, FloatingActionButton, Avatar}=require('material-ui'),
-    {Family,Knowledge,Table,init}=require('./lib/db'),
-    Baby=require('./lib/baby')
+    {Family,Knowledge,Table,init}=require('./lib/db')
 
 
 class SuperDaddy extends QiliApp{
@@ -16,12 +15,12 @@ class SuperDaddy extends QiliApp{
     }
 
     renderContent(){
-        var {child={}}=this.state,
+        var {child}=this.state,
             childStyle={position:'fixed',top:10,right:this._right(10), opacity:0.7, zIndex:9}
         return (
             <div>
                 <CurrentChild child={child} style={childStyle}/>
-                {child._id ? <RouteHandler child={child}/> : <Baby child={child} />}
+                <RouteHandler child={child}/>
             </div>
         )
     }
@@ -33,7 +32,7 @@ Object.assign(SuperDaddy.defaultProps,{
 
 class CurrentChild extends Component{
     render(){
-        var {child, style={}, ...others}=this.props, avatar
+        var {child={}, style={}, ...others}=this.props, avatar
 
         if(child.photo)
             avatar=(<Avatar src={this.props.child.photo}/>)
@@ -86,6 +85,11 @@ module.exports=QiliApp.render(
 
 /**
 * quickAction position doesn't change when resizing
-* Done:new Child is strange -- controlled input use setState to hold change
 * immutable setState to improve performance
+* baby feature
+    * create first baby
+    * delete last baby
+    * create baby
+    * delete baby
+* Not baby centric
 */
