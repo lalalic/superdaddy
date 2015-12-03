@@ -1,7 +1,7 @@
 require('./lib/css/index.less')
 require('babel/polyfill')
 
-var {User,React,Component,Router,QiliApp,UI:{Comment}}=require('qili-app'),
+var {User,React,Component,Router,QiliApp}=require('qili-app'),
     {Route, RouteHandler, DefaultRoute} = Router,
     {MenuItem, FloatingActionButton, Avatar}=require('material-ui'),
     {Family,Knowledge,Table,init}=require('./lib/db'),
@@ -21,7 +21,7 @@ class SuperDaddy extends QiliApp{
         return (
             <div>
                 <CurrentChild child={child} style={childStyle}/>
-                {child._id ? <RouteHandler child={child}/> : <Baby child={{}}/>}
+                {child._id ? <RouteHandler child={child}/> : <Baby child={child} />}
             </div>
         )
     }
@@ -87,5 +87,5 @@ module.exports=QiliApp.render(
 /**
 * quickAction position doesn't change when resizing
 * Done:new Child is strange -- controlled input use setState to hold change
-* init backend upload not start
+* immutable setState to improve performance
 */
