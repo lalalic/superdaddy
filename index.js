@@ -1,7 +1,7 @@
 require('./lib/css/index.less')
 require('babel/polyfill')
 
-var {User,React,Component,Router,QiliApp}=require('qili-app'),
+var {User,React,Component,Router,QiliApp, UI:{Empty}}=require('qili-app'),
     {Route, RouteHandler, DefaultRoute} = Router,
     {MenuItem, FloatingActionButton, Avatar}=require('material-ui'),
     {Family,Knowledge,Table,init}=require('./lib/db')
@@ -65,6 +65,7 @@ class CurrentChild extends Component{
     }
 }
 
+Empty.defaultProps.icon=require('./lib/icons/logo')
 
 module.exports=QiliApp.render(
     <Route path="/" handler={SuperDaddy}>
@@ -86,10 +87,12 @@ module.exports=QiliApp.render(
 /**
 * quickAction position doesn't change when resizing
 * immutable setState to improve performance
-* baby feature
+*done: baby feature
     * create first baby
     * delete last baby
     * create baby
     * delete baby
+    * Family list update along with baby addition and deletion
 * Not baby centric
+* logo
 */
