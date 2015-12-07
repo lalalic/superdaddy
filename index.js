@@ -6,7 +6,6 @@ var {User,React,Component,Router,QiliApp, UI:{Empty}}=require('qili-app'),
     {MenuItem, FloatingActionButton, Avatar}=require('material-ui'),
     {Family,Knowledge,Table,init}=require('./lib/db')
 
-
 class SuperDaddy extends QiliApp{
     constructor(props){
         super(props)
@@ -65,7 +64,7 @@ class CurrentChild extends Component{
     }
 }
 
-Empty.defaultProps.icon=require('./lib/icons/logo')
+
 
 module.exports=QiliApp.render(
     <Route path="/" handler={SuperDaddy}>

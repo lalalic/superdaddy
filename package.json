@@ -25,6 +25,7 @@
     "node-lessify": "0.0.10",
     "qiniu": "^6.1.8",
     "reactify": "^1.1.1",
+    "request": "^2.67.0",
     "restmock": "0.1.x",
     "uglify-js": "^2.4.24",
     "watchify": "^3.4.0"
