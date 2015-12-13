@@ -25,7 +25,7 @@ class SuperDaddy extends QiliApp{
     }
 }
 Object.assign(SuperDaddy.defaultProps,{
-    appId:"4516b5a9b8bf4f63b2bca6c8798ae78d",
+    appId:"1c7f3b148057498aa1edcc783a7537c6",
     init:()=>init()
 })
 
@@ -85,6 +85,8 @@ module.exports=QiliApp.render(
 
 /**
 * quickAction position doesn't change when resizing
+* server render ready
+    * dom and data retrieving from server should be in componentDidMount
 * immutable setState to improve performance
 *done: baby feature
     * create first baby
@@ -92,6 +94,10 @@ module.exports=QiliApp.render(
     * create baby
     * delete baby
     * Family list update along with baby addition and deletion
-* Not baby centric
+*done: Not baby centric
 * logo
+    * loading
+* flux refactor
+* form refactor
+    * auto update: baby
 */
