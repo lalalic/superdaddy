@@ -100,4 +100,6 @@ module.exports=QiliApp.render(
 * flux refactor
 * form refactor
     * auto update: baby
+* Family list UI
+    * remove->dashboard->family list: setState warning, not pure render?
 */
