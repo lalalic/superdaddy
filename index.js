@@ -25,7 +25,7 @@ class SuperDaddy extends QiliApp{
     }
 }
 Object.assign(SuperDaddy.defaultProps,{
-    appId:"1c7f3b148057498aa1edcc783a7537c6",
+    appId:"13b6ba6c5cca43ca98a486209003b701",//"1c7f3b148057498aa1edcc783a7537c6",
     init:()=>init()
 })
 
@@ -36,7 +36,7 @@ class CurrentChild extends Component{
         if(child.photo)
             avatar=(<Avatar src={this.props.child.photo}/>)
         else
-            avatar=(<div><span style={{fontSize:"xx-small"}}>{child.name}</span></div>)
+            avatar=(<div><span style={{fontSize:"xx-small"}}>{this.lastName=child.name}</span></div>)
 
         if(!child._id)
             style.display='none'
@@ -49,7 +49,7 @@ class CurrentChild extends Component{
     }
 
     shouldComponentUpdate(nextProps, nextState){
-        return nextProps.child!=this.props.child
+        return nextProps.child!=this.props.child || nextProps.child.name!=this.lastName
     }
 
     change(){
@@ -63,6 +63,8 @@ class CurrentChild extends Component{
         Family.currentChild=children[(index+1) % len]
     }
 }
+
+CurrentChild.contextTypes={router:React.PropTypes.func}
 
 
 
@@ -99,7 +101,8 @@ module.exports=QiliApp.render(
     * loading
 * flux refactor
 * form refactor
-    * auto update: baby
+    *done: auto update: baby, controlled input onchange->setState->onBlur->upsert
 * Family list UI
     * remove->dashboard->family list: setState warning, not pure render?
+* change child name ->shortcut name should be changed accordingly
 */
