@@ -1,6 +1,5 @@
 // Karma configuration
-
-// Generated on Thu Nov 19 2015 09:30:29 GMT+0800 (China Standard Time)
+// Generated on Wed Nov 25 2015 17:05:26 GMT+0800 (China Standard Time)
 
 module.exports = function(config) {
   config.set({
@@ -11,15 +10,12 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['browserify','jasmine'],
 
 
     // list of files / patterns to load in the browser
     files: [
-        'spec/init.js',
-        'node_modules/react/dist/react-with-addons.js',
-        'www/index.js',
-      'spec/**/*Spec.js'
+        'spec/**/*Spec.js'
     ],
 
 
@@ -31,13 +27,27 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+        'spec/**/extractorSpec.js': ['browserify']
+    },
+//****the browserify of karma-browserify has issue with debug, so remove it to use main browserify
+    browserify:{
+        debug:true,
+        transform: [
+          [
+            "babelify",
+            {
+              "stage": 1
+            }
+          ],
+          ["qili-app/spec/node-lessify"]
+        ]
     },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['dots'],
 
 
     // web server port
