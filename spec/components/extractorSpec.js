@@ -2,26 +2,50 @@ import {React, Component, render, TestUtils, newPromise,uuid,expectHasType,Any, 
 import {initWithUser, spyOnXHR, ajaxHaveBeenCalled, failx, root} from "qili-app/spec/db/helper"
 
 import extract from "../../lib/extractor"
-import Docx from "docx4js"
 import {selector} from "qili-app"
 
-describe("docx extractor", function(){
-    beforeEach(function(){
-        let file=require("./extractor/template.docx")
-        let parsed=this.parsed=extract(file)
-    })
-    it("can output html with table(tr,td),paragraph, link, and image without styles", function(){
-        let {parsed:{knowledge}}=this
-            ,{html}=knowledge
+import {newDocx} from "../file"
 
-         expect(html).toMatch(/<html>.*<\/html>/ig)
-         expect(html).toMatch(/<table>.*<\/table>/ig)
-         expect(html).toMatch(/<tr>.*<\/tr>/ig)
-         expect(html).toMatch(/<td>.*<\/td>/ig)
-         expect(html).toMatch(/<p>.*<\/p>/ig)
-         expect(html).toMatch(/<img\s+.*\s+\/>/ig)
-         expect(html).not.toMatch(/style=".*"/ig)
-         expect(html).not.toMatch(/class=".*"/ig)
+describe("docx extractor", function(){
+    fdescribe("identification", function(){
+        it("paragraph,text", function(done){
+            let content=`<w:p><w:r><w:t>hello world</w:t></w:r></w:p>`
+            extract(newDocx(content)).then((ex)=>{
+                let {knowledge}=ex
+                    ,{content:html}=knowledge
+                 expect(html).toMatch(/<p>hello world<\/p>/ig)
+                 done()
+             }).catch(failx(done))
+        })
+
+        it("table, tr, td", function(done){
+            let content=`<w:tbl>
+            <w:tblGrid>
+				<w:gridCol w:w="2952"/>
+			</w:tblGrid>
+            <w:tr>
+                <w:tc>
+                <w:p><w:r><w:t>hello world</w:t></w:r></w:p>
+                </w:tc>
+            </w:tr>
+            </w:tbl>`
+            extract(newDocx(content)).then(({knowledge:{content:html}})=>{
+                 expect(html).toMatch(/<table><tr><td><p>hello world<\/p><\/td><\/tr><\/table>/ig)
+                 done()
+             }).catch(failx(done))
+        })
+
+        it("image", function(done){
+            let content=` `;
+            extract(newDocx(content)).then(({knowledge:{content:html}})=>{
+                 expect(html).toMatch(/<img/ig)
+                 done()
+             }).catch(failx(done))
+        })
+
+        it("link", function(){
+
+        })
     })
 
     it("can extract properties[]", function(){

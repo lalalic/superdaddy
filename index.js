@@ -25,7 +25,7 @@ class SuperDaddy extends QiliApp{
     }
 }
 Object.assign(SuperDaddy.defaultProps,{
-    appId:"13b6ba6c5cca43ca98a486209003b701",//"1c7f3b148057498aa1edcc783a7537c6",
+    appId:"56a742f6a3dc55086c4fc938",//"1c7f3b148057498aa1edcc783a7537c6",
     init:()=>init()
 })
 
