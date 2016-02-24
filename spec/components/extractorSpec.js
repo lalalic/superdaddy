@@ -134,8 +134,4 @@ describe("docx extractor", function(){
     it("can upload even with photos", function(){
 
     })
-
-    it("can clear resorce", function(){
-
-    })
 })
