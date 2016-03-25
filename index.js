@@ -1,10 +1,14 @@
 require('./lib/css/index.less')
 require('babel/polyfill')
 
-var {User,React,Component,Router,QiliApp, UI:{Empty}}=require('qili-app'),
-    {Route, RouteHandler, DefaultRoute} = Router,
-    {MenuItem, FloatingActionButton, Avatar}=require('material-ui'),
-    {Family,Knowledge,Table,init}=require('./lib/db')
+import {User,React,Component,Router,QiliApp, UI} from 'qili-app'
+import {MenuItem, FloatingActionButton, Avatar} from 'material-ui'
+import {Family,Knowledge,Table,init} from './lib/db'
+
+import Dashboard from "./lib/dashboard"
+
+var {Route, RouteHandler, DefaultRoute} = Router,
+    {Empty}=UI
 
 class SuperDaddy extends QiliApp{
     constructor(props){
@@ -16,6 +20,7 @@ class SuperDaddy extends QiliApp{
     renderContent(){
         var {child}=this.state,
             childStyle={position:'fixed',top:10,right:this._right(10), opacity:0.7, zIndex:9}
+
         return (
             <div>
                 <CurrentChild child={child} style={childStyle}/>
@@ -25,7 +30,7 @@ class SuperDaddy extends QiliApp{
     }
 }
 Object.assign(SuperDaddy.defaultProps,{
-    appId:"1c7f3b148057498aa1edcc783a7537c6",//"1c7f3b148057498aa1edcc783a7537c6",
+    appId:"superdaddy",
     init:()=>init()
 })
 
@@ -49,7 +54,7 @@ class CurrentChild extends Component{
     }
 
     shouldComponentUpdate(nextProps, nextState){
-        return nextProps.child!=this.props.child || nextProps.child.name!=this.lastName
+        return !!this.props.child && (nextProps.child!=this.props.child || nextProps.child.name!=this.lastName)
     }
 
     change(){
@@ -67,20 +72,28 @@ class CurrentChild extends Component{
 CurrentChild.contextTypes={router:React.PropTypes.func}
 
 
+import TaskUI from './lib/task'
+import BabyUI from './lib/baby'
+import KnowledgesUI from './lib/knowledges'
+import KnowledgeUI from './lib/knowledge'
+import NewKnowledgeUI from './lib/newKnowledge'
+import AccountUI from './lib/account'
+import SettingUI from './lib/setting'
+import PublishUI from './lib/publish'
 
 module.exports=QiliApp.render(
     <Route path="/" handler={SuperDaddy}>
-        <Route name="task" path="task/:_id?/" handler={require('./lib/task')}/>
-        <Route name="baby" path="baby/:_id?" handler={require('./lib/baby')}/>
-        <Route name="knowledges" path="knowledges/" handler={require('./lib/knowledges')}/>
-        <Route name="knowledge" path="knowledge/:_id?/" handler={require('./lib/knowledge')}/>
-        <Route name="create" path="create/" handler={require('./lib/newKnowledge')} />
+        <Route name="task" path="task/:_id?/" handler={TaskUI}/>
+        <Route name="baby" path="baby/:_id?" handler={BabyUI}/>
+        <Route name="knowledges" path="knowledges/" handler={KnowledgesUI}/>
+        <Route name="knowledge" path="knowledge/:_id?/" handler={KnowledgeUI}/>
+        <Route name="create" path="create/" handler={NewKnowledgeUI} />
         <Route name="comment" path="comment/:type/:_id/" handler={Comment}/>
-        <Route name="account" path="account/" handler={require('./lib/account')} />
-        <Route name="setting" path="setting/" handler={require('./lib/setting')} />
-        <Route name="dashboard" path="dashboard/:when?/" handler={require("./lib/dashboard")}/>
-        <Route name="publish" path="publish/:what?/" handler={require("./lib/publish")} />
-        <DefaultRoute handler={require("./lib/dashboard")}/>
+        <Route name="account" path="account/" handler={AccountUI} />
+        <Route name="setting" path="setting/" handler={SettingUI} />
+        <Route name="dashboard" path="dashboard/:when?/" handler={Dashboard}/>
+        <Route name="publish" path="publish/:what?/" handler={PublishUI} />
+        <DefaultRoute handler={Dashboard}/>
     </Route>
 )
 
