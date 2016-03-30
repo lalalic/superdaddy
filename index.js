@@ -30,7 +30,7 @@ class SuperDaddy extends QiliApp{
     }
 }
 Object.assign(SuperDaddy.defaultProps,{
-    appId:"superdaddy",
+    appId:"1c7f3b148057498aa1edcc783a7537c6",//"superdaddy",
     init:()=>init()
 })
 
