@@ -4,52 +4,52 @@
         {
             "path":"/",
             "type":"static",
-            "response":"www"
+            "response":"dist"
         },
         {
             "path":"/dashboard/*",
             "type":"static",
-            "response":"www"
+            "response":"dist"
         },
         {
             "path":"/family/*",
             "type":"static",
-            "response":"www"
+            "response":"dist"
         },
         {
             "path":"/task/*",
             "type":"static",
-            "response":"www"
+            "response":"dist"
         },
         {
             "path":"/knowledge/*",
             "type":"static",
-            "response":"www"
+            "response":"dist"
         },
         {
             "path":"/create",
             "type":"static",
-            "response":"www"
+            "response":"dist"
         },
         {
             "path":"/account",
             "type":"static",
-            "response":"www"
+            "response":"dist"
         },
         {
             "path":"/setting",
             "type":"static",
-            "response":"www"
+            "response":"dist"
         },
         {
             "path":"/comment/*/*",
             "type":"static",
-            "response":"www"
+            "response":"dist"
         },
         {
             "path":"/knowledges",
             "type":"static",
-            "response":"www"
+            "response":"dist"
         },
         {
             "path":"/1/test",
@@ -139,7 +139,7 @@
                     "content":{
                         "drawing":
                             [{
-                                "photos":["http://www.js.xinhuanet.com/2015-07/16/1115946088_14370290155871n.jpg",
+                                "photos":["http://dist.js.xinhuanet.com/2015-07/16/1115946088_14370290155871n.jpg",
                                     "http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"],
                                 "desc":"这是一个好方法",
                                 "createdAt":"2015-07-12T03:05:21Z"

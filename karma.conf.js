@@ -15,7 +15,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        'spec/**/dashboardSpec.js'
+		'spec/clear.js',
+        'spec/**/*Spec.js'
     ],
 
 
@@ -33,12 +34,7 @@ module.exports = function(config) {
     browserify:{
         debug:true,
         transform: [
-          [
-            "babelify",
-            {
-              "stage": 1
-            }
-          ],
+			["babelify",{global:true, only:/spec/}],	
           ["qili-app/spec/node-lessify"]
         ]
     },

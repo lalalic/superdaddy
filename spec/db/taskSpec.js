@@ -1,5 +1,5 @@
 import {React, Component, render, TestUtils, newPromise,uuid,expectHasType,Any, findCommand} from 'qili-app/spec/components/helper'
-import {initWithUser, spyOnXHR, ajaxHaveBeenCalled, failx, root} from "qili-app/spec/db/helper"
+import {initWithUser, spyOnXHR, ajaxHaveBeenCalled, failx, root, clearCurrentUser} from "qili-app/spec/db/helper"
 import DateUtils from "material-ui/lib/utils/date-time"
 import App from "qili-app/lib/db/app"
 import User from "qili-app/lib/db/user"
@@ -14,9 +14,11 @@ describe("TaskDB", function(){
     }
     let knowledge={_id:`knowledge_${uuid()}`,title:"test",keywords:"test",category:"test",summary:"test"}
 
-    beforeAll(done=>{
+    beforeEach(done=>{
         initWithUser(`app${uuid()}`,done)
     })
+	
+	afterEach(clearCurrentUser)
 
     describe("planing", function(){
         it("can plan for tomorrow, a future date", function(done){

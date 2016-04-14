@@ -1,10 +1,9 @@
 import {React, Component, render, TestUtils, newPromise,uuid,expectHasType,Any, findCommand} from 'qili-app/spec/components/helper'
 import {initWithUser, spyOnXHR, ajaxHaveBeenCalled, failx, root} from "qili-app/spec/db/helper"
+import newDocx from "docx4js/spec/newDocx"
 
 import extract from "../../lib/extractor"
 import {selector} from "qili-app"
-
-import {newDocx} from "../file"
 
 describe("docx extractor", function(){
     describe("identification", function(){
