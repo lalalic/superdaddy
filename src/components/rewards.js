@@ -7,7 +7,7 @@ var REG_RULE=/[\/-]/
 
 export default class Rewards extends React.Component{
 	static defaultProps={
-		rules:[{//you can get ${reward} when get ${target} stars 
+		rules:[{//you can get ${reward} when get ${target} stars
 			target: "1-10",//5 | 5-10[/1] | 10-20/5 | ,,,
 			reward: "hug"
 		},{
@@ -23,22 +23,22 @@ export default class Rewards extends React.Component{
 		rewardDetail:[],
 		editable:false
 	}
-	
+
 	static propTypes={
 		rules: React.PropTypes.array,
 		rewardDetail: React.PropTypes.array,
 		onRule: React.PropTypes.func,
 		onReward: React.PropTypes.func,
-		editable: React.PropTypes.boolean
+		editable: React.PropTypes.bool
 	}
-	
+
     render(){
 		let {editable}=this.props
 		let [rewardsFromRules,min1,max1]=this._getResolvedRules()
 		let [total,rewarded,min2,max2]=this._getRewardedDetail()
 		let min=Math.min(min1,min2), max=Math.max(max1,max2)
 		let height=20*max+20
-		
+
 		let editor= editable ? this._renderEditor() : null
 
         return (
@@ -56,7 +56,7 @@ export default class Rewards extends React.Component{
 							function(a){
 								let sum=0
 								rewarded.forEach((detail,k)=>
-									a.push(<li style={{top:(sum+=detail.count)*20}}>{k} -> {`${detail.count} for ${detail.comment} at ${detail.createdAt}`}</li>)
+									a.push(<li style={{top:(sum+=detail.count)*20}} key={k}>{k} ->{`${detail.count} for ${detail.comment} at ${detail.createdAt}`}</li>)
 								)
 								return a
 							}([])
@@ -73,13 +73,13 @@ export default class Rewards extends React.Component{
 						}
 					</ul>
 				</div>
-				
+
 				{editor}
 
             </div>
         )
     }
-	
+
 	_getResolvedRules(){
 		var rewards=new Map(), min=0, max=0
 		this.props.rules.forEach(rule=>{
@@ -107,8 +107,8 @@ export default class Rewards extends React.Component{
 						temp=rewards.get(start)||[]
 						temp.push(reward)
 						rewards.set(start,temp)
-						min=Math.min(start,n)
-						max=Math.max(start,n)
+						min=Math.min(start,min)
+						max=Math.max(start,max)
 					}
 				break
 				}
@@ -125,15 +125,16 @@ export default class Rewards extends React.Component{
 			</div>
 		)
 	}
-	
+
 	_getRewardedDetail(){
-		var details=new Map(), sum=0, min=0, max=0
+		var details=new Map(), sum=0, min=0
 		this.props.rewardDetail.forEach(a=>{
+			if(min==0)
+				min=a.count;
+
 			sum+=a.count
-			min=Math.min(min,a.count)
-			max=Math.max(max,a.count)
 			details.set(sum,a)
 		})
-		return [sum,details,min,max]
+		return [sum,details, min, sum]
 	}
 }
