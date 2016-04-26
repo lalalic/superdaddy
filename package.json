@@ -11,8 +11,7 @@
     "material-ui": "^0.10.0",
     "qili-app": "file:..\\qili-app",
     "react": "^0.13.x",
-    "react-tap-event-plugin": "0.1.6",
-    "restmock": "^0.2.2"
+    "react-tap-event-plugin": "0.1.6"
   },
   "devDependencies": {
     "babel-plugin-add-module-exports": "^0.1.2",
@@ -36,7 +35,8 @@
     "restmock": "0.1.x",
     "through2": "^2.0.0",
 	"uglifyify": "^3.0.1",
-    "watchify": "^3.4.0"
+    "watchify": "^3.4.0",
+    "restmock": "^0.2.2"
   },
   "browserify": {
     "transform": [
@@ -55,19 +55,20 @@
     ],
     "plugins": [
       "babel-plugin-add-module-exports",
-      "babel-plugin-transform-object-rest-spread"
+      "babel-plugin-transform-object-rest-spread",
+	  "babel-plugin-transform-class-properties"
     ]
   },
   "scripts":{
 	"build": "babel src -d lib --source-maps inline",
-    "dist": "browserify -g uglifyify ./lib/main.js -o dist/qili-app.js",
+    "dist": "browserify -g uglifyify ./lib/main.js -o dist/index.js",
 	"prepublish": "npm run dist | gulp allin1",
 	
 	"karma": "karma start",
 	
 	"test": "restmock",
-	"test.mock": "watchify -v -d -g uglifyify ./.mock.js -o dist/test.js",
-	"test.mongo": "watchify -v -d -g uglifyify ./.mongo.js -o dist/test.js",
+	"test.mock": "watchify -v -d -g uglifyify ./.mock.js -o dist/test.js -i jquery",
+	"test.mongo": "watchify -v -d -g uglifyify ./.mongo.js -o dist/test.js -i jquery",
 	"preinstall": "node -p \"Object.keys(require('./package.json').devDependencies).join(' ')\""	
   },
   "keywords": [],

@@ -2,9 +2,9 @@ require('../style/index.less')
 
 import {User,React,Component,Router,QiliApp, UI} from 'qili-app'
 import {MenuItem, FloatingActionButton, Avatar} from 'material-ui'
-import {Family,Knowledge,Table,init} from './lib/db'
+import {Family,Knowledge,Table,init} from './db'
 
-import Dashboard from "./lib/dashboard"
+import Dashboard from "./dashboard"
 
 var {Route, RouteHandler, DefaultRoute} = Router,
     {Empty}=UI
@@ -22,8 +22,8 @@ class SuperDaddy extends QiliApp{
 
         return (
             <div>
-                <CurrentChild child={child} style={childStyle}/>
-                <RouteHandler child={child}/>
+               <CurrentChild child={child} style={childStyle}/>
+               <RouteHandler child={child}/>
             </div>
         )
     }
@@ -71,14 +71,14 @@ class CurrentChild extends Component{
 CurrentChild.contextTypes={router:React.PropTypes.func}
 
 
-import TaskUI from './lib/task'
-import BabyUI from './lib/baby'
-import KnowledgesUI from './lib/knowledges'
-import KnowledgeUI from './lib/knowledge'
-import NewKnowledgeUI from './lib/newKnowledge'
-import AccountUI from './lib/account'
-import SettingUI from './lib/setting'
-import PublishUI from './lib/publish'
+import TaskUI from './task'
+import BabyUI from './baby'
+import KnowledgesUI from './knowledges'
+import KnowledgeUI from './knowledge'
+import NewKnowledgeUI from './newKnowledge'
+import AccountUI from './account'
+import SettingUI from './setting'
+import PublishUI from './publish'
 
 module.exports=QiliApp.render(
     <Route path="/" handler={SuperDaddy}>

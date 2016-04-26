@@ -75,7 +75,15 @@ export default class Baby extends Component{
                         <RadioButton value="m" label="boy" />
                     </RadioButtonGroup>
 
-                    <PolicyOfRewards/>
+                    <PolicyOfRewards 
+						editable={true}
+						onRule={(e,rewardRules)=>this.onChange(Object.assign(child,{rewardRules}))}
+						rewardDetail={child.rewardDetail||[{
+							count:1,comment:'polite',createdAt:new Date()}
+							,{count:5,comment:'kind to sister',createdAt:new Date()}
+							,{count:10,comment:'finish homework',createdAt:new Date()}
+							]}
+						/>
                 </div>
                 <CommandBar className="footbar"
                     items={cmds}

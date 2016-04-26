@@ -1,9 +1,10 @@
 import {render,TestUtils} from 'qili-app/spec/components/helper'
 import MyUI from "../../lib/components/rewards"
+import {IconButton} from 'material-ui'
 
 fdescribe("rewards component",()=>{
 	it("can be initialized with default props", ()=>{
-		let ui=render(MyUI)
+		let ui=render(MyUI,{},{})
 		expect(!!ui).toBe(true)
 	})
 	
@@ -59,22 +60,16 @@ fdescribe("rewards component",()=>{
 		})
 	})
 	
-	it("can add rules")
-	
-	it("can remove rules")
-	
-	it("can reward")
-	
 	describe("can show reward detail", ()=>{
 		it("simple",()=>{
-			let props={rewardDetail:[{count:1,comment:'polite',createdAt:new Date()}]}
+			let props={rules:[],rewardDetail:[{count:1,comment:'polite',createdAt:new Date()}]}
 			let ui=render(MyUI, props)
 			let lists=TestUtils.scryRenderedDOMComponentsWithTag(ui,"li")
 			expect(lists.length).toBe(1)
 		})
 		
 		it("complex",()=>{
-			let props={rewardDetail:[
+			let props={rules:[], rewardDetail:[
 				{count:1,comment:'polite',createdAt:new Date()},
 				{count:4,comment:'polite',createdAt:new Date()},
 				{count:5,comment:'polite',createdAt:new Date()},
@@ -87,14 +82,13 @@ fdescribe("rewards component",()=>{
 	
 	describe("total",()=>{
 		it("can show current reward total", ()=>{
-			let props={rewardDetail:[
+			let props={rules:[], rewardDetail:[
 					{count:1,comment:'polite',createdAt:new Date()},
 					{count:4,comment:'polite',createdAt:new Date()},
 					{count:5,comment:'polite',createdAt:new Date()},
 					]}
 			let ui=render(MyUI, props)
 			let total=TestUtils.findRenderedDOMComponentWithClass(ui,"rewards_total")
-			expect(!!total).toBe(true)
 			expect(total.getDOMNode().textContent).toMatch(/10/)
 		})
 		
@@ -104,6 +98,34 @@ fdescribe("rewards component",()=>{
 			let a=TestUtils.scryRenderedDOMComponentsWithClass(ui,"rewards_total")
 			expect(a.length).toBe(0)
 		})
+	})
+	
+	describe("mode edit", ()=>{
+		beforeEach(function(){
+			let editable=true,
+				ui=render(MyUI, {editable})
+			let el=TestUtils.findRenderedDOMComponentWithClass(ui, `rewards_editor`)
+			this.ui=ui
+			this.editor=el
+		})
+		
+		it("can add rules, onRule will be triggered")
+	
+		it("can remove rules, onRule will be triggered")
+	})
+	
+	describe("mode reward",()=>{
+		beforeEach(function(){
+			let ui=render(MyUI, {})
+			let el=TestUtils.findRenderedDOMComponentWithClass(ui, `rewards_reward`)
+			let rewarder=TestUtils.findRenderedComponentWithType(el, IconButton)
+			this.ui=ui
+			this.editor=el
+		})
+		
+		it("can reward 1, and onReward will be triggered")
+		
+		it("can reward 5, and onReward will be triggered")
 	})
 	
 	

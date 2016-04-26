@@ -2,6 +2,7 @@ import {React,Component,UI,Router} from 'qili-app'
 import {Avatar,Paper, RadioGroup, RadioButton,FontIcon,IconButton,TextField, Tabs, Tab, DatePicker} from 'material-ui'
 import {Task as dbTask,Family as dbFamily} from './db'
 import Calendar from './components/calendar'
+import Rewards from './components/rewards'
 import Logo from './icons/logo'
 import IconKnowledges from "material-ui/lib/svg-icons/communication/dialpad"
 
@@ -27,7 +28,7 @@ export class AuthorDashboard extends Component{
     render(){
         return (
             <div>
-                <Empty text="Start from your first baby!"
+                <Empty text="Start from your first baby, or walk around!"
                     icon={<Logo/>}
                     onClick={()=>this.context.router.transitionTo("baby")}/>
                 <CommandBar
@@ -79,9 +80,13 @@ export class BabyDashboard extends Component{
 
     render(){
         var {when, model}=this.state
+		let {rewardDetail}=this.props.child
         return (
             <div>
                 {this.renderContent(when)}
+				
+				<Rewards rewardDetail={rewardDetail}/>
+				
                 <CommandBar
                     className="footbar"
                     primary="Knowledges"
