@@ -74,7 +74,6 @@ export default class Task extends Model{
     }
 
     static byDate(date){
-		debugger
         return this.find({scheduledAt:cloneAsDate(date)})
     }
 }

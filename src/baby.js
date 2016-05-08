@@ -75,15 +75,9 @@ export default class Baby extends Component{
                         <RadioButton value="m" label="boy" />
                     </RadioButtonGroup>
 
-                    <PolicyOfRewards 
+                    <PolicyOfRewards
 						editable={true}
-						onRule={(e,rewardRules)=>this.onChange(Object.assign(child,{rewardRules}))}
-						rewardDetail={child.rewardDetail||[{
-							count:1,comment:'polite',createdAt:new Date()}
-							,{count:5,comment:'kind to sister',createdAt:new Date()}
-							,{count:10,comment:'finish homework',createdAt:new Date()}
-							]}
-						/>
+                        child={child}/>
                 </div>
                 <CommandBar className="footbar"
                     items={cmds}
@@ -92,6 +86,22 @@ export default class Baby extends Component{
             </div>
         )
     }
+    onRewardRule(rule){
+        let {child}=this.state,
+            {rewardRules=[]}=child
+        rewardRules.push(rule)
+        child.rewardRules=rewardRules
+        this.onChange(child)
+    }
+
+    onReward(reward){
+        let {child}=this.state,
+            {rewardDetail=[]}=child
+        rewardDetail.push(reward)
+        child.rewardDetail=rewardDetail
+        this.onChange(child)
+    }
+
     onChange(child){
         this.setState({child})
         if(child._id)
