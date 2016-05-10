@@ -82,11 +82,11 @@ export class BabyDashboard extends Component{
         var {when, model}=this.state
         return (
             <div>
+                <Rewards child={this.props.child}/>
+
                 {this.renderContent(when)}
 
-				<Rewards child={this.props.child}/>
-
-                <CommandBar
+				<CommandBar
                     className="footbar"
                     primary="Knowledges"
                     onSelect={()=>this.onSelect()}

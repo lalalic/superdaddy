@@ -2,186 +2,102 @@ import {React} from "qili-app"
 import {TextField, IconButton} from 'material-ui'
 import PlusIcon from 'material-ui/lib/svg-icons/action/alarm-add'
 import ForwardIcon from "material-ui/lib/svg-icons/navigation/arrow-forward"
-import {Family as dbFamily} from '../db'
-
-var REG_RULE=/[\/-]/
+import {Family as dbFamily, Reward as dbReward, Goal as dbGoal} from '../db'
 
 export default class Rewards extends React.Component{
 	static defaultProps={
-		editable:false
+		height:20,
+		goals:[{total:5, reward:"hug"},{total:10, reward:"pencil"}, {total:20, reward:"pencil sharpener"}],
+		rewards:[{amount:1, reason:"smile"}, {amount:5, reason:"reading"}, {amount:10,reason:"english speaking"}]
 	}
-
 	static propTypes={
-		child: React.PropTypes.object,
-		editable: React.PropTypes.bool
+		child:React.PropTypes.object,
+		goals:React.PropTypes.array,
+		rewards:React.PropTypes.array
 	}
-
-	constructor(props){
-		super(props)
-
-		this.state={
-			rewards:new Map(),
-			rewarded:new Map(),
-			max:0,
-			min:0,
-			total:0
-		}
-
-	}
-
-	componentWillMount(){
-		this._resolveRules(this.props.child)
-		this._resolveRewarded(this.props.child)
-	}
-
-	componentWillReceiveProps(nextProps){
-		let {child:newChild}=nextProps
-		let {child}=this.props
-		if(child!=newChild){
-			this.state.rewards.clear()
-			this.state.rewarded.clear()
-			this._resolveRules(newChild)
-			this._resolveRewarded(newChild)
-		}
-	}
-
+	
 	render(){
-		let {editable}=this.props
-		let {rewards, rewarded, max, total}=this.state
-		let height=20*Math.max(max,total)+20
+		let {goals, rewards,height}=this.props
+		let total=0, max=0
+		goals=goals.map(a=><AGoal
+					key={`goal_${a.total}`}
+					height={height}
+					reward={a.reward} 
+					total={max=Math.max(max,a.total), a.total}/>)
+		
+		rewards=rewards.map(a=><AReward 
+					key={`reward_${total+=a.amount}`}
+					onReasonChange={newReason=>this.onReasonChange(a,newReason)}
+					height={height}
+					reason={a.reason} 
+					amount={a.amount} 
+					total={total}/>)
+		
+		max=Math.max(total,max)
+		
+		return (
+			<div className="rewards" style={{height:max*20+40}}>
+				{goals}
+					
+				{rewards}
+			</div>
+		)
+	}
+	
+	onReasonChange(reward, newReason){
+		reward.reason=newReason
+		dbReward.upsert(reward)
+	}
+}
 
-		let editor= editable ? this._renderEditor() : null
+class Item extends React.Component{
+	static defaultProps={
+		height:20
+	}
+}
 
-        return (
-            <div>
+class AGoal extends Item{
+	render(){
+		let {reward,total,height}=this.props
+		return (
+			<div className="goal" style={{bottom:height*total}}>
+				<div>{reward}</div>
+				<div className="icon">&bull;</div>
+				<div>{total}</div>
+			</div>
+		)
+	}
+}
 
-				<Rewardor current={total} onChange={n=>this._reward(n)}/>
+class AReward extends Item{
+	constructor(){
+		super(...arguments)
+		this.state={}
+	}
+	render(){
+		let {reason="...",amount,total,height}=this.props
+		let {editing=false, editingReason=reason}=this.state
 
-				<div className="rewards_detail grid" style={{height}}>
-					<ul ref="rewarded" className="rewarded" style={{height}}>
-						<li style={{top:total*20}}/>
-						{/*
-							function(a){
-								let sum=0
-								rewarded.forEach((detail,k)=>
-									a.push(<li style={{top:(sum+=detail.count)*20}} key={k}></li>)
-								)
-								return a
-							}([])
-						*/}
-					</ul>
-					<ul ref="rules" className="rules">
-						{
-							function(a){
-								rewards.forEach((details,k)=>
-									a.push(<li style={{top:k*20}} key={-k}><span>{k}</span>--><span>{details.join(",")}</span></li>)
-								)
-								return a
-							}([])
-						}
-					</ul>
+		if(editing)
+			reason=(<input ref="reason" value={editingReason}
+				onBlur={e=>(e.target.value!=reason && this.reasonChanged(e.target.value))}
+				onChange={e=>this.setState({editingReason:e.target.value})}/>)	
+		
+		return (
+			<div className="reward" style={{bottom:height*total}}>
+				<div className="icon">&bull;</div>
+				<div className="reason" onClick={e=>this.setState({editing:true})}>
+				{reason}
 				</div>
-
-				{editor}
-
-            </div>
-        )
-    }
-
-
-
-	_insert(){
-		let {target, reward}=this.refs, rule
-		target=target.getDOMNode().value.trim()
-		reward=reward.getDOMNode().value.trim()
-		if(target.length && reward.length){
-			this._resolveRule(rule={target, reward})
-			this.forceUpdate()
-			let {child}=this.props
-			child.rewardDetail.push(rule)
-			if(child._id)
-	            dbFamily.upsert(child)
-		}
+				<div>+{amount}/{total}</div>
+			</div>
+			)
 	}
-
-	_reward(count){
-		let {rewarded, total}=this.state
-		let reward={count,comment:"", createdAt:new Date()}
-		rewarded.set(total+=count, reward)
-		this.setState({total})
-		let {child}=this.props
-		child.rewardRules.push(reward)
-		if(child._id)
-			dbFamily.upsert(child)
-	}
-
-	_resolveRules(child){
-		let {rewardRules:rules=[{//you can get ${reward} when get ${target} stars
-			target: "1-10",//5 | 5-10[/1] | 10-20/5 | ,,,
-			reward: "hug"
-		},{
-			target: "10-100/10",
-			reward: "kiss"
-		},{
-			target: "50",
-			reward: "pen box"
-		},{
-			target: "100",
-			reward: "Barbie doy"
-		}]}=child
-		rules.forEach(rule=>this._resolveRule(rule))
-		child.rewardRules=rules
-	}
-
-
-	_resolveRule(rule){
-		let {rewards,min,max}=this.state
-		let {target, reward}=rule
-		target.split(",").forEach(seg=>{
-			let els=seg.split(REG_RULE), temp
-			switch(els.length){
-			case 1://5
-				let n=parseInt(els[0].trim())
-				temp=rewards.get(n)||[]
-				temp.push(reward)
-				rewards.set(n,temp)
-				min=Math.min(min,n)
-				max=Math.max(max,n)
-			break
-			case 2://5-10, step=1
-			case 3:// 10-20/5, every 5 from 10 to 20
-				let [a,b,step="1"]=els,
-					ia=parseInt(a.trim()),
-					ib=parseInt(b.trim()),
-					start=Math.min(ia,ib),
-					end=Math.max(ia,ib)
-				step=parseInt(step.trim())
-				for(;start<end+1;start+=step){
-					temp=rewards.get(start)||[]
-					temp.push(reward)
-					rewards.set(start,temp)
-					min=Math.min(min,start)
-					max=Math.max(max,start)
-				}
-			break
-			}
-		})
-		this.setState({min,max})
-	}
-
-
-	_resolveRewarded(child){
-		let {rewarded:details,min, total}=this.state
-		let {rewardDetail=[]}=child
-		rewardDetail.forEach(a=>{
-			if(min==0)
-				min=a.count;
-
-			total+=a.count
-			details.set(total,a)
-		})
-		this.setState({total, min})
-		child.rewardDetail=rewardDetail
+	
+	reasonChanged(editingReason){
+		let {onReasonChange}=this.props
+		this.setState({editing:undefined})
+		onReasonChange && onReasonChange(editingReason)
 	}
 }
 

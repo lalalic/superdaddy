@@ -97,52 +97,68 @@ summary{
     }
 }
 
-.rewards_reward{
-	text-align:center;
-	font-size:32px;
-	
-}
-
-.rewards_detail{
-	.grid;
-	
-	margin-top:20px;
-	
-	ul.rules{
-		margin-left: 0px;
-		padding-left: 0px;
-		
-		border-left: 3px solid gray;
-		
-		li{
-			margin-left: 0px;
-			padding-left: 0px;
-		}
-	}
-	
-	ul.rewarded{
-		margin-right: 0px;
-		padding-right: 0px;
-		
-		border-right: 1px solid gray;
-		
-		direction:rtl;
-		
-		
-		
-		li{
-			margin-right: 0px;
-			padding-right: 0px;
-		}
-	}
-	
-	
-	ul{
-		list-style-position: inside;
+.rewards{
 		position: relative;
+		margin-top:40px;
 		
-		li{
+		margin-left: 200px;
+		border-left: 1px solid lightgray;
+		
+		>*{
 			position: absolute;
+		}
+	
+	.goal{
+		.grid;
+		
+		width: 241px;
+		left: -211px;
+		
+		color: red;
+		font-weight:700;
+				
+		>*{
+			vertical-align:middle;
+		}
+		>:first-child{
+			width:200px;
+			text-align:right;
+		}
+		
+		>:last-child{
+			width:20px;
+		}
+		
+		.icon{
+			width:21px;
+			text-align:center;
+		}
+	}
+	
+	
+	.reward{
+		.grid;
+		
+		>*{
+			vertical-align:middle;
+		}
+		
+		left: -6px;
+		
+		.icon{
+			width:21px;
+			font-weight:700;
+			font-size: 30px;
+			color:green;
+		}
+		
+		.reason{
+			color: green;
+		}
+		
+		>:last-child{
+			width:3em;
+			font-size:smaller;
 		}
 	}
 }
