@@ -1,6 +1,6 @@
 import {React,Component,UI,Router} from 'qili-app'
 import {Avatar,Paper, RadioGroup, RadioButton,FontIcon,IconButton,TextField, Tabs, Tab, DatePicker} from 'material-ui'
-import {Task as dbTask,Family as dbFamily} from './db'
+import {Task as dbTask,Family as dbFamily, Reward as dbReward} from './db'
 import Calendar from './components/calendar'
 import Rewards from './components/rewards'
 import Logo from './icons/logo'
@@ -57,11 +57,13 @@ AuthorDashboard.contextTypes={router:React.PropTypes.func}
 @ with currentChild
 */
 export class BabyDashboard extends Component{
-    constructor(props){
-        super(props)
-        this.state=this._resolveModel()
-    }
-
+	constructor(){
+		super(...arguments)
+		this.state=this._resolveModel()
+		
+		this.onChange=this.onChange.bind(this)
+	}
+	
     _resolveModel(props){
         var today=new Date(),
             {params:{when=today}}=props||this.props;
@@ -77,12 +79,25 @@ export class BabyDashboard extends Component{
         if (nextChild!=child || nextWhen.getTime()!=when.getTime())
             this.setState(this._resolveModel(nextProps))
     }
+	
+	onChange(){
+		this.forceUpdate()
+	}
+	
+	componentDidMount(){
+		dbReward.on("change", this.onChange)
+	}
+	
+	componentWillUnmount(){
+		dbReward.removeListener("change", this.onChange)
+	}
 
     render(){
         var {when, model}=this.state
+		var {child}=this.props
         return (
             <div>
-                <Rewards child={this.props.child}/>
+                <Rewards goals={dbReward.getGoals(child)} rewards={dbReward.getRewards(child)}/>
 
                 {this.renderContent(when)}
 

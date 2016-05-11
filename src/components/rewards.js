@@ -1,4 +1,4 @@
-import {React} from "qili-app"
+import {React, UI} from "qili-app"
 import {TextField, IconButton} from 'material-ui'
 import PlusIcon from 'material-ui/lib/svg-icons/action/alarm-add'
 import ForwardIcon from "material-ui/lib/svg-icons/navigation/arrow-forward"
@@ -11,9 +11,12 @@ export default class Rewards extends React.Component{
 		rewards:[{amount:1, reason:"smile"}, {amount:5, reason:"reading"}, {amount:10,reason:"english speaking"}]
 	}
 	static propTypes={
-		child:React.PropTypes.object,
 		goals:React.PropTypes.array,
 		rewards:React.PropTypes.array
+	}
+	
+	componentWillReceiveProps(){
+		this.forceUpdate()
 	}
 	
 	render(){
@@ -40,8 +43,21 @@ export default class Rewards extends React.Component{
 				{goals}
 					
 				{rewards}
+				
+				<Rewardor current={total} height={height} onReward={amount=>this.reward(amount)}/>
+				
+				<PendingGoal current={total} height={height} onPendGoal={goal=>this.pendGoal(goal)}/>
 			</div>
 		)
+	}
+	
+	pendGoal(goal){
+		dbReward.addGoal(goal)
+	}
+	
+	reward(amount){
+		let newReward={amount}
+		dbReward.upsert(newReward)
 	}
 	
 	onReasonChange(reward, newReason){
@@ -56,6 +72,70 @@ class Item extends React.Component{
 	}
 }
 
+class PendingGoal extends Item{
+	static defaultProps={
+		onPendGoal:a=>1
+	}
+	constructor(){
+		super(...arguments)
+		this.state={
+			reward:"",
+			total:""
+		}
+	}
+	
+	componentWillReceiveProps(){
+		
+	}
+	
+	render(){
+		let {current}=this.props
+		let {reward, total}=this.state
+		return (
+			<div className="goal pending">
+				<div>
+					<input onBlur={e=>this.tryPend({reward:e.target.value})}
+						ref="reward"
+						defaultValue={reward}
+						className="pendingReward" 
+						placeholder="New Reward..." 
+						style={{textAlign:"right"}}/>
+				</div>
+				<div className="icon">&raquo;</div>
+				<div>
+					<input onBlur={e=>this.tryPend({total:e.target.value})} 
+						ref="goal" 
+						defaultValue={total||""}
+						placeholder={`Goal:>${current}`}
+						style={{width:"2.5em"}}/>
+				</div>
+			</div>
+		)
+	}
+	
+	tryPend(state){
+		let {reward:newReward, total:newTotal}=state
+		let {current,onPendGoal}=this.props
+		let {reward, total}=this.state
+		if(newReward)
+			reward=newReward
+		if(newTotal)
+			total=newTotal
+		if(reward.trim() && total.trim()){
+			total=parseInt(total.trim())
+			if(total>current){
+				reward=reward.trim()
+				onPendGoal({reward,total})
+				return
+			}else{
+				UI.Messager.show(`new goal must greater than current total ${current}`)
+				this.refs.goal.getDOMNode().focus()
+			}
+		}
+		this.setState({reward,total})
+	}
+}
+
 class AGoal extends Item{
 	render(){
 		let {reward,total,height}=this.props
@@ -63,7 +143,7 @@ class AGoal extends Item{
 			<div className="goal" style={{bottom:height*total}}>
 				<div>{reward}</div>
 				<div className="icon">&bull;</div>
-				<div>{total}</div>
+				<div></div>
 			</div>
 		)
 	}
@@ -72,69 +152,101 @@ class AGoal extends Item{
 class AReward extends Item{
 	constructor(){
 		super(...arguments)
-		this.state={}
+		this.state={newReason:null}
 	}
+	
+	componentWillReceiveProps(){
+		this.setState({newReason:null})
+	}
+	
+	componentDidUpdate(){
+		let {newReason}=this.state
+		let {reason}=this.refs
+		if(newReason && reason)
+			reason.getDOMNode().focus()
+	}
+	
 	render(){
-		let {reason="...",amount,total,height}=this.props
-		let {editing=false, editingReason=reason}=this.state
+		let {reason,amount,total,height}=this.props
+		let {newReason}=this.state
 
-		if(editing)
-			reason=(<input ref="reason" value={editingReason}
-				onBlur={e=>(e.target.value!=reason && this.reasonChanged(e.target.value))}
-				onChange={e=>this.setState({editingReason:e.target.value})}/>)	
+		if(newReason){
+			reason=(<TextField ref="reason" defaultValue={reason}
+				onEnterKeyDown={e=>e.target.blur()}
+				onBlur={e=>this.reasonChanged(e.target.value.trim())}/>)	
+		}
 		
 		return (
 			<div className="reward" style={{bottom:height*total}}>
 				<div className="icon">&bull;</div>
-				<div className="reason" onClick={e=>this.setState({editing:true})}>
-				{reason}
+				<div className="reason" onClick={e=>this.setState({newReason:reason||" "})}>
+				{newReason||reason||"..."}
 				</div>
 				<div>+{amount}/{total}</div>
 			</div>
 			)
 	}
 	
-	reasonChanged(editingReason){
-		let {onReasonChange}=this.props
-		this.setState({editing:undefined})
-		onReasonChange && onReasonChange(editingReason)
+	reasonChanged(newReason){
+		let {reason, onReasonChange}=this.props
+		if(!newReason || newReason==reason){
+			this.setState({newReason:undefined})
+			return;
+		}
+		
+		onReasonChange && onReasonChange(newReason)
 	}
 }
 
 
 import RewardIcon from 'material-ui/lib/svg-icons/social/mood'
-class Rewardor extends React.Component{
+class Rewardor extends Item{
 	static propTypes={
 		current:React.PropTypes.number,
-		onChange: React.PropTypes.func
+		onReward: React.PropTypes.func
 	}
 
 	static defaultProps={
 		current:0,
-		onChange: function(delta){}
+		onReward: a=>1
 	}
 
-	constructor(props){
-		super(props)
-		this.state={current:this.props.current}
+	constructor(){
+		super(...arguments)
+		this.state={plus:0,ticker:null}
+	}
+	
+	componentWillReceiveProps(){
+		this.setState({plus:0,ticker:null})
 	}
 
 	render(){
-		let {current}=this.state
+		let {plus}=this.state
+		let {height,current}=this.props
 		return (
-			<div className="rewards_reward">
-				{ current }
-				<IconButton onClick={()=>this.reward()}>
-					<RewardIcon />
-				</IconButton>
+			<div className="reward pending">
+				<div className="icon"></div>
+				<div className="reason">
+					<RewardIcon style={{width:50,height:50}} color={"green"} onClick={e=>this.plus()} />
+					<span>{current}</span>
+					<span style={{fontSize:"10pt"}}>+{plus||'x'}</span>
+				</div>
+				
 			</div>
 		)
 	}
+	
+	plus(){
+		let {plus,ticker}=this.state
+		ticker && clearTimeout(ticker)
+		plus++
+		ticker=setTimeout(this.reward.bind(this),1000)
+		this.setState({plus,ticker})
+	}
 
 	reward(){
-		let {current}=this.state
-		current++
-		this.setState({current})
-		this.props.onChange(1)
+		let {plus,ticker}=this.state
+		ticker && clearTimeout(ticker)
+		this.props.onReward(plus)
 	}
 }
