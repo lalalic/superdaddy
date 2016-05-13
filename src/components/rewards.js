@@ -6,29 +6,66 @@ import {Family as dbFamily, Reward as dbReward, Goal as dbGoal} from '../db'
 
 export default class Rewards extends React.Component{
 	static defaultProps={
-		height:20,
-		goals:[{total:5, reward:"hug"},{total:10, reward:"pencil"}, {total:20, reward:"pencil sharpener"}],
-		rewards:[{amount:1, reason:"smile"}, {amount:5, reason:"reading"}, {amount:10,reason:"english speaking"}]
+		editable:false,
+		height:20
 	}
 	static propTypes={
-		goals:React.PropTypes.array,
-		rewards:React.PropTypes.array
+		child: React.PropTypes.object,
+		editable:React.PropTypes.bool,
+		height:React.PropTypes.number
 	}
 	
-	componentWillReceiveProps(){
+	constructor(){
+		super(...arguments)
+		this.state={
+			goals:null,
+			rewards:null
+		}
+		this.onChange=this.onChange.bind(this)
+	}
+	
+	onChange(){
 		this.forceUpdate()
 	}
 	
+	componentDidMount(){
+		dbReward.on("change", this.onChange)
+		let {child}=this.props
+		Promise.all([dbReward.getRewards(child), dbReward.getGoals(child)])
+			.then(a=>{
+				let [rewards, goals]=a
+				this.setState({rewards,goals})
+			})
+	}
+	
+	componentWillUnmount(){
+		dbReward.removeListener("change", this.onChange)
+	}
+
+	
+	componentWillReceiveProps(nextProps){
+		let {child:newChild}=nextProps,
+			{child}=this.props
+		if(child!=newChild){
+			Promise.all([dbReward.getRewards(child), dbReward.getGoals(child)])
+			.then(a=>{
+				let [rewards, goals]=a
+				this.setState({rewards,goals})
+			})
+		}
+	}
+	
 	render(){
-		let {goals, rewards,height}=this.props
-		let total=0, max=0
-		goals=goals.map(a=><AGoal
+		let {goals, rewards}=this.state
+		let {height,editable}=this.props
+		let total=0, max=0, action=null
+		goals=goals && goals.map(a=><AGoal
 					key={`goal_${a.total}`}
 					height={height}
 					reward={a.reward} 
 					total={max=Math.max(max,a.total), a.total}/>)
 		
-		rewards=rewards.map(a=><AReward 
+		rewards=rewards && rewards.map(a=><AReward 
 					key={`reward_${total+=a.amount}`}
 					onReasonChange={newReason=>this.onReasonChange(a,newReason)}
 					height={height}
@@ -38,15 +75,18 @@ export default class Rewards extends React.Component{
 		
 		max=Math.max(total,max)
 		
+		if(editable)
+			action=(<PendingGoal bottom={(max+2)*height} current={total} height={height} onPendGoal={goal=>this.pendGoal(goal)}/>)
+		else
+			action=(<Rewardor current={total} height={height} onReward={amount=>this.reward(amount)}/>)
+		
 		return (
-			<div className="rewards" style={{height:max*20+40}}>
+			<div className="rewards" style={{height:(max+2)*height}}>
 				{goals}
 					
 				{rewards}
 				
-				<Rewardor current={total} height={height} onReward={amount=>this.reward(amount)}/>
-				
-				<PendingGoal current={total} height={height} onPendGoal={goal=>this.pendGoal(goal)}/>
+				{action}
 			</div>
 		)
 	}
@@ -89,17 +129,17 @@ class PendingGoal extends Item{
 	}
 	
 	render(){
-		let {current}=this.props
+		let {current, bottom}=this.props
 		let {reward, total}=this.state
 		return (
-			<div className="goal pending">
+			<div className="goal pending" style={{bottom}}>
 				<div>
 					<input onBlur={e=>this.tryPend({reward:e.target.value})}
 						ref="reward"
 						defaultValue={reward}
 						className="pendingReward" 
 						placeholder="New Reward..." 
-						style={{textAlign:"right"}}/>
+						style={{textAlign:"right",width:"100%"}}/>
 				</div>
 				<div className="icon">&raquo;</div>
 				<div>
@@ -227,11 +267,10 @@ class Rewardor extends Item{
 			<div className="reward pending">
 				<div className="icon"></div>
 				<div className="reason">
-					<RewardIcon style={{width:50,height:50}} color={"green"} onClick={e=>this.plus()} />
+					<RewardIcon className="rewarder" onClick={e=>this.plus()} />
 					<span>{current}</span>
 					<span style={{fontSize:"10pt"}}>+{plus||'x'}</span>
 				</div>
-				
 			</div>
 		)
 	}

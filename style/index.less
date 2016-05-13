@@ -97,12 +97,17 @@ summary{
     }
 }
 
+@goalWidth:100px;
+@iconWidth:21px;
+@axisWidth:1px;
+@faceWidth:50px;
+
 .rewards{
 		position: relative;
-		margin-top:40px;
+		margin-top:@faceWidth + @faceWidth/2;
 		
-		margin-left: 200px;
-		border-left: 1px solid lightgray;
+		margin-left: @goalWidth;
+		border-left: @axisWidth solid lightgray;
 		
 		>*{
 			position: absolute;
@@ -111,8 +116,8 @@ summary{
 	.goal{
 		.grid;
 		
-		width: 241px;
-		left: -211px;
+		width: @goalWidth+@iconWidth+20px;
+		left: 	-1*ceil(@goalWidth+@iconWidth/2);
 		
 		color: red;
 		font-weight:700;
@@ -121,35 +126,23 @@ summary{
 			vertical-align:middle;
 		}
 		>:first-child{
-			width:200px;
+			width:@goalWidth;
 			text-align:right;
 		}
 		
-		>:last-child{
-			width:20px;
-		}
-		
 		.icon{
-			width:21px;
+			width:@iconWidth;
 			text-align:center;
 		}
 	}
 	
 	.goal.pending{
-		position: fixed;
-		top:0px;
-		height:50px;
-		padding-top:10px;
-		left: -10px;
 		background-color:white;
 		
 		input{
 			border:0px;
 		}
 	}
-	
-	
-	
 	
 	.reward{
 		.grid;
@@ -161,7 +154,7 @@ summary{
 		left: -6px;
 		
 		.icon{
-			width:21px;
+			width:@iconWidth;
 			font-weight:700;
 			font-size: 30px;
 			color:green;
@@ -178,9 +171,26 @@ summary{
 	}
 	
 	.reward.pending{
+		.icon{
+			width:0px;
+		}
 		position:fixed;
 		top:0px;
-		left:150px;
+		left:@goalWidth - @faceWidth/2;
 		font-size:24pt;
+		background-color:white;
+		
+		.reason .rewarder{
+			width: @faceWidth !important;
+			height: @faceWidth !important;
+			fill: green !important;
+		}
+	}
+	
+	.rewarding{
+		position:fixed;
+		top:@faceWidth + 200px;
+		left:@goalWidth + 200px;
+		transition: all 800ms;
 	}
 }

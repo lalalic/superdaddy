@@ -1,6 +1,6 @@
 import {React,Component,UI,Router} from 'qili-app'
 import {Avatar,Paper, RadioGroup, RadioButton,FontIcon,IconButton,TextField, Tabs, Tab, DatePicker} from 'material-ui'
-import {Task as dbTask,Family as dbFamily, Reward as dbReward} from './db'
+import {Task as dbTask,Family as dbFamily} from './db'
 import Calendar from './components/calendar'
 import Rewards from './components/rewards'
 import Logo from './icons/logo'
@@ -60,8 +60,6 @@ export class BabyDashboard extends Component{
 	constructor(){
 		super(...arguments)
 		this.state=this._resolveModel()
-		
-		this.onChange=this.onChange.bind(this)
 	}
 	
     _resolveModel(props){
@@ -80,26 +78,16 @@ export class BabyDashboard extends Component{
             this.setState(this._resolveModel(nextProps))
     }
 	
-	onChange(){
-		this.forceUpdate()
-	}
-	
-	componentDidMount(){
-		dbReward.on("change", this.onChange)
-	}
-	
-	componentWillUnmount(){
-		dbReward.removeListener("change", this.onChange)
-	}
-
     render(){
         var {when, model}=this.state
 		var {child}=this.props
         return (
             <div>
-                <Rewards goals={dbReward.getGoals(child)} rewards={dbReward.getRewards(child)}/>
+                <Rewards child={child}/>
 
-                {this.renderContent(when)}
+                {/*
+				
+				{this.renderContent(when)}
 
 				<CommandBar
                     className="footbar"
@@ -125,6 +113,7 @@ export class BabyDashboard extends Component{
                     />
                 <TaskQueryCommand ref="task" when={when} onChange={()=>this.onChangeDate()}/>
                 <FamilyCommand ref="family" child={this.props.child}/>
+				*/}
             </div>
         )
     }

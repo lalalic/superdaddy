@@ -1,7 +1,7 @@
 import {React,Component,immutable, UI} from 'qili-app'
 import {TextField, RadioButtonGroup, RadioButton,DatePicker} from 'material-ui'
 import {Family as dbFamily} from './db'
-import PolicyOfRewards from './components/rewards'
+import RewardGoal from './components/rewards'
 
 var {List,CommandBar,Photo}=UI
 
@@ -74,8 +74,8 @@ export default class Baby extends Component{
                         <RadioButton value="f" label="girl"/>
                         <RadioButton value="m" label="boy" />
                     </RadioButtonGroup>
-
-                    <PolicyOfRewards
+					<hr/>
+                    <RewardGoal
 						editable={true}
                         child={child}/>
                 </div>
