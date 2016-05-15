@@ -74,9 +74,12 @@ export default class Baby extends Component{
                         <RadioButton value="f" label="girl"/>
                         <RadioButton value="m" label="boy" />
                     </RadioButtonGroup>
-					<hr/>
+                    <br/>
+                    <br/>
+                    <div style={{fontSize:"smaller", color:"gray", borderBottom:"1px dotted lightgray"}}>{child.name}的激励计划</div>
                     <RewardGoal
 						editable={true}
+                        style={{marginTop:30}}
                         child={child}/>
                 </div>
                 <CommandBar className="footbar"

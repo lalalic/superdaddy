@@ -1,8 +1,13 @@
 import {React, Component, UI, User} from "qili-app"
 import {Avatar} from "material-ui"
+import RightArrow from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-right'
+import SettingIcon from 'material-ui/lib/svg-icons/action/settings'
+import InviteIcon from 'material-ui/lib/svg-icons/social/group-add'
+import PublishIcon from "material-ui/lib/svg-icons/image/camera-roll"
 
-var {List, Photo, CommandBar}=UI,
-    RightArrow=require('material-ui/lib/svg-icons/hardware/keyboard-arrow-right')
+var {List, Photo, CommandBar}=UI
+
+import {Family as dbFamily} from "./db"
 
 export default class Account extends Component{
     render(){
@@ -15,6 +20,31 @@ export default class Account extends Component{
                 onPhoto={(url)=>{user.photo=url;User.upsert(user)}}
                 iconRatio={2/3} width={40} height={40}/>
         }
+
+        let router=this.context.router,
+            children=dbFamily.children,
+            len=children.length,
+            uiChildren=children.map(function(a){
+                var avatar;
+                if(a.photo)
+                    avatar=(<Avatar src={a.photo}/>)
+                else{
+                    let photo=(<Photo
+                        onPhoto={(url)=>this.shortcutPhoto(a,url)}
+                        iconRatio={2/3} width={40} height={40}/>)
+
+                    avatar=photo
+                }
+
+                return (
+                    <List.Item key={a._id}
+                        onClick={()=>router.transitionTo("baby",dbFamily.currentChild=a)}
+                        leftAvatar={avatar}>
+                        {a.name}
+                    </List.Item>
+                )
+            })
+
         return (
             <div>
                 <List>
@@ -24,23 +54,38 @@ export default class Account extends Component{
 
                     <List.Divider inset={true}/>
 
+                    <List.Item primaryText="我的宝贝"
+                        leftIcon={<span/>}
+                        open={true}
+                        onClick={a=>router.transitionTo("baby")}
+                        rightAvatar={<Avatar>+</Avatar>}>
+                        {uiChildren}
+                    </List.Item>
+
+                    <List.Divider inset={true}/>
+
+                    <List.Item primaryText="邀请家人"
+                        leftIcon={<InviteIcon/>}
+                        onClick={a=>router.transitionTo("invite")}
+                        />
+
+                    <List.Item primaryText="出书"
+                        leftIcon={<PublishIcon/>}
+                        onClick={a=>router.transitionTo("publish")}
+                        />
+
+                    <List.Item primaryText="设置"
+                        leftIcon={<SettingIcon/>}
+                        onClick={e=>this.context.router.transitionTo('setting')}
+                        />
                 </List>
-                <CommandBar className="footbar"
-                    onSelect={this.onSelect.bind(this)}
-                    primary="帐号"
-                    items={["Back", "帐号", "设置"]}/>
             </div>
         )
     }
 
-    onSelect(command){
-        switch(command){
-        case "设置":
-            this.context.router.transitionTo('setting')
-            break
-        }
+    shortcutPhoto(child, url){
+        dbFamily.upsert(child,{photo:url})
     }
-
 }
 
 Account.contextTypes={router:React.PropTypes.func}
