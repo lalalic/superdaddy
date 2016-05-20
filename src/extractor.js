@@ -209,7 +209,7 @@ export default function extract(file){
             },
             upload(entity){
                 var {File}=require('qili-app'),
-                    kind=require('./db/Knowledge')._name,
+                    kind=require('./db/knowledge')._name,
                     more={entity:{kind,_id:entity._id}}
                 return new Promise((resolve, reject)=>
                     File.find({params:more,fields:"crc32"}).fetch((files)=>{

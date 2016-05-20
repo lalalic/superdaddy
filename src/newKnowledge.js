@@ -1,6 +1,6 @@
 
 import {React, Component, UI} from 'qili-app'
-import dbKnowledge from './db/Knowledge'
+import dbKnowledge from './db/knowledge'
 import uiKnowledge from './knowledge'
 import extractor from './extractor'
 import InsertFile from 'material-ui/lib/svg-icons/action/note-add'
