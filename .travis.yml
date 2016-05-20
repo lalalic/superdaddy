@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+ - "4.2"
+addons:
+ apt:
+  packages:
+   - sshpass
+
+install:
+ - npm install --production
+ - npm install browserify node-lessify uglifyify
+
+script:
+ - npm run merge
+ - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/allin1.html $DEPLOY_PATH

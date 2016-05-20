@@ -31,5 +31,5 @@ cordova
 
 ~*
 
-www/*.js
-__*.js
+dist/test.js
+dist/allin1.html
