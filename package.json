@@ -61,7 +61,7 @@
   "scripts":{
 	"build": "babel src -d lib --source-maps inline",
     "dist": "browserify -g uglifyify ./lib/index.js -o dist/index.js",
-	"merge": "npm run dist && gulp node_modules/qili-app/scripts/allin1.js",
+	"merge": "npm run dist && node node_modules/qili-app/scripts/allin1.js",
 
 	"karma": "karma start",
 
