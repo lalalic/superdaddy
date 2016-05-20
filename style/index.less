@@ -97,31 +97,31 @@ summary{
     }
 }
 
-@goalWidth:100px;
-@iconWidth:21px;
-@axisWidth:1px;
-@faceWidth:50px;
-
 .rewards{
+
+    @goalWidth:100px;
+    @iconWidth:21px;
+    @axisWidth:1px;
+    @faceWidth:50px;
 		position: relative;
-		margin-top:@faceWidth + @faceWidth/2;
-		
+		margin-top:@faceWidth + @faceWidth/2 + 10px;
+
 		margin-left: @goalWidth;
 		border-left: @axisWidth solid lightgray;
-		
+
 		>*{
 			position: absolute;
 		}
-	
+
 	.goal{
 		.grid;
-		
+
 		width: @goalWidth+@iconWidth+20px;
 		left: 	-1*ceil(@goalWidth+@iconWidth/2);
-		
-		color: red;
+
+		color: lightgreen;
 		font-weight:700;
-				
+
 		>*{
 			vertical-align:middle;
 		}
@@ -129,68 +129,69 @@ summary{
 			width:@goalWidth;
 			text-align:right;
 		}
-		
+
 		.icon{
 			width:@iconWidth;
 			text-align:center;
 		}
 	}
-	
+
 	.goal.pending{
 		background-color:white;
-		
+
 		input{
 			border:0px;
 		}
 	}
-	
+
 	.reward{
 		.grid;
-		
+
 		>*{
 			vertical-align:middle;
 		}
-		
+
 		left: -6px;
-		
+
 		.icon{
 			width:@iconWidth;
 			font-weight:700;
 			font-size: 30px;
 			color:green;
 		}
-		
+
 		.reason{
 			color: green;
 		}
-		
+
 		>:last-child{
 			width:3em;
 			font-size:smaller;
 		}
 	}
-	
+
 	.reward.pending{
-		.icon{
-			width:0px;
-		}
 		position:fixed;
-		top:0px;
+		top:10px;
 		left:@goalWidth - @faceWidth/2;
 		font-size:24pt;
-		background-color:white;
-		
-		.reason .rewarder{
-			width: @faceWidth !important;
-			height: @faceWidth !important;
-			fill: green !important;
+
+		.reason{
+            .rewarder{
+    			width: @faceWidth !important;
+    			height: @faceWidth !important;
+    			fill: green !important;
+            }
+
+            .plus{
+                transition:font-size 1s;
+                font-size: x-small;
+                &.plusing{
+                    font-size: xx-large;
+                }
+            }
+
+
 		}
-	}
-	
-	.rewarding{
-		position:fixed;
-		top:@faceWidth + 200px;
-		left:@goalWidth + 200px;
-		transition: all 800ms;
 	}
 }

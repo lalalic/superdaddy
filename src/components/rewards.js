@@ -1,5 +1,5 @@
 import {React, UI} from "qili-app"
-import {TextField, IconButton} from 'material-ui'
+import {TextField, IconButton, Avatar} from 'material-ui'
 import PlusIcon from 'material-ui/lib/svg-icons/action/alarm-add'
 import ForwardIcon from "material-ui/lib/svg-icons/navigation/arrow-forward"
 import {Family as dbFamily, Reward as dbReward, Goal as dbGoal} from '../db'
@@ -14,7 +14,7 @@ export default class Rewards extends React.Component{
 		editable:React.PropTypes.bool,
 		height:React.PropTypes.number
 	}
-	
+
 	constructor(){
 		super(...arguments)
 		this.state={
@@ -23,11 +23,11 @@ export default class Rewards extends React.Component{
 		}
 		this.onChange=this.onChange.bind(this)
 	}
-	
+
 	onChange(){
 		this.forceUpdate()
 	}
-	
+
 	componentDidMount(){
 		dbReward.on("change", this.onChange)
 		let {child}=this.props
@@ -37,12 +37,12 @@ export default class Rewards extends React.Component{
 				this.setState({rewards,goals})
 			})
 	}
-	
+
 	componentWillUnmount(){
 		dbReward.removeListener("change", this.onChange)
 	}
 
-	
+
 	componentWillReceiveProps(nextProps){
 		let {child:newChild}=nextProps,
 			{child}=this.props
@@ -54,52 +54,53 @@ export default class Rewards extends React.Component{
 			})
 		}
 	}
-	
+
 	render(){
 		let {goals, rewards}=this.state
-		let {height,editable}=this.props
-		let total=0, max=0, action=null
+		let {height,editable, style={}}=this.props
+		let total=0, max=0, action=null, buf=7
 		goals=goals && goals.map(a=><AGoal
 					key={`goal_${a.total}`}
 					height={height}
-					reward={a.reward} 
+					reward={a.reward}
 					total={max=Math.max(max,a.total), a.total}/>)
-		
-		rewards=rewards && rewards.map(a=><AReward 
+
+		rewards=rewards && rewards.map(a=><AReward
 					key={`reward_${total+=a.amount}`}
 					onReasonChange={newReason=>this.onReasonChange(a,newReason)}
 					height={height}
-					reason={a.reason} 
-					amount={a.amount} 
+					reason={a.reason}
+					amount={a.amount}
 					total={total}/>)
-		
+
 		max=Math.max(total,max)
-		
+
 		if(editable)
-			action=(<PendingGoal bottom={(max+2)*height} current={total} height={height} onPendGoal={goal=>this.pendGoal(goal)}/>)
+			action=(<PendingGoal bottom={(max+buf)*height} current={total} height={height} onPendGoal={goal=>this.pendGoal(goal)}/>)
 		else
 			action=(<Rewardor current={total} height={height} onReward={amount=>this.reward(amount)}/>)
-		
+
+		style.height=(max+buf)*height
 		return (
-			<div className="rewards" style={{height:(max+2)*height}}>
+			<div className="rewards" style={style}>
 				{goals}
-					
+
 				{rewards}
-				
+
 				{action}
 			</div>
 		)
 	}
-	
+
 	pendGoal(goal){
 		dbReward.addGoal(goal)
 	}
-	
+
 	reward(amount){
 		let newReward={amount}
 		dbReward.upsert(newReward)
 	}
-	
+
 	onReasonChange(reward, newReason){
 		reward.reason=newReason
 		dbReward.upsert(reward)
@@ -123,11 +124,11 @@ class PendingGoal extends Item{
 			total:""
 		}
 	}
-	
+
 	componentWillReceiveProps(){
-		
+
 	}
-	
+
 	render(){
 		let {current, bottom}=this.props
 		let {reward, total}=this.state
@@ -137,14 +138,14 @@ class PendingGoal extends Item{
 					<input onBlur={e=>this.tryPend({reward:e.target.value})}
 						ref="reward"
 						defaultValue={reward}
-						className="pendingReward" 
-						placeholder="New Reward..." 
+						className="pendingReward"
+						placeholder="New Reward..."
 						style={{textAlign:"right",width:"100%"}}/>
 				</div>
 				<div className="icon">&raquo;</div>
 				<div>
-					<input onBlur={e=>this.tryPend({total:e.target.value})} 
-						ref="goal" 
+					<input onBlur={e=>this.tryPend({total:e.target.value})}
+						ref="goal"
 						defaultValue={total||""}
 						placeholder={`Goal:>${current}`}
 						style={{width:"2.5em"}}/>
@@ -152,7 +153,7 @@ class PendingGoal extends Item{
 			</div>
 		)
 	}
-	
+
 	tryPend(state){
 		let {reward:newReward, total:newTotal}=state
 		let {current,onPendGoal}=this.props
@@ -179,9 +180,10 @@ class PendingGoal extends Item{
 class AGoal extends Item{
 	render(){
 		let {reward,total,height}=this.props
+		let style={fontSize:"x-small", whiteSpace:"nowrap",backgroundColor:"lightgreen"}
 		return (
 			<div className="goal" style={{bottom:height*total}}>
-				<div>{reward}</div>
+				<div><Avatar style={style}>{reward}</Avatar></div>
 				<div className="icon">&bull;</div>
 				<div></div>
 			</div>
@@ -194,18 +196,18 @@ class AReward extends Item{
 		super(...arguments)
 		this.state={newReason:null}
 	}
-	
+
 	componentWillReceiveProps(){
 		this.setState({newReason:null})
 	}
-	
+
 	componentDidUpdate(){
 		let {newReason}=this.state
 		let {reason}=this.refs
 		if(newReason && reason)
 			reason.getDOMNode().focus()
 	}
-	
+
 	render(){
 		let {reason,amount,total,height}=this.props
 		let {newReason}=this.state
@@ -213,9 +215,9 @@ class AReward extends Item{
 		if(newReason){
 			reason=(<TextField ref="reason" defaultValue={reason}
 				onEnterKeyDown={e=>e.target.blur()}
-				onBlur={e=>this.reasonChanged(e.target.value.trim())}/>)	
+				onBlur={e=>this.reasonChanged(e.target.value.trim())}/>)
 		}
-		
+
 		return (
 			<div className="reward" style={{bottom:height*total}}>
 				<div className="icon">&bull;</div>
@@ -226,14 +228,14 @@ class AReward extends Item{
 			</div>
 			)
 	}
-	
+
 	reasonChanged(newReason){
 		let {reason, onReasonChange}=this.props
 		if(!newReason || newReason==reason){
 			this.setState({newReason:undefined})
 			return;
 		}
-		
+
 		onReasonChange && onReasonChange(newReason)
 	}
 }
@@ -255,7 +257,7 @@ class Rewardor extends Item{
 		super(...arguments)
 		this.state={plus:0,ticker:null}
 	}
-	
+
 	componentWillReceiveProps(){
 		this.setState({plus:0,ticker:null})
 	}
@@ -265,16 +267,15 @@ class Rewardor extends Item{
 		let {height,current}=this.props
 		return (
 			<div className="reward pending">
-				<div className="icon"></div>
 				<div className="reason">
 					<RewardIcon className="rewarder" onClick={e=>this.plus()} />
 					<span>{current}</span>
-					<span style={{fontSize:"10pt"}}>+{plus||'x'}</span>
+					<span className={`plus ${plus ? "plusing" : ""}`}>+{plus||'x'}</span>
 				</div>
 			</div>
 		)
 	}
-	
+
 	plus(){
 		let {plus,ticker}=this.state
 		ticker && clearTimeout(ticker)

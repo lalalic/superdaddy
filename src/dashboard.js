@@ -39,9 +39,6 @@ export class AuthorDashboard extends Component{
                         {action:"Knowledges",
                             onSelect:()=>this.context.router.transitionTo('knowledges'),
                             icon:IconKnowledges},
-                        {action:"Family",
-                            onSelect:()=>this.refs.family.show(),
-                            icon:require("material-ui/lib/svg-icons/action/supervisor-account")},
                         {action:"setting", label:"Account",
                             onSelect:()=>this.context.router.transitionTo('account'),
                             icon: require('material-ui/lib/svg-icons/action/account-box')}
@@ -61,7 +58,7 @@ export class BabyDashboard extends Component{
 		super(...arguments)
 		this.state=this._resolveModel()
 	}
-	
+
     _resolveModel(props){
         var today=new Date(),
             {params:{when=today}}=props||this.props;
@@ -77,7 +74,7 @@ export class BabyDashboard extends Component{
         if (nextChild!=child || nextWhen.getTime()!=when.getTime())
             this.setState(this._resolveModel(nextProps))
     }
-	
+
     render(){
         var {when, model}=this.state
 		var {child}=this.props
@@ -85,9 +82,7 @@ export class BabyDashboard extends Component{
             <div>
                 <Rewards child={child}/>
 
-                {/*
-				
-				{this.renderContent(when)}
+                {this.renderContent(when)}
 
 				<CommandBar
                     className="footbar"
@@ -97,23 +92,15 @@ export class BabyDashboard extends Component{
                         {action:"Task",
                             onSelect:()=>this.refs.task.show(),
                             icon:require("material-ui/lib/svg-icons/editor/format-list-numbered")},
-                        {action:"Publish",
-                            onSelect:()=>this.context.router.transitionTo('publish'),
-                            icon:require("material-ui/lib/svg-icons/image/camera-roll")},
                         {action:"Knowledges",
                             onSelect:()=>this.context.router.transitionTo('knowledges'),
                             icon:IconKnowledges},
-                        {action:"Family",
-                            onSelect:()=>this.refs.family.show(),
-                            icon:require("material-ui/lib/svg-icons/action/supervisor-account")},
                         {action:"setting", label:"Account",
                             onSelect:()=>this.context.router.transitionTo('account'),
                             icon: require('material-ui/lib/svg-icons/action/account-box')}
                         ]}
                     />
-                <TaskQueryCommand ref="task" when={when} onChange={()=>this.onChangeDate()}/>
-                <FamilyCommand ref="family" child={this.props.child}/>
-				*/}
+                <TaskQueryCommand ref="task" when={when} onChange={d=>this.onChangeDate(d)}/>
             </div>
         )
     }
@@ -260,80 +247,3 @@ class TaskQueryCommand extends DialogCommand{
                 </div>)]
     }
 }
-
-
-
-class FamilyCommand extends DialogCommand{
-    renderContent(){
-        var router=this.context.router,
-            {child={}}=this.props,
-            children=dbFamily.children,
-            len=children.length,
-            uiChildren=children.map(function(a){
-                var avatar;
-                if(a.photo)
-                    avatar=(<Avatar src={a.photo}/>)
-                else{
-                    let photo=(<Photo
-                        onPhoto={(url)=>this.shortcutPhoto(a,url)}
-                        iconRatio={2/3} width={40} height={40}/>)
-
-                    avatar=(<Avatar icon={photo}/>)
-                }
-
-                return (
-                    <List.Item key={a._id}
-                        onClick={()=>router.transitionTo("baby",dbFamily.currentChild=a)}
-                        leftAvatar={avatar}>
-                        {a.name}
-                    </List.Item>
-                )
-            }),
-            appender=(
-                <List.Item key="create"
-                    onClick={()=>router.transitionTo("baby")}
-                    leftAvatar={<Avatar>+</Avatar>} >
-                    I have more children!
-                </List.Item>),
-            inviter=(
-                <List.Item key="inviter"
-                    style={{paddingBottom:0,paddingTop:0,textAlign:'left'}}
-                    rightAvatar={<Avatar onClick={this.invite.bind(this)}>+</Avatar>} >
-                        <input
-                            style={{width:'54%',marginRight:2, border:0, borderBottom:'1px solid #eee', padding:5}}
-                            ref="id"
-                            placeholder="手机号/登录账号"/>
-
-                        <input
-                            style={{width:'45%',border:0, borderBottom:'1px solid #eee', padding:5}}
-                            ref="relationship"
-                            placeholder={`与${child.name||'宝宝'}的关系`}/>
-                </List.Item>);
-
-            return [(
-                <List key="children">
-                    {uiChildren}
-                    {len ? (<List.Divider inset={true}/>) : null}
-                    {appender}
-                </List>),(
-                <List key="invite" subheader="邀请家人" style={{marginTop:5}}>
-                    {inviter}
-                </List>)];
-    }
-    shortcutPhoto(child, url){
-        dbFamily.upsert(child,{photo:url})
-    }
-    invite(){
-        var {id, relationship}=this.refs
-        id=id.getDOMNode().value
-        relationship=relationship.getDOMNode().value
-
-        if(id && relationship){
-            dbFamily.invite(id, relationship)
-                .then(function(){
-
-                })
-        }
-    }
-}
-FamilyCommand.contextTypes={router: React.PropTypes.func}
