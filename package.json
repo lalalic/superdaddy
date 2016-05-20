@@ -9,7 +9,7 @@
   "dependencies": {
     "docx4js": "^1.2.6",
     "material-ui": "^0.10.0",
-    "qili-app": "file:..\\qili-app",
+    "qili-app": "https://github.com/lalalic/qili-app",
     "react": "^0.13.x",
     "react-tap-event-plugin": "0.1.6"
   },
@@ -70,7 +70,7 @@
 	"test.mongo": "watchify -v -d ./.test.mongo.js -o dist/test.js -i jquery",
 
     "link.qili": "ln -s ../qili-app/lib node_modules/qili-app/lib",
-	"preinstall": "node -p \"Object.keys(require('./package.json').devDependencies).join(' ')\""
+	"depend": "node -p \"Object.keys(require('./package.json').devDependencies).join(' ')\""
   },
   "keywords": [],
   "repository": {
