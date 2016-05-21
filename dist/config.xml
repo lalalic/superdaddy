@@ -9,6 +9,13 @@
     </author>
     <content src="cordova.html" />
     <plugin name="cordova-plugin-whitelist" version="1" />
+    <plugin name="cordova-plugin-file" />
+    <plugin name="Cordova-sqlite-storage" />
+    <plugin name="cordova-plugin-file-transfer" />
+    <plugin name="cordova-plugin-camera" />
+    <plugin name="cordova-plugin-wechat">
+        <variable name="APP_ID" value="xx" />
+    </plugin>
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
