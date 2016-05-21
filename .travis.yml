@@ -12,4 +12,5 @@ install:
 
 script:
  - npm run merge
- - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/allin1.html $DEPLOY_PATH
+ - sshpass -e ssh -v -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST mkdir $DEPLOY_PATH
+ - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/allin1.html $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
