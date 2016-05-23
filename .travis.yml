@@ -1,11 +1,15 @@
-language: node_js
-node_js:
- - "4.2"
+language: android
+android:
 addons:
  apt:
   packages:
    - sshpass
 
+before_install:
+ - . $HOME/.nvm/nvm.sh
+ - nvm install 4.2
+ - nvm use 4.2
+ 
 install:
  - npm install --production
  - npm install browserify node-lessify uglifyify
