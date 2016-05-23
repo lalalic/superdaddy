@@ -9,7 +9,7 @@ addons:
 install:
  - npm install --production
  - npm install browserify node-lessify uglifyify
- - npm install cordova
+ - npm install cordova -g
 
 script:
  - npm run merge
