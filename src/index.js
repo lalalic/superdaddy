@@ -19,7 +19,7 @@ class SuperDaddy extends QiliApp{
     renderContent(){
         var {child}=this.state,
             childStyle={position:'fixed',top:10,right:this._right(10), opacity:0.7, zIndex:9}
-
+		
         return (
             <div>
                <CurrentChild child={child} style={childStyle}/>
@@ -28,8 +28,10 @@ class SuperDaddy extends QiliApp{
         )
     }
 }
+SuperDaddy.contextTypes={router:React.PropTypes.func}
+
 Object.assign(SuperDaddy.defaultProps,{
-    appId:"573f8e6d01121a3800022a7d",//"superdaddy",
+    appId:"573f8e6d01121a3800022a7d",
     init:()=>init()
 })
 

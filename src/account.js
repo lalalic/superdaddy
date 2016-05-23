@@ -79,6 +79,9 @@ export default class Account extends Component{
                         onClick={e=>this.context.router.transitionTo('setting')}
                         />
                 </List>
+				<CommandBar className="footbar"
+                    items={["Back"]}
+                    />
             </div>
         )
     }

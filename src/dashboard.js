@@ -44,7 +44,6 @@ export class AuthorDashboard extends Component{
                             icon: require('material-ui/lib/svg-icons/action/account-box')}
                         ]}
                     />
-                <FamilyCommand ref="family"/>
             </div>)
     }
 }

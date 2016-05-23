@@ -18,7 +18,7 @@ export default class Baby extends Component{
         else if(targetId==currentId)
             this.state=({child:dbFamily.currentChild})
         else
-            dbFamily.find({_id:targetId},(a)=>dbFamily.currentChild=a)
+            dbFamily.find({_id:targetId},(a)=>dbFamily.currentChild=a[0])
     }
 
     componentWillReceiveProps(nextProps){
@@ -32,7 +32,7 @@ export default class Baby extends Component{
         else if(targetId==currentId)
             return;
         else
-            dbFamily.find({_id:targetId},(a)=>dbFamily.currentChild=a)
+            dbFamily.find({_id:targetId},(a)=>dbFamily.currentChild=a[0])
     }
 
     render(){
@@ -40,9 +40,21 @@ export default class Baby extends Component{
         if(removing)
             return (<span>"removing..."</span>)
 
-        var cmds=["Back"];
+        var cmds=["Back"], rewards
         cmds.push(child._id ? "Remove" : "Save")
-
+		if(child._id){
+			rewards=(
+				<div>
+					<br/>
+						<br/>
+						<div style={{fontSize:"smaller", color:"gray", borderBottom:"1px dotted lightgray"}}>{child.name}的激励计划</div>
+						<RewardGoal
+							editable={true}
+							style={{marginTop:30}}
+							child={child}/>
+				</div>
+			)
+		}
         return (
             <div>
                 <div className="form">
@@ -74,13 +86,7 @@ export default class Baby extends Component{
                         <RadioButton value="f" label="girl"/>
                         <RadioButton value="m" label="boy" />
                     </RadioButtonGroup>
-                    <br/>
-                    <br/>
-                    <div style={{fontSize:"smaller", color:"gray", borderBottom:"1px dotted lightgray"}}>{child.name}的激励计划</div>
-                    <RewardGoal
-						editable={true}
-                        style={{marginTop:30}}
-                        child={child}/>
+                    {rewards}
                 </div>
                 <CommandBar className="footbar"
                     items={cmds}

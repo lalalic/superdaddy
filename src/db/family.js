@@ -59,6 +59,9 @@ export default class Family extends Model{
     }
 
     static set currentChild(a){
+		if(typeof(a)=='string')
+			a=children.filter(b=>b._id==a)[0]
+		
         if(currentChild && currentChild._id)
             lastChild=currentChild
         else

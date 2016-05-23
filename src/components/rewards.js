@@ -24,35 +24,36 @@ export default class Rewards extends React.Component{
 		this.onChange=this.onChange.bind(this)
 	}
 
-	onChange(){
-		this.forceUpdate()
+	onChange(condition){
+		condition={child:condition.child}
+		
+		Promise.all([ 
+			new Promise((resolve,reject)=>dbReward.find(condition).fetch(resolve,reject)), 
+			new Promise((resolve,reject)=>dbGoal.find(condition).fetch(resolve,reject))
+		]).then(a=>{
+			let [rewards, goals]=a
+			this.setState({rewards,goals})
+		})
 	}
 
 	componentDidMount(){
-		dbReward.on("change", this.onChange)
-		let {child}=this.props
-		Promise.all([dbReward.getRewards(child), dbReward.getGoals(child)])
-			.then(a=>{
-				let [rewards, goals]=a
-				this.setState({rewards,goals})
-			})
+		dbReward.on("upserted", this.onChange)
+		dbGoal.on("upserted", this.onChange)
+		this.onChange({child:this.props.child._id})
 	}
 
 	componentWillUnmount(){
-		dbReward.removeListener("change", this.onChange)
+		dbReward.removeListener("upserted", this.onChange)
+		dbGoal.removeListener("upserted", this.onChange)
 	}
 
 
 	componentWillReceiveProps(nextProps){
 		let {child:newChild}=nextProps,
 			{child}=this.props
-		if(child!=newChild){
-			Promise.all([dbReward.getRewards(child), dbReward.getGoals(child)])
-			.then(a=>{
-				let [rewards, goals]=a
-				this.setState({rewards,goals})
-			})
-		}
+			
+		if(child!=newChild)
+			this.onChange({child:newChild._id})
 	}
 
 	render(){
@@ -93,11 +94,12 @@ export default class Rewards extends React.Component{
 	}
 
 	pendGoal(goal){
-		dbReward.addGoal(goal)
+		goal.child=this.props.child._id
+		dbGoal.upsert(goal)
 	}
 
 	reward(amount){
-		let newReward={amount}
+		let newReward={amount, child:this.props.child._id}
 		dbReward.upsert(newReward)
 	}
 
@@ -126,7 +128,10 @@ class PendingGoal extends Item{
 	}
 
 	componentWillReceiveProps(){
-
+		this.setState({
+			reward:"",
+			total:""
+		})
 	}
 
 	render(){
@@ -185,7 +190,7 @@ class AGoal extends Item{
 			<div className="goal" style={{bottom:height*total}}>
 				<div><Avatar style={style}>{reward}</Avatar></div>
 				<div className="icon">&bull;</div>
-				<div></div>
+				<div>{total}</div>
 			</div>
 		)
 	}
