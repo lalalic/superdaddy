@@ -1,5 +1,10 @@
 language: android
 android:
+ components:
+  - android-23
+  - build-tools
+  - platform-tools
+  - tools
 addons:
  apt:
   packages:
@@ -9,7 +14,7 @@ before_install:
  - . $HOME/.nvm/nvm.sh
  - nvm install 4.2
  - nvm use 4.2
- 
+
 install:
  - npm install --production
  - npm install browserify node-lessify uglifyify

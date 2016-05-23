@@ -16,7 +16,7 @@
     <plugin name="cordova-plugin-wechat">
         <variable name="APP_ID" value="xx" />
     </plugin>
-    <plugin name="cordova-plugin-splashscreen"/>
+    <plugin name="cordova-plugin-splashscreen" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -31,5 +31,5 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
-    <icon src="www/images/icon.svg"/>
+    <icon src="www/images/icon.svg" />
 </widget>
