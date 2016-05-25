@@ -2,13 +2,45 @@
 <html>
     <head>
 		<meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
+		<meta name="format-detection" content="telephone=no" />
 		<meta name="msapplication-tap-highlight" content="no" />
+		<!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
 		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    
-        <title>super daddy</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Security-Policy">
+		<style>
+		.spinner {
+			  width: 40px;
+			  height: 40px;
+			  margin: 100px auto;
+			  background-color: #333;
+
+			  border-radius: 100%;  
+			  -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+			  animation: sk-scaleout 1.0s infinite ease-in-out;
+			}
+
+			@-webkit-keyframes sk-scaleout {
+			  0% { -webkit-transform: scale(0) }
+			  100% {
+				-webkit-transform: scale(1.0);
+				opacity: 0;
+			  }
+			}
+
+			@keyframes sk-scaleout {
+			  0% { 
+				-webkit-transform: scale(0);
+				transform: scale(0);
+			  } 100% {
+				-webkit-transform: scale(1.0);
+				transform: scale(1.0);
+				opacity: 0;
+			  }
+			}
+		</style>
+        <title>超级奶爸</title>
     </head>
-    <body><div id="app">loading...</div></body>
-    <script type="text/javascript" src="test.js"></script>
+    <body><div id="app"><div class="spinner"/></div></body>
+	<script type="text/javascript" src="test.js"></script>
 </html>

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="lalalic.superdaddy" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>superdaddy</name>
+    <name>超级奶爸</name>
     <description>
         帮助孩子快乐成长
     </description>
@@ -31,5 +31,6 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
-    <icon src="www/images/icon.png" />
+    <icon src="res/icon.png"/>
+	<hook type="before_prepare" src="../scripts/icon.js" />
 </widget>

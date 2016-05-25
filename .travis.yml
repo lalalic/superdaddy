@@ -27,4 +27,4 @@ script:
  - npm run cordova
  - cd cordova
  - cordova platform add android
- - cordova build android
+ - cordova build android --release

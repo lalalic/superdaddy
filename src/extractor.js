@@ -143,7 +143,7 @@ class image extends Visitor{
         case 'string':
             return `<img src="${this.data}" ${alt}>`
         default:
-            return `<img class="__revoking" ${alt} src="${URL.createObjectURL(new Blob([this.data],{type:"image/*"}))}">`
+            return `<img class="__revoking" ${alt} src="${URL.createObjectURL(new Blob([this.data],{type:"image/*"}))}">` /**/
         }
     }
 
