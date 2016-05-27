@@ -5,9 +5,9 @@ import newDocx from "docx4js/spec/newDocx"
 import extract from "../../lib/parser/extractor"
 import {selector} from "qili-app"
 
-fdescribe("docx extractor", function(){
+describe("docx extractor", function(){
     describe("identification", function(){
-        it("paragraph,text", function(done){
+        fit("paragraph,text", function(done){
             let content=`<w:p><w:r><w:t>hello world</w:t></w:r></w:p>`
             extract(newDocx(content)).then((ex)=>{
                 let {knowledge}=ex

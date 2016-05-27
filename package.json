@@ -7,7 +7,7 @@
     "email": "lalalic@139.com"
   },
   "dependencies": {
-    "docx-template": "^0.2.2",
+    "docx-template": "^0.2.3",
 	"docx4js": "^1.3.5",
     "material-ui": "^0.10.0",
     "qili-app": "https://github.com/lalalic/qili-app",

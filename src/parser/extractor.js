@@ -1,3 +1,4 @@
+import docxHub from "docx-template"
 import docx4js from "docx4js"
 
 import {File} from "qili-app"
@@ -31,7 +32,7 @@ export default function extract(file){
 		documentStyles: Ignore
 	}
 
-    return docx4js.load(file).then((docx)=>{
+    return docxHub.assemble(file,{channel:"interactive"}).then((docx)=>{
 		debugger
         var doc=docx.parse(docx4js.createVisitorFactory(MODELS)),
             {html:content, properties, id:elId, images}=doc,
