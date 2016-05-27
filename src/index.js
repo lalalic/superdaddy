@@ -31,7 +31,7 @@ class SuperDaddy extends QiliApp{
 SuperDaddy.contextTypes={router:React.PropTypes.func}
 
 Object.assign(SuperDaddy.defaultProps,{
-    appId:"573f8e6d01121a3800022a7d",
+    appId:"5746b2c5e4bb3b3700ae1566",
     init:()=>init()
 })
 

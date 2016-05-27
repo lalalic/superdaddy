@@ -2,7 +2,7 @@
 import {React, Component, UI} from 'qili-app'
 import dbKnowledge from './db/knowledge'
 import uiKnowledge from './knowledge'
-import extractor from './extractor'
+import extractor from './parser/extractor'
 import InsertFile from 'material-ui/lib/svg-icons/action/note-add'
 
 var {Empty, CommandBar}=UI

@@ -3,7 +3,7 @@ var {React,Component,User,UI:{List, Loading, Comment, CommandBar}}=require('qili
     dbFamily=require('./db/family'),
     uiKnowledge=require('./knowledge'),
     Editor=require('./editor'),
-    {Template}=require('./extractor');
+    {Template}=require('./parser/extractor');
 
 export default class Task extends Component{
     constructor(props){

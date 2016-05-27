@@ -2,10 +2,10 @@ import {React, Component, render, TestUtils, newPromise,uuid,expectHasType,Any, 
 import {initWithUser, spyOnXHR, ajaxHaveBeenCalled, failx, root} from "qili-app/spec/db/helper"
 import newDocx from "docx4js/spec/newDocx"
 
-import extract from "../../lib/extractor"
+import extract from "../../lib/parser/extractor"
 import {selector} from "qili-app"
 
-describe("docx extractor", function(){
+fdescribe("docx extractor", function(){
     describe("identification", function(){
         it("paragraph,text", function(done){
             let content=`<w:p><w:r><w:t>hello world</w:t></w:r></w:p>`

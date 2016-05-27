@@ -2,7 +2,7 @@ import {render,TestUtils} from 'qili-app/spec/components/helper'
 import MyUI from "../../lib/components/rewards"
 import {IconButton} from 'material-ui'
 
-fdescribe("rewards component",()=>{
+describe("rewards component",()=>{
 	it("can be initialized with default props", ()=>{
 		let ui=render(MyUI,{},{})
 		expect(!!ui).toBe(true)

@@ -3,7 +3,7 @@ var {React,Component, File,UI:{List,Loading,Comment,CommandBar,fileSelector},Rou
     dbKnowledge=require('./db/knowledge'),
     dbTask=require('./db/task'),
     {RaisedButton}=require('material-ui'),
-    extract=require('./extractor');
+    extract=require('./parser/extractor');
 
 export default class Knowledge extends Component{
     constructor(props){

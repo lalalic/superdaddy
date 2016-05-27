@@ -5,7 +5,7 @@ Cloud.wechat.on((req,res,next)=>{
 }).on('event',(req, res)=>{
     
 }).on('text', (req, res)=>{
-    res.success(res.message.Content)
+    res.success(req.message.Content)
 }).on('image', (req, res)=>{
 
 }).on('voice', (req,res)=>{
