@@ -7,7 +7,7 @@ import {selector} from "qili-app"
 
 describe("docx extractor", function(){
     describe("identification", function(){
-        fit("paragraph,text", function(done){
+        it("paragraph,text", function(done){
             let content=`<w:p><w:r><w:t>hello world</w:t></w:r></w:p>`
             extract(newDocx(content)).then((ex)=>{
                 let {knowledge}=ex

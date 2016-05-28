@@ -1,1 +1,1 @@
-console.info=console.log=console.warn=console.error=function(){}
+console.info=console.log=console.warn=function(){}

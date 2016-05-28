@@ -32,10 +32,9 @@ export default function extract(file){
 		documentStyles: Ignore
 	}
 
-    return docxHub.assemble(file,{channel:"interactive"}).then((docx)=>{
-		debugger
-        var doc=docx.parse(docx4js.createVisitorFactory(MODELS)),
-            {html:content, properties, id:elId, images}=doc,
+    return docxHub.assemble(file,{channel:"interactive"})
+		.then(docx=>docx.parse(docx4js.createVisitorFactory(MODELS))).then(doc=>{
+        var {html:content, properties, id:elId, images}=doc,
             {name,title, keywords, category, subject, abstract,description, ...others}=properties
 
         return {
@@ -104,6 +103,6 @@ extract.Template=class Template{
     static placeholder(key,alt){
         return `<editable key="${key}">${alt}</editable>`
     }
-	
+
 	static EDITABLE_REG=/<editable\s+key="(.*?)">(.*?)<\/editable>/gm
 }
