@@ -177,10 +177,15 @@ summary{
 
 	.reward.pending{
 		position:fixed;
-		top:10px;
+		
+		top:@stickyOffset;
 		left:@goalWidth - @faceWidth/2;
-		font-size:24pt;
-
+		@media screen and (min-width:@maxWidth){
+			.sticky(left, @goalWidth - @faceWidth/2)
+		}
+		
+		width: 300px;
+		
 		.reason{
             .rewarder{
     			width: @faceWidth !important;
@@ -198,5 +203,7 @@ summary{
 
 
 		}
+		
+		font-size:24pt;
 	}
 }

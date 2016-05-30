@@ -18,11 +18,11 @@ class SuperDaddy extends QiliApp{
 
     renderContent(){
         var {child}=this.state,
-            childStyle={position:'fixed',top:10,right:this._right(10), opacity:0.7, zIndex:9}
+            childStyle={opacity:0.7, zIndex:9}
 		
         return (
             <div>
-               <CurrentChild child={child} style={childStyle}/>
+               <div className="sticky top right"><CurrentChild child={child} style={childStyle}/></div>
                <RouteHandler child={child}/>
             </div>
         )
