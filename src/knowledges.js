@@ -1,10 +1,14 @@
-var {React,Component,UI:{List, CommandBar, Empty}}=require('qili-app'),
-    {DialogCommand}=CommandBar,
-    {RaisedButton,ClearFix}=require('material-ui'),
-    dbKnowledge=require('./db/knowledge'),
-    uiKnowledge=require('./knowledge');
+import {React,Component,UI} from 'qili-app'
+import {RaisedButton,ClearFix} from 'material-ui'
+import IconKnowledges from "material-ui/lib/svg-icons/communication/dialpad"
+import IconThumbup from "material-ui/lib/svg-icons/action/thumb-up"
 
-var IconKnowledges=require("material-ui/lib/svg-icons/communication/dialpad")
+import dbKnowledge from './db/knowledge'
+import uiKnowledge from './knowledge'
+import moment from "moment"
+
+const  {List, CommandBar, Empty}=UI
+        ,{DialogCommand}=CommandBar
 
 export default class Knowledges extends Component{
     constructor(p){
@@ -162,8 +166,8 @@ class Item extends Component{
         var {model,...others}=this.props
         return (
             <div className="li inset photo0" {...others} onClick={()=>this.onDetail()}>
-                <h4>{model.title}</h4>
-                <p>{model.summary}</p>
+                <div className="title">{model.title}</div>
+                <div className="summary">{model.summary}</div>
                 {this._more(model)}
             </div>
         )
@@ -173,11 +177,11 @@ class Item extends Component{
         return (
             <div className="li inset photo1" {...others} onClick={()=>this.onDetail()}>
                 <div>
-                    <h4>{model.title}</h4>
+                    <div className="title">{model.title}</div>
                     {this._more(model)}
                 </div>
                 <div className="photos">
-                    <img src={model.photos[0]}/>
+                    <div><img src={model.photos[0]}/></div>
                 </div>
             </div>
         )
@@ -187,11 +191,11 @@ class Item extends Component{
         var {model,...others}=this.props
         return (
             <div className="li inset photo3" {...others} onClick={()=>this.onDetail()}>
-                <h4>{model.title}</h4>
+                <div className="title">{model.title}</div>
                 <div className="photos">
-                    <img src={model.photos[0]}/>
-                    <img src={model.photos[1]}/>
-                    <img src={model.photos[2]}/>
+                    <div><img src={model.photos[0]}/></div>
+                    <div><img src={model.photos[1]}/></div>
+                    <div><img src={model.photos[2]}/></div>
                 </div>
             {this._more(model)}
             </div>
@@ -199,10 +203,15 @@ class Item extends Component{
     }
 
     _more(model){
+        var date=moment(model.createdAt||model.updatedAt)
+            ,now=moment()
+            ,time=date.format(now.isSame(date,"day") ? "今天 HH:MM" : now.isSame(date, "year") ? "MM月DD日" : "YYYY年MM月DD日")
+
+        var zan=model.zans ? (<div><IconThumbup/>{model.zans}</div>) : null
         return (
-            <div>
-                <div>{model.createdAt||model.updatedAt}</div>
-                <div>赞{model.zans}</div>
+            <div className="more">
+                <time>{time}</time>
+                {zan}
             </div>
         )
     }

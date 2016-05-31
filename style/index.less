@@ -34,16 +34,92 @@ h2{
 }
 
 .li{
+    @listHeight:100px;
+    @listHeightWithImage:150px;
+    @titleFont:16px;
+    @titleLineHeight:25px;
+    @smallFont:10px;
+    @smallLineHeight:15px;
+    @imageWidth:120px;
+    @imageHeight:100px;
+
+    height: @listHeight;
+    position: relative;
+
+    border-bottom: 1px solid lightgray;
+    padding: 10px;
+    text-overflow: ellipsis;
+
+    .title{
+        font-size: @titleFont;
+        line-height: @titleLineHeight;
+        max-height: 2*@titleLineHeight;
+        overflow: hidden;
+    }
+
+    .summary{
+        font-size: @smallFont;
+        color:gray;
+        line-height: @smallLineHeight;
+        max-height: 2*@smallLineHeight;
+        overflow: hidden;
+    }
+
+    .more{
+        font-size: @smallFont;
+        color:gray;
+        line-height: @smallLineHeight;
+        max-height: @smallLineHeight;
+
+        >*{
+            display:inline-block;
+        }
+
+        >:first-child{
+            padding-right:10px;
+        }
+        bottom:5px;
+        position:absolute;
+    }
+
+    img{
+        width:@imageWidth;
+        max-height:@imageHeight;
+    }
+
     &.photo0{
 
     }
 
     &.photo1{
-
+        .grid;
+        >:last-child{
+            width:@imageWidth;
+            vertical-align: top;
+        }
+        >:first-child{
+            vertical-align: top;
+        }
     }
 
     &.photo3{
-
+        .photos{
+            .grid;
+            >*{
+                vertical-align: middle;
+                text-align: center;
+            }
+            >:last-child{
+                text-align: right
+            }
+            >:first-child{
+                text-align: left;
+            }
+        }
+        height: @listHeightWithImage;
+        &.title{
+            max-height: @titleLineHeight;
+        }
     }
 }
 
@@ -129,7 +205,7 @@ summary{
 			width:@goalWidth;
 			text-align:right;
 		}
-		
+
 		>:last-child{
 			font-size:x-small;
 			font-weight:normal;
@@ -177,15 +253,15 @@ summary{
 
 	.reward.pending{
 		position:fixed;
-		
+
 		top:@stickyOffset;
 		left:@goalWidth - @faceWidth/2;
 		@media screen and (min-width:@maxWidth){
 			.sticky(left, @goalWidth - @faceWidth/2)
 		}
-		
+
 		width: 300px;
-		
+
 		.reason{
             .rewarder{
     			width: @faceWidth !important;
@@ -203,7 +279,7 @@ summary{
 
 
 		}
-		
+
 		font-size:24pt;
 	}
 }

@@ -114,6 +114,42 @@
             ]
         },
         {
+            "path":"/1/classes/reward",
+            "type":"get",
+            "response":[
+                {
+                    "_id":"1",
+                    "reason":"reading",
+                    "amount":5,
+                    "child":"yy"
+                },
+                {
+                    "_id":"2",
+                    "reason":"writing",
+                    "amount":5,
+                    "child":"yy"
+                }
+            ]
+        },
+        {
+            "path":"/1/classes/goal",
+            "type":"get",
+            "response":[
+                {
+                    "_id":"1",
+                    "reward":"reading",
+                    "total":5,
+                    "child":"yy"
+                },
+                {
+                    "_id":"2",
+                    "reward":"writing",
+                    "total":5,
+                    "child":"yy"
+                }
+            ]
+        },
+        {
             "path":"/1/classes/task",
             "type":"get",
             "response":[
@@ -197,9 +233,9 @@
             "response":[
                 {
                     "_id":"1",
-                    "title":"magic tile",
+                    "title":"魔力磁贴的魔法",
                     "content":"magic tile is fun",
-                    "summary":"magic tile is fun",
+                    "summary":"Janod，法国第一名的木制玩具品牌。这款Janod纸板拼图 魔力磁贴宝盒（交通工具） 内含50。这款Janod纸板拼图 魔力磁贴宝盒（交通工具） 内含50。纸板材质，安全无毒，宝宝可以安全、开心地玩",
                     "category":["imagination","coordination"],
                     "author":{
                         "_id":"lalalic",
@@ -209,10 +245,11 @@
                 },
                 {
                     "_id":"2",
-                    "title":"Boat",
+                    "title":"魔力磁贴的魔法魔力磁贴的魔法魔力磁贴的魔法魔力磁贴的魔法魔力磁贴的魔法魔力hello hello 磁贴的魔法魔力磁贴的魔法魔力磁贴的魔法",
                     "content":"magic tile is fun",
-                    "summary":"magic tile is fun",
+                    "summary":"Janod，法国第一名的木制玩具品牌。这款J anod纸板拼图 魔力磁贴宝盒这款Janod纸板拼图 魔力磁贴宝盒（交通工具） 内含50。（交通工具） 内含50。纸板材质，安全无毒，宝宝可以安全、开心地玩",
                     "category":["imagination","coordination"],
+                    "photos":["http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"],
                     "author":{
                         "_id":"lalalic",
                         "name":"lalalic"
@@ -225,6 +262,9 @@
                     "content":"magic tile is fun",
                     "summary":"magic tile is fun",
                     "category":["imagination","coordination"],
+                    "photos":["http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg",
+                        "http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg",
+                        "http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"],
                     "author":{
                         "_id":"lalalic",
                         "name":"lalalic"

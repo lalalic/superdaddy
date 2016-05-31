@@ -1,6 +1,7 @@
 import Visitor from "./visitor"
 import document from "./document"
 import cell from "./td"
+import Template from "../extractor"
 
 /**
 * [key:alt] is an editable region
@@ -14,18 +15,21 @@ export default class paragraph extends Visitor{
 
     get html(){
         var text=this._children.map((a)=>a.html).join("").trim(),len=text.length
-        if(len>1 && text[0]=='[' && text[len-1]==']'){//editable region
-            var sep=text.indexOf(':'), key, alt;
-            if(sep>1){
-                key=text.substring(1,sep)
-                alt=text.substring(sep+1,len-1)
-            }else {
-                alt=key=(text.substring(1,len-1)||"__")
-            }
+        if(this.isRegion(text)){//editable region
+            let [key,alt]=this.parse(text)
             return Template.placeholder(key, alt)
         }else {
             return `<${this.tag}>${text}</${this.tag}>`
         }
     }
-}
 
+    isRegion(text){
+        return text.length>1 && text[0]=='[' && text[len-1]==']'
+    }
+
+    parse(text){
+        let [key="__",alt]=text.split(":")
+        !alt && (alt=key);
+        return [key,alt]
+    }
+}
