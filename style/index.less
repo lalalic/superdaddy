@@ -8,128 +8,6 @@
         height:150px;
     }
 }
-
-
-h1{
-    height: 100px;
-    background-color:darkorange;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-    margin:0px;
-
-    a{
-        text-decoration:none
-    }
-
-    li{
-
-    }
-}
-
-h2{
-    height: 80px;
-    background-color:darksalmon;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-}
-
-.li{
-    @listHeight:100px;
-    @listHeightWithImage:150px;
-    @titleFont:16px;
-    @titleLineHeight:25px;
-    @smallFont:10px;
-    @smallLineHeight:15px;
-    @imageWidth:120px;
-    @imageHeight:100px;
-
-    height: @listHeight;
-    position: relative;
-
-    border-bottom: 1px solid lightgray;
-    padding: 10px;
-    text-overflow: ellipsis;
-
-    .title{
-        font-size: @titleFont;
-        line-height: @titleLineHeight;
-        max-height: 2*@titleLineHeight;
-        overflow: hidden;
-    }
-
-    .summary{
-        font-size: @smallFont;
-        color:gray;
-        line-height: @smallLineHeight;
-        max-height: 2*@smallLineHeight;
-        overflow: hidden;
-    }
-
-    .more{
-        font-size: @smallFont;
-        color:gray;
-        line-height: @smallLineHeight;
-        max-height: @smallLineHeight;
-
-        >*{
-            display:inline-block;
-        }
-
-        >:first-child{
-            padding-right:10px;
-        }
-        bottom:5px;
-        position:absolute;
-    }
-
-    img{
-        width:@imageWidth;
-        max-height:@imageHeight;
-    }
-
-    &.photo0{
-
-    }
-
-    &.photo1{
-        .grid;
-        >:last-child{
-            width:@imageWidth;
-            vertical-align: top;
-        }
-        >:first-child{
-            vertical-align: top;
-        }
-    }
-
-    &.photo3{
-        .photos{
-            .grid;
-            >*{
-                vertical-align: middle;
-                text-align: center;
-            }
-            >:last-child{
-                text-align: right
-            }
-            >:first-child{
-                text-align: left;
-            }
-        }
-        height: @listHeightWithImage;
-        &.title{
-            max-height: @titleLineHeight;
-        }
-    }
-}
-
-summary{
-    background-color: #eee;
-    padding: 10px;
-    border-radius: 5px;
-    margin: 5px auto;
-}
-
 .knowledge{
     img{
         width:100%;
@@ -219,6 +97,7 @@ summary{
 
 	.goal.pending{
 		background-color:white;
+        top:0px;
 
 		input{
 			border:0px;

@@ -36,7 +36,7 @@ Object.assign(SuperDaddy.defaultProps,{
 
 class CurrentChild extends Component{
     render(){
-        var {child={}, style={opacity:0.7, zIndex:9}}=this.props, avatar
+        var {child={}, style={}}=this.props, avatar
 
         if(child.photo)
             avatar=(<Avatar src={this.props.child.photo}/>)
@@ -47,11 +47,10 @@ class CurrentChild extends Component{
             style.display='none'
 
         return(
-            <div  className="sticky top right">
-                <FloatingActionButton mini={true} style={style} onClick={()=>this.change()}>
-                    {avatar}
-                </FloatingActionButton>
-            </div>
+            <FloatingActionButton className="sticky top right"
+                mini={true} style={style} onClick={()=>this.change()}>
+                {avatar}
+            </FloatingActionButton>
         )
     }
 
