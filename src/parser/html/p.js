@@ -1,7 +1,7 @@
 import Visitor from "./visitor"
 import document from "./document"
 import cell from "./td"
-import Template from "../extractor"
+import Template from "../template"
 
 /**
 * [key:alt] is an editable region
@@ -14,9 +14,10 @@ export default class paragraph extends Visitor{
     }
 
     get html(){
-        var text=this._children.map((a)=>a.html).join("").trim(),len=text.length
+        var text=this._children.map((a)=>a.html).join("").trim()
         if(this.isRegion(text)){//editable region
             let [key,alt]=this.parse(text)
+			debugger 
             return Template.placeholder(key, alt)
         }else {
             return `<${this.tag}>${text}</${this.tag}>`
@@ -24,7 +25,7 @@ export default class paragraph extends Visitor{
     }
 
     isRegion(text){
-        return text.length>1 && text[0]=='[' && text[len-1]==']'
+        return text.length>1 && text[0]=='[' && text[text.length-1]==']'
     }
 
     parse(text){

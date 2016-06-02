@@ -3,7 +3,8 @@ var {React,Component, File,UI:{List,Loading,Comment,CommandBar,fileSelector},Rou
     dbKnowledge=require('./db/knowledge'),
     dbTask=require('./db/task'),
     {RaisedButton}=require('material-ui'),
-    extract=require('./parser/extractor');
+    extract=require('./parser/extractor'),
+	Template=require("./parser/template");
 
 export default class Knowledge extends Component{
     constructor(props){
@@ -75,7 +76,7 @@ export default class Knowledge extends Component{
     static renderContent(entity, open=true, templateRender){
         var {category=[], keywords=[]}=entity,
             sencondaryStyle={fontSize:'small',fontWeight:'normal', textAlign:'right'},
-            template=new extract.Template(entity.content);
+            template=new Template(entity.content);
 
         var content=(templateRender||function(tpl){
                 var __html=tpl.contents.map((section,i)=>{
