@@ -4,7 +4,6 @@ import RightArrow from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-right'
 import SettingIcon from 'material-ui/lib/svg-icons/action/settings'
 import InviteIcon from 'material-ui/lib/svg-icons/social/group-add'
 import PublishIcon from "material-ui/lib/svg-icons/image/camera-roll"
-import LogoIcon from "./icons/logo"
 
 var {List, Photo, CommandBar}=UI
 
@@ -78,10 +77,6 @@ export default class Account extends Component{
                     <List.Item primaryText="设置"
                         leftIcon={<SettingIcon/>}
                         onClick={e=>this.context.router.transitionTo('setting')}
-                        />
-						
-					<List.Item primaryText="<a href='./app.apk' target='_new'>安装</a>"
-                        leftIcon={<LogoIcon/>}
                         />
                 </List>
 				<CommandBar className="footbar"
