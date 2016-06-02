@@ -17,7 +17,6 @@ export default class paragraph extends Visitor{
         var text=this._children.map((a)=>a.html).join("").trim()
         if(this.isRegion(text)){//editable region
             let [key,alt]=this.parse(text)
-			debugger 
             return Template.placeholder(key, alt)
         }else {
             return `<${this.tag}>${text}</${this.tag}>`
@@ -29,7 +28,7 @@ export default class paragraph extends Visitor{
     }
 
     parse(text){
-        let [key="__",alt]=text.split(":")
+        let [key="__",alt]=text.substring(1,text.length-2).split(":")
         !alt && (alt=key);
         return [key,alt]
     }

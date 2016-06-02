@@ -31,12 +31,26 @@ export default function extract(file){
 		footer: Ignore,
 		documentStyles: Ignore
 	}
+	
+	function splitKey(data){
+		if(typeof(data)=='string')
+			data=[data]
+		var keys=[]
+		data.forEach(a=>a.split(",").forEach(b=>((b=b.trim()).length && keys.push(b))))
+		return keys
+	}
 
     return docxHub.assemble(file,{channel:"interactive"})
 		.then(docx=>docx.parse(docx4js.createVisitorFactory(MODELS))).then(doc=>{
         var {html:content, properties, id:elId, images}=doc,
             {name,title, keywords, category, subject, abstract,description, ...others}=properties
-
+		
+		if(keywords)
+			keywords=splitKey(keywords)
+		
+		if(category)
+			category=splitKey(category)
+		
         return {
             knowledge: {
                 content,
