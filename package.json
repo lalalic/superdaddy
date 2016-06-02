@@ -12,7 +12,8 @@
     "material-ui": "^0.10.0",
     "qili-app": "https://github.com/lalalic/qili-app",
     "react": "^0.13.x",
-    "react-tap-event-plugin": "0.1.6"
+    "react-tap-event-plugin": "0.1.6",
+	"moment":"^2.13.0"
   },
   "devDependencies": {
     "babel-plugin-add-module-exports": "^0.1.2",
