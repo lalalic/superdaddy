@@ -26,9 +26,9 @@ export default class Rewards extends React.Component{
 
 	onChange(condition){
 		condition={child:condition.child}
-		
-		Promise.all([ 
-			new Promise((resolve,reject)=>dbReward.find(condition).fetch(resolve,reject)), 
+
+		Promise.all([
+			new Promise((resolve,reject)=>dbReward.find(condition).fetch(resolve,reject)),
 			new Promise((resolve,reject)=>dbGoal.find(condition).fetch(resolve,reject))
 		]).then(a=>{
 			let [rewards, goals]=a
@@ -51,7 +51,7 @@ export default class Rewards extends React.Component{
 	componentWillReceiveProps(nextProps){
 		let {child:newChild}=nextProps,
 			{child}=this.props
-			
+
 		if(child!=newChild)
 			this.onChange({child:newChild._id})
 	}
@@ -83,7 +83,7 @@ export default class Rewards extends React.Component{
 
 		style.height=(max+buf)*height
 		return (
-			<div className="rewards" style={style}>
+			<div className="rewards page" style={style}>
 				{goals}
 
 				{rewards}

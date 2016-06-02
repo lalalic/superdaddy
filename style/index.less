@@ -8,52 +8,6 @@
         height:150px;
     }
 }
-
-
-h1{
-    height: 100px;
-    background-color:darkorange;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-    margin:0px;
-
-    a{
-        text-decoration:none
-    }
-
-    li{
-
-    }
-}
-
-h2{
-    height: 80px;
-    background-color:darksalmon;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-}
-
-.li{
-    &.photo0{
-
-    }
-
-    &.photo1{
-
-    }
-
-    &.photo3{
-
-    }
-}
-
-summary{
-    background-color: #eee;
-    padding: 10px;
-    border-radius: 5px;
-    margin: 5px auto;
-}
-
 .knowledge{
     img{
         width:100%;
@@ -129,7 +83,7 @@ summary{
 			width:@goalWidth;
 			text-align:right;
 		}
-		
+
 		>:last-child{
 			font-size:x-small;
 			font-weight:normal;
@@ -143,6 +97,7 @@ summary{
 
 	.goal.pending{
 		background-color:white;
+        top:0px;
 
 		input{
 			border:0px;
@@ -177,15 +132,15 @@ summary{
 
 	.reward.pending{
 		position:fixed;
-		
+
 		top:@stickyOffset;
 		left:@goalWidth - @faceWidth/2;
 		@media screen and (min-width:@maxWidth){
 			.sticky(left, @goalWidth - @faceWidth/2)
 		}
-		
+
 		width: 300px;
-		
+
 		.reason{
             .rewarder{
     			width: @faceWidth !important;
@@ -203,7 +158,7 @@ summary{
 
 
 		}
-		
+
 		font-size:24pt;
 	}
 }

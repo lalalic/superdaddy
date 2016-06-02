@@ -81,8 +81,9 @@ export class BabyDashboard extends Component{
             <div>
                 <Rewards child={child}/>
 
-                {this.renderContent(when)}
-
+                <div className="page">
+                    {this.renderContent(when)}
+                </div>
 				<CommandBar
                     className="footbar"
                     primary="Knowledges"

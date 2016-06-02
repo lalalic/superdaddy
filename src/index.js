@@ -17,12 +17,11 @@ class SuperDaddy extends QiliApp{
     }
 
     renderContent(){
-        var {child}=this.state,
-            childStyle={opacity:0.7, zIndex:9}
-		
+        var {child}=this.state
+
         return (
             <div>
-               <div className="sticky top right"><CurrentChild child={child} style={childStyle}/></div>
+               <CurrentChild child={child}/>
                <RouteHandler child={child}/>
             </div>
         )
@@ -37,7 +36,7 @@ Object.assign(SuperDaddy.defaultProps,{
 
 class CurrentChild extends Component{
     render(){
-        var {child={}, style={}, ...others}=this.props, avatar
+        var {child={}, style={}}=this.props, avatar
 
         if(child.photo)
             avatar=(<Avatar src={this.props.child.photo}/>)
@@ -48,7 +47,8 @@ class CurrentChild extends Component{
             style.display='none'
 
         return(
-            <FloatingActionButton mini={true} style={style} onClick={()=>this.change()} {...others}>
+            <FloatingActionButton className="sticky top right"
+                mini={true} style={style} onClick={()=>this.change()}>
                 {avatar}
             </FloatingActionButton>
         )
