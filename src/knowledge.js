@@ -6,6 +6,8 @@ var {React,Component, File,UI:{List,Loading,Comment,CommandBar,fileSelector},Rou
     extract=require('./parser/extractor'),
 	Template=require("./parser/template");
 
+import moment from "moment"
+
 export default class Knowledge extends Component{
     constructor(props){
         super(props)
@@ -72,9 +74,15 @@ export default class Knowledge extends Component{
             </div>
         )
     }
+	
+	static date2String(d){
+		if(!d) return ""
+		var now=moment(),date=moment(d)	
+        return date.format(now.isSame(date,"day") ? "今天 HH:MM" : now.isSame(date, "year") ? "MM月DD日" : "YYYY年MM月DD日")
+	}
 
     static renderContent(entity, open=true, templateRender){
-        var {category=[], keywords=[]}=entity,
+        var {category=[], keywords=[], figure="http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"}=entity,
             sencondaryStyle={fontSize:'small',fontWeight:'normal', textAlign:'right'},
             template=new Template(entity.content);
 
@@ -94,7 +102,7 @@ export default class Knowledge extends Component{
 
         if(entity.summary){
             content=(
-                <details style={{padding:10}} open={open}>
+                <details open={open}>
                     <summary>{entity.summary}</summary>
                     {content}
                 </details>
@@ -104,30 +112,32 @@ export default class Knowledge extends Component{
         var notNewStuff
         if(entity._id){
             notNewStuff=[
-                (<li key="link"><Link to={`/knowledge/${entity._id}`}>{entity.title}</Link></li>),
-                (<li key="author" style={sencondaryStyle}>
-                    {entity.author.name} - <time>{entity.createdAt}</time>
-                </li>)
+                (<h1 key="link"><Link to={`/knowledge/${entity._id}`}>{entity.title}</Link></h1>),
+                (<p key="author">
+                    {entity.author.name} - <time>{Knowledge.date2String(entity.createdAt)}</time>
+                </p>)
             ]
         }else {
-            notNewStuff=(<li key="link">{entity.title}</li>)
+            notNewStuff=(<h1 key="link">{entity.title}</h1>)
         }
-
-        return (
-            <div>
-                <h1 style={{padding:10}}>
-                    <ul style={{listStyle:'none',margin:0, padding:0}}>
-                        {notNewStuff}
-                        <li style={sencondaryStyle}>
-                            {category.join(", ")} {keywords.join(", ")}
-                        </li>
-                    </ul>
-                </h1>
-                <div className="inset">
-                    {content}
-                </div>
-            </div>
-        )
+		
+		if(figure)
+			figure=(<img src={figure}/>)
+		
+		return (
+			<article>
+				<figure>{figure}</figure>
+				<header>
+					{notNewStuff}
+					<p>
+						{category.join(", ")} {keywords.join(", ")}
+					</p>
+				</header>
+				<section>
+					{content}
+				</section>
+			</article>
+		)
     }
 
     getExperience(){

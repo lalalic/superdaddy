@@ -36,7 +36,7 @@ Object.assign(SuperDaddy.defaultProps,{
 
 class CurrentChild extends Component{
     render(){
-        var {child={}, style={opacity:0.7, position:"absolute"}}=this.props, avatar
+        var {child={}, style={position:"absolute", zIndex:9}}=this.props, avatar
 
         if(child.photo)
             avatar=(<Avatar src={this.props.child.photo}/>)

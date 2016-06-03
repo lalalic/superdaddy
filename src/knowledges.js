@@ -203,10 +203,8 @@ class Item extends Component{
     }
 
     _more(model){
-        var date=moment(model.createdAt||model.updatedAt)
-            ,now=moment()
-            ,time=date.format(now.isSame(date,"day") ? "今天 HH:MM" : now.isSame(date, "year") ? "MM月DD日" : "YYYY年MM月DD日")
-
+        var time=uiKnowledge.date2String(model.createdAt||model.updatedAt)
+ 
         var zan=model.zans ? (<div><IconThumbup/>{model.zans}</div>) : null
         return (
             <div className="more">
