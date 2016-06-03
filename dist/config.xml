@@ -2,7 +2,7 @@
 <widget id="lalalic.superdaddy" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>超级奶爸</name>
     <description>
-        帮助孩子快乐成长
+        陪娃娃快乐成长
     </description>
     <author email="lalalic@139.com">
         lalalic
@@ -16,7 +16,6 @@
     <plugin name="cordova-plugin-wechat">
         <variable name="APP_ID" value="xx" />
     </plugin>
-    <plugin name="cordova-plugin-splashscreen" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
