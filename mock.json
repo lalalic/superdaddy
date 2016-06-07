@@ -113,6 +113,18 @@
                 }
             ]
         },
+		{
+			"path":"/1/classes/reward",
+			"type":"post",
+			"response":{
+				"_id":1,
+				"author":{
+						"_id":"lalalic",
+						"name":"lalalic"
+					},
+				"createdAt":"2015-07-12T03:05:21Z"
+			}
+		},
         {
             "path":"/1/classes/reward",
             "type":"get",

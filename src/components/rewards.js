@@ -7,12 +7,16 @@ import {Family as dbFamily, Reward as dbReward, Goal as dbGoal} from '../db'
 export default class Rewards extends React.Component{
 	static defaultProps={
 		editable:false,
-		height:20
+		height:20,
+		minY:0,
+		maxY:window.innerHeight
 	}
 	static propTypes={
 		child: React.PropTypes.object,
 		editable:React.PropTypes.bool,
-		height:React.PropTypes.number
+		height:React.PropTypes.number,
+		maxY:React.PropTypes.number,
+		minY:React.PropTypes.number
 	}
 
 	constructor(){
@@ -22,6 +26,7 @@ export default class Rewards extends React.Component{
 			rewards:null
 		}
 		this.onChange=this.onChange.bind(this)
+		this.onScroll=this.onScroll.bind(this)
 	}
 
 	onChange(condition){
@@ -35,16 +40,41 @@ export default class Rewards extends React.Component{
 			this.setState({rewards,goals})
 		})
 	}
+	
+	onScroll(e){
+		if(this._scrollTimer)
+			clearTimeout(this._scrollTimer)
+		this._scrollTimer=setTimeout(e=>{
+			var {top,height}=React.findDOMNode(this).getBoundingClientRect()
+			,bottom=top+height
+			,{minY,maxY,editable}=this.props
+			,{pendingGoal, rewardor}=this.refs
+			
+			if(pendingGoal){
+				let classes=React.findDOMNode(pendingGoal).classList
+				let act=top<=minY ? "add" : "remove";
+				"sticky top left".split(" ").forEach(a=>classes[act](a))
+			}
+			
+			if(rewardor){
+				let classes=React.findDOMNode(rewardor).classList
+				let act=(top>maxY || bottom<minY) ? "add" : "remove"
+				classes[act]("hide")
+			}
+		},300)
+	}
 
 	componentDidMount(){
 		dbReward.on("upserted", this.onChange)
 		dbGoal.on("upserted", this.onChange)
+		window.addEventListener("scroll",this.onScroll)
 		this.onChange({child:this.props.child._id})
 	}
 
 	componentWillUnmount(){
 		dbReward.removeListener("upserted", this.onChange)
 		dbGoal.removeListener("upserted", this.onChange)
+		window.removeEventListener("scroll",this.onScroll)
 	}
 
 
@@ -55,9 +85,14 @@ export default class Rewards extends React.Component{
 		if(child!=newChild)
 			this.onChange({child:newChild._id})
 	}
+	
+	componentDidUpdate(){
+		if(this.refs.pendingGoal)
+			this.refs.pendingGoal.setState({reward:"",total:""})
+	}
 
 	render(){
-		let {goals, rewards}=this.state
+		let {goals, rewards, outView, outTop}=this.state
 		let {height,editable, style={}}=this.props
 		let total=0, max=0, action=null, buf=7
 		goals=goals && goals.map(a=><AGoal
@@ -76,14 +111,18 @@ export default class Rewards extends React.Component{
 
 		max=Math.max(total,max)
 
-		if(editable)
-			action=(<PendingGoal bottom={(max+buf)*height} current={total} height={height} onPendGoal={goal=>this.pendGoal(goal)}/>)
-		else
-			action=(<Rewardor current={total} height={height} onReward={amount=>this.reward(amount)}/>)
+		if(editable){
+			action=(<PendingGoal ref="pendingGoal" bottom={(max+buf)*height} current={total} height={height} onPendGoal={goal=>this.pendGoal(goal)}/>)
+		}else if(!outView){
+			action=(<Rewardor ref="rewardor" current={total} height={height} onReward={amount=>this.reward(amount)}/>)
+		}
 
 		style.height=(max+buf)*height
 		return (
 			<div className="rewards page" style={style}>
+				<svg className="arrow" width="100%" height="100%" viewBox="0 0 10 10">
+					<path d="M0,10 L5,0 L10,10" stroke-width="0.2"/>
+				</svg>
 				{goals}
 
 				{rewards}
@@ -127,13 +166,6 @@ class PendingGoal extends Item{
 		}
 	}
 
-	componentWillReceiveProps(){
-		this.setState({
-			reward:"",
-			total:""
-		})
-	}
-
 	render(){
 		let {current, bottom}=this.props
 		let {reward, total}=this.state
@@ -141,8 +173,8 @@ class PendingGoal extends Item{
 			<div className="goal pending" style={{bottom}}>
 				<div>
 					<input onBlur={e=>this.tryPend({reward:e.target.value})}
-						ref="reward"
-						defaultValue={reward}
+						value={reward||""}
+						onChange={e=>this.setState({reward:e.target.value})}
 						className="pendingReward"
 						placeholder="New Reward..."
 						style={{textAlign:"right",width:"100%"}}/>
@@ -150,10 +182,11 @@ class PendingGoal extends Item{
 				<div className="icon">&raquo;</div>
 				<div>
 					<input onBlur={e=>this.tryPend({total:e.target.value})}
-						ref="goal"
-						defaultValue={total||""}
+						type="number"
+						value={total||""}
+						onChange={e=>this.setState({total:e.target.value})}
 						placeholder={`Goal:>${current}`}
-						style={{width:"2.5em"}}/>
+						style={{width:"6em"}}/>
 				</div>
 			</div>
 		)
@@ -175,7 +208,7 @@ class PendingGoal extends Item{
 				return
 			}else{
 				UI.Messager.show(`new goal must greater than current total ${current}`)
-				this.refs.goal.getDOMNode().focus()
+				React.findDOMNode(this.refs.goal).focus()
 			}
 		}
 		this.setState({reward,total})
@@ -207,10 +240,8 @@ class AReward extends Item{
 	}
 
 	componentDidUpdate(){
-		let {newReason}=this.state
 		let {reason}=this.refs
-		if(newReason && reason)
-			reason.getDOMNode().focus()
+		reason && reason.focus()
 	}
 
 	render(){
@@ -218,7 +249,7 @@ class AReward extends Item{
 		let {newReason}=this.state
 
 		if(newReason){
-			reason=(<TextField ref="reason" defaultValue={reason}
+			reason=(<TextField ref="reason" defaultValue={newReason}
 				onEnterKeyDown={e=>e.target.blur()}
 				onBlur={e=>this.reasonChanged(e.target.value.trim())}/>)
 		}
@@ -227,7 +258,7 @@ class AReward extends Item{
 			<div className="reward" style={{bottom:height*total}}>
 				<div className="icon">&bull;</div>
 				<div className="reason" onClick={e=>this.setState({newReason:reason||" "})}>
-				{newReason||reason||"..."}
+				{reason||"..."}
 				</div>
 				<div>+{amount}/{total}</div>
 			</div>

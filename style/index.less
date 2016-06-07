@@ -45,24 +45,36 @@
 }
 
 .rewards{
-
+	@rowHeight:50px;
     @goalWidth:100px;
     @iconWidth:21px;
     @axisWidth:1px;
     @faceWidth:50px;
-		position: relative;
-		margin-top:@faceWidth + @faceWidth/2 + 10px;
+	@arrowHeight:10px;
+	
+	
+	position: relative;
+	margin-top:@faceWidth + @faceWidth/2 + 10px;
+	margin-left: @goalWidth;
+	border-left: @axisWidth solid lightgray;
 
-		margin-left: @goalWidth;
-		border-left: @axisWidth solid lightgray;
-
-		>*{
-			position: absolute;
-		}
+	>*{
+		position: absolute;
+	}
+	
+	svg.arrow{
+		width:@arrowHeight+1;
+		height:@arrowHeight;
+		top:-@arrowHeight;
+		left:-@arrowHeight/2-1;
+		stroke:lightgray;
+		fill:lightgray;
+	}
 
 	.goal{
 		.grid;
-
+		
+		line-height:@rowHeight;
 		width: @goalWidth+@iconWidth+20px;
 		left: 	-1*ceil(@goalWidth+@iconWidth/2);
 
@@ -89,17 +101,28 @@
 	}
 
 	.goal.pending{
-		background-color:white;
         top:0px;
-
+		
+		>:last-child{
+			font-size:initial;
+		}
+		
 		input{
 			border:0px;
+			background:transparent;
+			font-size:12px;
 		}
+		
+		&.sticky{
+			left:-5px!important;
+		}
+		
+		transition: top 0.5s;
 	}
 
 	.reward{
 		.grid;
-
+		line-height:@rowHeight;
 		>*{
 			vertical-align:middle;
 		}
@@ -151,6 +174,12 @@
 		} 
 
 		font-size:24pt;
+		
+		transition: opacity 2s;
+		
+		&.hide{
+			opacity:0;
+		}
 	}
 }
 
