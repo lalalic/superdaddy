@@ -1,7 +1,7 @@
 import {React,Component,UI} from 'qili-app'
 import {RaisedButton,ClearFix} from 'material-ui'
-import IconKnowledges from "material-ui/lib/svg-icons/communication/dialpad"
-import IconThumbup from "material-ui/lib/svg-icons/action/thumb-up"
+import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
+import IconThumbup from "material-ui/svg-icons/action/thumb-up"
 
 import dbKnowledge from './db/knowledge'
 import uiKnowledge from './knowledge'
@@ -38,7 +38,7 @@ export default class Knowledges extends Component{
                             defaultValue={query.title}
                             style={{fontSize:14,padding:10}}
                             onFocus={()=>this.refs.search.show()}/>),
-                        {action:"Create", icon:require("material-ui/lib/svg-icons/content/create")}
+                        {action:"Create", icon:require("material-ui/svg-icons/content/create")}
                     ]}
                     onSelect={this.onSelect.bind(this)}/>
 
@@ -93,7 +93,7 @@ class Search extends DialogCommand{
     }
 }
 
-Search.contextTypes={router:React.PropTypes.func}
+Search.contextTypes={router:React.PropTypes.object}
 
 class CheckGroup extends Component{
     constructor(props){
@@ -217,4 +217,4 @@ class Item extends Component{
         this.context.router.transitionTo('knowledge',this.props.model)
     }
 }
-Item.contextTypes=Knowledges.contextTypes={router:React.PropTypes.func}
+Item.contextTypes=Knowledges.contextTypes={router:React.PropTypes.object}

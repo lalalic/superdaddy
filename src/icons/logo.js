@@ -1,11 +1,7 @@
-const React = require('react/addons');
-const PureRenderMixin = React.addons.PureRenderMixin;
-var {SvgIcon} = require('material-ui');
+import {React, Component} from 'qili-app'
+import {SvgIcon} from 'material-ui'
 
-const Logo = React.createClass({
-
-  mixins: [PureRenderMixin],
-
+export default class Logo extends Component{
   render() {
       var {drawStyle={}, ...others}=this.props
       var {textStroke="lightgray", ...otherDrawStyle}=Object.assign({
@@ -24,9 +20,6 @@ const Logo = React.createClass({
             <path d="M 3.5208 10.2525 q 6.95554 7.98853 16.9068 -4.76903" fill="none"/>
         </g>
     </SvgIcon>
-    );
+    )
   }
-
-});
-
-module.exports = Logo;
+}

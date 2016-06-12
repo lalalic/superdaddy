@@ -145,4 +145,4 @@ export default class Baby extends Component{
     }
 }
 
-Baby.contextTypes={router:React.PropTypes.func}
+Baby.contextTypes={router:React.PropTypes.object}

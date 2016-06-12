@@ -1,5 +1,5 @@
 import {Component, React, UI} from "qili-app"
-import Icon from "material-ui/lib/svg-icons/image/camera-roll"
+import Icon from "material-ui/svg-icons/image/camera-roll"
 var {Empty}=UI
 
 export default class Publisher extends Component{

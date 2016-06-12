@@ -1,5 +1,5 @@
 var {React,Component,UI:{Photo}}=require('qili-app'),
-    AddIcon=require("material-ui/lib/svg-icons/action/note-add");
+    AddIcon=require("material-ui/svg-icons/action/note-add");
 
 export default class Editor extends Component{
     constructor(props){

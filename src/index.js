@@ -1,37 +1,44 @@
 require('../style/index.less')
 
-import {User,React,Component,Router,QiliApp, UI} from 'qili-app'
+import {Route, Direct, IndexDirect} from "react-router"
+import {User,React,Component,QiliApp, UI} from 'qili-app'
 import {MenuItem, FloatingActionButton, Avatar} from 'material-ui'
-import {Family,Knowledge,Table,init} from './db'
 
+import {Family,Knowledge,Table,init} from './db'
 import Dashboard from "./dashboard"
 
-var {Route, RouteHandler, DefaultRoute} = Router,
-    {Empty}=UI
+const {Empty}=UI
 
 class SuperDaddy extends QiliApp{
     constructor(props){
         super(props)
         Object.assign(this.state,{child:Family.currentChild})
-        Family.event.on('change',()=>this.setState({child:Family.currentChild}))
+        Family.event.on('change',child=>this.setState({child}))
     }
 
     renderContent(){
         var {child}=this.state
-
+            ,{children:content}=this.props
+            ,{route}=content.props
         return (
             <div>
-               <CurrentChild child={child}/>
-               <RouteHandler child={child}/>
+               <CurrentChild child={child} onChange={target=>{
+                   if(route.name=="baby")
+                       this.context.router.push(`baby/${target.name}`)
+                   else
+                       Family.currentChild=target
+               }}/>
+               {React.cloneElement(content,{child})}
             </div>
         )
     }
+    static contextTypes={router:React.PropTypes.object}
 }
-SuperDaddy.contextTypes={router:React.PropTypes.func}
 
 Object.assign(SuperDaddy.defaultProps,{
     appId:"5746b2c5e4bb3b3700ae1566",
-    init:()=>init()
+    init:()=>init(),
+    tutorials:[]
 })
 
 class CurrentChild extends Component{
@@ -66,12 +73,10 @@ class CurrentChild extends Component{
             return;
 
         var index=children.indexOf(current)
-        Family.currentChild=children[(index+1) % len]
+        this.props.onChange(children[(index+1) % len])
     }
+    static contextTypes={router:React.PropTypes.object}
 }
-
-CurrentChild.contextTypes={router:React.PropTypes.func}
-
 
 import TaskUI from './task'
 import BabyUI from './baby'
@@ -83,19 +88,48 @@ import SettingUI from './setting'
 import PublishUI from './publish'
 
 module.exports=QiliApp.render(
-    <Route path="/" handler={SuperDaddy}>
-        <Route name="task" path="task/:_id?/" handler={TaskUI}/>
-        <Route name="baby" path="baby/:_id?" handler={BabyUI}/>
-        <Route name="knowledges" path="knowledges/" handler={KnowledgesUI}/>
-        <Route name="knowledge" path="knowledge/:_id?/" handler={KnowledgeUI}/>
-        <Route name="create" path="create/" handler={NewKnowledgeUI} />
-        <Route name="comment" path="comment/:type/:_id/" handler={Comment}/>
-        <Route name="account" path="account/" handler={AccountUI} />
-        <Route name="setting" path="setting/" handler={SettingUI} />
-        <Route name="dashboard" path="dashboard/:when?/" handler={Dashboard}/>
-        <Route name="publish" path="publish/:what?/" handler={PublishUI} />
-        <DefaultRoute handler={Dashboard}/>
-    </Route>
+    (<Route path="/" component={SuperDaddy}>
+        <IndexRoute component={Dashboard}/>
+
+        <Route name="task" path="task" component={TaskUI}>
+            <IndexRoute/>
+            <Route path=":_id"/>
+        </Route>
+
+        <Route name="baby" path="baby" component={BabyUI}>
+            <IndexRoute onEnter={(nextState, replace, callback)=>{
+    				Family.currentChild={}
+    				callback()
+    			}}/>
+            <Route path=":_id"/>
+        </Route>
+        <Route name="knowledges" path="knowledges" component={KnowledgesUI}/>
+        <Route name="create" path="knowledge/_new" component={NewKnowledgeUI} />
+        <Route name="knowledge" path="knowledge" component={KnowledgeUI}>
+            <IndexRoute />
+            <Route path=":_id"/>
+        </Route>
+
+
+        <Route name="comment" path="comment" component={Comment}>
+            <Route path=":type/:_id">
+        </Route>
+
+        <Route name="account" path="account" component={AccountUI} />
+        <Route name="setting" path="setting" component={SettingUI} />
+        <Route name="dashboard" path="dashboard" component={Dashboard}>
+            <IndexRoute params={{when:new Date()}}/>
+            <Route path=":when"/>
+        </Route>
+
+        <Route name="publish" path="publish" component={PublishUI}>
+            <IndexRoute params={what:"all"}/>
+            <Route path=":what"/>
+        </Route>
+
+    </Route>),{
+
+    }
 )
 
 

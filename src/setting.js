@@ -1,9 +1,9 @@
 import {React, Component, UI} from "qili-app"
-import RateIcon from 'material-ui/lib/svg-icons/editor/mode-edit'
-import BugIcon from 'material-ui/lib/svg-icons/action/bug-report'
-import UpdateIcon from 'material-ui/lib/svg-icons/action/system-update-alt'
-import AboutIcon from 'material-ui/lib/svg-icons/action/info-outline'
-import LogoIcon from "material-ui/lib/svg-icons/action/android"
+import RateIcon from 'material-ui/svg-icons/editor/mode-edit'
+import BugIcon from 'material-ui/svg-icons/action/bug-report'
+import UpdateIcon from 'material-ui/svg-icons/action/system-update-alt'
+import AboutIcon from 'material-ui/svg-icons/action/info-outline'
+import LogoIcon from "material-ui/svg-icons/action/android"
 
 var {List}=UI
 

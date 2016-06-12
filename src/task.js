@@ -12,13 +12,8 @@ export default class Task extends Component{
             entity:null
         }
     }
-    componentWillMount(){
-        if(!this.state.entity){
-            var id=this.props.params._id
-            dbTask.findOne({_id:id},function(entity){
-                this.setState({entity:entity})
-            }.bind(this))
-        }
+    componentDidMount(){
+        dbTask.findOne({_id:this.props.params._id},entity=>this.setState({entity}))
     }
     componentWillReceiveProps(next){
         if (next.child!=this.props.child)
@@ -113,6 +108,4 @@ export default class Task extends Component{
         dbTask.upsert(entity, ()=>this.forceUpdate())
     }
 }
-Task.contextTypes={
-    router:React.PropTypes.func
-}
+Task.contextTypes={router:React.PropTypes.object}

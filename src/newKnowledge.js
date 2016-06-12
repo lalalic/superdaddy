@@ -3,7 +3,7 @@ import {React, Component, UI} from 'qili-app'
 import dbKnowledge from './db/knowledge'
 import uiKnowledge from './knowledge'
 import extractor from './parser/extractor'
-import InsertFile from 'material-ui/lib/svg-icons/action/note-add'
+import InsertFile from 'material-ui/svg-icons/action/note-add'
 
 var {Empty, CommandBar}=UI
 
@@ -29,7 +29,7 @@ export default class NewKnowledge extends Component{
         }else{
             content=(<div className="knowledge">{uiKnowledge.renderContent(entity)}</div>)
             commands=["Back","Save",
-                {action:"New Version",icon:require("material-ui/lib/svg-icons/editor/border-color")}]
+                {action:"New Version",icon:require("material-ui/svg-icons/editor/border-color")}]
             primary="Save"
         }
 
@@ -78,6 +78,4 @@ export default class NewKnowledge extends Component{
     }
 }
 
-NewKnowledge.contextTypes={
-    router: React.PropTypes.func
-}
+NewKnowledge.contextTypes={router:React.PropTypes.object}

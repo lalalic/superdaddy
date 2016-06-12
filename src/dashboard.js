@@ -4,7 +4,7 @@ import {Task as dbTask,Family as dbFamily} from './db'
 import Calendar from './components/calendar'
 import Rewards from './components/rewards'
 import Logo from './icons/logo'
-import IconKnowledges from "material-ui/lib/svg-icons/communication/dialpad"
+import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 
 var {List, Loading, Empty,Comment,CommandBar,Photo,Messager,Icons}=UI,
     {DialogCommand}=CommandBar
@@ -41,13 +41,13 @@ export class AuthorDashboard extends Component{
                             icon:IconKnowledges},
                         {action:"setting", label:"Account",
                             onSelect:()=>this.context.router.transitionTo('account'),
-                            icon: require('material-ui/lib/svg-icons/action/account-box')}
+                            icon: require('material-ui/svg-icons/action/account-box')}
                         ]}
                     />
             </div>)
     }
 }
-AuthorDashboard.contextTypes={router:React.PropTypes.func}
+AuthorDashboard.contextTypes={router:React.PropTypes.object}
 
 /**
 @ with currentChild
@@ -91,13 +91,13 @@ export class BabyDashboard extends Component{
                     items={[
                         {action:"Task",
                             onSelect:()=>this.refs.task.show(),
-                            icon:require("material-ui/lib/svg-icons/editor/format-list-numbered")},
+                            icon:require("material-ui/svg-icons/editor/format-list-numbered")},
                         {action:"Knowledges",
                             onSelect:()=>this.context.router.transitionTo('knowledges'),
                             icon:IconKnowledges},
                         {action:"setting", label:"Account",
                             onSelect:()=>this.context.router.transitionTo('account'),
-                            icon: require('material-ui/lib/svg-icons/action/account-box')}
+                            icon: require('material-ui/svg-icons/action/account-box')}
                         ]}
                     />
                 <TaskQueryCommand ref="task" when={when} onChange={d=>this.onChangeDate(d)}/>
@@ -189,7 +189,7 @@ export class BabyDashboard extends Component{
         }
     }
 }
-BabyDashboard.contextTypes={router:React.PropTypes.func}
+BabyDashboard.contextTypes={router:React.PropTypes.object}
 
 class TaskItem extends Component{
     render(){

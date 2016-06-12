@@ -37,14 +37,14 @@ export default class Knowledge extends Component{
 
         var commands=["Back"], primary, planCommand;
         if(true || User.current._id==entity.author._id)
-            commands.push({action:"New Version",icon:require("material-ui/lib/svg-icons/editor/border-color")})
+            commands.push({action:"New Version",icon:require("material-ui/svg-icons/editor/border-color")})
 
         switch(status){
         case 'revising':
             commands.push("Save")
             commands.push({action:"Cancel",
                 onSelect:()=>this.setState({entity:this.origin,status:undefined}),
-                icon:require("material-ui/lib/svg-icons/navigation/cancel")})
+                icon:require("material-ui/svg-icons/navigation/cancel")})
             primary="Save"
         break
         default:
@@ -184,7 +184,7 @@ export default class Knowledge extends Component{
 }
 
 Knowledge.contextTypes={
-    router: React.PropTypes.func
+    router:React.PropTypes.object
 }
 
 class Plan extends Component{

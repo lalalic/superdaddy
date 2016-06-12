@@ -1,7 +1,7 @@
 import {React, UI} from "qili-app"
 import {TextField, IconButton, Avatar} from 'material-ui'
-import PlusIcon from 'material-ui/lib/svg-icons/action/alarm-add'
-import ForwardIcon from "material-ui/lib/svg-icons/navigation/arrow-forward"
+import PlusIcon from 'material-ui/svg-icons/action/alarm-add'
+import ForwardIcon from "material-ui/svg-icons/navigation/arrow-forward"
 import {Family as dbFamily, Reward as dbReward, Goal as dbGoal} from '../db'
 
 export default class Rewards extends React.Component{
@@ -277,7 +277,7 @@ class AReward extends Item{
 }
 
 
-import RewardIcon from 'material-ui/lib/svg-icons/social/mood'
+import RewardIcon from 'material-ui/svg-icons/social/mood'
 class Rewardor extends Item{
 	static propTypes={
 		current:React.PropTypes.number,

@@ -1,6 +1,6 @@
 var {React} = require('qili-app'),
     {ClearFix} = require('material-ui'),
-    DayButton = require('material-ui/lib/date-picker/day-button'),
+    DayButton = require('material-ui/DatePicker/DayButton'),
     DateTime=Date.Helper;
 
 export default class Calendar extends React.Component{

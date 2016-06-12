@@ -1,9 +1,9 @@
 import {React, Component, UI, User} from "qili-app"
 import {Avatar} from "material-ui"
-import RightArrow from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-right'
-import SettingIcon from 'material-ui/lib/svg-icons/action/settings'
-import InviteIcon from 'material-ui/lib/svg-icons/social/group-add'
-import PublishIcon from "material-ui/lib/svg-icons/image/camera-roll"
+import RightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right'
+import SettingIcon from 'material-ui/svg-icons/action/settings'
+import InviteIcon from 'material-ui/svg-icons/social/group-add'
+import PublishIcon from "material-ui/svg-icons/image/camera-roll"
 
 var {List, Photo, CommandBar}=UI
 
@@ -91,4 +91,4 @@ export default class Account extends Component{
     }
 }
 
-Account.contextTypes={router:React.PropTypes.func}
+Account.contextTypes={router:React.PropTypes.object}
