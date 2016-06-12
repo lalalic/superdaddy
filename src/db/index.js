@@ -7,12 +7,12 @@ import Goal from "./goal"
 
 module.exports={
     Family, Knowledge,Task, Experience,Reward,Goal,
-    init(){
+    init(name){
         Knowledge.init()
         Task.init()
         Experience.init()
         Reward.init()
         Goal.init()
-        return Family.init()
+        return Family.init(name)
     }
 }

@@ -1,13 +1,16 @@
-import {React,Component,UI,Router} from 'qili-app'
+import {React,Component,UI} from 'qili-app'
 import {Avatar,Paper, RadioGroup, RadioButton,FontIcon,IconButton,TextField, Tabs, Tab, DatePicker} from 'material-ui'
+import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
+import IconAccount from 'material-ui/svg-icons/action/account-box'
+import IconTask from "material-ui/svg-icons/editor/format-list-numbered"
+
 import {Task as dbTask,Family as dbFamily} from './db'
 import Calendar from './components/calendar'
 import Rewards from './components/rewards'
 import Logo from './icons/logo'
-import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 
-var {List, Loading, Empty,Comment,CommandBar,Photo,Messager,Icons}=UI,
-    {DialogCommand}=CommandBar
+const {List, Loading, Empty,Comment,CommandBar,Photo,Messager,Icons}=UI
+const {DialogCommand}=CommandBar
 
 
 
@@ -30,18 +33,18 @@ export class AuthorDashboard extends Component{
             <div>
                 <Empty text="Start from your first baby, or walk around!"
                     icon={<Logo/>}
-                    onClick={()=>this.context.router.transitionTo("baby")}/>
+                    onClick={()=>this.context.router.push("baby")}/>
                 <CommandBar
                     className="footbar"
                     primary="Family"
 
                     items={[
                         {action:"Knowledges",
-                            onSelect:()=>this.context.router.transitionTo('knowledges'),
+                            onSelect:()=>this.context.router.push('knowledges'),
                             icon:IconKnowledges},
                         {action:"setting", label:"Account",
-                            onSelect:()=>this.context.router.transitionTo('account'),
-                            icon: require('material-ui/svg-icons/action/account-box')}
+                            onSelect:()=>this.context.router.push('account'),
+                            icon: IconAccount}
                         ]}
                     />
             </div>)
@@ -91,13 +94,13 @@ export class BabyDashboard extends Component{
                     items={[
                         {action:"Task",
                             onSelect:()=>this.refs.task.show(),
-                            icon:require("material-ui/svg-icons/editor/format-list-numbered")},
+                            icon:IconTask},
                         {action:"Knowledges",
-                            onSelect:()=>this.context.router.transitionTo('knowledges'),
+                            onSelect:()=>this.context.router.push('knowledges'),
                             icon:IconKnowledges},
                         {action:"setting", label:"Account",
-                            onSelect:()=>this.context.router.transitionTo('account'),
-                            icon: require('material-ui/svg-icons/action/account-box')}
+                            onSelect:()=>this.context.router.push('account'),
+                            icon: IconAccount}
                         ]}
                     />
                 <TaskQueryCommand ref="task" when={when} onChange={d=>this.onChangeDate(d)}/>
@@ -137,7 +140,7 @@ export class BabyDashboard extends Component{
                         icon={<Logo/>}/>) :
                     (<Empty text={`Find fun topic NOW to play with ${child.name} `}
                         icon={<Logo/>}
-                        onTouchTap={()=>this.context.router.transitionTo('knowledges')} />)
+                        onTouchTap={()=>this.context.router.push('knowledges')} />)
             })
         }
 
@@ -152,7 +155,7 @@ export class BabyDashboard extends Component{
         }
     }
     onChangeDate(d){
-        this.context.router.transitionTo("dashboard",{when:this._format(d)})
+        this.context.router.push("dashboard",{when:this._format(d)})
         this.setState({when:d})
         this.refs.task.dismiss()
     }
@@ -179,9 +182,9 @@ export class BabyDashboard extends Component{
         case 'today':
             return today
         case 'yesterday':
-            return Date.Helper.addDays(today,-1)
+            return addDays(today,-1)
         case 'tomorrow':
-            return Date.Helper.addDays(today,1)
+            return addDays(today,1)
         default:
             when=new Date(Date.parse(when))
             when.setHours(0,0,0,0)
@@ -209,7 +212,7 @@ class TaskItem extends Component{
         )
     }
     onDetail(){
-        this.context.router.transitionTo('task',this.props.model)
+        this.context.router.push('task',this.props.model)
     }
 }
 TaskItem.defaultProps={
@@ -237,13 +240,19 @@ class TaskQueryCommand extends DialogCommand{
                     <List.Divider/>
                 </List>),
                 (<div key="calendar">
-                    <Calendar
+                    {/*<Calendar
                         selected={when}
                         displayDate={displayDate}
-                        minDate={Date.Helper.addDays(displayDate,-31)}
-                        maxDate={Date.Helper.addDays(displayDate,31)}
+                        minDate={addDays(displayDate,-31)}
+                        maxDate={addDays(displayDate,31)}
                         onDayTouchTap={onChange}
-                         />
+                         />*/}
                 </div>)]
     }
+}
+
+function addDays(date, days){
+    var d=new Date()
+    d.setTime(date.getTime()-days*24*60*60*1000)
+    return d
 }

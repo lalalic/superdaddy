@@ -132,13 +132,13 @@ export default class Baby extends Component{
         case "Save":
             this.setState({changing:true})
             dbFamily.upsert(child, null, (a)=>{
-                this.context.router.replaceWith("baby",a)
+                this.context.router.replace("baby",a)
             })
             break
         case "Remove":
             this.setState({removing:true})
             dbFamily.remove(child._id,()=>{
-                this.context.router.replaceWith("/")
+                this.context.router.replace("/")
             })
             break
         }

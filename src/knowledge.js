@@ -1,12 +1,17 @@
-var {React,Component, File,UI:{List,Loading,Comment,CommandBar,fileSelector},Router:{Link}, User}=require('qili-app'),
-    {DialogCommand}=CommandBar,
-    dbKnowledge=require('./db/knowledge'),
-    dbTask=require('./db/task'),
-    {RaisedButton}=require('material-ui'),
-    extract=require('./parser/extractor'),
-	Template=require("./parser/template");
+import {React,Component, File,UI, User} from 'qili-app'
+import dbKnowledge from './db/knowledge'
+import dbTask from './db/task'
+import {RaisedButton} from 'material-ui'
+import extract from './parser/extractor'
+import Template from "./parser/template"
 
 import moment from "moment"
+
+import IconCreate from "material-ui/svg-icons/editor/border-color"
+import IconCancel from "material-ui/svg-icons/navigation/cancel"
+
+const {List,Loading,Comment,CommandBar,fileSelector}=UI
+const {DialogCommand}=CommandBar
 
 export default class Knowledge extends Component{
     constructor(props){
@@ -37,14 +42,14 @@ export default class Knowledge extends Component{
 
         var commands=["Back"], primary, planCommand;
         if(true || User.current._id==entity.author._id)
-            commands.push({action:"New Version",icon:require("material-ui/svg-icons/editor/border-color")})
+            commands.push({action:"New Version",icon:IconCreate})
 
         switch(status){
         case 'revising':
             commands.push("Save")
             commands.push({action:"Cancel",
                 onSelect:()=>this.setState({entity:this.origin,status:undefined}),
-                icon:require("material-ui/svg-icons/navigation/cancel")})
+                icon:IconCancel})
             primary="Save"
         break
         default:
@@ -74,10 +79,10 @@ export default class Knowledge extends Component{
             </div>
         )
     }
-	
+
 	static date2String(d){
 		if(!d) return ""
-		var now=moment(),date=moment(d)	
+		var now=moment(),date=moment(d)
         return date.format(now.isSame(date,"day") ? "今天 HH:MM" : now.isSame(date, "year") ? "MM月DD日" : "YYYY年MM月DD日")
 	}
 
@@ -120,10 +125,10 @@ export default class Knowledge extends Component{
         }else {
             notNewStuff=(<h1 key="link">{entity.title}</h1>)
         }
-		
+
 		if(figure)
 			figure=(<img src={figure}/>)
-		
+
 		return (
 			<article>
 				<figure>{figure}</figure>
@@ -181,10 +186,7 @@ export default class Knowledge extends Component{
         return fileSelector.select()
             .then(extract,console.error)
     }
-}
-
-Knowledge.contextTypes={
-    router:React.PropTypes.object
+    static contextTypes={router:React.PropTypes.object}
 }
 
 class Plan extends Component{
@@ -207,12 +209,10 @@ class PlanCommand extends CommandBar.DialogCommand{
         }
     }
     renderContent(){
-        var everydays="week,weekend,weekday,month".split(",").map(function(a){
-                return (<RaisedButton key={a} onClick={()=>this.selectDays(a)}>{a}</RaisedButton>)
-            }.bind(this)),
-            now=new Date(),
-            Calendar=require('./components/calendar'),
-            {selectedDays}=this.state;
+        var everydays="week,weekend,weekday,month".split(",")
+                .map(a=>(<RaisedButton key={a} onClick={()=>this.selectDays(a)}>{a}</RaisedButton>))
+            ,now=new Date()
+            ,{selectedDays}=this.state;
 
         return [(<div key="everydays" style={{textAlign:'center',padding:10}}>{everydays}</div>),
                 (<div key="calender">

@@ -1,9 +1,9 @@
-var {React} = require('qili-app'),
-    {ClearFix} = require('material-ui'),
-    DayButton = require('material-ui/DatePicker/DayButton'),
-    DateTime=Date.Helper;
+import {React, Component} from 'qili-app'
+import {ClearFix} from 'material-ui'
+import DayButton from 'material-ui/DatePicker/DayButton'
+import DateTime from "moment"
 
-export default class Calendar extends React.Component{
+export default class Calendar extends Component{
     constructor(props){
         super(props)
         this.componentWillReceiveProps(this.props)

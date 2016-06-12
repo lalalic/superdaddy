@@ -2,6 +2,7 @@ import {React,Component,UI} from 'qili-app'
 import {RaisedButton,ClearFix} from 'material-ui'
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconThumbup from "material-ui/svg-icons/action/thumb-up"
+import IconCreate from "material-ui/svg-icons/content/create"
 
 import dbKnowledge from './db/knowledge'
 import uiKnowledge from './knowledge'
@@ -38,7 +39,7 @@ export default class Knowledges extends Component{
                             defaultValue={query.title}
                             style={{fontSize:14,padding:10}}
                             onFocus={()=>this.refs.search.show()}/>),
-                        {action:"Create", icon:require("material-ui/svg-icons/content/create")}
+                        {action:"Create", icon:IconCreate }
                     ]}
                     onSelect={this.onSelect.bind(this)}/>
 
@@ -50,7 +51,7 @@ export default class Knowledges extends Component{
     onSelect(command){
         switch(command){
         case 'Create':
-            this.context.router.transitionTo('create')
+            this.context.router.push('create')
             break
         }
     }
@@ -61,7 +62,7 @@ export default class Knowledges extends Component{
         title=title.trim()
         if(title.length)
             props.title=title
-        this.context.router.replaceWith("knowledges",null, props)
+        this.context.router.replace("knowledges",null, props)
     }
 }
 
@@ -204,7 +205,7 @@ class Item extends Component{
 
     _more(model){
         var time=uiKnowledge.date2String(model.createdAt||model.updatedAt)
- 
+
         var zan=model.zans ? (<div><IconThumbup/>{model.zans}</div>) : null
         return (
             <div className="more">
@@ -214,7 +215,7 @@ class Item extends Component{
         )
     }
     onDetail(){
-        this.context.router.transitionTo('knowledge',this.props.model)
+        this.context.router.push('knowledge',this.props.model)
     }
 }
 Item.contextTypes=Knowledges.contextTypes={router:React.PropTypes.object}

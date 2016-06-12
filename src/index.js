@@ -1,34 +1,33 @@
 require('../style/index.less')
 
-import {Route, Direct, IndexDirect} from "react-router"
+import {Route, IndexRoute, Direct, IndexDirect} from "react-router"
 import {User,React,Component,QiliApp, UI} from 'qili-app'
 import {MenuItem, FloatingActionButton, Avatar} from 'material-ui'
 
 import {Family,Knowledge,Table,init} from './db'
-import Dashboard from "./dashboard"
 
 const {Empty}=UI
 
 class SuperDaddy extends QiliApp{
     constructor(props){
         super(props)
-        Object.assign(this.state,{child:Family.currentChild})
-        Family.event.on('change',child=>this.setState({child}))
+        Object.assign(this.state,{baby:this.props.child})
+        Family.event.on('change',a=>this.setState({baby:Family.currentChild}))
     }
 
     renderContent(){
-        var {child}=this.state
-            ,{children:content}=this.props
-            ,{route}=content.props
+        var {baby}=this.state
+            ,{children:child}=this.props
+            ,{route}=child.props
         return (
             <div>
-               <CurrentChild child={child} onChange={target=>{
+               <CurrentChild child={baby} onChange={target=>{
                    if(route.name=="baby")
                        this.context.router.push(`baby/${target.name}`)
                    else
                        Family.currentChild=target
                }}/>
-               {React.cloneElement(content,{child})}
+               {React.cloneElement(child,{child:baby})}
             </div>
         )
     }
@@ -37,8 +36,7 @@ class SuperDaddy extends QiliApp{
 
 Object.assign(SuperDaddy.defaultProps,{
     appId:"5746b2c5e4bb3b3700ae1566",
-    init:()=>init(),
-    tutorials:[]
+    init:()=>init()
 })
 
 class CurrentChild extends Component{
@@ -86,6 +84,7 @@ import NewKnowledgeUI from './newKnowledge'
 import AccountUI from './account'
 import SettingUI from './setting'
 import PublishUI from './publish'
+import Dashboard from "./dashboard"
 
 module.exports=QiliApp.render(
     (<Route path="/" component={SuperDaddy}>
@@ -112,7 +111,7 @@ module.exports=QiliApp.render(
 
 
         <Route name="comment" path="comment" component={Comment}>
-            <Route path=":type/:_id">
+            <Route path=":type/:_id"/>
         </Route>
 
         <Route name="account" path="account" component={AccountUI} />
@@ -123,7 +122,7 @@ module.exports=QiliApp.render(
         </Route>
 
         <Route name="publish" path="publish" component={PublishUI}>
-            <IndexRoute params={what:"all"}/>
+            <IndexRoute params={{what:"all"}}/>
             <Route path=":what"/>
         </Route>
 

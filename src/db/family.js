@@ -10,14 +10,14 @@ export default class Family extends Model{
         return 'family'
     }
 
-    static init(){
+    static init(name){
         this.super('init')()
         return new Promise((resolve, reject)=>{
             this.find().fetch((data)=>{
                 all=data||[]
                 children=[]
                 all.forEach((a)=>(!a.relationShip && children.push(a)))
-                resolve(Family.currentChild=children[0])
+                resolve(Family.currentChild=name ? children.find(a=>a.name==name) : children[0])
             },reject)
         })
     }
@@ -61,7 +61,7 @@ export default class Family extends Model{
     static set currentChild(a){
 		if(typeof(a)=='string')
 			a=children.filter(b=>b._id==a)[0]
-		
+
         if(currentChild && currentChild._id)
             lastChild=currentChild
         else

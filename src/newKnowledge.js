@@ -67,7 +67,7 @@ export default class NewKnowledge extends Component{
                     entity.photos=this.docx.getPhotos()
                     entity.content=content
                     dbKnowledge.upsert(this.state.entity,null,
-                            ()=>this.context.router.replaceWith("knowledge",this.state.entity))
+                            ()=>this.context.router.replace("knowledge",this.state.entity))
                 }, ()=>{
                     delete this.state.entity._id;
                     dbKnowledge.remove(this.state.entity)

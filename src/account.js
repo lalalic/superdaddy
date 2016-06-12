@@ -38,7 +38,7 @@ export default class Account extends Component{
 
                 return (
                     <List.Item key={a._id}
-                        onClick={()=>router.transitionTo("baby",dbFamily.currentChild=a)}
+                        onClick={$=>router.push(`baby/${(dbFamily.currentChild=a)._id}`)}
                         leftAvatar={avatar}>
                         {a.name}
                     </List.Item>
@@ -57,7 +57,7 @@ export default class Account extends Component{
                     <List.Item primaryText="我的宝贝"
                         leftIcon={<span/>}
                         open={true}
-                        onClick={a=>router.transitionTo("baby")}
+                        onClick={a=>router.push("baby")}
                         rightAvatar={<Avatar>+</Avatar>}>
                         {uiChildren}
                     </List.Item>
@@ -66,17 +66,17 @@ export default class Account extends Component{
 
                     <List.Item primaryText="邀请家人"
                         leftIcon={<InviteIcon/>}
-                        onClick={a=>router.transitionTo("invite")}
+                        onClick={a=>router.push("invite")}
                         />
 
                     <List.Item primaryText="出书"
                         leftIcon={<PublishIcon/>}
-                        onClick={a=>router.transitionTo("publish")}
+                        onClick={a=>router.push("publish")}
                         />
 
                     <List.Item primaryText="设置"
                         leftIcon={<SettingIcon/>}
-                        onClick={e=>this.context.router.transitionTo('setting')}
+                        onClick={e=>this.context.router.push('setting')}
                         />
                 </List>
 				<CommandBar className="footbar"

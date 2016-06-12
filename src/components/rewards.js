@@ -1,4 +1,5 @@
 import {React, UI} from "qili-app"
+import ReactDOM from "react-dom"
 import {TextField, IconButton, Avatar} from 'material-ui'
 import PlusIcon from 'material-ui/svg-icons/action/alarm-add'
 import ForwardIcon from "material-ui/svg-icons/navigation/arrow-forward"
@@ -40,24 +41,24 @@ export default class Rewards extends React.Component{
 			this.setState({rewards,goals})
 		})
 	}
-	
+
 	onScroll(e){
 		if(this._scrollTimer)
 			clearTimeout(this._scrollTimer)
 		this._scrollTimer=setTimeout(e=>{
-			var {top,height}=React.findDOMNode(this).getBoundingClientRect()
+			var {top,height}=ReactDOM.findDOMNode(this).getBoundingClientRect()
 			,bottom=top+height
 			,{minY,maxY,editable}=this.props
 			,{pendingGoal, rewardor}=this.refs
-			
+
 			if(pendingGoal){
-				let classes=React.findDOMNode(pendingGoal).classList
+				let classes=ReactDOM.findDOMNode(pendingGoal).classList
 				let act=top<=minY ? "add" : "remove";
 				"sticky top left".split(" ").forEach(a=>classes[act](a))
 			}
-			
+
 			if(rewardor){
-				let classes=React.findDOMNode(rewardor).classList
+				let classes=ReactDOM.findDOMNode(rewardor).classList
 				let act=(top>maxY || bottom<minY) ? "add" : "remove"
 				classes[act]("hide")
 			}
@@ -85,7 +86,7 @@ export default class Rewards extends React.Component{
 		if(child!=newChild)
 			this.onChange({child:newChild._id})
 	}
-	
+
 	componentDidUpdate(){
 		if(this.refs.pendingGoal)
 			this.refs.pendingGoal.setState({reward:"",total:""})
@@ -208,7 +209,7 @@ class PendingGoal extends Item{
 				return
 			}else{
 				UI.Messager.show(`new goal must greater than current total ${current}`)
-				React.findDOMNode(this.refs.goal).focus()
+				ReactDOM.findDOMNode(this.refs.goal).focus()
 			}
 		}
 		this.setState({reward,total})
