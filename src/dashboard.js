@@ -5,7 +5,7 @@ import IconAccount from 'material-ui/svg-icons/action/account-box'
 import IconTask from "material-ui/svg-icons/editor/format-list-numbered"
 
 import {Task as dbTask,Family as dbFamily} from './db'
-import Calendar from './components/calendar'
+import Calendar, {addDays} from './components/calendar'
 import Rewards from './components/rewards'
 import Logo from './icons/logo'
 
@@ -90,7 +90,6 @@ export class BabyDashboard extends Component{
 				<CommandBar
                     className="footbar"
                     primary="Knowledges"
-                    onSelect={()=>this.onSelect()}
                     items={[
                         {action:"Task",
                             onSelect:()=>this.refs.task.show(),
@@ -103,7 +102,8 @@ export class BabyDashboard extends Component{
                             icon: IconAccount}
                         ]}
                     />
-                <TaskQueryCommand ref="task" when={when} onChange={d=>this.onChangeDate(d)}/>
+                <TaskQueryCommand ref="task" when={when} 
+					onChange={d=>this.context.router.push(`dashboard/${this._format(d)}`)}/>
             </div>
         )
     }
@@ -145,19 +145,6 @@ export class BabyDashboard extends Component{
         }
 
         return <List {...props}/>
-    }
-
-    onSelect(command,e){
-        switch(command){
-        case 'Refresh':
-            this.forceUpdate()
-            break
-        }
-    }
-    onChangeDate(d){
-        this.context.router.push("dashboard",{when:this._format(d)})
-        this.setState({when:d})
-        this.refs.task.dismiss()
     }
 
     _format(d){
@@ -240,19 +227,13 @@ class TaskQueryCommand extends DialogCommand{
                     <List.Divider/>
                 </List>),
                 (<div key="calendar">
-                    {/*<Calendar
+                    {<Calendar
                         selected={when}
                         displayDate={displayDate}
                         minDate={addDays(displayDate,-31)}
                         maxDate={addDays(displayDate,31)}
                         onDayTouchTap={onChange}
-                         />*/}
+                         />}
                 </div>)]
     }
-}
-
-function addDays(date, days){
-    var d=new Date()
-    d.setTime(date.getTime()-days*24*60*60*1000)
-    return d
 }

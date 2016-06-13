@@ -3,8 +3,8 @@ var {Model}=require('qili-app'),
     event=new EventEmitter(),
     all=[],
     children=[],
-    currentChild,
-    lastChild;
+    currentChild=null,
+    lastChild=null;
 export default class Family extends Model{
     static get _name(){
         return 'family'
@@ -23,27 +23,23 @@ export default class Family extends Model{
     }
 
     static upsert(a, base, success, error){
-        return this.super('upsert')(a,base,(r)=>{
-                if(all.filter(b=>b._id=a._id).length==0){
+        return this.super('upsert')(...arguments).then(r=>{
+				if(all.filter(b=>b._id==a._id).length==0){
                     all.push(r)
-                    children.push(r)
-                    currentChild=r
-                    event.emit("change")
+					if(!r.relationShip)
+						children.push(r)
                 }
-                success && success(...arguments)
-            },error)
+			})
     }
 
     static remove(child,success, error){
-        return this.super('remove')(child,()=>{
+        return this.super('remove')(...arguments)
+			.then(a=>{
                 children=children.filter((a)=>a._id!=child)
                 all=all.filter((a)=>a._id!=child)
-                if(currentChild._id==child){
-                    currentChild=children[0]
-                    event.emit("change")
-                }
-                success && success(...arguments)
-            },error)
+                if(currentChild._id==child)
+                    Family.currentChild=children[0]
+			})
     }
 
     static get all(){
@@ -60,23 +56,19 @@ export default class Family extends Model{
 
     static set currentChild(a){
 		if(typeof(a)=='string')
-			a=children.filter(b=>b._id==a)[0]
-
-        if(currentChild && currentChild._id)
-            lastChild=currentChild
-        else
-            lastChild=null
-        currentChild=a
-        event.emit("change")
+			a=children.find(b=>b.name==a)
+		
+		a= a || null
+		
+        if(a!=currentChild){
+			lastChild=currentChild
+			currentChild=a
+			event.emit("change",currentChild, lastChild)
+		}
     }
 
     static restoreLast(){
-        if(lastChild!=null && lastChild._id && currentChild!=lastChild)
-            currentChild=lastChild
-        else
-            currentChild=children[0]
-        lastChild=null
-        event.emit("change")
+        this.currentChild=lastChild
     }
 
     static get children(){

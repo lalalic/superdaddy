@@ -1,5 +1,7 @@
 import {React,Component,UI} from 'qili-app'
+import ReactDOM from "react-dom"
 import {RaisedButton,ClearFix} from 'material-ui'
+
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconThumbup from "material-ui/svg-icons/action/thumb-up"
 import IconCreate from "material-ui/svg-icons/content/create"
@@ -8,17 +10,18 @@ import dbKnowledge from './db/knowledge'
 import uiKnowledge from './knowledge'
 import moment from "moment"
 
-const  {List, CommandBar, Empty}=UI
-        ,{DialogCommand}=CommandBar
+const {List, CommandBar, Empty}=UI
+
+const {DialogCommand}=CommandBar
 
 export default class Knowledges extends Component{
     constructor(p){
         super(p)
-        this.state={model:dbKnowledge.find(this.props.query)}
+        this.state={model:dbKnowledge.find(this.props.location.query)}
     }
     render(){
         var {model}=this.state,
-            {query}=this.props
+            {query={}}=this.props.location
         return (
             <div>
                 <List
@@ -38,12 +41,12 @@ export default class Knowledges extends Component{
                             placeholder="Search"
                             defaultValue={query.title}
                             style={{fontSize:14,padding:10}}
-                            onFocus={()=>this.refs.search.show()}/>),
+                            onFocus={e=>this.refs.search.show()}/>),
                         {action:"Create", icon:IconCreate }
                     ]}
-                    onSelect={this.onSelect.bind(this)}/>
+                    onSelect={cmd=>this.onSelect(cmd)}/>
 
-                <Search ref="search" onSearch={()=>this.search()} />
+				<Search ref="search" onSearch={query=>this.search(query)} query={query}/>
             </div>
         )
     }
@@ -51,24 +54,27 @@ export default class Knowledges extends Component{
     onSelect(command){
         switch(command){
         case 'Create':
-            this.context.router.push('create')
+            this.context.router.push('knowledge')
             break
         }
     }
 
     search(props){
         this.refs.search.dismiss()
-        var {value:title=""}=this.refs.byTitle.getDOMNode()
+        var {value:title=""}=ReactDOM.findDOMNode(this.refs.byTitle)
         title=title.trim()
         if(title.length)
             props.title=title
-        this.context.router.replace("knowledges",null, props)
+        this.context.router.replace(this.context.router.createPath("knowledges", props))
     }
+	
+	static contextTypes={router:React.PropTypes.object}
 }
 
 class Search extends DialogCommand{
     renderContent(){
-        var {age,gender,category}=this.context.router.getCurrentQuery()
+        var {age,gender,category}=this.props.query||{}
+		
         return [
             (<CheckGroup ref="age" key="Age" label="Age (Year)" single={true}
                 selected={age}
@@ -80,21 +86,17 @@ class Search extends DialogCommand{
                 selected={category}
                 items={"Observe, Study, Sport".split(',')}/>),
             (<div key="actions" style={{padding:10, textAlign:'center'}}>
-                <RaisedButton primary={true} onClick={this.search.bind(this)}>Search</RaisedButton>
+                <RaisedButton primary={true} onClick={e=>{
+						var age=this.refs.age.state.selected,
+							gender=Array.from(this.refs.gender.state.selected),
+							category=Array.from(this.refs.category.state.selected)
+							
+						this.props.onSearch({age,gender,category})
+					}}>Search</RaisedButton>
                 </div>)
         ]
     }
-
-    search(){
-        var {onSearch}=this.props,
-            age=this.refs.age.state.selected,
-            gender=Array.from(this.refs.gender.state.selected),
-            category=Array.from(this.refs.category.state.selected);
-        onSearch && onSearch({age:age,gender:gender,category:category})
-    }
 }
-
-Search.contextTypes={router:React.PropTypes.object}
 
 class CheckGroup extends Component{
     constructor(props){
@@ -119,7 +121,7 @@ class CheckGroup extends Component{
                 color:'white',backgroundColor:'red'},
             unselectedStyle=Object.assign({},selectedStyle,{color:'black', backgroundColor:'transparent'});
 
-        return(<ClearFix style={{padding:10}}>
+        return(<div style={{padding:10}}>
                 <span>{label}</span>
                 <span style={{float:'right',padding:'5px 0px', border:'1px solid lightgray', borderRight:0}}>
                     {items.map(function(a){
@@ -133,7 +135,7 @@ class CheckGroup extends Component{
                             {a}</span>)
                     }.bind(this))}
                 </span>
-            </ClearFix>)
+            </div>)
     }
     onSelect(item, a={}){
         var{single}=this.props,
@@ -146,8 +148,9 @@ class CheckGroup extends Component{
             this.setState({selected:selected})
         }
     }
+	
+	static defaultProps={single:false}
 }
-CheckGroup.defaultProps={single:false}
 
 class Item extends Component{
     render(){
@@ -215,7 +218,7 @@ class Item extends Component{
         )
     }
     onDetail(){
-        this.context.router.push('knowledge',this.props.model)
+        this.context.router.push(`knowledge/${this.props.model._id}`)
     }
+	static contextTypes={router:React.PropTypes.object}
 }
-Item.contextTypes=Knowledges.contextTypes={router:React.PropTypes.object}

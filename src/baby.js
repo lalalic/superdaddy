@@ -3,45 +3,37 @@ import {TextField, RadioButtonGroup, RadioButton,DatePicker} from 'material-ui'
 import {Family as dbFamily} from './db'
 import RewardGoal from './components/rewards'
 
-var {List,CommandBar,Photo}=UI
+const {List,CommandBar,Photo}=UI
 
 export default class Baby extends Component{
-    constructor(props){
-        super(props)
-        var {params={}}=this.props,
-            {_id:targetId}=params,
-            currentChild=dbFamily.currentChild,
-            {_id:currentId}=currentChild||{}
+	constructor(){
+		super(...arguments)
+		this.state={}
+	}
+	componentWillUnmount(){
+		if(!this.props.child._id)
+			dbFamily.restoreLast()
+	}
+	
+	shouldComponentUpdate(newProps){
+		if(this.state.removing)
+			return false
 
-        if(!targetId)
-            this.state={child:{}}
-        else if(targetId==currentId)
-            this.state=({child:dbFamily.currentChild})
-        else
-            dbFamily.find({_id:targetId},(a)=>dbFamily.currentChild=a[0])
-    }
+		if(this.props.params.name!=newProps.params.name){
+			dbFamily.currentChild=newProps.params.name
+			return true
+		}
 
-    componentWillReceiveProps(nextProps){
-        if(this.state.changing)
-            return;
-        var {params:{_id:targetId}}=nextProps,
-            {child:{_id:currentId}}=this.state
-
-        if(!targetId)
-            this.setState({child:{}})
-        else if(targetId==currentId)
-            return;
-        else
-            dbFamily.find({_id:targetId},(a)=>dbFamily.currentChild=a[0])
+		return this.props.child!=newProps.child
     }
 
     render(){
-        var {child,removing}=this.state
-        if(removing)
-            return (<span>"removing..."</span>)
-
-        var cmds=["Back"], rewards
+        let {child}=this.props
+			,cmds=["Back"]
+			,rewards
+			
         cmds.push(child._id ? "Remove" : "Save")
+		
 		if(child._id){
 			rewards=(
 				<div>
@@ -66,22 +58,36 @@ export default class Baby extends Component{
                     </div>
                     <TextField ref="name" floatingLabelText="child name"
                         fullWidth={true}
-                        onChange={(e)=>this.setState({child:Object.assign(child,{name:e.target.value})})}
-                        onBlur={()=>(child._id && dbFamily.upsert(child))}
-                        value={child.name}/>
+                        value={child.name}
+                        onBlur={e=>{
+							if(this.props.value!=e.target.value){
+								child.name=e.target.value
+								this.onChange(child)
+							}
+						}}/>
 
                     <DatePicker ref="birthday" floatingLabelText="birthday"
                         fullWidth={true}
                         autoOk={true}
                         showYearSelector={true}
                         maxDate={new Date()}
-                        onChange={(nil, date)=>this.onChange(Object.assign(child,{bd:date}))}
-                        value={child.bd}/>
+                        value={child.bd}
+                        onChange={(nil, date)=>{
+							if(this.props.value && this.props.value.getTime()!==date.getTime()){
+								child.db=date
+								this.onChange(child)
+							}
+						}}/>
 
                     <RadioButtonGroup
                         style={{marginTop:36}}
                         name="gender"
-                        onChange={(e,selected)=>this.onChange(Object.assign(child,{gender:selected}))}
+                        onChange={(e,selected)=>{
+							if(this.props.valueSelected!=selected){
+								child.gender=selected
+								this.onChange(child)
+							}
+						}}
                         valueSelected={child.gender||"f"}>
                         <RadioButton value="f" label="girl"/>
                         <RadioButton value="m" label="boy" />
@@ -90,13 +96,13 @@ export default class Baby extends Component{
                 </div>
                 <CommandBar className="footbar"
                     items={cmds}
-                    onSelect={(a)=>this.onSelect(a)}
+                    onSelect={cmd=>this.onSelect(cmd)}
                     />
             </div>
         )
     }
     onRewardRule(rule){
-        let {child}=this.state,
+        let {child}=this.props,
             {rewardRules=[]}=child
         rewardRules.push(rule)
         child.rewardRules=rewardRules
@@ -104,7 +110,7 @@ export default class Baby extends Component{
     }
 
     onReward(reward){
-        let {child}=this.state,
+        let {child}=this.props,
             {rewardDetail=[]}=child
         rewardDetail.push(reward)
         child.rewardDetail=rewardDetail
@@ -112,9 +118,10 @@ export default class Baby extends Component{
     }
 
     onChange(child){
-        this.setState({child})
-        if(child._id)
-            dbFamily.upsert(child)
+        if(!child._id)
+			return
+        dbFamily.upsert(child)
+			.then(a=>this.forceUpdate())
     }
     takePhoto(){
         navigator.camera.getPicture((p)=>{
@@ -127,22 +134,23 @@ export default class Baby extends Component{
             });
     }
     onSelect(command){
-        var {child}=this.state
+        var {child}=this.props
         switch(command){
         case "Save":
-            this.setState({changing:true})
-            dbFamily.upsert(child, null, (a)=>{
-                this.context.router.replace("baby",a)
-            })
+            dbFamily.upsert(child)
+				.then(a=>this.context.router.replace(`baby/${child.name}`))
             break
         case "Remove":
             this.setState({removing:true})
-            dbFamily.remove(child._id,()=>{
-                this.context.router.replace("/")
-            })
+            dbFamily.remove(child._id)
+				.then(a=>this.context.router.replace("/"))
             break
         }
     }
+	
+	static contextTypes={router:React.PropTypes.object}
+	
+	static Creator=class extends Baby{
+		
+	}
 }
-
-Baby.contextTypes={router:React.PropTypes.object}

@@ -1,14 +1,17 @@
-import {React,Component, File,UI, User} from 'qili-app'
-import dbKnowledge from './db/knowledge'
-import dbTask from './db/task'
-import {RaisedButton} from 'material-ui'
-import extract from './parser/extractor'
-import Template from "./parser/template"
-
 import moment from "moment"
+import {React,Component, File,UI, User} from 'qili-app'
+import {RaisedButton} from 'material-ui'
+import {Link} from "react-router"
 
 import IconCreate from "material-ui/svg-icons/editor/border-color"
 import IconCancel from "material-ui/svg-icons/navigation/cancel"
+
+import Calendar, {addDays} from './components/calendar'
+import dbKnowledge from './db/knowledge'
+import dbTask from './db/task'
+
+import extract from './parser/extractor'
+import Template from "./parser/template"
 
 const {List,Loading,Comment,CommandBar,fileSelector}=UI
 const {DialogCommand}=CommandBar
@@ -16,18 +19,17 @@ const {DialogCommand}=CommandBar
 export default class Knowledge extends Component{
     constructor(props){
         super(props)
-        this.state={}
-        var {params:{_id:id}}=this.props
-        dbKnowledge.findOne({_id:id},(entity)=>this.setState({entity:entity}))
+        this.state={entity:null}
+        dbKnowledge.findOne({_id:this.props.params._id},entity=>this.setState({entity}))
     }
 
 
-    componentWillReceiveProps (nextProps){
+    componentWillReceiveProps(nextProps){
         var {params:{_id:lastId}}=this.props,
-            {params:{_id:id}}=nextProps
+            {params:{_id}}=nextProps
 
-        if(id!=lastId)
-            dbKnowledge.findOne({_id:id},(entity)=>this.setState({entity:entity}))
+        if(_id!=lastId)
+            dbKnowledge.findOne({_id},entity=>this.setState({entity}))
     }
 
     componentWillUnmount(){
@@ -216,11 +218,11 @@ class PlanCommand extends CommandBar.DialogCommand{
 
         return [(<div key="everydays" style={{textAlign:'center',padding:10}}>{everydays}</div>),
                 (<div key="calender">
-                    <Calendar
-                        ref="calendar"
-                        minDate={now}
-                        maxDate={Date.Helper.addDays(now,31)}
-                        displayDate={now} />
+				<Calendar
+					ref="calendar"
+					minDate={now}
+					maxDate={addDays(now,31)}
+					displayDate={now} />
                 </div>)]
     }
 

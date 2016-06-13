@@ -1,7 +1,6 @@
 import {React, Component} from 'qili-app'
-import {ClearFix} from 'material-ui'
 import DayButton from 'material-ui/DatePicker/DayButton'
-import DateTime from "moment"
+import {getWeekArray,isBetweenDates,addDays} from "material-ui/DatePicker/dateUtils"
 
 export default class Calendar extends Component{
     constructor(props){
@@ -61,13 +60,13 @@ export default class Calendar extends Component{
     }
 
     _getWeekElements() {
-      var weekArray = DateTime.getWeekArray(this.props.displayDate);
+      var weekArray = getWeekArray(this.props.displayDate);
 
       return weekArray.map(function(week, i) {
         return (
-          <ClearFix key={i}>
+          <div key={i}>
             {this._getDayElements(week, i)}
-          </ClearFix>
+          </div>
         );
       }, this);
     }
@@ -75,40 +74,46 @@ export default class Calendar extends Component{
     _getDayElements(week, i) {
       return week.map(function(day, j) {
         var disabled = this._shouldDisableDate(day);
-        var selected = day && !disabled && this.state[day.getTime()+''] && true;
+        var selected = day && !disabled && this.state[day.getTime()+''];
 
         return (
           <DayButton
             key={'db' + i + j}
             date={day}
             onTouchTap={this._handleDayTouchTap.bind(this)}
-            selected={selected}
+            selected={!!selected}
             disabled={disabled} />
         );
       }, this);
     }
 
     _handleDayTouchTap(e, date, i) {
-        if(this.state[i=(date.getTime()+'')])
-            delete this.state[i]
-        else
-            this.setState({i:1})
-        var {onDayTouchTap}=this.props
+		i=(date.getTime()+'');
+		var {onDayTouchTap}=this.props
+        let state={}
+		state[i]=this.state[i] ? undefined : 1
+		
+		this.setState(state)
+
         onDayTouchTap && onDayTouchTap(date)
+		console.log(this.state)
     }
 
     _shouldDisableDate(day) {
       if (day === null) return false;
-      var disabled = !DateTime.isBetweenDates(day, this.props.minDate, this.props.maxDate);
+      var disabled = !isBetweenDates(day, this.props.minDate, this.props.maxDate);
       if (!disabled && this.props.shouldDisableDate) disabled = this.props.shouldDisableDate(day);
 
       return disabled;
     }
-}
-Calendar.propTypes={
-  displayDate: React.PropTypes.object.isRequired,
-  onDayTouchTap: React.PropTypes.func,
-  minDate: React.PropTypes.object.isRequired,
-  maxDate: React.PropTypes.object.isRequired,
-  shouldDisableDate: React.PropTypes.func
+	
+	static propTypes={
+		displayDate: React.PropTypes.object.isRequired,
+		onDayTouchTap: React.PropTypes.func,
+		minDate: React.PropTypes.object.isRequired,
+		maxDate: React.PropTypes.object.isRequired,
+		shouldDisableDate: React.PropTypes.func
+	}
+	
+	static addDays=addDays
 }

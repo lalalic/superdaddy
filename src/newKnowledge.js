@@ -1,11 +1,12 @@
-
 import {React, Component, UI} from 'qili-app'
+import InsertFile from 'material-ui/svg-icons/action/note-add'
+import IconCreate from "material-ui/svg-icons/editor/border-color"
+
 import dbKnowledge from './db/knowledge'
 import uiKnowledge from './knowledge'
 import extractor from './parser/extractor'
-import InsertFile from 'material-ui/svg-icons/action/note-add'
 
-var {Empty, CommandBar}=UI
+const {Empty, CommandBar}=UI
 
 export default class NewKnowledge extends Component{
     constructor(props){
@@ -24,12 +25,13 @@ export default class NewKnowledge extends Component{
     render(){
         var {entity}=this.state, content, primary, commands;
         if(!entity){
-            content=(<Empty icon={<InsertFile onClick={()=>this.onSelect('New Version')}/>} text="Select word docx file to create"/>)
+            content=(<Empty icon={<InsertFile onClick={()=>this.onSelect('New Version')}/>} 
+				text="选择docx文案文件"/>)
             commands=["Back"]
         }else{
             content=(<div className="knowledge">{uiKnowledge.renderContent(entity)}</div>)
             commands=["Back","Save",
-                {action:"New Version",icon:require("material-ui/svg-icons/editor/border-color")}]
+                {action:"New Version",icon:IconCreate}]
             primary="Save"
         }
 
@@ -50,7 +52,7 @@ export default class NewKnowledge extends Component{
         switch(command){
         case 'New Version':
             uiKnowledge.selectDocx()
-                .then((docx)=>{
+                .then(docx=>{
                     this.docx && this.docx.revoke()
                     delete this.docx
 
@@ -62,13 +64,13 @@ export default class NewKnowledge extends Component{
         case 'Save':
             var {entity}=this.state
             entity.content=""
-            dbKnowledge.upsert(entity,null,()=>{
-                this.docx.upload(entity).then((content)=>{
+            dbKnowledge.upsert(entity).then(a=>{
+                this.docx.upload(entity).then(content=>{
                     entity.photos=this.docx.getPhotos()
                     entity.content=content
-                    dbKnowledge.upsert(this.state.entity,null,
-                            ()=>this.context.router.replace("knowledge",this.state.entity))
-                }, ()=>{
+                    dbKnowledge.upsert(this.state.entity)
+                        .then(a=>this.context.router.replace(`knowledge/${this.state.entity._id}`))
+                }, a=>{
                     delete this.state.entity._id;
                     dbKnowledge.remove(this.state.entity)
                 })
@@ -76,6 +78,7 @@ export default class NewKnowledge extends Component{
             break
         }
     }
+	
+	static contextTypes={router:React.PropTypes.object}
 }
 
-NewKnowledge.contextTypes={router:React.PropTypes.object}

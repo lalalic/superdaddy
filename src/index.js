@@ -1,27 +1,30 @@
 require('../style/index.less')
 
-import {Route, IndexRoute, Direct, IndexDirect} from "react-router"
+import {Route, IndexRoute, Direct, IndexRedirect} from "react-router"
 import {User,React,Component,QiliApp, UI} from 'qili-app'
 import {MenuItem, FloatingActionButton, Avatar} from 'material-ui'
 
 import {Family,Knowledge,Table,init} from './db'
 
-const {Empty}=UI
+const {Empty, Comment}=UI
 
 class SuperDaddy extends QiliApp{
     constructor(props){
         super(props)
         Object.assign(this.state,{baby:this.props.child})
-        Family.event.on('change',a=>this.setState({baby:Family.currentChild}))
+        Family.event.on('change',baby=>this.setState({baby}))
     }
 
     renderContent(){
         var {baby}=this.state
             ,{children:child}=this.props
             ,{route}=child.props
+		
         return (
             <div>
-               <CurrentChild child={baby} onChange={target=>{
+               <CurrentChild child={baby} name={baby.name} 
+				show={route.floatingButton===false ? false : true} 
+				onChange={target=>{
                    if(route.name=="baby")
                        this.context.router.push(`baby/${target.name}`)
                    else
@@ -41,26 +44,31 @@ Object.assign(SuperDaddy.defaultProps,{
 
 class CurrentChild extends Component{
     render(){
-        var {child={}, style={position:"absolute", zIndex:9}}=this.props, avatar
+        var {child, show, style={position:"absolute", zIndex:9}}=this.props, avatar
 
         if(child.photo)
             avatar=(<Avatar src={this.props.child.photo}/>)
         else
             avatar=(<div><span style={{fontSize:"xx-small"}}>{this.lastName=child.name}</span></div>)
 
-        if(!child._id)
-            style.display='none'
-
+		if(!show)
+			style.display="none"
+		
         return(
-            <FloatingActionButton className="sticky top right"
-                mini={true} style={style} onClick={()=>this.change()}>
+            <FloatingActionButton className="sticky top right" 
+				style={style}
+				onClick={e=>this.change()}>
                 {avatar}
             </FloatingActionButton>
         )
     }
 
-    shouldComponentUpdate(nextProps, nextState){
-        return !!this.props.child && (nextProps.child!=this.props.child || nextProps.child.name!=this.lastName)
+    shouldComponentUpdate(nextProps){
+		return true
+		let {name:target, open:targetOpen}=nextProps,
+			{name, open}=this.props
+			
+        return target!=name || targetOpen!=open
     }
 
     change(){
@@ -88,47 +96,56 @@ import Dashboard from "./dashboard"
 
 module.exports=QiliApp.render(
     (<Route path="/" component={SuperDaddy}>
-        <IndexRoute component={Dashboard}/>
-
-        <Route name="task" path="task" component={TaskUI}>
-            <IndexRoute/>
-            <Route path=":_id"/>
-        </Route>
-
-        <Route name="baby" path="baby" component={BabyUI}>
-            <IndexRoute onEnter={(nextState, replace, callback)=>{
-    				Family.currentChild={}
-    				callback()
-    			}}/>
-            <Route path=":_id"/>
-        </Route>
-        <Route name="knowledges" path="knowledges" component={KnowledgesUI}/>
-        <Route name="create" path="knowledge/_new" component={NewKnowledgeUI} />
-        <Route name="knowledge" path="knowledge" component={KnowledgeUI}>
-            <IndexRoute />
-            <Route path=":_id"/>
-        </Route>
-
-
-        <Route name="comment" path="comment" component={Comment}>
-            <Route path=":type/:_id"/>
-        </Route>
-
-        <Route name="account" path="account" component={AccountUI} />
-        <Route name="setting" path="setting" component={SettingUI} />
-        <Route name="dashboard" path="dashboard" component={Dashboard}>
-            <IndexRoute params={{when:new Date()}}/>
+        <IndexRedirect to="dashboard"/>
+		<Route path="dashboard" component={Dashboard}>
+            <IndexRedirect to="today"/>
             <Route path=":when"/>
         </Route>
 
+        <Route path="baby/:name" name="baby" component={BabyUI}/>
+        <Route path="baby" floatingButton={false} component={BabyUI} 
+			onEnter={(nextState, replace, callback)=>{
+				Family.currentChild={}
+				callback()
+			}}/>
+
+        <Route path="knowledges" component={KnowledgesUI}/>
+        <Route path="knowledge">
+            <IndexRoute floatingButton={false} component={NewKnowledgeUI}/>
+            <Route path=":_id" component={KnowledgeUI}/>
+        </Route>
+
+        <Route path="comment/:type/:_id" component={Comment}/>
+
+        <Route floatingButton={false} path="account" component={AccountUI} />
+		
+        <Route floatingButton={false} path="setting">
+			<IndexRoute  component={SettingUI}/>
+		</Route>
+		
+        
+		<Route path="task" component={TaskUI}>
+            <IndexRoute/>
+            <Route path=":_id"/>
+        </Route>
+		
         <Route name="publish" path="publish" component={PublishUI}>
             <IndexRoute params={{what:"all"}}/>
             <Route path=":what"/>
         </Route>
 
     </Route>),{
+		createElement(Component, props){
+			if(Component==SuperDaddy){//refresh baby page
+				let child=props.children
+					,{route,params}=child.props
 
-    }
+				if(route.name=="baby")
+					props.init=a=>init(params.name)
+			}
+			return <Component {...props}/>
+		}
+	}
 )
 
 
