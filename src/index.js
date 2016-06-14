@@ -11,24 +11,31 @@ const {Empty, Comment}=UI
 class SuperDaddy extends QiliApp{
     constructor(props){
         super(props)
-        Object.assign(this.state,{baby:this.props.child})
+        Object.assign(this.state,{baby:null})
         Family.event.on('change',baby=>this.setState({baby}))
+    }
+
+    shouldComponentUpdate(nextProps, nextState){
+        let {name:route}=this.props.children.props.route
+        if(route=="baby" && nextState.baby!=this.state.baby)
+            return false
+
+        return true
     }
 
     renderContent(){
         var {baby}=this.state
             ,{children:child}=this.props
             ,{route}=child.props
-		
+
         return (
             <div>
-               <CurrentChild child={baby} name={baby.name} 
-				show={route.floatingButton===false ? false : true} 
+               <CurrentChild child={baby} name={baby.name} mini={true}
+				show={route.floatingButton===false ? false : true}
 				onChange={target=>{
-                   if(route.name=="baby")
-                       this.context.router.push(`baby/${target.name}`)
-                   else
-                       Family.currentChild=target
+                    Family.currentChild=target
+                    if(route.name=="baby")
+                       this.context.router.push({pathname:`baby/${target.name}`})
                }}/>
                {React.cloneElement(child,{child:baby})}
             </div>
@@ -44,7 +51,7 @@ Object.assign(SuperDaddy.defaultProps,{
 
 class CurrentChild extends Component{
     render(){
-        var {child, show, style={position:"absolute", zIndex:9}}=this.props, avatar
+        var {child, show, style={position:"absolute", zIndex:9}, ...others}=this.props, avatar
 
         if(child.photo)
             avatar=(<Avatar src={this.props.child.photo}/>)
@@ -53,10 +60,11 @@ class CurrentChild extends Component{
 
 		if(!show)
 			style.display="none"
-		
+
         return(
-            <FloatingActionButton className="sticky top right" 
+            <FloatingActionButton className="sticky top right"
 				style={style}
+                {...others}
 				onClick={e=>this.change()}>
                 {avatar}
             </FloatingActionButton>
@@ -67,7 +75,7 @@ class CurrentChild extends Component{
 		return true
 		let {name:target, open:targetOpen}=nextProps,
 			{name, open}=this.props
-			
+
         return target!=name || targetOpen!=open
     }
 
@@ -96,17 +104,19 @@ import Dashboard from "./dashboard"
 
 module.exports=QiliApp.render(
     (<Route path="/" component={SuperDaddy}>
-        <IndexRedirect to="dashboard"/>
+
+        <IndexRoute component={Dashboard}/>
+
 		<Route path="dashboard" component={Dashboard}>
-            <IndexRedirect to="today"/>
+            <IndexRoute/>
             <Route path=":when"/>
         </Route>
 
         <Route path="baby/:name" name="baby" component={BabyUI}/>
-        <Route path="baby" floatingButton={false} component={BabyUI} 
-			onEnter={(nextState, replace, callback)=>{
+
+        <Route path="baby" floatingButton={false} component={BabyUI.Creator}
+			onEnter={(nextState, replace)=>{
 				Family.currentChild={}
-				callback()
 			}}/>
 
         <Route path="knowledges" component={KnowledgesUI}/>
@@ -118,17 +128,17 @@ module.exports=QiliApp.render(
         <Route path="comment/:type/:_id" component={Comment}/>
 
         <Route floatingButton={false} path="account" component={AccountUI} />
-		
+
         <Route floatingButton={false} path="setting">
 			<IndexRoute  component={SettingUI}/>
 		</Route>
-		
-        
+
+
 		<Route path="task" component={TaskUI}>
             <IndexRoute/>
             <Route path=":_id"/>
         </Route>
-		
+
         <Route name="publish" path="publish" component={PublishUI}>
             <IndexRoute params={{what:"all"}}/>
             <Route path=":what"/>

@@ -102,7 +102,7 @@ export class BabyDashboard extends Component{
                             icon: IconAccount}
                         ]}
                     />
-                <TaskQueryCommand ref="task" when={when} 
+                <TaskQueryCommand ref="task" when={when}
 					onChange={d=>this.context.router.push(`dashboard/${this._format(d)}`)}/>
             </div>
         )
@@ -149,9 +149,9 @@ export class BabyDashboard extends Component{
 
     _format(d){
         switch(Math.floor((Date.now()-d.getTime())/(1000*24*60*60))){
-            case 0: return 'Today'
-            case 1: return 'Yesterday'
-            case -1: return 'Tomorrow'
+            case 0: return 'today'
+            case 1: return 'yesterday'
+            case -1: return 'tomorrow'
         }
         return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()
     }
@@ -229,6 +229,7 @@ class TaskQueryCommand extends DialogCommand{
                 (<div key="calendar">
                     {<Calendar
                         selected={when}
+                        multiple={false}
                         displayDate={displayDate}
                         minDate={addDays(displayDate,-31)}
                         maxDate={addDays(displayDate,31)}

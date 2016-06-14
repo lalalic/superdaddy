@@ -14,8 +14,6 @@
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-router": "^2.4.1",
-    "react-tap-event-plugin": "^1.0.0",
-    "reactable": "^0.13.2",
     "moment": "^2.13.0"
   },
   "devDependencies": {

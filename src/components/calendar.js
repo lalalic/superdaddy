@@ -5,20 +5,24 @@ import {getWeekArray,isBetweenDates,addDays} from "material-ui/DatePicker/dateUt
 export default class Calendar extends Component{
     constructor(props){
         super(props)
-        this.componentWillReceiveProps(this.props)
+        var {selected=[]}=this.props
+        if(!Array.isArray(selected)){
+            if(selected)
+                selected=[selected]
+        }
+        selected=selected||[]
+        selected.forEach(a=>a.setHours(0,0,0,0))
+        this.state={selected}
     }
     componentWillReceiveProps(nextProps){
-        var {selected}=nextProps
-        this.state={}
-        if(Array.isArray(selected)){
-            Array.forEach(selected,function(a){
-                a.setHours(0,0,0,0)
-                this.state[a.getTime()+'']=1
-            })
-        }else if(selected){
-            selected.setHours(0,0,0,0)
-            this.state[selected.getTime()+'']=1
+        var {selected=[]}=nextProps
+        if(!Array.isArray(selected)){
+            if(selected)
+                selected=[selected]
         }
+        selected=selected||[]
+        selected.forEach(a=>a.setHours(0,0,0,0))
+        this.setState({selected})
     }
     render() {
       var styles = {
@@ -72,9 +76,10 @@ export default class Calendar extends Component{
     }
 
     _getDayElements(week, i) {
+        let selecteds=this.state.selected
       return week.map(function(day, j) {
         var disabled = this._shouldDisableDate(day);
-        var selected = day && !disabled && this.state[day.getTime()+''];
+        var selected = day && !disabled && selecteds.find(a=>a.getTime()==day.getTime())
 
         return (
           <DayButton
@@ -87,16 +92,21 @@ export default class Calendar extends Component{
       }, this);
     }
 
-    _handleDayTouchTap(e, date, i) {
-		i=(date.getTime()+'');
-		var {onDayTouchTap}=this.props
-        let state={}
-		state[i]=this.state[i] ? undefined : 1
-		
-		this.setState(state)
+    _handleDayTouchTap(e, date) {
+		var   {onDayTouchTap, multiple}=this.props
+              ,selected=this.state.selected
+              ,found=selected.findIndex(a=>a.getTime()==date.getTime)
 
-        onDayTouchTap && onDayTouchTap(date)
-		console.log(this.state)
+        if(multiple){
+            found==-1 ? selected.push(date) : selected.splice(found,1)
+            onDayTouchTap && onDayTouchTap(selected)
+        }else if(found==-1){
+            selected=[date]
+            onDayTouchTap && onDayTouchTap(date)
+        }else
+            return;
+
+		this.setState({selected})
     }
 
     _shouldDisableDate(day) {
@@ -106,14 +116,23 @@ export default class Calendar extends Component{
 
       return disabled;
     }
-	
+
 	static propTypes={
 		displayDate: React.PropTypes.object.isRequired,
 		onDayTouchTap: React.PropTypes.func,
 		minDate: React.PropTypes.object.isRequired,
 		maxDate: React.PropTypes.object.isRequired,
-		shouldDisableDate: React.PropTypes.func
+		shouldDisableDate: React.PropTypes.func,
+        multiple: React.PropTypes.bool
 	}
-	
+
 	static addDays=addDays
+
+    static format=function(date, tmpl){
+        let value={y:date.getYear(), M: date.getMonth()+1, d: date.getDate(), h:date.getHours(), m:date.getMinutes() }
+        return tmpl.replace(/([ymdhs])/ig, function(match,type){
+            let v=value[type!='M' ? type.toLowerCase() : type]
+            return v ? return v : ""
+        })
+    }
 }

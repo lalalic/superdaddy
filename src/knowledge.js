@@ -1,4 +1,3 @@
-import moment from "moment"
 import {React,Component, File,UI, User} from 'qili-app'
 import {RaisedButton} from 'material-ui'
 import {Link} from "react-router"
@@ -6,7 +5,7 @@ import {Link} from "react-router"
 import IconCreate from "material-ui/svg-icons/editor/border-color"
 import IconCancel from "material-ui/svg-icons/navigation/cancel"
 
-import Calendar, {addDays} from './components/calendar'
+import Calendar, {addDays, format} from './components/calendar'
 import dbKnowledge from './db/knowledge'
 import dbTask from './db/task'
 
@@ -20,9 +19,11 @@ export default class Knowledge extends Component{
     constructor(props){
         super(props)
         this.state={entity:null}
-        dbKnowledge.findOne({_id:this.props.params._id},entity=>this.setState({entity}))
     }
 
+    componentDidMount(){
+        dbKnowledge.findOne({_id:this.props.params._id},entity=>this.setState({entity}))
+    }
 
     componentWillReceiveProps(nextProps){
         var {params:{_id:lastId}}=this.props,
@@ -57,7 +58,7 @@ export default class Knowledge extends Component{
         default:
             this.origin=entity
             commands.push({action:"Plan", onSelect:()=>this.refs.plan.show()})
-            planCommand=(<PlanCommand ref="plan" onDismiss={()=>this.createPlan()}/>)
+            planCommand=(<PlanCommand ref="plan" onCreate={selected=>this.createPlan(selected)}/>)
 
             commands.push(<CommandBar.Comment key="Comment" type={dbKnowledge} model={entity}/>)
             commands.push(<CommandBar.Share key="Share" message={entity}/>)
@@ -69,6 +70,7 @@ export default class Knowledge extends Component{
                 <div className="knowledge">
                     {Knowledge.renderContent(entity)}
                 </div>
+
                 <Plan style={{padding:10}} open={planing} entity={entity}/>
 
                 <CommandBar
@@ -84,8 +86,13 @@ export default class Knowledge extends Component{
 
 	static date2String(d){
 		if(!d) return ""
-		var now=moment(),date=moment(d)
-        return date.format(now.isSame(date,"day") ? "今天 HH:MM" : now.isSame(date, "year") ? "MM月DD日" : "YYYY年MM月DD日")
+        let year=d.getYear()
+            ,month=d.getMonth()
+		    ,now=new Date()
+        now.setHours(0,0,0,0)
+        d.setHours(0,0,0,0)
+
+        return format(d, now.getTime()==d.getTime() ? "今天 HH:MM" : year==now.getYear()&&month==now.getMonth() ? "MM月DD日" : "YYYY年MM月DD日")
 	}
 
     static renderContent(entity, open=true, templateRender){
@@ -206,27 +213,38 @@ class Plan extends Component{
 class PlanCommand extends CommandBar.DialogCommand{
     constructor(props){
         super(props)
-        this.state={
-            selectedDays:[]
-        }
+        this.state={selectedDays:[]}
     }
     renderContent(){
-        var everydays="week,weekend,weekday,month".split(",")
-                .map(a=>(<RaisedButton key={a} onClick={()=>this.selectDays(a)}>{a}</RaisedButton>))
+        var everydays="每天,周末,工作日".split(",")
+                .map(a=>(<RaisedButton key={a} onClick={_=>this.selectDays(a)}>{a}</RaisedButton>))
             ,now=new Date()
             ,{selectedDays}=this.state;
 
-        return [(<div key="everydays" style={{textAlign:'center',padding:10}}>{everydays}</div>),
+        return [(<div key="days" style={{textAlign:'center',padding:10}}>{everydays}</div>),
                 (<div key="calender">
-				<Calendar
-					ref="calendar"
-					minDate={now}
-					maxDate={addDays(now,31)}
-					displayDate={now} />
-                </div>)]
+    				<Calendar
+    					ref="calendar"
+    					minDate={now}
+    					maxDate={addDays(now,31)}
+    					displayDate={now}
+                        selected={selectedDays}
+                        />
+                </div>),
+                (<center key="ok"><RaisedButton  onClick={e=>this.props.onCreate(this.refs.calendar.state.selected)}
+                    primary={true} disabled={selectedDays.length==0}>创建</RaisedButton>
+                </center>)]
     }
 
-    selectDays(a){
-
+    selectDays(type){
+        let now=new Date()
+        switch(type){
+        case '每天':
+        break
+        case '周末':
+        break
+        case '每天':
+        break
+        }
     }
 }

@@ -10,19 +10,15 @@ export default class Baby extends Component{
 		super(...arguments)
 		this.state={}
 	}
-	componentWillUnmount(){
-		if(!this.props.child._id)
-			dbFamily.restoreLast()
-	}
-	
-	shouldComponentUpdate(newProps){
-		if(this.state.removing)
-			return false
 
-		if(this.props.params.name!=newProps.params.name){
+	componentWillReceiveProps(newProps){
+		if(this.props.params.name!=newProps.params.name)
 			dbFamily.currentChild=newProps.params.name
-			return true
-		}
+	}
+
+	shouldComponentUpdate(newProps){
+		if(this.state.frozen)
+			return false
 
 		return this.props.child!=newProps.child
     }
@@ -31,9 +27,9 @@ export default class Baby extends Component{
         let {child}=this.props
 			,cmds=["Back"]
 			,rewards
-			
+
         cmds.push(child._id ? "Remove" : "Save")
-		
+
 		if(child._id){
 			rewards=(
 				<div>
@@ -141,16 +137,23 @@ export default class Baby extends Component{
 				.then(a=>this.context.router.replace(`baby/${child.name}`))
             break
         case "Remove":
-            this.setState({removing:true})
+            this.setState({frozen:true})
             dbFamily.remove(child._id)
 				.then(a=>this.context.router.replace("/"))
             break
         }
     }
-	
+
 	static contextTypes={router:React.PropTypes.object}
-	
+
 	static Creator=class extends Baby{
-		
+		componentWillUnmount(){
+			if(!this.props.child._id)
+				dbFamily.restoreLast()
+		}
+
+		componentWillReceiveProps(newProps){
+			return false
+		}
 	}
 }
