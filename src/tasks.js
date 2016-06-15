@@ -1,9 +1,9 @@
 import {React,Component,UI} from 'qili-app'
-import {Avatar,Paper, RadioGroup, RadioButton,FontIcon,IconButton,TextField, Tabs, Tab, DatePicker} from 'material-ui'
+import {Subheader, Divider} from 'material-ui'
 
 
 import {Task as dbTask,Family as dbFamily} from './db'
-import Calendar, {addDays} from './components/calendar'
+import Calendar, {addDays, getLastDayOfMonth} from './components/calendar'
 import Logo from './icons/logo'
 import IconMore from "material-ui/svg-icons/navigation/more-vert"
 
@@ -18,13 +18,13 @@ export default class Tasks extends Component{
 		super(...arguments)
 		this.state={tasks:null}
 	}
-	
+
 	getData(when){
 		dbTask.find(/*{status:"scheduled",child:this.props.child._id, scheduledAt:when}*/).fetch(tasks=>{
 			this.setState({tasks})
 		})
 	}
-	
+
 	componentDidMount(){
 		this.getData(this._parseDate(this.props.params.when))
 	}
@@ -40,12 +40,14 @@ export default class Tasks extends Component{
             <div>
                 <List model={this.state.tasks}
 					empty={<Empty icon={<Logo/>}/>}
-					template={this.props.template||this.constructor.Item}/>
+					template={this.props.template||this.constructor.Item}>
+					<Subheader><h2><center>{this.props.params.when||'today'}</center></h2></Subheader>
+					<Divider inset={false}/>
+				</List>
 				<CommandBar
                     className="footbar"
                     primary="Knowledges"
                     items={[
-						{action:"Back"},
 						{action:"今天",
 							onSelect: a=>this.context.router.push("tasks/today")},
 						{action:"明天",
@@ -58,13 +60,13 @@ export default class Tasks extends Component{
                 <Tasks.TaskQueryCommand ref="task" when={when}
 					onChange={(d,name)=>{
 						switch(Math.floor((Date.now()-d.getTime())/(1000*24*60*60))){
-							case 0:  
+							case 0:
 								name='today'
 							break
-							case 1: 
+							case 1:
 								name='yesterday'
 							break
-							case -1: 
+							case -1:
 								name='tomorrow'
 							break
 							default:
@@ -76,7 +78,7 @@ export default class Tasks extends Component{
             </div>
         )
     }
-	
+
     _parseDate(when='today'){
         var today=new Date()
         today.setHours(0,0,0,0)
@@ -93,9 +95,9 @@ export default class Tasks extends Component{
             return when
         }
     }
-	
+
 	static contextTypes={router:React.PropTypes.object}
-	
+
 	static Item=class  extends Component{
 		render(){
 			var {model:task, image, actions, ...others}=this.props,
@@ -119,7 +121,7 @@ export default class Tasks extends Component{
 		static defaultProps={image:"images/task.jpg"}
 		static contextTypes={router:React.PropTypes.object}
 	}
-	
+
 	static Approvings=class extends Tasks{
 		getData(){
 			dbTask.find(/*{status:"finished",child:this.props.child._id}*/).fetch(tasks=>{
@@ -130,28 +132,27 @@ export default class Tasks extends Component{
 		_parseDate(){
 			return null
 		}
-		
+
 		static Item=class extends Tasks.Item{
-			
+
 		}
 	}
-	
+
 	static TaskQueryCommand=class extends DialogCommand{
 		renderContent(){
 			var {when, onChange}=this.props
 				,now=new Date()
-			return (<div key="calendar">
+			return (<div className="calendar">
 						{<Calendar
+							firstDayOfWeek={0}
+							mode="landscape"
 							selected={when}
-							multiple={false}
 							displayDate={now}
-							minDate={addDays(now,-31)}
-							maxDate={addDays(now,31)}
-							onDayTouchTap={onChange}
+							minDate={now}
+							maxDate={getLastDayOfMonth(now)}
+							onTouchTapDay={(e,day)=>onChange(day)}
 							 />}
 					</div>)
 		}
 	}
 }
-
-

@@ -25,12 +25,11 @@ export default class NewKnowledge extends Component{
     render(){
         var {entity}=this.state, content, primary, commands;
         if(!entity){
-            content=(<Empty icon={<InsertFile onClick={()=>this.onSelect('New Version')}/>} 
+            content=(<Empty icon={<InsertFile onClick={()=>this.onSelect('New Version')}/>}
 				text="选择docx文案文件"/>)
-            commands=["Back"]
         }else{
             content=(<div className="knowledge">{uiKnowledge.renderContent(entity)}</div>)
-            commands=["Back","Save",
+            commands=["Save",
                 {action:"New Version",icon:IconCreate}]
             primary="Save"
         }
@@ -38,11 +37,11 @@ export default class NewKnowledge extends Component{
         return (
             <div className="post">
                 {content}
-                <CommandBar
+                {commands && (<CommandBar
                     className="footbar"
                     primary={primary}
                     onSelect={this.onSelect.bind(this)}
-                    items={commands}/>
+                    items={commands}/>)}
             </div>
         )
     }
@@ -78,7 +77,6 @@ export default class NewKnowledge extends Component{
             break
         }
     }
-	
+
 	static contextTypes={router:React.PropTypes.object}
 }
-

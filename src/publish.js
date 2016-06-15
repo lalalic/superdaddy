@@ -12,7 +12,7 @@ export default class Publisher extends Component{
             <div>
                 <Empty icon={<Icon/>} text="Select Finished Tasks to Publish As Book"/>
                 <UI.CommandBar className="footbar" primary="Cloud Print"
-                    items={["Back","Cloud Print", "Preview"]}/>
+                    items={["Cloud Print", "Preview"]}/>
             </div>
         )
     }

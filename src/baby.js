@@ -25,7 +25,7 @@ export default class Baby extends Component{
 
     render(){
         let {child}=this.props
-			,cmds=["Back"]
+			,cmds=[]
 			,rewards
 
         cmds.push(child._id ? "Remove" : "Save")

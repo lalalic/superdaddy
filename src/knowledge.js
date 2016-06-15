@@ -5,8 +5,7 @@ import {Link} from "react-router"
 import IconCreate from "material-ui/svg-icons/editor/border-color"
 import IconCancel from "material-ui/svg-icons/navigation/cancel"
 
-import {addDays, relative, isEqualDate} from './components/calendar'
-import Calendar from "material-ui/DatePicker/Calendar"
+import Calendar, {cnDateTimeFormat, addDays, relative, isEqualDate, getLastDayOfMonth} from './components/calendar'
 import dbKnowledge from './db/knowledge'
 import dbTask from './db/task'
 
@@ -21,12 +20,12 @@ export default class Knowledge extends Component{
         super(props)
         this.state={entity:null, tasks:[]}
     }
-	
+
 	getData(_id){
 		let {state}=this.props.location
 			,{_id:child}=this.props.child
 			,status="scheduled"
-		
+
 		if(state && state.knowledge){
 			dbTask.find({knowledge:{_id},child,status},tasks=>{
 				this.setState({tasks})
@@ -60,11 +59,11 @@ export default class Knowledge extends Component{
 
         if(!entity)
             return (<Loading/>)
-		
-        var commands=["Back"]
+
+        var commands=[]
 			,now=new Date()
 			,scheduled=tasks.map(a=>a.scheduledAt)
-			
+
         if(true || User.current._id==entity.author._id)
             commands.push({action:"New Version",icon:IconCreate})
 
@@ -86,19 +85,19 @@ export default class Knowledge extends Component{
                 <div className="knowledge">
                     {Knowledge.renderContent(entity)}
                 </div>
-				
-				<div style={{position:"relative"}}>
-					<div style={{minHeight:434,minWidth:310,padding:0, overflowY:"hidden", boxSizing:"border-box"}}>
-						<Calendar
+
+				<div className="calendar">
+					<Calendar
+                            disableYearSelection={true}
+                            mode="landscape"
+                            DateTimeFormat={cnDateTimeFormat}
+                            firstDayOfWeek={0}
+                            displayDate={now}
 							minDate={now}
-							maxDate={addDays(now,31)}
-							selected={scheduled}
-							displayDate={now}
-							disableYearSelection={true}
-							locale="en-US"
+                            maxDate={getLastDayOfMonth(now)}
+                            selected={scheduled}
 							onTouchTapDay={(e,day)=>this.plan(day)}
 							/>
-					</div>
 				</div>
 
                 <CommandBar
@@ -213,5 +212,5 @@ export default class Knowledge extends Component{
 				</section>
 			</article>
 		)
-    }	
+    }
 }

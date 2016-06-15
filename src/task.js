@@ -14,7 +14,7 @@ export default class Task extends Component{
             entity:null
         }
     }
-	
+
 	getData(_id){
 		let {state}=this.props.location
 		if(state && state.task)
@@ -22,16 +22,16 @@ export default class Task extends Component{
 		else
 			dbTask.findOne({_id:this.props.params._id},entity=>this.setState({entity}))
 	}
-	
+
     componentDidMount(){
         this.getData(this.props.params._id)
     }
-	
+
     componentWillReceiveProps(nextProps){
         if(this.props.params._id!=nextProps.params._id)
 			this.getData(nextProps.params._id)
     }
-	
+
     render(){
         var {entity}=this.state, {child}=this.props
         if(!entity)
@@ -78,7 +78,7 @@ export default class Task extends Component{
                     className="footbar"
                     onSelect={cmd=>this.onSelect(cmd)}
                     primary={action}
-                    items={["Back", "Save", action,
+                    items={["Save", action,
                         <CommandBar.Comment type={dbTask} model={entity} key="comment"/>,
                         <CommandBar.Share message={entity} key="share"/>]}/>
             </div>

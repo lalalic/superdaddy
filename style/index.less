@@ -1,6 +1,13 @@
 
 @import "node_modules/qili-app/style/index";
 
+.calendar{
+    text-align: center;
+    >:first-child{
+        margin:auto;
+    }
+}
+
 .child-photo{
     text-align:center;
 
@@ -52,8 +59,8 @@
     @axisWidth:1px;
     @faceWidth:50px;
 	@arrowHeight:10px;
-	
-	
+
+
 	position: relative;
 	margin-top:@faceWidth + @faceWidth/2 + 10px;
 	margin-left: @goalWidth;
@@ -62,7 +69,7 @@
 	>*{
 		position: absolute;
 	}
-	
+
 	svg.arrow{
 		width:@arrowHeight+1;
 		height:@arrowHeight;
@@ -74,7 +81,7 @@
 
 	.goal{
 		.grid;
-		
+
 		line-height:@rowHeight;
 		width: @goalWidth+@iconWidth+20px;
 		left: 	-1*ceil(@goalWidth+@iconWidth/2);
@@ -103,21 +110,21 @@
 
 	.goal.pending{
         top:0px;
-		
+
 		>:last-child{
 			font-size:initial;
 		}
-		
+
 		input{
 			border:0px;
 			background:transparent;
 			font-size:12px;
 		}
-		
+
 		&.sticky{
 			left:-5px!important;
 		}
-		
+
 		transition: top 0.5s;
 	}
 
@@ -172,15 +179,14 @@
                     font-size: xx-large;
                 }
             }
-		} 
+		}
 
 		font-size:24pt;
-		
+
 		transition: opacity 2s;
-		
+
 		&.hide{
 			opacity:0;
 		}
 	}
 }
-

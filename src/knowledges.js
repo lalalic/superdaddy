@@ -34,7 +34,7 @@ export default class Knowledges extends Component{
                 <CommandBar
                     className="footbar centerinput"
                     primary="Create"
-                    items={["Back",
+                    items={[
                         (<input
                             ref="byTitle"
                             type="search"
@@ -67,14 +67,14 @@ export default class Knowledges extends Component{
             props.title=title
         this.context.router.replace(this.context.router.createPath("knowledges", props))
     }
-	
+
 	static contextTypes={router:React.PropTypes.object}
 }
 
 class Search extends DialogCommand{
     renderContent(){
         var {age,gender,category}=this.props.query||{}
-		
+
         return [
             (<CheckGroup ref="age" key="Age" label="Age (Year)" single={true}
                 selected={age}
@@ -90,7 +90,7 @@ class Search extends DialogCommand{
 						var age=this.refs.age.state.selected,
 							gender=Array.from(this.refs.gender.state.selected),
 							category=Array.from(this.refs.category.state.selected)
-							
+
 						this.props.onSearch({age,gender,category})
 					}}>Search</RaisedButton>
                 </div>)
@@ -148,7 +148,7 @@ class CheckGroup extends Component{
             this.setState({selected:selected})
         }
     }
-	
+
 	static defaultProps={single:false}
 }
 

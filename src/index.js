@@ -27,10 +27,9 @@ class SuperDaddy extends QiliApp{
         var {baby}=this.state
             ,{children:child}=this.props
             ,{route}=child.props
-		
         return (
             <div>
-               <CurrentChild child={baby} name={baby.name} mini={true}
+                CurrentChild child={baby} name={baby.name} mini={true}
 				show={route.floatingButton===false ? false : true}
 				onChange={target=>{
                     Family.currentChild=target
@@ -114,7 +113,7 @@ module.exports=QiliApp.render(
             <Route path=":when" component={TasksUI}/>
         </Route>
 		<Route path="task/:_id" component={TaskUI}/>
-		
+
 
         <Route path="baby/:name" name="baby" component={BabyUI}/>
 
@@ -152,7 +151,11 @@ module.exports=QiliApp.render(
 					props.init=a=>init(params.name)
 			}
 			return <Component {...props}/>
-		}
+		},
+        onError(error){
+            console.log(`onerror: ${error}`)
+        }
+
 	}
 )
 
