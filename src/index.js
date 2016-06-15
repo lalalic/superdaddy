@@ -27,7 +27,7 @@ class SuperDaddy extends QiliApp{
         var {baby}=this.state
             ,{children:child}=this.props
             ,{route}=child.props
-
+		
         return (
             <div>
                <CurrentChild child={baby} name={baby.name} mini={true}
@@ -100,6 +100,7 @@ import NewKnowledgeUI from './newKnowledge'
 import AccountUI from './account'
 import SettingUI from './setting'
 import PublishUI from './publish'
+import TasksUI, {Approvings} from "./tasks"
 import Dashboard from "./dashboard"
 
 module.exports=QiliApp.render(
@@ -107,10 +108,13 @@ module.exports=QiliApp.render(
 
         <IndexRoute component={Dashboard}/>
 
-		<Route path="dashboard" component={Dashboard}>
-            <IndexRoute/>
-            <Route path=":when"/>
+		<Route path="tasks">
+            <IndexRoute component={TasksUI}/>
+			<Route path="approvings" component={Approvings}/>
+            <Route path=":when" component={TasksUI}/>
         </Route>
+		<Route path="task/:_id" component={TaskUI}/>
+		
 
         <Route path="baby/:name" name="baby" component={BabyUI}/>
 
@@ -132,12 +136,6 @@ module.exports=QiliApp.render(
         <Route floatingButton={false} path="setting">
 			<IndexRoute  component={SettingUI}/>
 		</Route>
-
-
-		<Route path="task" component={TaskUI}>
-            <IndexRoute/>
-            <Route path=":_id"/>
-        </Route>
 
         <Route name="publish" path="publish" component={PublishUI}>
             <IndexRoute params={{what:"all"}}/>

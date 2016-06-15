@@ -13,8 +13,7 @@
     "material-ui": "^0.15.0",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
-    "react-router": "^2.4.1",
-    "moment": "^2.13.0"
+    "react-router": "^2.4.1"
   },
   "devDependencies": {
     "babel-plugin-add-module-exports": "^0.1.2",

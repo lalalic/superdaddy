@@ -1,7 +1,7 @@
 import {React,Component,UI} from 'qili-app'
 import AddIcon from "material-ui/svg-icons/action/note-add"
 
-const {photo}=UI
+const {Photo}=UI
 
 export default class Editor extends Component{
     constructor(props){

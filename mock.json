@@ -164,7 +164,7 @@
         {
             "path":"/1/classes/task",
             "type":"get",
-            "response":[
+            "response":{"results":[
                 {
                     "_id":"1",
                     "when":"2015-08-01T00:00:00Z",
@@ -232,7 +232,7 @@
                         }
                     ]
                 }
-            ]
+            ]}
         },
         {
             "path":"/1/classes/task",

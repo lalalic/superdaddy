@@ -1,5 +1,5 @@
 import {Model,User} from 'qili-app';
-import FamilyDB from './family';
+import Family from './family';
 
 function cloneAsDate(d) {
   let clonedDate = new Date(d.getTime());
@@ -17,17 +17,14 @@ export default class Task extends Model{
     }
 
     static plan(knowledge, dates){
-        let {title,keywords,category,summary}=knowledge
-            ,a={title,keywords,category,summary}
+        let {_id,title,keywords,category,summary}=knowledge
             ,today=cloneAsDate(new Date())
-        if(!Array.isArray(dates))
-            dates=[dates]
-        return Promise.all(dates.map(function(date){
-            let scheduledAt=cloneAsDate(date)
-            if(scheduledAt<today)
-                return null;//ignore
-            return this.upsert({knowledge:a,scheduledAt, status:"scheduled"})
-        }.bind(this))).then(tasks=>tasks.filter(a=>a))
+        
+        return this.upsert({
+			knowledge:{_id,title,keywords,category,summary},
+			today, 
+			status:"scheduled",
+			child:Family.currentChild._id})
     }
 
     static startNow(knowledge){
@@ -37,7 +34,7 @@ export default class Task extends Model{
             ,task={knowledge:a, scheduledAt:today,
                 startedAt:new Date(),
                 startedAuthor:User.currentAsAuthor,
-                status:"started"
+                status:"started",child:Family.currentChild._id
             }
         return this.upsert(task)
     }
@@ -64,7 +61,7 @@ export default class Task extends Model{
         if(task.status!="finished")
             return Promise.reject(new Error("status is not right"))
 
-        if(!FamilyDB.relationship())
+        if(!Family.relationship())
             return Promise.reject(new Error("only relatives can approve your task"))
 
         task.approvedAt=new Date()

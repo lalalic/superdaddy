@@ -8,7 +8,7 @@ import IconCreate from "material-ui/svg-icons/content/create"
 
 import dbKnowledge from './db/knowledge'
 import uiKnowledge from './knowledge'
-import moment from "moment"
+import {relative} from './components/calendar'
 
 const {List, CommandBar, Empty}=UI
 
@@ -207,7 +207,7 @@ class Item extends Component{
     }
 
     _more(model){
-        var time=uiKnowledge.date2String(model.createdAt||model.updatedAt)
+        var time=relative(model.createdAt||model.updatedAt)
 
         var zan=model.zans ? (<div><IconThumbup/>{model.zans}</div>) : null
         return (
@@ -218,7 +218,7 @@ class Item extends Component{
         )
     }
     onDetail(){
-        this.context.router.push(`knowledge/${this.props.model._id}`)
+        this.context.router.push({pathname:`knowledge/${this.props.model._id}`,state:{knowledge:this.props.model}})
     }
 	static contextTypes={router:React.PropTypes.object}
 }

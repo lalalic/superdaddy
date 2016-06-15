@@ -1,9 +1,11 @@
-var {React,Component,User,UI:{List, Loading, Comment, CommandBar}}=require('qili-app'),
-    dbTask=require('./db/task'),
-    dbFamily=require('./db/family'),
-    uiKnowledge=require('./knowledge'),
-    Editor=require('./editor'),
-    Template=require('./parser/template');
+import {React,Component,User,UI} from 'qili-app'
+import dbTask from './db/task'
+import dbFamily from './db/family'
+import uiKnowledge from './knowledge'
+import Editor from './components/editor'
+import Template from './parser/template'
+
+const {List, Loading, Comment, CommandBar}=UI
 
 export default class Task extends Component{
     constructor(props){
@@ -12,13 +14,24 @@ export default class Task extends Component{
             entity:null
         }
     }
+	
+	getData(_id){
+		let {state}=this.props.location
+		if(state && state.task)
+			this.setState({entity:state.task})
+		else
+			dbTask.findOne({_id:this.props.params._id},entity=>this.setState({entity}))
+	}
+	
     componentDidMount(){
-        dbTask.findOne({_id:this.props.params._id},entity=>this.setState({entity}))
+        this.getData(this.props.params._id)
     }
-    componentWillReceiveProps(next){
-        if (next.child!=this.props.child)
-            this.forceUpdate()
+	
+    componentWillReceiveProps(nextProps){
+        if(this.props.params._id!=nextProps.params._id)
+			this.getData(nextProps.params._id)
     }
+	
     render(){
         var {entity}=this.state, {child}=this.props
         if(!entity)
@@ -63,7 +76,7 @@ export default class Task extends Component{
                 {summaryEditor}
                 <CommandBar
                     className="footbar"
-                    onSelect={this.onSelect.bind(this)}
+                    onSelect={cmd=>this.onSelect(cmd)}
                     primary={action}
                     items={["Back", "Save", action,
                         <CommandBar.Comment type={dbTask} model={entity} key="comment"/>,
@@ -107,5 +120,5 @@ export default class Task extends Component{
 
         dbTask.upsert(entity, ()=>this.forceUpdate())
     }
+	static contextTypes={router:React.PropTypes.object}
 }
-Task.contextTypes={router:React.PropTypes.object}

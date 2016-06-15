@@ -1,6 +1,6 @@
 import {React, Component} from 'qili-app'
 import DayButton from 'material-ui/DatePicker/DayButton'
-import {getWeekArray,isBetweenDates,addDays} from "material-ui/DatePicker/dateUtils"
+import {getWeekArray,isBetweenDates,addDays, isEqualDate} from "material-ui/DatePicker/dateUtils"
 
 export default class Calendar extends Component{
     constructor(props){
@@ -127,12 +127,28 @@ export default class Calendar extends Component{
 	}
 
 	static addDays=addDays
+	static isEqualDate=isEqualDate
 
     static format=function(date, tmpl){
-        let value={y:date.getYear(), M: date.getMonth()+1, d: date.getDate(), h:date.getHours(), m:date.getMinutes() }
-        return tmpl.replace(/([ymdhs])/ig, function(match,type){
-            let v=value[type!='M' ? type.toLowerCase() : type]
-            return v ? return v : ""
+        let value={
+				y:date.getFullYear(), 
+				M:date.getMonth()+1, 
+				d:date.getDate(), 
+				h:date.getHours(), 
+				m:date.getMinutes(),
+				s:date.getSeconds()	
+			}
+        return tmpl.replace(/([ymdhs])+/ig, function(match,type){
+            return value[type!='M' ? type.toLowerCase() : type] || ""
         })
     }
+	
+	static relative=function(d, now=new Date()){
+		if(!d) return ""
+		if(typeof(d)=='string')
+			d=new Date(d)
+		
+		return Calendar.format(d, isEqualDate(now,d) ? "今天 HH:mm" : 
+							d.getFullYear()==now.getFullYear() ? "MM月DD日" : "YYYY年MM月DD日")
+	}
 }
