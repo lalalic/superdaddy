@@ -46,23 +46,25 @@ export default class Task extends Component{
 
         var hasEditor=false, keys=this.keys=[],
             contentEditor=uiKnowledge.renderContent(entity.knowledge,null, (tmpl)=>{
-                let steps=tmpl.contents.map((a, i)=>{
-                    if(typeof(a)=='string')
-                        return null
-                    hasEditor=true
-                    var {key, alt}=a
-                    keys.push(key)
 
-                    return (
-                        <Step key={key}>
-                            <StepLabel>{key}</StepLabel>
-                            <StepContent>
-                                <Editor ref={`editor-${key}`} content={content[key]} appendable={!readonly}/>
-                                <br/><br/>
-                            </StepContent>
-                        </Step>
-                    )
-                }).filter(a=>a)
+                let i=0,
+                    steps=tmpl.contents.map(a=>{
+                        if(typeof(a)=='string')
+                            return null
+                        hasEditor=true
+                        var {key, alt}=a
+                        keys.push(key)
+
+                        return (
+                            <Step key={key}>
+                                <StepLabel>{key}</StepLabel>
+                                <StepContent>
+                                    <Editor ref={`editor-${key}`} content={content[key]} appendable={!readonly}/>
+                                    <br/><br/>
+                                </StepContent>
+                            </Step>
+                        )
+                    }).filter(a=>a)
 
                 return (
                     <Stepper orientation="vertical">
