@@ -52,6 +52,7 @@ export default class Task extends Component{
                         if(typeof(a)=='string')
                             return null
                         hasEditor=true
+                        i++
                         var {key, alt}=a
                         keys.push(key)
 
@@ -60,14 +61,15 @@ export default class Task extends Component{
                                 <StepLabel>{key}</StepLabel>
                                 <StepContent>
                                     <Editor ref={`editor-${key}`} content={content[key]} appendable={!readonly}/>
-                                    <br/><br/>
+                                    <br/>
+                                    <br/>
                                 </StepContent>
                             </Step>
                         )
                     }).filter(a=>a)
 
                 return (
-                    <Stepper orientation="vertical">
+                    <Stepper orientation="vertical" className="stepper">
                         {steps}
                     </Stepper>
                 )
@@ -91,7 +93,6 @@ export default class Task extends Component{
                 <CommandBar
                     className="footbar"
                     onSelect={cmd=>this.onSelect(cmd)}
-                    primary={action}
                     items={["Save", action,
                         <CommandBar.Comment type={dbTask} model={entity} key="comment"/>,
                         <CommandBar.Share message={entity} key="share"/>]}/>
