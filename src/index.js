@@ -11,32 +11,32 @@ const {Empty, Comment}=UI
 class SuperDaddy extends QiliApp{
     constructor(props){
         super(props)
-        Object.assign(this.state,{baby:null})
-        Family.event.on('change',baby=>this.setState({baby}))
+        Object.assign(this.state,{child:null})
+        Family.event.on('change',child=>this.setState({child}))
     }
 
     shouldComponentUpdate(nextProps, nextState){
-        let {name:route}=this.props.children.props.route
-        if(route=="baby" && nextState.baby!=this.state.baby)
-            return false
-
-        return true
+        if(this.props.children.props.route.name=='baby' 
+			&& nextState.child!=this.state.child
+			&& !this.context.router.isActive(`baby/${nextState.child.name}`)){
+			this.context.router.push(`baby/${nextState.child.name}`)
+			return false
+		}
+		
+		return true
     }
 
     renderContent(){
-        var {baby}=this.state
-            ,{children:child}=this.props
-            ,{route}=child.props
+        var {child}=this.state
+		if(!child)
+			return (<Empty icon={<Logo/>}><Link to="baby">click to start from your first baby!</Link></Empty>)
+
         return (
             <div>
-                CurrentChild child={baby} name={baby.name} mini={true}
-				show={route.floatingButton===false ? false : true}
-				onChange={target=>{
-                    Family.currentChild=target
-                    if(route.name=="baby")
-                       this.context.router.push({pathname:`baby/${target.name}`})
-               }}/>
-               {React.cloneElement(child,{child:baby})}
+				{this.props.children.props.route.contextual!=false && 
+					(<CurrentChild key="context" child={child} name={child.name}/>)}
+					
+				{React.cloneElement(this.props.children,{child})}
             </div>
         )
     }
@@ -50,32 +50,21 @@ Object.assign(SuperDaddy.defaultProps,{
 
 class CurrentChild extends Component{
     render(){
-        var {child, show, style={position:"absolute", zIndex:9}, ...others}=this.props, avatar
-
-        if(child.photo)
-            avatar=(<Avatar src={this.props.child.photo}/>)
-        else
-            avatar=(<div><span style={{fontSize:"xx-small"}}>{this.lastName=child.name}</span></div>)
-
-		if(!show)
-			style.display="none"
+        let {child, name, style={fontSize:"xx-small"}, ...others}=this.props
 
         return(
             <FloatingActionButton className="sticky top right"
+				mini={true}
 				style={style}
                 {...others}
 				onClick={e=>this.change()}>
-                {avatar}
+                {child.photo ? (<Avatar src={this.props.child.photo}/>) : name}
             </FloatingActionButton>
         )
     }
 
     shouldComponentUpdate(nextProps){
-		return true
-		let {name:target, open:targetOpen}=nextProps,
-			{name, open}=this.props
-
-        return target!=name || targetOpen!=open
+		return nextProps.name!=this.props.name
     }
 
     change(){
@@ -86,13 +75,13 @@ class CurrentChild extends Component{
             return;
 
         var index=children.indexOf(current)
-        this.props.onChange(children[(index+1) % len])
+        Family.currentChild=children[(index+1) % len]
     }
     static contextTypes={router:React.PropTypes.object}
 }
 
 import TaskUI from './task'
-import BabyUI from './baby'
+import BabyUI, {Creator} from './baby'
 import KnowledgesUI from './knowledges'
 import KnowledgeUI from './knowledge'
 import NewKnowledgeUI from './newKnowledge'
@@ -116,23 +105,19 @@ module.exports=QiliApp.render(
 
 
         <Route path="baby/:name" name="baby" component={BabyUI}/>
-
-        <Route path="baby" floatingButton={false} component={BabyUI.Creator}
-			onEnter={(nextState, replace)=>{
-				Family.currentChild={}
-			}}/>
+        <Route path="baby" contextual={false} component={Creator}/>
 
         <Route path="knowledges" component={KnowledgesUI}/>
         <Route path="knowledge">
-            <IndexRoute floatingButton={false} component={NewKnowledgeUI}/>
+            <IndexRoute contextual={false} component={NewKnowledgeUI}/>
             <Route path=":_id" component={KnowledgeUI}/>
         </Route>
 
         <Route path="comment/:type/:_id" component={Comment}/>
 
-        <Route floatingButton={false} path="account" component={AccountUI} />
+        <Route contextual={false} path="account" component={AccountUI} />
 
-        <Route floatingButton={false} path="setting">
+        <Route contextual={false} path="setting">
 			<IndexRoute  component={SettingUI}/>
 		</Route>
 
@@ -151,11 +136,7 @@ module.exports=QiliApp.render(
 					props.init=a=>init(params.name)
 			}
 			return <Component {...props}/>
-		},
-        onError(error){
-            console.log(`onerror: ${error}`)
-        }
-
+		}
 	}
 )
 
