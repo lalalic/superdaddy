@@ -37,7 +37,7 @@ export default class Editor extends Component{
             <div className="editor">
                 {uiSections}
                 {uiAdditions}
-                <AddIcon className="adder" onClick={this.add.bind(this)}/>
+                <AddIcon className="adder" onClick={e=>this.add()}/>
             </div>
         )
     }

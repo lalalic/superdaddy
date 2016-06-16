@@ -28,13 +28,13 @@ export default class Baby extends Component{
                             width={150}
                             height={150}
                             src={child.photo}
-							onChange={url=>{
+							onPhoto={url=>{
 								child.photo=url
 								dbFamily.upsert(child)
 							}}/>
                     </div>
-					
-                    <TextField ref="name" 
+
+                    <TextField ref="name"
 						floatingLabelText="child name"
                         fullWidth={true}
                         value={child.name}
@@ -72,7 +72,7 @@ export default class Baby extends Component{
                         <RadioButton value="f" label="girl"/>
                         <RadioButton value="m" label="boy" />
                     </RadioButtonGroup>
-					
+
                     <div>
 						<br/>
 						<br/>
@@ -85,13 +85,13 @@ export default class Baby extends Component{
 							child={child}/>
 					</div>
                 </div>
-				
+
                 <CommandBar className="footbar"
                     items={[{action:"Remove", onSelect:a=>this.remove()}]}/>
             </div>
         )
     }
-	
+
     remove(){
         this.setState({frozen:true})
 		dbFamily.remove(this.props.child._id)
@@ -104,7 +104,7 @@ export default class Baby extends Component{
 		componentWillReceiveProps(newProps){
 			return false
 		}
-		
+
 		render(){
 			return (
 				<div>
@@ -114,12 +114,12 @@ export default class Baby extends Component{
 								width={150}
 								height={150}/>
 						</div>
-						
-						<TextField ref="name" 
+
+						<TextField ref="name"
 							floatingLabelText="child name"
 							fullWidth={true}/>
 
-						<DatePicker ref="birthday" 
+						<DatePicker ref="birthday"
 							floatingLabelText="birthday"
 							fullWidth={true}
 							autoOk={true}
@@ -134,25 +134,25 @@ export default class Baby extends Component{
 							<RadioButton value="m" label="boy" />
 						</RadioButtonGroup>
 					</div>
-					
+
 					<CommandBar className="footbar"
 						items={[{action:"Save", onSelect:a=>this.save()}]}/>
 				</div>
 			)
 		}
-		
+
 		save(){
 			let {photo, name, birthday, gender}=this.refs
 			photo=photo.state.url
 			name=name.getValue()
 			birthday=birthday.getValue()
 			gender=gender.getValue()
-			
+
 			if(!name){
 				Messager.show("name can't be empty")
 				return
 			}
-			
+
 			Family.upsert({photo,name, gender, db:birthday})
 				.then(baby=>{
 					Family.currentChild=baby

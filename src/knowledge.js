@@ -174,7 +174,7 @@ export default class Knowledge extends Component{
                 return <div dangerouslySetInnerHTML={{__html}}/>
             })(template);
 
-        if(entity.summary){
+        if(entity.summary && open!==null){
             content=(
                 <details open={open}>
                     <summary>{entity.summary}</summary>

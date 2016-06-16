@@ -25,13 +25,13 @@ export default class Dashboard extends Component{
 	render(){
 		if(!this.props.child)
 			return this.render4NoChild()
-		
+
 		return (
 			<div className="page">
 				<Rewards child={this.props.child}/>
-				
-				<CommandBar
-                    className="footbar"
+
+				<CommandBar className="footbar"
+					primary="Reward"
                     items={[
 						{action:"Reward",
 							onSelect:a=>this.context.router.push('/'),

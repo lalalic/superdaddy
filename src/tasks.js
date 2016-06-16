@@ -1,5 +1,6 @@
 import {React,Component,UI} from 'qili-app'
-import {Subheader, Divider} from 'material-ui'
+import {Link} from "react-router"
+import {Subheader, Divider, Tabs, Tab, DatePicker} from 'material-ui'
 
 
 import {Task as dbTask,Family as dbFamily} from './db'
@@ -35,30 +36,28 @@ export default class Tasks extends Component{
     }
 
     render(){
-		var when=this._parseDate(this.props.params.when)
+		var when=this.props.params.when
         return (
             <div>
                 <List model={this.state.tasks}
 					empty={<Empty icon={<Logo/>}/>}
-					template={this.props.template||this.constructor.Item}>
-					<Subheader><h2><center>{this.props.params.when||'today'}</center></h2></Subheader>
-					<Divider inset={false}/>
-				</List>
-				<CommandBar
-                    className="footbar"
-                    primary="Knowledges"
+					template={this.props.template||this.constructor.Item}/>
+
+				<CommandBar className="footbar"
+                    primary={when||"today"}
                     items={[
-						{action:"今天",
+						{label:"今天", action:"today",
 							onSelect: a=>this.context.router.push("tasks/today")},
-						{action:"明天",
+						{label:"明天", action:"tomorrow",
 							onSelect: a=>this.context.router.push("tasks/tomorrow")},
-						{action:"...",
-                            onSelect:()=>this.refs.task.show(),
+						{action:when && when.split("-").length>1 ? when : "...",
+                            onSelect:a=>this.refs.task.show(),
                             icon:IconMore}
 					]}
                     />
-                <Tasks.TaskQueryCommand ref="task" when={when}
+                <Tasks.TaskQueryCommand ref="task" when={this._parseDate(when)}
 					onChange={(d,name)=>{
+						this.refs.task.dismiss()
 						switch(Math.floor((Date.now()-d.getTime())/(1000*24*60*60))){
 							case 0:
 								name='today'
