@@ -88,7 +88,7 @@ export default class Baby extends Component{
                 </div>
 
                 <CommandBar className="footbar"
-                    items={[{action:"Remove", onSelect:a=>this.remove()}]}/>
+                    items={["Back", {action:"Remove", onSelect:a=>this.remove()}]}/>
             </div>
         )
     }
@@ -137,7 +137,7 @@ export default class Baby extends Component{
 					</div>
 
 					<CommandBar className="footbar"
-						items={[{action:"Save", onSelect:a=>this.save()}]}/>
+						items={["Back", {action:"Save", onSelect:a=>this.save()}]}/>
 				</div>
 			)
 		}

@@ -1,15 +1,15 @@
 import {React,Component,UI} from 'qili-app'
 import ReactDOM from "react-dom"
-import {FloatingActionButton, IconButton, AppBar, TextField} from 'material-ui'
+import {IconButton, AppBar, TextField} from 'material-ui'
 
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconThumbup from "material-ui/svg-icons/action/thumb-up"
-import IconAdd from "material-ui/svg-icons/content/add"
 import IconSearch from "material-ui/svg-icons/action/search"
 
 import dbKnowledge from './db/knowledge'
 import uiKnowledge from './knowledge'
 import {relative} from './components/calendar'
+import FloatingAdd from "./components/floating-add"
 
 const {List, CommandBar, Empty}=UI
 
@@ -19,7 +19,7 @@ export default class Knowledges extends Component{
     state={model:null}
 
     getData(){
-        dbKnowledge.find(/*this.props.location.query*/{}).fetch(model=>{
+        dbKnowledge.find(this.props.location.query).fetch(model=>{
             this.setState({model})
         })
     }
@@ -33,19 +33,12 @@ export default class Knowledges extends Component{
             {query={}}=this.props.location
         return (
             <div>
-                <FloatingActionButton
-                    onClick={e=>this.context.router.push('knowledge')}
-                    className="creator sticky bottom right"
-                    mini={true}>
-                    <IconAdd/>
-                </FloatingActionButton>
-
                 <AppBar
                     iconElementLeft={<span/>}
                     iconElementRight={<IconButton onClick={e=>this.search()}><IconSearch/></IconButton>}
                     title={<TextField name="search"
                         hintText="查询"
-                        onKeyDown={e=>e.keycode==13 && this.search(e.target.value)}
+                        onKeyDown={e=>(e.keycode==13 && this.search(e.target.value))}
                         fullWidth={true} defaultValue={query.title}/>}/>
 
                 <List
@@ -68,6 +61,17 @@ export default class Knowledges extends Component{
     }
 
 	static contextTypes={router:React.PropTypes.object}
+
+    static Creatable=class extends Knowledges{
+        render(){
+            return (
+                <div>
+                    <FloatingAdd onClick={e=>this.context.router.push("knowledge")} mini={true}/>
+                    {super.render()}
+                </div>
+            )
+        }
+    }
 }
 
 class Search extends DialogCommand{

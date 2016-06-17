@@ -60,7 +60,7 @@ export default class Knowledge extends Component{
         if(!entity)
             return (<Loading/>)
 
-        var commands=[]
+        var commands=["Back"]
 			,now=new Date()
 			,scheduled=tasks.map(a=>a.scheduledAt)
 

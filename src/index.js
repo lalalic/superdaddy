@@ -21,7 +21,7 @@ class SuperDaddy extends QiliApp{
     }
 
     shouldComponentUpdate(nextProps, nextState){
-        if(this.props.children.props.route.name=='baby'
+        if(this.props.children.props.route.contexture
 			&& nextState.child!=this.state.child
 			&& !this.context.router.isActive(`baby/${nextState.child.name}`)){
 			this.context.router.push(`baby/${nextState.child.name}`)
@@ -32,21 +32,22 @@ class SuperDaddy extends QiliApp{
     }
 
     renderContent(){
-        var {child}=this.state
+        let {child}=this.state
 		if(!child)
 			return (<Empty icon={<Logo/>}><Link to="baby">click to start from your first baby!</Link></Empty>)
 
+        let {contextual, name:routeName}=this.props.children.props.route
         return (
             <div>
-				{this.props.children.props.route.contextual!=false &&
+				{contextual!=false &&
 					(<CurrentChild key="context" child={child} name={child.name}/>)}
 
 				{React.cloneElement(this.props.children,{child})}
 
-                <CommandBar className="footbar"
-                    primary={this.props.children.props.route.name}
+                {routeName&&(<CommandBar className="footbar"
+                    primary={routeName}
 					items={[
-						{label:"任务", action:"tasks",
+						{label:"我的任务", action:"tasks",
                             onSelect:a=>this.context.router.push(''),
                             icon:IconTask},
                         {label:"成绩", action:"score",
@@ -59,7 +60,7 @@ class SuperDaddy extends QiliApp{
                             onSelect:a=>this.context.router.push('account'),
                             icon: IconAccount}
                         ]}
-                    />
+                    />)}
             </div>
         )
     }
@@ -76,7 +77,7 @@ class CurrentChild extends Component{
         let {child, name, style={fontSize:"xx-small"}, ...others}=this.props
 
         return(
-            <FloatingActionButton className="sticky top right"
+            <FloatingActionButton className="contexture sticky top right"
 				mini={true}
 				style={style}
                 {...others}
@@ -121,14 +122,19 @@ module.exports=QiliApp.render(
 
         <Route path="score" name="score" component={ScoreUI}/>
 
-        <Route path="knowledges" name="knowledges" contextual={false} component={KnowledgesUI}/>
+        <Route path="knowledges" name="knowledges" contextual={false} component={KnowledgesUI.Creatable}/>
 
         <Route path="account"  name="account" contextual={false} component={AccountUI} />
 
         <Route path="task/:_id" contextual={false} component={TaskUI}/>
 
-        <Route path="baby/:name" name="baby" component={BabyUI}/>
+        <Route path="baby/:name" contexture={true} component={BabyUI}/>
         <Route path="baby" contextual={false} component={Creator}/>
+
+        <Route path="courses">
+            <IndexRoute component={KnowledgesUI}/>
+            <Route path="done"/>
+        </Route>
 
         <Route path="knowledge">
             <IndexRoute contextual={false} component={NewKnowledgeUI}/>
@@ -142,7 +148,7 @@ module.exports=QiliApp.render(
 			<IndexRoute  component={SettingUI}/>
 		</Route>
 
-        <Route name="publish" path="publish" component={PublishUI}>
+        <Route path="publish" component={PublishUI}>
             <IndexRoute params={{what:"all"}}/>
             <Route path=":what"/>
         </Route>

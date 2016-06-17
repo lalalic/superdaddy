@@ -172,17 +172,19 @@
                         "_id":"lalalic",
                         "name":"lalalic"
                     },
+                    "current":1,
+                    "thumbnail":"",
                     "knowledge":{
                         "_id":"1",
-                        "title":"magic tile",
                         "content":"magic <editable key=\"drawing\">drawing</editable>tile <editable key=\"filling\">filling color</editable>is fun",
-                        "summary":"magic tile is fun",
+                        "steps":5,
+                        "title":"magic tile",
                         "category":["imagination","coordination"],
                         "author":{
                             "_id":"lalalic",
                             "name":"lalalic"
-                        },
-                        "createdAt":"2015-07-12T03:05:21Z"
+                        }
+
                     },
                     "content":{
                         "drawing":
@@ -208,9 +210,12 @@
                         "_id":"lalalic",
                         "name":"lalalic"
                     },
+                    "current":4,
+                    "thumbnail":"",
                     "knowledge":{
                         "_id":"1",
                         "title":"Boat",
+                        "steps":20,
                         "content":"magic tile is fun",
                         "summary":"I like boat",
                         "category":["read","expression"],
