@@ -10,12 +10,7 @@ import {Stepper, Step, StepLabel,StepContent} from 'material-ui/Stepper'
 const {List, Loading, Comment, CommandBar}=UI
 
 export default class Task extends Component{
-    constructor(props){
-        super(props)
-        this.state={
-            entity:null
-        }
-    }
+    state={entity:null}
 
 	getData(_id){
 		let {state}=this.props.location
@@ -58,7 +53,7 @@ export default class Task extends Component{
 
                         return (
                             <Step key={key}>
-                                <StepLabel>{key}</StepLabel>
+                                <StepLabel onClick>{key}</StepLabel>
                                 <StepContent>
                                     <Editor ref={`editor-${key}`} content={content[key]} appendable={!readonly}/>
                                     <br/>

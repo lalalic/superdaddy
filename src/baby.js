@@ -6,6 +6,7 @@ import RewardGoal from './components/rewards'
 const {List,CommandBar,Photo, Messager}=UI
 
 export default class Baby extends Component{
+	state={}
 	shouldComponentUpdate(newProps){
 		if(this.state.frozen)
 			return false

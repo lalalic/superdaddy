@@ -4,9 +4,14 @@ import {Route, IndexRoute, Direct, IndexRedirect} from "react-router"
 import {User,React,Component,QiliApp, UI} from 'qili-app'
 import {MenuItem, FloatingActionButton, Avatar} from 'material-ui'
 
+import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
+import IconAccount from 'material-ui/svg-icons/action/account-box'
+import IconTask from "material-ui/svg-icons/editor/format-list-numbered"
+import IconReward from "material-ui/svg-icons/places/child-care"
+
 import {Family,Knowledge,Table,init} from './db'
 
-const {Empty, Comment}=UI
+const {Empty, Comment, CommandBar}=UI
 
 class SuperDaddy extends QiliApp{
     constructor(props){
@@ -16,13 +21,13 @@ class SuperDaddy extends QiliApp{
     }
 
     shouldComponentUpdate(nextProps, nextState){
-        if(this.props.children.props.route.name=='baby' 
+        if(this.props.children.props.route.name=='baby'
 			&& nextState.child!=this.state.child
 			&& !this.context.router.isActive(`baby/${nextState.child.name}`)){
 			this.context.router.push(`baby/${nextState.child.name}`)
 			return false
 		}
-		
+
 		return true
     }
 
@@ -33,10 +38,28 @@ class SuperDaddy extends QiliApp{
 
         return (
             <div>
-				{this.props.children.props.route.contextual!=false && 
+				{this.props.children.props.route.contextual!=false &&
 					(<CurrentChild key="context" child={child} name={child.name}/>)}
-					
+
 				{React.cloneElement(this.props.children,{child})}
+
+                <CommandBar className="footbar"
+                    primary={this.props.children.props.route.name}
+					items={[
+						{label:"任务", action:"tasks",
+                            onSelect:a=>this.context.router.push(''),
+                            icon:IconTask},
+                        {label:"成绩", action:"score",
+							onSelect:a=>this.context.router.push('score'),
+							icon:IconReward},
+                        {label:"发现", action:"knowledges",
+                            onSelect:a=>this.context.router.push('knowledges'),
+                            icon:IconKnowledges},
+                        {label:"我", action:"account",
+                            onSelect:a=>this.context.router.push('account'),
+                            icon: IconAccount}
+                        ]}
+                    />
             </div>
         )
     }
@@ -89,25 +112,24 @@ import AccountUI from './account'
 import SettingUI from './setting'
 import PublishUI from './publish'
 import TasksUI, {Approvings} from "./tasks"
-import Dashboard from "./dashboard"
+import ScoreUI from "./score"
 
 module.exports=QiliApp.render(
     (<Route path="/" component={SuperDaddy}>
 
-        <IndexRoute component={Dashboard}/>
+        <IndexRoute name="tasks" component={TasksUI}/>
 
-		<Route path="tasks">
-            <IndexRoute component={TasksUI}/>
-			<Route path="approvings" component={Approvings}/>
-            <Route path=":when" component={TasksUI}/>
-        </Route>
-		<Route path="task/:_id" component={TaskUI}/>
+        <Route path="score" name="score" component={ScoreUI}/>
 
+        <Route path="knowledges" name="knowledges" contextual={false} component={KnowledgesUI}/>
+
+        <Route path="account"  name="account" contextual={false} component={AccountUI} />
+
+        <Route path="task/:_id" contextual={false} component={TaskUI}/>
 
         <Route path="baby/:name" name="baby" component={BabyUI}/>
         <Route path="baby" contextual={false} component={Creator}/>
 
-        <Route path="knowledges" component={KnowledgesUI}/>
         <Route path="knowledge">
             <IndexRoute contextual={false} component={NewKnowledgeUI}/>
             <Route path=":_id" component={KnowledgeUI}/>
@@ -115,7 +137,6 @@ module.exports=QiliApp.render(
 
         <Route path="comment/:type/:_id" component={Comment}/>
 
-        <Route contextual={false} path="account" component={AccountUI} />
 
         <Route contextual={false} path="setting">
 			<IndexRoute  component={SettingUI}/>

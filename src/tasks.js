@@ -15,87 +15,30 @@ const {DialogCommand}=CommandBar
 @ with currentChild
 */
 export default class Tasks extends Component{
-	constructor(){
-		super(...arguments)
-		this.state={tasks:null}
-	}
+	state={tasks:null}
 
-	getData(when){
+	getData(child){
 		dbTask.find(/*{status:"scheduled",child:this.props.child._id, scheduledAt:when}*/).fetch(tasks=>{
 			this.setState({tasks})
 		})
 	}
 
 	componentDidMount(){
-		this.getData(this._parseDate(this.props.params.when))
+		this.getData(this.props.child)
 	}
 
-    componentWillReceiveProps(nextProps){
-        if(this.props.params.when!=nextProps.params.when)
-			this.getData(this._parseDate(nextProps.params.when))
-    }
+	componentWillReceiveProps(nextProps){
+		if(this.props.child!=nextProps.child)
+			this.getData(nextProps.child)
+	}
 
     render(){
-		var when=this.props.params.when
-        return (
-            <div>
-                <List model={this.state.tasks}
-					empty={<Empty icon={<Logo/>}/>}
-					template={this.props.template||this.constructor.Item}/>
-
-				<CommandBar className="footbar"
-                    primary={when||"today"}
-                    items={[
-						{label:"今天", action:"today",
-							onSelect: a=>this.context.router.push("tasks/today")},
-						{label:"明天", action:"tomorrow",
-							onSelect: a=>this.context.router.push("tasks/tomorrow")},
-						{action:when && when.split("-").length>1 ? when : "...",
-                            onSelect:a=>this.refs.task.show(),
-                            icon:IconMore}
-					]}
-                    />
-                <Tasks.TaskQueryCommand ref="task" when={this._parseDate(when)}
-					onChange={(d,name)=>{
-						this.refs.task.dismiss()
-						switch(Math.floor((Date.now()-d.getTime())/(1000*24*60*60))){
-							case 0:
-								name='today'
-							break
-							case 1:
-								name='yesterday'
-							break
-							case -1:
-								name='tomorrow'
-							break
-							default:
-								name=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()
-							break
-						}
-						this.context.router.push(`tasks/${name}`)
-					}}/>
-            </div>
+		return (
+            <List model={this.state.tasks}
+				empty={<Empty icon={<Logo/>}/>}
+				template={this.props.template||this.constructor.Item}/>
         )
     }
-
-    _parseDate(when='today'){
-        var today=new Date()
-        today.setHours(0,0,0,0)
-        switch(when){
-        case 'today':
-            return today
-        case 'yesterday':
-            return addDays(today,-1)
-        case 'tomorrow':
-            return addDays(today,1)
-        default:
-            when=new Date(Date.parse(when))
-            when.setHours(0,0,0,0)
-            return when
-        }
-    }
-
-	static contextTypes={router:React.PropTypes.object}
 
 	static Item=class  extends Component{
 		render(){
@@ -119,39 +62,5 @@ export default class Tasks extends Component{
 		}
 		static defaultProps={image:"images/task.jpg"}
 		static contextTypes={router:React.PropTypes.object}
-	}
-
-	static Approvings=class extends Tasks{
-		getData(){
-			dbTask.find(/*{status:"finished",child:this.props.child._id}*/).fetch(tasks=>{
-				this.setState({tasks})
-			})
-		}
-
-		_parseDate(){
-			return null
-		}
-
-		static Item=class extends Tasks.Item{
-
-		}
-	}
-
-	static TaskQueryCommand=class extends DialogCommand{
-		renderContent(){
-			var {when, onChange}=this.props
-				,now=new Date()
-			return (<div className="calendar">
-						{<Calendar
-							firstDayOfWeek={0}
-							mode="landscape"
-							selected={when}
-							displayDate={now}
-							minDate={now}
-							maxDate={getLastDayOfMonth(now)}
-							onTouchTapDay={(e,day)=>onChange(day)}
-							 />}
-					</div>)
-		}
 	}
 }

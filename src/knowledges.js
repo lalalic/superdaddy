@@ -1,10 +1,11 @@
 import {React,Component,UI} from 'qili-app'
 import ReactDOM from "react-dom"
-import {RaisedButton,ClearFix} from 'material-ui'
+import {FloatingActionButton, IconButton, AppBar, TextField} from 'material-ui'
 
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconThumbup from "material-ui/svg-icons/action/thumb-up"
-import IconCreate from "material-ui/svg-icons/content/create"
+import IconAdd from "material-ui/svg-icons/content/add"
+import IconSearch from "material-ui/svg-icons/action/search"
 
 import dbKnowledge from './db/knowledge'
 import uiKnowledge from './knowledge'
@@ -15,48 +16,46 @@ const {List, CommandBar, Empty}=UI
 const {DialogCommand}=CommandBar
 
 export default class Knowledges extends Component{
-    constructor(p){
-        super(p)
-        this.state={model:dbKnowledge.find(this.props.location.query)}
+    state={model:null}
+
+    getData(){
+        dbKnowledge.find(/*this.props.location.query*/{}).fetch(model=>{
+            this.setState({model})
+        })
     }
+
+    componentDidMount(){
+        this.getData()
+    }
+
     render(){
         var {model}=this.state,
             {query={}}=this.props.location
         return (
             <div>
+                <FloatingActionButton
+                    onClick={e=>this.context.router.push('knowledge')}
+                    className="creator sticky bottom right"
+                    mini={true}>
+                    <IconAdd/>
+                </FloatingActionButton>
+
+                <AppBar
+                    iconElementLeft={<span/>}
+                    iconElementRight={<IconButton onClick={e=>this.search()}><IconSearch/></IconButton>}
+                    title={<TextField name="search"
+                        hintText="查询"
+                        onKeyDown={e=>e.keycode==13 && this.search(e.target.value)}
+                        fullWidth={true} defaultValue={query.title}/>}/>
+
                 <List
                     ref="list"
                     model={model}
                     empty={<Empty icon={<IconKnowledges/>} text="No knowledge yet, Please stay tune"/>}
                     pageSize={20}
                     template={Item}/>
-
-                <CommandBar
-                    className="footbar centerinput"
-                    primary="Create"
-                    items={[
-                        (<input
-                            ref="byTitle"
-                            type="search"
-                            placeholder="Search"
-                            defaultValue={query.title}
-                            style={{fontSize:14,padding:10}}
-                            onFocus={e=>this.refs.search.show()}/>),
-                        {action:"Create", icon:IconCreate }
-                    ]}
-                    onSelect={cmd=>this.onSelect(cmd)}/>
-
-				<Search ref="search" onSearch={query=>this.search(query)} query={query}/>
             </div>
         )
-    }
-
-    onSelect(command){
-        switch(command){
-        case 'Create':
-            this.context.router.push('knowledge')
-            break
-        }
     }
 
     search(props){
