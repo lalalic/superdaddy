@@ -31,7 +31,7 @@ export default function extract(file){
 		footer: Ignore,
 		documentStyles: Ignore
 	}
-	
+
 	function splitKey(data){
 		if(typeof(data)=='string')
 			data=[data]
@@ -42,22 +42,23 @@ export default function extract(file){
 
     return docxHub.assemble(file,{channel:"interactive"})
 		.then(docx=>docx.parse(docx4js.createVisitorFactory(MODELS))).then(doc=>{
-        var {html:content, properties, id:elId, images}=doc,
+        var {html:content, properties, id:elId, images, steps}=doc,
             {name,title, keywords, category, subject, abstract,description, ...others}=properties
-		
+
 		if(keywords)
 			keywords=splitKey(keywords)
-		
+
 		if(category)
 			category=splitKey(category)
-		
+
         return {
             knowledge: {
                 content,
                 title:title||name,
                 summary:abstract||description||subject,
                 keywords,category,
-                props:others
+                props:others,
+				steps
             },
             revoke(){
                 var nodes=window.document.querySelectorAll(`#${elId} img.__revoking`)

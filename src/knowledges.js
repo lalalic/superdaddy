@@ -183,12 +183,14 @@ class Item extends Component{
         var {model,...others}=this.props
         return (
             <div className="li inset photo1" {...others} onClick={()=>this.onDetail()}>
-                <div>
-                    <div className="title">{model.title}</div>
-                    {this._more(model)}
-                </div>
-                <div className="photos">
-                    <div><img src={model.photos[0]}/></div>
+                <div className="layout">
+                    <div>
+                        <div className="title">{model.title}</div>
+                        {this._more(model)}
+                    </div>
+                    <div className="photos">
+                        <div><img src={model.photos[0]}/></div>
+                    </div>
                 </div>
             </div>
         )

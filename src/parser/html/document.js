@@ -5,6 +5,7 @@ export default class document extends Ignore{
         super(...arguments)
         this._children=[]
         this.images=[]
+        this.steps=[]
         this._id=`docx_${Date.now()}`
     }
 
@@ -15,8 +16,12 @@ export default class document extends Ignore{
     get properties(){
         return this.srcModel.wDoc.props
     }
-	
+
 	_shouldIgnore(){
         return false
+    }
+
+    addStep(key, alt){
+        this.steps.push({key,alt})
     }
 }

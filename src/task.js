@@ -30,65 +30,27 @@ export default class Task extends Component{
     }
 
     render(){
-        var {entity}=this.state, {child}=this.props
+        const {entity}=this.state, {child}=this.props
         if(!entity)
             return (<Loading/>)
 
-        var {started, finished,knowledge:{goal=[]},content={}, summary=[]}=entity,
-            readonly=entity.author._id!=User.current._id,
-            action=readonly ? null : (finished ? "Publish" : (started ? "Finish" : "Start")),
-            sencondaryStyle={fontSize:'small',fontWeight:'normal', textAlign:'right'};
-
-        var hasEditor=false, keys=this.keys=[],
-            contentEditor=uiKnowledge.renderContent(entity.knowledge,null, (tmpl)=>{
-
-                let i=0,
-                    steps=tmpl.contents.map(a=>{
-                        if(typeof(a)=='string')
-                            return null
-                        hasEditor=true
-                        i++
-                        var {key, alt}=a
-                        keys.push(key)
-
-                        return (
-                            <Step key={key}>
-                                <StepLabel onClick>{key}</StepLabel>
-                                <StepContent>
-                                    <Editor ref={`editor-${key}`} content={content[key]} appendable={!readonly}/>
-                                    <br/>
-                                    <br/>
-                                </StepContent>
-                            </Step>
-                        )
-                    }).filter(a=>a)
-
-                return (
-                    <Stepper orientation="vertical" className="stepper">
-                        {steps}
-                    </Stepper>
-                )
-            })
-        var summaryEditor
-        if(summary.length || !hasEditor){
-            summaryEditor=(<Editor ref="summary" content={summary} appendable={!readonly}/>)
-            if(hasEditor)
-                summaryEditor=(
-                    <details open="true">
-                        <summary>summary</summary>
-                        {summaryEditor}
-                    </details>
-                )
-        }
-
+        const {knowledge}=entity
         return (
             <div className="post">
-                {contentEditor}
-                {summaryEditor}
+                <Stepper>
+                {knowledge.steps.map(({key,alt})=>(
+                    <Step>
+                        <StepLabel>{key}</StepLabel>
+                        <StepContent>
+                            <p>{alt}</p>
+                        </StepContent>
+                    </Step>
+                ))}
+                </Stepper>
                 <CommandBar
                     className="footbar"
                     onSelect={cmd=>this.onSelect(cmd)}
-                    items={["Save", action,
+                    items={["Back", "Save", action,
                         <CommandBar.Comment type={dbTask} model={entity} key="comment"/>,
                         <CommandBar.Share message={entity} key="share"/>]}/>
             </div>
@@ -98,12 +60,6 @@ export default class Task extends Component{
         switch(command){
         case "Start":
             dbTask.start(this.state.entity)
-                .then(function(){
-                    this.forceUpdate()
-                }.bind(this))
-        break
-        case "Finish":
-            dbTask.finish(this.state.entity)
                 .then(function(){
                     this.forceUpdate()
                 }.bind(this))

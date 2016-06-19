@@ -56,17 +56,22 @@ export default class Tasks extends Component{
 			let {knowledge}=model
 	        return (
 	            <div className="li inset photo1" {...others} onClick={()=>this.onDetail()}>
-	                <div>
-	                    <div className="title">{knowledge.title}</div>
-						<Progress mode="determinate" max={knowledge.steps||10} value={model.current}/>
-
-						<div className="more">
-			                <IconStar color="orange" viewBox="0 0 48 48"/>{model.current}/{knowledge.steps}
-			            </div>
-	                </div>
-	                <div className="photos">
-	                    <div><img src={model.thumbnail||thumbnail}/></div>
-	                </div>
+					<div className="layout">
+		                <div>
+		                    <div className="title">{knowledge.title}</div>
+							<Progress mode="determinate"
+								color="green"
+								style={{margin:"5px auto"}}
+								max={knowledge.steps||10} value={model.current}/>
+							<div className="more">
+							{model.current ? `已完成${Math.ceil(100*model.current/knowledge.steps)}%, 继续玩吧！` 
+								: "至今还没有开始玩，赶紧开始吧！"}
+				            </div>
+		                </div>
+		                <div className="photos">
+		                    <div><img src={model.thumbnail||thumbnail}/></div>
+		                </div>
+					</div>
 	            </div>
 	        )
 		}

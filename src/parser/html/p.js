@@ -17,6 +17,7 @@ export default class paragraph extends Visitor{
         var text=this._children.map((a)=>a.html).join("").trim()
         if(this.isRegion(text)){//editable region
             let [key,alt]=this.parse(text)
+            this.findTypedParent(document).addStep(key, alt)
             return Template.placeholder(key, alt)
         }else {
             return `<${this.tag}>${text}</${this.tag}>`

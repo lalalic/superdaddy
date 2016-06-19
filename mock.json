@@ -176,15 +176,9 @@
                     "thumbnail":"",
                     "knowledge":{
                         "_id":"1",
-                        "content":"magic <editable key=\"drawing\">drawing</editable>tile <editable key=\"filling\">filling color</editable>is fun",
-                        "steps":5,
+                        "steps":[{"key":"drawing", "alt":""},{"key":"filling", "alt":""}],
                         "title":"magic tile",
-                        "category":["imagination","coordination"],
-                        "author":{
-                            "_id":"lalalic",
-                            "name":"lalalic"
-                        }
-
+                        "category":["imagination","coordination"]
                     },
                     "content":{
                         "drawing":
@@ -199,8 +193,7 @@
                                 "desc":"我也试一试",
                                 "createdAt":"2015-07-13T03:05:21Z"
                             }]
-                    },
-                    "summary":[]
+                    }
                 },
                 {
                     "_id":"2",

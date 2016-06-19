@@ -16,10 +16,7 @@ const {List,Loading,Comment,CommandBar,fileSelector}=UI
 const {DialogCommand}=CommandBar
 
 export default class Knowledge extends Component{
-    constructor(props){
-        super(props)
-        this.state={entity:null, tasks:[]}
-    }
+    state={entity:null, queued:false}
 
 	getData(_id){
 		let {state}=this.props.location
@@ -76,6 +73,8 @@ export default class Knowledge extends Component{
         break
         default:
             this.origin=entity
+            commands.push({action:"", label:"添加课程"， onSelect:e=>this.plan()})
+
             commands.push(<CommandBar.Comment key="Comment" type={dbKnowledge} model={entity}/>)
             commands.push(<CommandBar.Share key="Share" message={entity}/>)
         }
@@ -85,20 +84,6 @@ export default class Knowledge extends Component{
                 <div className="knowledge">
                     {Knowledge.renderContent(entity)}
                 </div>
-
-				<div className="calendar">
-					<Calendar
-                            disableYearSelection={true}
-                            mode="landscape"
-                            DateTimeFormat={cnDateTimeFormat}
-                            firstDayOfWeek={0}
-                            displayDate={now}
-							minDate={now}
-                            maxDate={getLastDayOfMonth(now)}
-                            selected={scheduled}
-							onTouchTapDay={(e,day)=>this.plan(day)}
-							/>
-				</div>
 
                 <CommandBar
                     className="footbar"
@@ -135,19 +120,12 @@ export default class Knowledge extends Component{
     }
 
 	plan(day){
-		let {tasks, entity}=this.state
-			,found=tasks.find(a=>isEqualDate(day, a.scheduledAt))
-		if(found)
-			dbTask.remove(found._id).then(a=>{
-				this.setState({
-					tasks:tasks.filter(a=>!isEqualDate(day,a.scheduledAt))
-				})
-			})
-		else
-			dbTask.plan(entity,day).then(a=>{
-				tasks.push(a)
-				this.setState({tasks})
-			})
+		let {entity}=this.state
+
+		dbTask.plan(entity,day).then(a=>{
+			tasks.push(a)
+			this.setState({tasks})
+		})
 	}
 
     static selectDocx(){
@@ -156,7 +134,7 @@ export default class Knowledge extends Component{
     }
 
     static renderContent(entity, open=true, templateRender){
-        var {category=[], keywords=[], figure="http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"}=entity,
+        var {category=[], keywords=[], figure}=entity,
             sencondaryStyle={fontSize:'small',fontWeight:'normal', textAlign:'right'},
             template=new Template(entity.content);
 
