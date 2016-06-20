@@ -10,7 +10,6 @@ import dbKnowledge from './db/knowledge'
 import dbTask from './db/task'
 
 import extract from './parser/extractor'
-import Template from "./parser/template"
 
 const {List,Loading,Comment,CommandBar,fileSelector}=UI
 const {DialogCommand}=CommandBar
@@ -138,19 +137,7 @@ export default class Knowledge extends Component{
             sencondaryStyle={fontSize:'small',fontWeight:'normal', textAlign:'right'},
             template=new Template(entity.content);
 
-        var content=(templateRender||function(tpl){
-                var __html=tpl.contents.map((section,i)=>{
-                    if(typeof(section)=='string')
-                        return section
-                    return `
-                        <details open="true">
-                            <summary>${section.key}</summary>
-                            <p>${section.alt}</p>
-                        </details>
-                    `
-                }).join("");
-                return <div dangerouslySetInnerHTML={{__html}}/>
-            })(template);
+        var content=<div dangerouslySetInnerHTML={entity.content}/>
 
         if(entity.summary && open!==null){
             content=(
@@ -164,7 +151,7 @@ export default class Knowledge extends Component{
         var notNewStuff
         if(entity._id){
             notNewStuff=[
-                (<h1 key="link0"><Link to={`/knowledge/${entity._id}`}>{entity.title}</Link></h1>),
+                (<h1 key="link0"><Link to={`knowledge/${entity._id}`}>{entity.title}</Link></h1>),
                 (<p key="author">
                     {entity.author.name} - <time>{relative(entity.createdAt)}</time>
                 </p>)

@@ -14,34 +14,48 @@ import cell from "./html/td"
 import text from "./html/text"
 import image from "./html/image"
 import hyperlink from "./html/hyperlink"
+import step from './html/step'
+
+var MODELS={
+	document,
+	documentProperty,
+	paragraph,
+	table,
+	row,
+	cell,
+	text,
+	image,
+	hyperlink,
+	step,
+	heading: paragraph,
+	header: Ignore,
+	footer: Ignore,
+	documentStyles: Ignore
+}
+
+class Document extends docx4js{
+	static Factory=class extends docx4js.Factory{
+		create(wXml, doc, parent, more){
+			let model=super.create(...arguments)
+			if(Step.is(wXml))
+				return new Step.Model(...arguments)
+
+			return model
+		}
+	}
+}
+
+function splitKey(data){
+	if(typeof(data)=='string')
+		data=[data]
+	var keys=[]
+	data.forEach(a=>a.split(",").forEach(b=>((b=b.trim()).length && keys.push(b))))
+	return keys
+}
 
 export default function extract(file){
-	var MODELS={
-		document,
-		documentProperty,
-		paragraph,
-		table,
-		row,
-		cell,
-		text,
-		image,
-		hyperlink,
-		heading: paragraph,
-		header: Ignore,
-		footer: Ignore,
-		documentStyles: Ignore
-	}
-
-	function splitKey(data){
-		if(typeof(data)=='string')
-			data=[data]
-		var keys=[]
-		data.forEach(a=>a.split(",").forEach(b=>((b=b.trim()).length && keys.push(b))))
-		return keys
-	}
-
     return docxHub.assemble(file,{channel:"interactive"})
-		.then(docx=>docx.parse(docx4js.createVisitorFactory(MODELS))).then(doc=>{
+		.then(docx=>docx.parse(Document.createVisitorFactory(MODELS))).then(doc=>{
         var {html:content, properties, id:elId, images, steps}=doc,
             {name,title, keywords, category, subject, abstract,description, ...others}=properties
 

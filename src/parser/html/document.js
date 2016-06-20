@@ -21,7 +21,7 @@ export default class document extends Ignore{
         return false
     }
 
-    addStep(key, alt){
-        this.steps.push({key,alt})
+    addStep(step){
+        this.steps.push(step)
     }
 }

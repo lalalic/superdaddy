@@ -3,7 +3,6 @@ import dbTask from './db/task'
 import dbFamily from './db/family'
 import uiKnowledge from './knowledge'
 import Editor from './components/editor'
-import Template from './parser/template'
 
 import {RaisedButton} from "material-ui"
 import {Stepper, Step, StepContent,StepButton} from 'material-ui/Stepper'
@@ -39,13 +38,13 @@ export default class Task extends Component{
 
         const {knowledge, content, current}=task
 		const {steps}=knowledge
-		
+
         return (
 			<article>
 				<header>
 					<h1 onClick={e=>this.context.router.push(`knowledge/${knowledge._id}`)}>{knowledge.title}</h1>
 				</header>
-				
+
 				<section>
 					{completed && <div>"恭喜${child.name},你已经完成了本课程!"</div>}
 					<Stepper orientation="vertical" linear={false} activeStep={active}>
@@ -54,12 +53,12 @@ export default class Task extends Component{
 							<StepButton onClick={e=>this.setState({active:index})}>{key}</StepButton>
 							<StepContent>
 								{alt && <p>{alt}</p>}
-								<Editor ref={`editor-${key}`} 
+								<Editor ref={`editor-${key}`}
 									content={content[key]}
 									appendable={index==current}/>
-								
+
 								<div style={{margin:10}}>
-									{index==current && 
+									{index==current &&
 									(<RaisedButton primary={true} label="完成"
 										onClick={e=>{
 											task.content[key]=this.refs[`editor-${key}`].value
@@ -77,16 +76,16 @@ export default class Task extends Component{
 					))}
 					</Stepper>
 				</section>
-				
+
 				<CommandBar
                     className="footbar"
                     onSelect={cmd=>this.onSelect(cmd)}
-                    items={["Back", 
+                    items={["Back",
                         <CommandBar.Comment type={dbTask} model={task} key="comment"/>,
                         <CommandBar.Share message={task} key="share"/>]}/>
 			</article>
         )
     }
-	
+
 	static contextTypes={router:React.PropTypes.object}
 }
