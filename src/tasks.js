@@ -54,17 +54,19 @@ export default class Tasks extends Component{
 		render(){
 			let {model,thumbnail,...others}=this.props
 			let {knowledge}=model
+			let {title, steps=[]}=knowledge, len=steps.length
 	        return (
 	            <div className="li inset photo1" {...others} onClick={()=>this.onDetail()}>
 					<div className="layout">
 		                <div>
-		                    <div className="title">{knowledge.title}</div>
+		                    <div className="title">{title}</div>
 							<Progress mode="determinate"
 								color="green"
 								style={{margin:"5px auto"}}
-								max={knowledge.steps||10} value={model.current}/>
+								max={len} 
+								value={model.current}/>
 							<div className="more">
-							{model.current ? `已完成${Math.ceil(100*model.current/knowledge.steps)}%, 继续玩吧！` 
+							{model.current ? `已完成${Math.ceil(100*model.current/len)}%, 继续玩吧！` 
 								: "至今还没有开始玩，赶紧开始吧！"}
 				            </div>
 		                </div>

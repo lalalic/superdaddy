@@ -132,7 +132,7 @@ module.exports=QiliApp.render(
         <Route path="baby" contextual={false} component={Creator}/>
 
         <Route path="courses">
-            <IndexRoute component={KnowledgesUI}/>
+            <IndexRoute component={KnowledgesUI.Course}/>
             <Route path="done"/>
         </Route>
 
@@ -149,7 +149,7 @@ module.exports=QiliApp.render(
 		</Route>
 
         <Route path="publish" component={PublishUI}>
-            <IndexRoute params={{what:"all"}}/>
+            <IndexRoute/>
             <Route path=":what"/>
         </Route>
 

@@ -73,7 +73,7 @@ export default class Knowledge extends Component{
         break
         default:
             this.origin=entity
-            commands.push({action:"", label:"添加课程"， onSelect:e=>this.plan()})
+            commands.push({action:"", label:"添加课程", onSelect:e=>this.plan()})
 
             commands.push(<CommandBar.Comment key="Comment" type={dbKnowledge} model={entity}/>)
             commands.push(<CommandBar.Share key="Share" message={entity}/>)

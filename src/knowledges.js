@@ -5,6 +5,7 @@ import {IconButton, AppBar, TextField} from 'material-ui'
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconThumbup from "material-ui/svg-icons/action/thumb-up"
 import IconSearch from "material-ui/svg-icons/action/search"
+import IconBack from "material-ui/svg-icons/hardware/keyboard-arrow-left"
 
 import dbKnowledge from './db/knowledge'
 import uiKnowledge from './knowledge'
@@ -34,7 +35,7 @@ export default class Knowledges extends Component{
         return (
             <div>
                 <AppBar
-                    iconElementLeft={<span/>}
+                    iconElementLeft={this.getLeftElement()}
                     iconElementRight={<IconButton onClick={e=>this.search()}><IconSearch/></IconButton>}
                     title={<TextField name="search"
                         hintText="查询"
@@ -50,6 +51,10 @@ export default class Knowledges extends Component{
             </div>
         )
     }
+	
+	getLeftElement(){
+		return (<span/>)
+	}
 
     search(props){
         this.refs.search.dismiss()
@@ -72,6 +77,12 @@ export default class Knowledges extends Component{
             )
         }
     }
+	
+	static Course=class extends Knowledges{
+		getLeftElement(){
+			return (<IconButton onClick={e=>this.context.router.goBack()}><IconBack/></IconButton>)
+		}
+	}
 }
 
 class Search extends DialogCommand{

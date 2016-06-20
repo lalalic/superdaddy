@@ -68,12 +68,6 @@ export default class Account extends Component{
                         onClick={a=>router.push("invite")}
                         />
 
-                    <List.Item primaryText="出书"
-                        leftIcon={<PublishIcon/>}
-						rightIcon={<RightArrow/>}
-                        onClick={a=>router.push("publish")}
-                        />
-
                     <List.Item primaryText="设置"
                         leftIcon={<SettingIcon/>}
 						rightIcon={<RightArrow/>}

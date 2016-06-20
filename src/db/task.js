@@ -13,15 +13,15 @@ export default class Task extends Model{
     }
 
     static plan(knowledge, dates){
-        let {_id,title,keywords,category,steps, images:}=knowledge
+        let {_id,title,keywords,category,steps, images=[]}=knowledge
 
         return this.upsert({
 			knowledge:{_id,title,keywords,category, steps},
-            thumbnail:
+            thumbnail: images[0],
             current:0,
 			child:Family.currentChild._id})
     }
-
+	
     static finish(task){
         task.finishedAt=new Date()
         task.finishedAuthor=User.currentAsAuthor

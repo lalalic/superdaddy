@@ -172,7 +172,7 @@
                         "_id":"lalalic",
                         "name":"lalalic"
                     },
-                    "current":1,
+                    "current":0,
                     "thumbnail":"",
                     "knowledge":{
                         "_id":"1",
@@ -192,7 +192,15 @@
                                 "photos":["http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"],
                                 "desc":"我也试一试",
                                 "createdAt":"2015-07-13T03:05:21Z"
-                            }]
+                            }],
+						"filling":[
+							{
+                                "photos":["http://dist.js.xinhuanet.com/2015-07/16/1115946088_14370290155871n.jpg",
+                                    "http://n.sinaimg.cn/transform/20150716/cKHR-fxfaswi4039085.jpg"],
+                                "desc":"这是一个好方法",
+                                "createdAt":"2015-07-12T03:05:21Z"
+                            }
+						]
                     }
                 },
                 {
@@ -203,14 +211,17 @@
                         "_id":"lalalic",
                         "name":"lalalic"
                     },
-                    "current":4,
+                    "current":3,
                     "thumbnail":"",
                     "knowledge":{
                         "_id":"1",
                         "title":"Boat",
-                        "steps":20,
-                        "content":"magic tile is fun",
-                        "summary":"I like boat",
+                        "steps":[
+							{"key":"buy", "alt":""},
+							{"key":"practice", "alt":""},
+							{"key":"in water", "alt":""},
+							{"key":"game", "alt":""}
+							],
                         "category":["read","expression"],
                         "author":{
                             "_id":"lalalic",
