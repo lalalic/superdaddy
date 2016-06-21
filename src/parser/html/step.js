@@ -1,7 +1,8 @@
-import {Visitor as Any} from "docx4js"
+import Base from "docx4js/lib/openxml/docx/model"
 import document from './document'
 import P from "./p"
 
+const IS=/^\[.*\]$/g
 /**
  *
  * [key:alt:reward]
@@ -9,7 +10,7 @@ import P from "./p"
 export default class Step extends P{
     constructor(wordModel){
         super(...arguments)
-        wordModel.textContent.trim()
+        wordModel.wXml.textContent.trim()
             .replace(/^\[(.*)\]$/g, (a, content)=>{
                 const [key,alt,reward="1"]=content.split(":")
                 this._info={key, alt, reward:parseInt(reward)}
@@ -19,7 +20,7 @@ export default class Step extends P{
 
     get html(){
         const {key,alt}=this._info
-        return `<${this.tag} className="step">${alt||key}</${this.tag}>`
+        return `<${this.tag} class="step">${alt||key}</${this.tag}>`
     }
 
     visit(){
@@ -28,14 +29,14 @@ export default class Step extends P{
     }
 
 
-    static is(wordModel){
-        if(wordModel.type!=='paragraph')
+    static is(model){
+        if(model.type!=='paragraph')
             return false
-
-        return wordModel.textContent.trim().test(/^\[.*\]$/g)
+		
+        return IS.test(model.wXml.textContent.trim())
     }
 
-    static Model=class extends Any{
+    static Model=class extends Base{
         static get type(){return "step"}
     }
 }

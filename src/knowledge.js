@@ -134,10 +134,9 @@ export default class Knowledge extends Component{
 
     static renderContent(entity, open=true, templateRender){
         var {category=[], keywords=[], figure}=entity,
-            sencondaryStyle={fontSize:'small',fontWeight:'normal', textAlign:'right'},
-            template=new Template(entity.content);
+            sencondaryStyle={fontSize:'small',fontWeight:'normal', textAlign:'right'}
 
-        var content=<div dangerouslySetInnerHTML={entity.content}/>
+        var content=<div dangerouslySetInnerHTML={{__html:entity.content}}/>
 
         if(entity.summary && open!==null){
             content=(

@@ -33,12 +33,12 @@ var MODELS={
 	documentStyles: Ignore
 }
 
-class Document extends docx4js{
+class Document1 extends docx4js{
 	static Factory=class extends docx4js.Factory{
 		create(wXml, doc, parent, more){
 			let model=super.create(...arguments)
-			if(Step.is(wXml))
-				return new Step.Model(...arguments)
+			if(step.is(model))
+				return new step.Model(...arguments)
 
 			return model
 		}
@@ -55,7 +55,8 @@ function splitKey(data){
 
 export default function extract(file){
     return docxHub.assemble(file,{channel:"interactive"})
-		.then(docx=>docx.parse(Document.createVisitorFactory(MODELS))).then(doc=>{
+		.then(docx=>Document1.load(docx.data))
+		.then(docx=>docx.parse(Document1.createVisitorFactory(MODELS))).then(doc=>{
         var {html:content, properties, id:elId, images, steps}=doc,
             {name,title, keywords, category, subject, abstract,description, ...others}=properties
 
