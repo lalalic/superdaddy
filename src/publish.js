@@ -12,23 +12,19 @@ const {Messager}=UI
 
 export default class Publisher extends Component{
 	state={template:"light"}
-	
-    componentWillReceiveProps(next){
-        return next.child!=this.props.child
-    }
-	
+
     render(){
-		const {child}=this.props
+		const {child}=this.context
 		const {template}=this.state
         return(
             <div>
-				<AppBar title={`出版${child.name}的成长历程,留下永久的回忆`} 
+				<AppBar title={`出版${child.name}的成长历程,留下永久的回忆`}
 					showMenuIconButton={false}/>
 				<center>
 					<DatePicker ref="since"
-						floatingLabelText="自从" 
+						floatingLabelText="自从"
 						autoOk={true} mode="landscape"/>
-						
+
 					<TextField ref="copy"
 						floatingLabelText="打印多少本"
 						defaultValue={1}
@@ -36,11 +32,11 @@ export default class Publisher extends Component{
 				</center>
 				<GridList>
 					<Subheader>选择出版模板</Subheader>
-					
+
 					{"light,dark,modern,gift".split(",").map(a=>(
 						<GridTile key={a} title={a}
 							actionIcon={<IconButton onClick={e=>this.setState({template:a})}>
-									{template==a ? 
+									{template==a ?
 										<IconSelected hoverColor="blue" color="yellow"/> :
 										<IconUnSelected hoverColor="blue" color="white"/>
 									}
@@ -50,19 +46,23 @@ export default class Publisher extends Component{
 					))}
 				</GridList>
                 <UI.CommandBar className="footbar"
-                    items={["Back", 
-						{action:"Preview", label:"预览", onSelect:e=>this.preview(), icon:IconView}, 
+                    items={["Back",
+						{action:"Preview", label:"预览", onSelect:e=>this.preview(), icon:IconView},
 						{action:"Print", label:"云打印", onSelect:e=>this.print(), icon:IconPrint}
 						]}/>
             </div>
         )
     }
-	
+
 	preview(){
 		Messager.show("stay tune")
 	}
-	
+
 	print(){
 		Messager.show("Put into queue, please pay within 24 hours")
+	}
+
+	static contextTypes={
+		child: React.PropTypes.object
 	}
 }

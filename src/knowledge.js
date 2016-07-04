@@ -11,7 +11,7 @@ import dbTask from './db/task'
 
 import extract from './parser/extractor'
 
-const {List,Loading,Comment,CommandBar,fileSelector}=UI
+const {List,Loading,Comment,CommandBar,fileSelector, Messager}=UI
 const {DialogCommand}=CommandBar
 
 export default class Knowledge extends Component{
@@ -19,7 +19,7 @@ export default class Knowledge extends Component{
 
 	getData(_id){
 		let {state}=this.props.location
-			,{_id:child}=this.props.child
+			,{_id:child}=this.context.child
 			,status="scheduled"
 
 		if(state && state.knowledge){
@@ -51,14 +51,12 @@ export default class Knowledge extends Component{
     }
 
     render(){
-        var {entity, status, planing, tasks}=this.state
+        var {entity, status, planing, tasks=[]}=this.state
 
         if(!entity)
             return (<Loading/>)
 
         var commands=["Back"]
-			,now=new Date()
-			,scheduled=tasks.map(a=>a.scheduledAt)
 
         if(true || User.current._id==entity.author._id)
             commands.push({action:"New Version",icon:IconCreate})
@@ -72,8 +70,10 @@ export default class Knowledge extends Component{
         break
         default:
             this.origin=entity
-            commands.push({action:"", label:"添加课程", onSelect:e=>this.plan()})
-
+            if(tasks.length==0)
+                commands.push({action:"", label:"添加课程", onSelect:e=>this.plan()})
+            else
+                commands.push({action:"", label:"删除课程"})
             commands.push(<CommandBar.Comment key="Comment" type={dbKnowledge} model={entity}/>)
             commands.push(<CommandBar.Share key="Share" message={entity}/>)
         }
@@ -119,11 +119,12 @@ export default class Knowledge extends Component{
     }
 
 	plan(day){
-		let {entity}=this.state
+		let {entity,tasks=[]}=this.state
 
 		dbTask.plan(entity,day).then(a=>{
-			tasks.push(a)
-			this.setState({tasks})
+            tasks.push(a)
+            this.setState({tasks})
+            Messager.show("计划好了")
 		})
 	}
 
@@ -176,5 +177,9 @@ export default class Knowledge extends Component{
 				</section>
 			</article>
 		)
+    }
+
+    static contextTypes={
+        child: React.PropTypes.object
     }
 }

@@ -12,14 +12,17 @@ export default class Score extends Component{
 	render(){
 		return (
 			<div className="page">
-				<FloatingActionButton 
+				<FloatingActionButton
 					className="floating sticky bottom right"
 					mini={true} onClick={e=>this.context.router.push("publish")}>
 					<IconPublish/>$
 				</FloatingActionButton>
-				<Rewards child={this.props.child}/>
+				<Rewards child={this.context.child}/>
 			</div>
 		)
 	}
-	static contextTypes={router: React.PropTypes.object}
+	static contextTypes={
+		router: React.PropTypes.object
+		,child: React.PropTypes.object
+	}
 }

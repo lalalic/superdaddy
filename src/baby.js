@@ -11,7 +11,7 @@ export default class Baby extends Component{
 		if(this.state.frozen)
 			return false
 
-		return this.props.child!=newProps.child
+		return true
     }
 
 	componentWillReceiveProps(newProps){
@@ -20,7 +20,7 @@ export default class Baby extends Component{
 	}
 
     render(){
-        let {child}=this.props
+        let {child}=this.context
         return (
             <div>
                 <div className="form">
@@ -95,11 +95,14 @@ export default class Baby extends Component{
 
     remove(){
         this.setState({frozen:true})
-		dbFamily.remove(this.props.child._id)
+		dbFamily.remove(this.context.child._id)
 			.then(a=>this.context.router.replace("/"))
     }
 
-	static contextTypes={router:React.PropTypes.object}
+	static contextTypes={
+		router:React.PropTypes.object,
+		child: React.PropTypes.object
+	}
 
 	static Creator=class extends Component{
 		componentWillReceiveProps(newProps){

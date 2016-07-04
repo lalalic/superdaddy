@@ -13,11 +13,14 @@ export default class Rewards extends React.Component{
 		maxY:window.innerHeight
 	}
 	static propTypes={
-		child: React.PropTypes.object,
 		editable:React.PropTypes.bool,
 		height:React.PropTypes.number,
 		maxY:React.PropTypes.number,
 		minY:React.PropTypes.number
+	}
+
+	static contextTypes={
+		child: React.PropTypes.object
 	}
 
 	constructor(){
@@ -69,7 +72,7 @@ export default class Rewards extends React.Component{
 		dbReward.on("upserted", this.onChange)
 		dbGoal.on("upserted", this.onChange)
 		window.addEventListener("scroll",this.onScroll)
-		this.onChange({child:this.props.child._id})
+		this.onChange({child:this.context.child._id})
 	}
 
 	componentWillUnmount(){
@@ -79,12 +82,9 @@ export default class Rewards extends React.Component{
 	}
 
 
-	componentWillReceiveProps(nextProps){
-		let {child:newChild}=nextProps,
-			{child}=this.props
-
-		if(child!=newChild)
-			this.onChange({child:newChild._id})
+	componentWillReceiveProps(nextProps, nextContext){
+		if(this.context.child!=nextContext.child)
+			this.onChange({child:nextContext.child._id})
 	}
 
 	componentDidUpdate(){
@@ -134,12 +134,12 @@ export default class Rewards extends React.Component{
 	}
 
 	pendGoal(goal){
-		goal.child=this.props.child._id
+		goal.child=this.context.child._id
 		dbGoal.upsert(goal)
 	}
 
 	reward(amount){
-		let newReward={amount, child:this.props.child._id}
+		let newReward={amount, child:this.context.child._id}
 		dbReward.upsert(newReward)
 	}
 

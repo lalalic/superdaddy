@@ -32,7 +32,7 @@ export default class Task extends Component{
     }
 
     render(){
-        const {task, active, completed}=this.state, {child}=this.props
+        const {task, active, completed}=this.state, {child}=this.context
         if(!task)
             return (<Loading/>)
 
@@ -87,5 +87,8 @@ export default class Task extends Component{
         )
     }
 
-	static contextTypes={router:React.PropTypes.object}
+	static contextTypes={
+        router:React.PropTypes.object,
+        child: React.PropTypes.object
+    }
 }

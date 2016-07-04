@@ -81,6 +81,6 @@ export default class Account extends Component{
     shortcutPhoto(child, url){
         dbFamily.upsert(child,{photo:url})
     }
-}
 
-Account.contextTypes={router:React.PropTypes.object}
+    static contextTypes={router:React.PropTypes.object}
+}

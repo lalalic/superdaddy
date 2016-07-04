@@ -40,9 +40,9 @@ class SuperDaddy extends QiliApp{
         return (
             <div>
 				{contextual!=false &&
-					(<CurrentChild key="context" child={child} name={child.name}/>)}
+					(<CurrentChild name={child.name}/>)}
 
-				{React.cloneElement(this.props.children,{child})}
+				{this.props.children}
 
                 {routeName&&(<CommandBar className="footbar"
                     primary={routeName}
@@ -64,7 +64,19 @@ class SuperDaddy extends QiliApp{
             </div>
         )
     }
-    static contextTypes={router:React.PropTypes.object}
+    static contextTypes={
+        router:React.PropTypes.object
+    }
+
+    static childContextTypes=Object.assign({
+        child: React.PropTypes.object
+    },QiliApp.childContextTypes)
+
+    getChildContext(){
+        return Object.assign({
+            child:this.state.child
+        },super.getChildContext())
+    }
 }
 
 Object.assign(SuperDaddy.defaultProps,{
@@ -74,25 +86,20 @@ Object.assign(SuperDaddy.defaultProps,{
 
 class CurrentChild extends Component{
     render(){
-        let {child, name, style={fontSize:"xx-small"}, ...others}=this.props
-
+        let {name}=this.props
+        let {child}=this.context
         return(
             <FloatingActionButton className="contexture sticky top right"
 				mini={true}
-				style={style}
-                {...others}
-				onClick={e=>this.change()}>
-                {child.photo ? (<Avatar src={this.props.child.photo}/>) : name}
+				style={{fontSize:"xx-small"}}
+                onClick={e=>this.change()}>
+                {child.photo ? (<Avatar src={child.photo}/>) : name}
             </FloatingActionButton>
         )
     }
 
-    shouldComponentUpdate(nextProps){
-		return nextProps.name!=this.props.name
-    }
-
     change(){
-        var current=this.props.child,
+        var current=this.context.child,
             children=Family.children,
             len=children.length;
         if(len<2)
@@ -101,7 +108,7 @@ class CurrentChild extends Component{
         var index=children.indexOf(current)
         Family.currentChild=children[(index+1) % len]
     }
-    static contextTypes={router:React.PropTypes.object}
+    static contextTypes={child:React.PropTypes.object}
 }
 
 import TaskUI from './task'
@@ -144,8 +151,8 @@ module.exports=QiliApp.render(
         <Route path="comment/:type/:_id" component={Comment}/>
 
 
-        <Route contextual={false} path="setting">
-			<IndexRoute  component={SettingUI}/>
+        <Route path="setting">
+			<IndexRoute  contextual={false}  component={SettingUI}/>
 		</Route>
 
         <Route path="publish" component={PublishUI}>

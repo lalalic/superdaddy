@@ -25,23 +25,24 @@ export default class Tasks extends Component{
 	}
 
 	componentDidMount(){
-		this.getData(this.props.child)
+		this.getData(this.context.child)
 	}
 
-	componentWillReceiveProps(nextProps){
-		if(this.props.child!=nextProps.child)
-			this.getData(nextProps.child)
+	componentWillReceiveProps(nextProps, nextContext){
+		if(this.context.child!=nextContext.child)
+			this.getData(nextContext.child)
 	}
 
     render(){
+		const {router, child}=this.context
 		return (
 			<div>
-				<FloatingAdd mini={true} onClick={e=>this.context.router.push("courses")}/>
+				<FloatingAdd mini={true} onClick={e=>router.push("courses")}/>
 
 				<AppBar
 					titleStyle={{color:"lightgray"}}
 					showMenuIconButton={false}
-					title={`${this.props.child.name}的课程`}/>
+					title={`${child.name}的课程`}/>
 
 	            <List model={this.state.tasks}
 					empty={<Empty icon={<Logo/>}/>}
@@ -49,7 +50,11 @@ export default class Tasks extends Component{
 			</div>
         )
     }
-	static contextTypes={router: React.PropTypes.object}
+	static contextTypes={
+		router: React.PropTypes.object,
+		child: React.PropTypes.object
+	}
+
 	static Item=class  extends Component{
 		render(){
 			let {model,thumbnail,...others}=this.props
@@ -63,10 +68,10 @@ export default class Tasks extends Component{
 							<Progress mode="determinate"
 								color="green"
 								style={{margin:"5px auto"}}
-								max={len} 
+								max={len}
 								value={model.current}/>
 							<div className="more">
-							{model.current ? `已完成${Math.ceil(100*model.current/len)}%, 继续玩吧！` 
+							{model.current ? `已完成${Math.ceil(100*model.current/len)}%, 继续玩吧！`
 								: "至今还没有开始玩，赶紧开始吧！"}
 				            </div>
 		                </div>
