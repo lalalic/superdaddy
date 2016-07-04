@@ -121,6 +121,7 @@ import SettingUI from './setting'
 import PublishUI from './publish'
 import TasksUI, {Approvings} from "./tasks"
 import ScoreUI from "./score"
+import InviteUI from "./invite"
 
 module.exports=QiliApp.render(
     (<Route path="/" component={SuperDaddy}>
@@ -159,6 +160,8 @@ module.exports=QiliApp.render(
             <IndexRoute/>
             <Route path=":what"/>
         </Route>
+
+        <Route path="invite" component={InviteUI}/>
 
     </Route>),{
 		createElement(Component, props){
