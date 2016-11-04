@@ -14,3 +14,10 @@ lessons
 	* adjust shouldComponentUpdate according to route
 	* path change for specified route
 * browser back/forward -> url -> componentWillReceiveProps
+
+for qili-app@0.7
+================
+>app uses compose mode, instead of inheritance mode
+>CommandBar needs Icon element
+>redux refactoring
+	>stateless component

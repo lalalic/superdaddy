@@ -1,4 +1,5 @@
-import {React, Component, UI, User} from "qili-app"
+import React, {Component, PropTypes} from "react"
+import {UI, User} from "qili-app"
 import {Avatar} from "material-ui"
 import RightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right'
 import SettingIcon from 'material-ui/svg-icons/action/settings'
@@ -82,5 +83,5 @@ export default class Account extends Component{
         dbFamily.upsert(child,{photo:url})
     }
 
-    static contextTypes={router:React.PropTypes.object}
+    static contextTypes={router:PropTypes.object}
 }

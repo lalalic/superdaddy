@@ -1,4 +1,5 @@
-import {React, Component} from "qili-app"
+import React, {Component, PropTypes} from "react"
+
 import {FloatingActionButton} from "material-ui"
 import IconAdd from "material-ui/svg-icons/content/add"
 

@@ -1,4 +1,5 @@
-import {React, Component} from 'qili-app'
+import React, {Component, PropTypes} from "react"
+
 import _Calendar from 'material-ui/DatePicker/Calendar'
 import {isEqualDate, cloneAsDate, getDaysInMonth,dateTimeFormat} from "material-ui/DatePicker/dateUtils"
 

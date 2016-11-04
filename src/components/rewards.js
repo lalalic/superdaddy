@@ -1,11 +1,12 @@
-import {React, UI} from "qili-app"
+import React, {Component, PropTypes} from "react"
+import {UI} from "qili-app"
 import ReactDOM from "react-dom"
 import {TextField, IconButton, Avatar} from 'material-ui'
 import PlusIcon from 'material-ui/svg-icons/action/alarm-add'
 import ForwardIcon from "material-ui/svg-icons/navigation/arrow-forward"
 import {Family as dbFamily, Reward as dbReward, Goal as dbGoal} from '../db'
 
-export default class Rewards extends React.Component{
+export default class Rewards extends Component{
 	static defaultProps={
 		editable:false,
 		height:20,
@@ -13,14 +14,14 @@ export default class Rewards extends React.Component{
 		maxY:window.innerHeight
 	}
 	static propTypes={
-		editable:React.PropTypes.bool,
-		height:React.PropTypes.number,
-		maxY:React.PropTypes.number,
-		minY:React.PropTypes.number
+		editable:PropTypes.bool,
+		height:PropTypes.number,
+		maxY:PropTypes.number,
+		minY:PropTypes.number
 	}
 
 	static contextTypes={
-		child: React.PropTypes.object
+		child: PropTypes.object
 	}
 
 	constructor(){
@@ -149,7 +150,7 @@ export default class Rewards extends React.Component{
 	}
 }
 
-class Item extends React.Component{
+class Item extends Component{
 	static defaultProps={
 		height:20
 	}
@@ -281,8 +282,8 @@ class AReward extends Item{
 import RewardIcon from 'material-ui/svg-icons/social/mood'
 class Rewardor extends Item{
 	static propTypes={
-		current:React.PropTypes.number,
-		onReward: React.PropTypes.func
+		current:PropTypes.number,
+		onReward: PropTypes.func
 	}
 
 	static defaultProps={

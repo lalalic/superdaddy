@@ -1,4 +1,5 @@
-import {React, Component} from 'qili-app'
+import React, {Component, PropTypes} from "react"
+
 import {SvgIcon} from 'material-ui'
 
 export default class Logo extends Component{

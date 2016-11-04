@@ -1,5 +1,7 @@
-import {React,Component,immutable, UI} from 'qili-app'
+import React, {Component, PropTypes} from "react"
+import {UI} from 'qili-app'
 import {TextField, RadioButtonGroup, RadioButton,DatePicker} from 'material-ui'
+
 import {Family as dbFamily} from './db'
 import RewardGoal from './components/rewards'
 
@@ -100,8 +102,8 @@ export default class Baby extends Component{
     }
 
 	static contextTypes={
-		router:React.PropTypes.object,
-		child: React.PropTypes.object
+		router:PropTypes.object,
+		child: PropTypes.object
 	}
 
 	static Creator=class extends Component{
@@ -163,6 +165,6 @@ export default class Baby extends Component{
 					this.context.router.replace(`baby/${name}`)
 				})
 		}
-		static contextTypes={router:React.PropTypes.object}
+		static contextTypes={router:PropTypes.object}
 	}
 }

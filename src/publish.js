@@ -1,4 +1,5 @@
-import {Component, React, UI} from "qili-app"
+import React, {Component, PropTypes} from "react"
+import {UI} from "qili-app"
 import {TextField, DatePicker, IconButton, GridList, GridTile, Subheader, AppBar, Divider,} from "material-ui"
 import IconUnSelected from 'material-ui/svg-icons/toggle/star-border'
 import IconSelected from 'material-ui/svg-icons/toggle/star'
@@ -47,8 +48,8 @@ export default class Publisher extends Component{
 				</GridList>
                 <UI.CommandBar className="footbar"
                     items={["Back",
-						{action:"Preview", label:"预览", onSelect:e=>this.preview(), icon:IconView},
-						{action:"Print", label:"云打印", onSelect:e=>this.print(), icon:IconPrint}
+						{action:"Preview", label:"预览", onSelect:e=>this.preview(), icon:<IconView/>},
+						{action:"Print", label:"云打印", onSelect:e=>this.print(), icon:<IconPrint/>}
 						]}/>
             </div>
         )
@@ -63,6 +64,6 @@ export default class Publisher extends Component{
 	}
 
 	static contextTypes={
-		child: React.PropTypes.object
+		child: PropTypes.object
 	}
 }

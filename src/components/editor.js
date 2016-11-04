@@ -1,4 +1,6 @@
-import {React,Component,UI} from 'qili-app'
+import React, {Component, PropTypes} from "react"
+
+import {UI} from 'qili-app'
 import AddIcon from "material-ui/svg-icons/action/note-add"
 
 const {Photo}=UI
@@ -65,8 +67,8 @@ export default class Editor extends Component{
 }
 
 Editor.propTypes={
-    appendable: React.PropTypes.bool,
-    changeable: React.PropTypes.bool
+    appendable: PropTypes.bool,
+    changeable: PropTypes.bool
 }
 
 Editor.defaultProps={

@@ -1,4 +1,5 @@
-import {React, Component, UI} from "qili-app"
+import React, {Component, PropTypes} from "react"
+import {UI} from "qili-app"
 import RateIcon from 'material-ui/svg-icons/editor/mode-edit'
 import BugIcon from 'material-ui/svg-icons/action/bug-report'
 import UpdateIcon from 'material-ui/svg-icons/action/system-update-alt'

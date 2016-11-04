@@ -1,4 +1,5 @@
-import {React, Component, UI} from "qili-app"
+import React, {Component, PropTypes} from "react"
+import {UI} from "qili-app"
 import {Link} from "react-router"
 
 import Rewards from "./components/rewards"
@@ -22,7 +23,7 @@ export default class Score extends Component{
 		)
 	}
 	static contextTypes={
-		router: React.PropTypes.object
-		,child: React.PropTypes.object
+		router: PropTypes.object
+		,child: PropTypes.object
 	}
 }

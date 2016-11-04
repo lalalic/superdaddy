@@ -1,4 +1,5 @@
-import {React,Component,UI} from 'qili-app'
+import React, {Component, PropTypes} from "react"
+import {UI} from 'qili-app'
 import ReactDOM from "react-dom"
 import {IconButton, AppBar, TextField} from 'material-ui'
 
@@ -65,7 +66,7 @@ export default class Knowledges extends Component{
         this.context.router.replace(this.context.router.createPath("knowledges", props))
     }
 
-	static contextTypes={router:React.PropTypes.object}
+	static contextTypes={router:PropTypes.object}
 
     static Creatable=class extends Knowledges{
         render(){
@@ -236,5 +237,5 @@ class Item extends Component{
     onDetail(){
         this.context.router.push({pathname:`knowledge/${this.props.model._id}`,state:{knowledge:this.props.model}})
     }
-	static contextTypes={router:React.PropTypes.object}
+	static contextTypes={router:PropTypes.object}
 }

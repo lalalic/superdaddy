@@ -1,4 +1,5 @@
-import {React,Component,User,UI} from 'qili-app'
+import React, {Component, PropTypes} from "react"
+import {User,UI} from 'qili-app'
 import dbTask from './db/task'
 import dbFamily from './db/family'
 import uiKnowledge from './knowledge'
@@ -88,7 +89,7 @@ export default class Task extends Component{
     }
 
 	static contextTypes={
-        router:React.PropTypes.object,
-        child: React.PropTypes.object
+        router:PropTypes.object,
+        child: PropTypes.object
     }
 }

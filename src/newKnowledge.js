@@ -1,4 +1,5 @@
-import {React, Component, UI} from 'qili-app'
+import React, {Component, PropTypes} from "react"
+import {UI} from 'qili-app'
 import InsertFile from 'material-ui/svg-icons/action/note-add'
 import IconCreate from "material-ui/svg-icons/editor/border-color"
 
@@ -30,7 +31,7 @@ export default class NewKnowledge extends Component{
         }else{
             content=(<div className="knowledge">{uiKnowledge.renderContent(entity)}</div>)
             commands=["Save",
-                {action:"New Version",icon:IconCreate}]
+                {action:"New Version",icon:<IconCreate/>}]
             primary="Save"
         }
 
@@ -78,5 +79,5 @@ export default class NewKnowledge extends Component{
         }
     }
 
-	static contextTypes={router:React.PropTypes.object}
+	static contextTypes={router:PropTypes.object}
 }

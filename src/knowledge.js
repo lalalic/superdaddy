@@ -1,4 +1,5 @@
-import {React,Component, File,UI, User} from 'qili-app'
+import React, {Component, PropTypes} from "react"
+import {File,UI, User} from 'qili-app'
 import {RaisedButton, DatePicker} from 'material-ui'
 import {Link} from "react-router"
 
@@ -59,14 +60,14 @@ export default class Knowledge extends Component{
         var commands=["Back"]
 
         if(true || User.current._id==entity.author._id)
-            commands.push({action:"New Version",icon:IconCreate})
+            commands.push({action:"New Version",icon:<IconCreate/>})
 
         switch(status){
         case 'revising':
             commands.push("Save")
             commands.push({action:"Cancel",
                 onSelect:()=>this.setState({entity:this.origin,status:undefined}),
-                icon:IconCancel})
+                icon:<IconCancel/>})
         break
         default:
             this.origin=entity
@@ -180,6 +181,6 @@ export default class Knowledge extends Component{
     }
 
     static contextTypes={
-        child: React.PropTypes.object
+        child: PropTypes.object
     }
 }

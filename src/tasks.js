@@ -1,4 +1,5 @@
-import {React,Component,UI} from 'qili-app'
+import React, {Component, PropTypes} from "react"
+import {UI} from 'qili-app'
 import {AppBar, LinearProgress as Progress} from 'material-ui'
 
 
@@ -51,8 +52,8 @@ export default class Tasks extends Component{
         )
     }
 	static contextTypes={
-		router: React.PropTypes.object,
-		child: React.PropTypes.object
+		router: PropTypes.object,
+		child: PropTypes.object
 	}
 
 	static Item=class  extends Component{
@@ -86,6 +87,6 @@ export default class Tasks extends Component{
 			this.context.router.push({pathname:`task/${this.props.model._id}`, state:{task:this.props.model}})
 		}
 		static defaultProps={thumbnail:"images/icon.svg"}
-		static contextTypes={router:React.PropTypes.object}
+		static contextTypes={router:PropTypes.object}
 	}
 }

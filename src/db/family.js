@@ -1,23 +1,35 @@
-var {Model}=require('qili-app'),
+var {Model, ENTITIES}=require('qili-app'),
     {EventEmitter}=require('events'),
     event=new EventEmitter(),
     all=[],
     children=[],
     currentChild=null,
     lastChild=null;
+
+import {unionOf, Schema} from "normalizr"
+ 
 export default class Family extends Model{
     static get _name(){
         return 'family'
     }
 
-    static init(name){
+    static init(dispatch, name){
         this.super('init')()
+		this._schema=unionOf({
+				children: new Schema("child")
+				,relatives: new Schema("relative")
+			}
+			,{
+				schemaAttribute: ({relationship})=>(relationship ? "relative" : "child")
+			}
+		)
         return new Promise((resolve, reject)=>{
-            this.find().fetch((data)=>{
-                all=data||[]
+            this.find().fetch(data=>{
+				all=data||[]
                 children=[]
                 all.forEach((a)=>(!a.relationShip && children.push(a)))
-                resolve(Family.currentChild=name ? children.find(a=>a.name==name) : children[0])
+				Family.currentChild=name ? children.find(a=>a.name==name) : children[0]
+                resolve({children, currentChild, all})
             },reject)
         })
     }
