@@ -1,170 +1,182 @@
 import React, {Component, PropTypes} from "react"
-import {UI} from 'qili-app'
+import {UI,ENTITIES,REMOVE_ENTITIES} from 'qili-app'
+import {normalize} from "normalizr"
 import {TextField, RadioButtonGroup, RadioButton,DatePicker} from 'material-ui'
 
 import {Family as dbFamily} from './db'
 import RewardGoal from './components/rewards'
+import {currentChild} from "./selector"
+import {ACTION as SuperDaddy} from "."
 
-const {List,CommandBar,Photo, Messager}=UI
+const {CommandBar,Photo, TextFieldx}=UI
 
-export default class Baby extends Component{
-	state={}
-	shouldComponentUpdate(newProps){
-		if(this.state.frozen)
-			return false
+const DOMAIN="baby"
+export const ACTION={
+	CHANGE: (key,value)=>(dispatch,getState)=>{
+        const child=currentChild(getState())
+		if(key=="name" && !value){
+			return Promise.reject("名字不能空")
+		}
 
-		return true
+		if(child[key]==value)
+			return Promise.resolve()
+
+        child[key]=value
+        return dbFamily.upsert(child)
+            .then(updated=>{
+				dispatch(ENTITIES(normalize(updated,dbFamily.schema).entities))
+			})
     }
+	,CREATE: baby=>dispatch=>{
+		const {name}=baby
+		if(!name)
+			return Promise.reject("名字不能空")
 
-	componentWillReceiveProps(newProps){
-		if(this.props.params.name!=newProps.params.name)
-			dbFamily.currentChild=newProps.params.name
+		return dbFamily.upsert(baby)
+			.then(baby=>{
+				dispatch(ENITITIES(normalize(baby,dbFamily.schema).entities))
+				return baby
+			})
+	}
+	,REMOVE: a=>(dispatch,getState)=>{
+		const child=currentChild(getState())
+		return dbFamily.remove(child._id)
+			.then(a=>{
+				dispatch(REMOVE_ENTITIES("children",child.id))
+			})
+	}
+}
+
+export class Baby extends Component{
+	componentWillReceiveProps(next){
+		if(next.params.id!=this.props.params.id && next.params.id!=next._id)
+			next.dispatch(SuperDaddy.SWITCH_CURRENT_CHILD(next.params.id))
 	}
 
-    render(){
-        let {child}=this.context
-        return (
-            <div>
-                <div className="form">
-                    <div className="child-photo">
-                        <Photo ref="photo"
-                            width={150}
-                            height={150}
-                            src={child.photo}
-							onPhoto={url=>{
-								child.photo=url
-								dbFamily.upsert(child)
-							}}/>
-                    </div>
+	render(){
+		const {name,photo,bd:birthday,gender, dispatch}=this.props
+		const {router}=this.context
+		let refName
+		let changeName=value=>dispatch(ACTION.CHANGE("name",value))
+			.catch(error=>refName.errorText=error)
+		return (
+			<div>
+				<div className="form">
+					<div className="child-photo">
+						<Photo
+							width={150}
+							height={150}
+							src={photo}
+							onPhoto={url=>dispatch(ACTION.CHANGE("photo",url))}/>
+					</div>
 
-                    <TextField ref="name"
+					<TextFieldx ref={a=>refName=a}
 						floatingLabelText="child name"
-                        fullWidth={true}
-                        value={child.name}
-                        onBlur={e=>{
-							let value=e.target.value.trim()
-							if(child.name!=value){
-								child.name=value
-								dbFamily.upsert(child)
-							}
-						}}/>
+						fullWidth={true}
+						value={name}
+						errorText={null}
+						onChange={({target:{value}})=>refName.value=value}
+						onBlur={({target:{value}})=>changeName(value.trim())}
+						onKeyDown={({target:{value},keyCode})=>keyCode==13 && changeName(value.trim())}
+						/>
 
-                    <DatePicker ref="birthday" floatingLabelText="birthday"
-                        fullWidth={true}
-                        autoOk={true}
-                        showYearSelector={true}
-                        maxDate={new Date()}
-                        value={child.bd}
-                        onChange={(nil, date)=>{
-							if(!child.db || child.db.getTime()!=date.getTime()){
-								child.db=date
-								dbFamily.upsert(child)
-							}
-						}}/>
+					<DatePicker
+						floatingLabelText="birthday"
+						fullWidth={true}
+						autoOk={true}
+						showYearSelector={true}
+						maxDate={new Date()}
+						value={birthday}
+						onChange={(nil, value)=>dispatch(ACTION.CHANGE("db",value))}/>
 
-                    <RadioButtonGroup
-                        style={{marginTop:36}}
-                        name="gender"
-                        onChange={(e,selected)=>{
-							if(child.gender!=selected){
-								child.gender=selected
-								dbFamily.upsert(child)
-							}
-						}}
-                        valueSelected={child.gender||"f"}>
-                        <RadioButton value="f" label="girl"/>
-                        <RadioButton value="m" label="boy" />
-                    </RadioButtonGroup>
+					<RadioButtonGroup
+						style={{marginTop:36}}
+						name="gender"
+						onChange={(e,value)=>dispatch(ACTION.CHANGE("gender",value))}
+						valueSelected={gender||"f"}>
+						<RadioButton value="f" label="女孩"/>
+						<RadioButton value="m" label="男孩" />
+					</RadioButtonGroup>
 
-                    <div>
+					<div>
 						<br/>
 						<br/>
 						<div style={{fontSize:"smaller", color:"gray", borderBottom:"1px dotted lightgray"}}>
-							{child.name}的激励计划
+							{name}的激励计划
 						</div>
+						{/*
 						<RewardGoal
 							editable={true}
 							style={{marginTop:30}}
-							child={child}/>
+							child={child}/>*/}
 					</div>
-                </div>
-
-                <CommandBar className="footbar"
-                    items={["Back", {action:"Remove", onSelect:a=>this.remove()}]}/>
-            </div>
-        )
-    }
-
-    remove(){
-        this.setState({frozen:true})
-		dbFamily.remove(this.context.child._id)
-			.then(a=>this.context.router.replace("/"))
-    }
-
-	static contextTypes={
-		router:PropTypes.object,
-		child: PropTypes.object
-	}
-
-	static Creator=class extends Component{
-		componentWillReceiveProps(newProps){
-			return false
-		}
-
-		render(){
-			return (
-				<div>
-					<div className="form">
-						<div className="child-photo">
-							<Photo ref="photo"
-								width={150}
-								height={150}/>
-						</div>
-
-						<TextField ref="name"
-							floatingLabelText="child name"
-							fullWidth={true}/>
-
-						<DatePicker ref="birthday"
-							floatingLabelText="birthday"
-							fullWidth={true}
-							autoOk={true}
-							showYearSelector={true}
-							maxDate={new Date()}/>
-
-						<RadioButtonGroup ref="gender"
-							style={{marginTop:36}}
-							name="gender"
-							defaultSelected="f">
-							<RadioButton value="f" label="girl"/>
-							<RadioButton value="m" label="boy" />
-						</RadioButtonGroup>
-					</div>
-
-					<CommandBar className="footbar"
-						items={["Back", {action:"Save", onSelect:a=>this.save()}]}/>
 				</div>
-			)
-		}
 
-		save(){
-			let {photo, name, birthday, gender}=this.refs
-			photo=photo.state.url
-			name=name.getValue()
-			birthday=birthday.getValue()
-			gender=gender.getValue()
-
-			if(!name){
-				Messager.show("name can't be empty")
-				return
-			}
-
-			Family.upsert({photo,name, gender, db:birthday})
-				.then(baby=>{
-					Family.currentChild=baby
-					this.context.router.replace(`baby/${name}`)
-				})
-		}
-		static contextTypes={router:PropTypes.object}
+				<CommandBar className="footbar"
+					items={[
+						"Back"
+						, {action:"Remove", onSelect:a=>dispatch(ACTION.REMOVE()).then(a=>router.replace("/"))}]}/>
+			</div>
+		)
+	}
+	static contextTypes={
+		router:PropTypes.object
 	}
 }
+
+
+
+export const Creator=({dispatch})=>{
+	let photo,refName, refBirthday, refGender
+	const values=a=>({
+		name: refName.getValue()
+		,birthday: refBirthday.getDate()
+		,gender: refGender.getSelectedValue()
+		,photo
+	})
+	return (
+		<div>
+			<div className="form">
+				<div className="child-photo">
+					<Photo onPhoto={url=>photo=url} width={150} height={150}/>
+				</div>
+
+				<TextFieldx ref={a=>refName=a}
+					floatingLabelText="child name"
+					fullWidth={true}/>
+
+				<DatePicker ref={a=>refBirthday=a}
+					floatingLabelText="birthday"
+					fullWidth={true}
+					autoOk={true}
+					showYearSelector={true}
+					maxDate={new Date()}/>
+
+				<RadioButtonGroup ref={a=>refGender=a}
+					style={{marginTop:36}}
+					name="gender"
+					defaultSelected="f">
+					<RadioButton value="f" label="girl"/>
+					<RadioButton value="m" label="boy" />
+				</RadioButtonGroup>
+			</div>
+
+			<CommandBar className="footbar"
+				items={[
+					"Back"
+					,{
+						action:"Save"
+						,onSelect:a=>dispatch(ACTION.CREATE(values()))
+							.then(baby=>router.replace(`/baby/${baby._id}`),error=>refName.errorText=error)
+					}
+				]}
+			/>
+		</div>
+	)
+}
+
+Creator.contextTypes={
+	router: PropTypes.object
+}
+
+export default Object.assign(Baby, {ACTION})

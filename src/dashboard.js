@@ -1,18 +1,12 @@
 import React, {Component, PropTypes} from "react"
 import IconSmile from "material-ui/svg-icons/social/mood"
-import {ENTITIES} from "qili-app"
+import {ENTITIES, UI} from "qili-app"
+import {normalize} from "normalizr"
 
 import FamilyDB from "./db/family"
+import {currentChild} from "./selector"
 
-const currentChild=state=>{
-	try{
-		return state.entities[Family._name][state[DOMAIN].child]
-	}catch(e){
-		return {
-			name:"_default"
-		}
-	}
-}
+const {TextFieldx}=UI
 
 const DOMAIN="score"
 var scores=0, timer=null
@@ -23,31 +17,36 @@ export const ACTION={
 		scores++
 		timer=setTimeout(dispatch(ACTION.ADD_SCORES()),600)
 	}
-	,ADD_SCORE: ()=>(dispatch,getState)=>{
+	,ADD_SCORES: ()=>(dispatch,getState)=>{
 		const child=currentChild(getState())
-		child.score+=scores
+		child.score=scores+(child.score||0)
 		clearTimeout(timer)
-		score=0
+		scores=0
+		FamilyDB.upsert(child)
+			.then(updated=>dispatch(ENTITIES(normalize(updated,FamilyDB.schema).entities)))
+	}
+	,ADD_TASK: (goal, todo)=>(dispatch,getState)=>{
+		const child=currentChild(getState())
+		child.goal=goal
+		child.todo=todo
+		child.score=0
 		return FamilyDB.upsert(child)
 			.then(updated=>dispatch(ENTITIES(normalize(updated,FamilyDB.schema).entities)))
 	}
 }
 
-export const REDUCER=(state,{type,payload})=>{
-	switch(type){
-	case `@@${DOMAIN}/added`:
-		
+export const Dashboard=
+({dispatch,todo, goal:totalPerScreen=0, score=0, width=window.innerWidth>960 ? 960 : window.innerWidth, height=window.innerHeight-60})=>{
+	if(totalPerScreen==score){
+		width=width/2
+		height=height/2
+	}else{
+		width=width*7/8
+		height=height*7/8
 	}
-	return state
-	
-}
-
-export const Dashboard=({totalPerScreen=20, score=0, width=window.innerWidth>960 ? 960 : window.innerWidth, height=window.innerHeight})=>{
 	const less=Math.min(width,height), more=Math.max(width,height)
-	let countLess=Math.floor(less*totalPerScreen/(width+height))
-	let countMore=totalPerScreen-countLess
-	let widthLess=Math.floor(less/countLess)
-	let widthMore=Math.floor(more/countMore)
+	let widthLess=Math.floor(Math.sqrt(Math.floor(less*less/totalPerScreen)))
+	let widthMore=Math.floor(Math.sqrt(Math.floor(more*more/totalPerScreen)))
 	let style={}
 	if(less==width){
 		style.width=widthLess
@@ -56,7 +55,7 @@ export const Dashboard=({totalPerScreen=20, score=0, width=window.innerWidth>960
 		style.width=widthMore
 		style.height=widthLess
 	}
-	
+
 	let smiles=[]
 	for(let i=0;i<totalPerScreen;i++)
 		smiles.push(
@@ -64,20 +63,52 @@ export const Dashboard=({totalPerScreen=20, score=0, width=window.innerWidth>960
 				<Smile style={style} scored={i<score} onClick={e=>i>=score && dispatch(ACTION.ADDING_SCORE())}/>
 			</span>
 		)
-	
+
 	return (
 		<div>
-			{smiles}
+			{totalPerScreen==score ? (<Editor lastScore={score} lastTodo={todo} dispatch={dispatch}/>) : null}
+			<div>
+				{smiles}
+			</div>
 		</div>
 	)
 }
 
 const Smile=({scored, ...others})=>(
-	<IconSmile 
-		color={scored ? "yellow" :"lightgray"} 
+	<IconSmile
+		color={scored ? "yellow" :"lightgray"}
 		hoverColor={scored ? null : "lightyellow"}
 		{...others}
 		/>
 )
+
+const Editor=({lastScore,lastTodo="目标", dispatch})=>{
+	let refGoal
+	const add=value=>{
+		value=value.trim()
+		if(!value)
+			return
+		let [goal, ...desc]=value.split(":")
+		try{
+			goal=parseInt(goal)
+		}catch(e){
+			refGoal.errorText=`格式错误`
+			return
+		}
+		dispatch(ACTION.ADD_TASK(goal,desc.join(":")))
+	}
+	return (
+		<div>
+			<h1 style={{textAlign:"center"}}>{lastScore ? `恭喜 ${lastTodo} 实现了` : null}</h1>
+			<TextFieldx ref={a=>refGoal=a}
+				floatingLabelText={`笑脸目标数:${lastScore ? '下一个' : '第一个'}目标描述`}
+				hintText={`${lastScore||20}:小马宝莉书一本`}
+			 	onBlur={({target:{value}})=>add(value)}
+				onKeyDown={({target:{value},keyCode})=>keyCode==13 && add(value)}
+				fullWidth={true}/>
+		</div>
+	)
+}
+
 
 export default Dashboard

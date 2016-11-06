@@ -9,6 +9,7 @@
   "dependencies": {
     "docx-template": "^0.2.3",
     "docx4js": "^1.3.5",
+    "lodash": "^4.16.6",
     "material-ui": "^0.15.0",
     "normalizr": "^2.2.1",
     "qili-app": "https://github.com/lalalic/qili-app",
