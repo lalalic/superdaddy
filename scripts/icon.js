@@ -1,5 +1,5 @@
 module.exports=function(context){
-	let root=`${__dirname}/../dist/images/`
+	var root=`${__dirname}/../dist/images/`
 	return require("svg-to-png")
 		.convert(
 			require("fs").readdirSync(root)
