@@ -12,7 +12,7 @@ import BabyIcon from "material-ui/svg-icons/places/child-care"
 
 import Baby from "./baby"
 import {Family as dbFamily} from "./db"
-import {currentChild} from "./selector"
+import {getCurrentChild} from "./selector"
 
 
 const {Photo,Account:BaseAccount}=UI

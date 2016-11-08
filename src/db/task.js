@@ -19,7 +19,7 @@ export default class Task extends Model{
 			knowledge:{_id,title,keywords,category, steps},
             thumbnail: images[0],
             current:0,
-			child:Family.currentChild._id})
+			child:Family.getCurrentChild._id})
     }
 	
     static finish(task){

@@ -5,7 +5,6 @@ import {Route, IndexRoute, Direct, IndexRedirect} from "react-router"
 import {User,QiliApp, UI, ENTITIES, compact, enhancedCombineReducers} from 'qili-app'
 import {MenuItem, FloatingActionButton, Avatar} from 'material-ui'
 import {normalize,arrayOf} from "normalizr"
-import _ from "lodash"
 
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconAccount from 'material-ui/svg-icons/action/account-box'
@@ -16,8 +15,6 @@ import {Family,Knowledge,Table,init} from './db'
 
 const {Empty, Comment, CommandBar}=UI
 
-var initChildName=null
-
 const DOMAIN='superdaddy'
 const INIT_STATE={}
 export const ACTION={
@@ -27,12 +24,8 @@ export const ACTION={
 				let entities=normalize(all,arrayOf(Family.schema)).entities
 				dispatch(ENTITIES(entities))
 				let next
-				if(entities.children){
-					if(initChildName)
-						next=entities.children.find(a=>a.name==initChildName)
-					if(!next)
-						next=entities.children[Object.keys(entities.children)[0]]
-				}
+				if(entities.children)
+					next=entities.children[Object.keys(entities.children)[0]]
 
 				if(next)
 					dispatch({type:'CURRENT_CHILD_CHANGE',payload:next})
@@ -78,11 +71,11 @@ class SuperDaddy extends Component{
 			contextualStyle.display="none"
         return (
             <QiliApp appId="5746b2c5e4bb3b3700ae1566"
-				init={()=>{
+				init={a=>{
 						init()
 						dispatch(ACTION.FETCH_FAMILY())
-					}
-				}>
+				}}>
+
 				<FloatingActionButton className="sticky top right"
 					mini={true}
 					style={contextualStyle}
@@ -134,14 +127,14 @@ import AccountUI from './account'
 import BabyUI, {Creator} from './baby'
 
 import {connect} from "react-redux"
-import {currentChild} from "./selector"
+import {getCurrentChild, getChild} from "./selector"
 
 const {Setting:SettingUI, Profile: ProfileUI}=UI
 
 module.exports=QiliApp.render(
-    (<Route path="/" component={connect(state=>compact(currentChild(state),"name","photo"))(SuperDaddy)}>
+    (<Route path="/" component={connect(state=>compact(getCurrentChild(state),"name","photo"))(SuperDaddy)}>
 
-		<IndexRoute component={connect(state=>compact(currentChild(state),"score","goal","todo"))(DashboardUI)}/>
+		<IndexRoute component={connect(state=>compact(getCurrentChild(state),"score","goal","todo"))(DashboardUI)}/>
 
 		<Route path="my" contextual={false}>
 			<IndexRoute component={connect(state=>({babies:Object.values(state.entities.children)}))(AccountUI)}/>
@@ -151,9 +144,17 @@ module.exports=QiliApp.render(
 			<Route path="profile" component={ProfileUI}/>
 		</Route>
 
-		<Route path="baby/:id"
-			component={connect(state=>compact(currentChild(state),"name","photo","bd","gender","_id"))(BabyUI)}/>
-		<Route path="baby" contextual={false} component={connect()(Creator)}/>
+		<Route path="baby" contextual={false}>
+			<IndexRoute component={connect()(Creator)}/>
+
+			<Route path=":id"
+				component={connect((state,{params:{id}})=>{
+					let child=getChild(state,id)
+					let info=compact(child,"name","photo","bd","gender")
+					info.isCurrent=child==getCurrentChild(state)
+					return info
+				})(BabyUI)}/>
+		</Route>
 
 {/*
         <Route name="tasks" component={TasksUI}/>

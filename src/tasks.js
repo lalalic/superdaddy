@@ -14,7 +14,7 @@ const {List, Loading, Empty,Comment,CommandBar,Photo,Messager,Icons}=UI
 const {DialogCommand}=CommandBar
 
 /**
-@ with currentChild
+@ with getCurrentChild
 */
 export default class Tasks extends Component{
 	state={tasks:null}

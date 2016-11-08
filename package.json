@@ -62,19 +62,20 @@
     "plugins": [
       "babel-plugin-add-module-exports",
       "babel-plugin-transform-object-rest-spread",
-      "babel-plugin-transform-class-properties"
+      "babel-plugin-transform-class-properties",
+      "babel-plugin-transform-runtime"
     ]
   },
   "scripts": {
     "build": "babel src -d lib --source-maps inline",
     "dist": "browserify -g uglifyify ./lib/index.js -o dist/index.js",
     "dist.watch": "watchify -g uglifyify ./lib/index.js -o dist/index.js",
-    "merge": "npm run dist && node node_modules/qili-app/scripts/allin1.js",
+    "merge": "NODE_ENV=production npm run dist && node node_modules/qili-app/scripts/allin1.js",
     "karma": "karma start",
     "test": "restmock",
     "test.mock": "watchify -v -d ./.test.mock.js -o dist/test.js -i jquery",
     "test.mongo": "watchify --ignore-watch=\"**/node_modules/!(qili-app)/**\" -v -d ./.test.mongo.js -o dist/test.js -i jquery",
-    "cordova": "cordova create cordova --link-to=dist"
+    "cordova": "cordova create cordova --link-to=dist && cd cordova && cordova platform add android && cordova build --release android"
   },
   "keywords": [],
   "repository": {

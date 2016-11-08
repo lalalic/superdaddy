@@ -4,7 +4,7 @@ import {ENTITIES, UI} from "qili-app"
 import {normalize} from "normalizr"
 
 import FamilyDB from "./db/family"
-import {currentChild} from "./selector"
+import {getCurrentChild} from "./selector"
 
 const {TextFieldx}=UI
 
@@ -18,7 +18,7 @@ export const ACTION={
 		timer=setTimeout(dispatch(ACTION.ADD_SCORES()),600)
 	}
 	,ADD_SCORES: ()=>(dispatch,getState)=>{
-		const child=currentChild(getState())
+		const child=getCurrentChild(getState())
 		child.score=scores+(child.score||0)
 		clearTimeout(timer)
 		scores=0
@@ -26,7 +26,7 @@ export const ACTION={
 			.then(updated=>dispatch(ENTITIES(normalize(updated,FamilyDB.schema).entities)))
 	}
 	,ADD_TASK: (goal, todo)=>(dispatch,getState)=>{
-		const child=currentChild(getState())
+		const child=getCurrentChild(getState())
 		child.goal=goal
 		child.todo=todo
 		child.score=0

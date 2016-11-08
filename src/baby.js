@@ -5,15 +5,14 @@ import {TextField, RadioButtonGroup, RadioButton,DatePicker} from 'material-ui'
 
 import {Family as dbFamily} from './db'
 import RewardGoal from './components/rewards'
-import {currentChild} from "./selector"
+import {getCurrentChild} from "./selector"
 import {ACTION as SuperDaddy} from "."
 
 const {CommandBar,Photo, TextFieldx}=UI
 
-const DOMAIN="baby"
 export const ACTION={
 	CHANGE: (key,value)=>(dispatch,getState)=>{
-        const child=currentChild(getState())
+        const child=getCurrentChild(getState())
 		if(key=="name" && !value){
 			return Promise.reject("名字不能空")
 		}
@@ -34,12 +33,12 @@ export const ACTION={
 
 		return dbFamily.upsert(baby)
 			.then(baby=>{
-				dispatch(ENITITIES(normalize(baby,dbFamily.schema).entities))
-				return baby
-			})
+					dispatch(ENITITIES(normalize(baby,dbFamily.schema).entities))
+					return baby
+				})
 	}
 	,REMOVE: a=>(dispatch,getState)=>{
-		const child=currentChild(getState())
+		const child=getCurrentChild(getState())
 		return dbFamily.remove(child._id)
 			.then(a=>{
 				dispatch(REMOVE_ENTITIES("children",child.id))
@@ -48,17 +47,22 @@ export const ACTION={
 }
 
 export class Baby extends Component{
+	state={nameError:null}
+
 	componentWillReceiveProps(next){
-		if(next.params.id!=this.props.params.id && next.params.id!=next._id)
+		if(!next.isCurrent)
 			next.dispatch(SuperDaddy.SWITCH_CURRENT_CHILD(next.params.id))
 	}
 
 	render(){
 		const {name,photo,bd:birthday,gender, dispatch}=this.props
+		const {nameError}=this.state
 		const {router}=this.context
+
+		const changeName=a=>dispatch(ACTION.CHANGE("name",refName.getValue().trim()))
+			.then(a=>this.setState({nameError:null}), error=>this.setState({nameError:error}))
 		let refName
-		let changeName=value=>dispatch(ACTION.CHANGE("name",value))
-			.catch(error=>refName.errorText=error)
+
 		return (
 			<div>
 				<div className="form">
@@ -74,20 +78,19 @@ export class Baby extends Component{
 						floatingLabelText="child name"
 						fullWidth={true}
 						value={name}
-						errorText={null}
+						errorText={nameError}
 						onChange={({target:{value}})=>refName.value=value}
-						onBlur={({target:{value}})=>changeName(value.trim())}
-						onKeyDown={({target:{value},keyCode})=>keyCode==13 && changeName(value.trim())}
+						onBlur={({target:{value}})=>changeName()}
+						onKeyDown={({target:{value},keyCode})=>keyCode==13 && changeName()}
 						/>
 
 					<DatePicker
 						floatingLabelText="birthday"
 						fullWidth={true}
 						autoOk={true}
-						showYearSelector={true}
 						maxDate={new Date()}
 						value={birthday}
-						onChange={(nil, value)=>dispatch(ACTION.CHANGE("db",value))}/>
+						onChange={(nil, value)=>dispatch(ACTION.CHANGE("bd",value))}/>
 
 					<RadioButtonGroup
 						style={{marginTop:36}}
@@ -119,64 +122,68 @@ export class Baby extends Component{
 			</div>
 		)
 	}
-	static contextTypes={
-		router:PropTypes.object
-	}
+	static contextTypes={router:PropTypes.object}
 }
 
+export class Creator extends Component{
+	state={nameError:null}
 
+	render(){
+		const {dispatch}=this.props
+		const {router}=this.context
+		const {nameError}=this.state
 
-export const Creator=({dispatch})=>{
-	let photo,refName, refBirthday, refGender
-	const values=a=>({
-		name: refName.getValue()
-		,birthday: refBirthday.getDate()
-		,gender: refGender.getSelectedValue()
-		,photo
-	})
-	return (
-		<div>
-			<div className="form">
-				<div className="child-photo">
-					<Photo onPhoto={url=>photo=url} width={150} height={150}/>
+		let photo,refName, refBirthday, refGender
+
+		const send=a=>dispatch(ACTION.CREATE({
+			name: refName.getValue()
+			,bd: refBirthday.getDate()
+			,gender: refGender.getSelectedValue()
+			,photo
+		})).then(baby=>router.replace(`/baby/${baby._id}`),error=>this.setState({nameError:error}))
+
+		return (
+			<div>
+				<div className="form">
+					<div className="child-photo">
+						<Photo onPhoto={url=>photo=url} width={150} height={150}/>
+					</div>
+
+					<TextFieldx ref={a=>refName=a}
+						floatingLabelText="child name"
+						errorText={nameError}
+						fullWidth={true}/>
+
+					<DatePicker ref={a=>refBirthday=a}
+						floatingLabelText="birthday"
+						fullWidth={true}
+						autoOk={true}
+						showYearSelector={true}
+						maxDate={new Date()}/>
+
+					<RadioButtonGroup ref={a=>refGender=a}
+						style={{marginTop:36}}
+						name="gender"
+						defaultSelected="f">
+						<RadioButton value="f" label="girl"/>
+						<RadioButton value="m" label="boy" />
+					</RadioButtonGroup>
 				</div>
 
-				<TextFieldx ref={a=>refName=a}
-					floatingLabelText="child name"
-					fullWidth={true}/>
-
-				<DatePicker ref={a=>refBirthday=a}
-					floatingLabelText="birthday"
-					fullWidth={true}
-					autoOk={true}
-					showYearSelector={true}
-					maxDate={new Date()}/>
-
-				<RadioButtonGroup ref={a=>refGender=a}
-					style={{marginTop:36}}
-					name="gender"
-					defaultSelected="f">
-					<RadioButton value="f" label="girl"/>
-					<RadioButton value="m" label="boy" />
-				</RadioButtonGroup>
+				<CommandBar className="footbar"
+					items={[
+						"Back"
+						,{
+							action:"Save"
+							,onSelect:a=>send()
+						}
+					]}
+				/>
 			</div>
+		)
+	}
 
-			<CommandBar className="footbar"
-				items={[
-					"Back"
-					,{
-						action:"Save"
-						,onSelect:a=>dispatch(ACTION.CREATE(values()))
-							.then(baby=>router.replace(`/baby/${baby._id}`),error=>refName.errorText=error)
-					}
-				]}
-			/>
-		</div>
-	)
-}
-
-Creator.contextTypes={
-	router: PropTypes.object
+	static contextTypes={router: PropTypes.object}
 }
 
 export default Object.assign(Baby, {ACTION})
