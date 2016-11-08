@@ -1,3 +1,9 @@
 module.exports=function(context){
-	return require("svg-to-png").convert(`${__dirname}/../dist/images/`, `${__dirname}/../cordova/res/`)
+	let root=`${__dirname}/../dist/images/`
+	return require("svg-to-png")
+		.convert(
+			require("fs").readdirSync(root)
+				.filter(a=>a.endsWith("svg"))
+				.map(a=>root+a)
+			, `${__dirname}/../cordova/res/`)
 }
