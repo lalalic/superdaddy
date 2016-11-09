@@ -16,9 +16,9 @@ before_install:
  - npm --version
  - nvm --version
 
-#install:
-# - npm install --production
-# - npm install browserify node-lessify uglifyify cordova@5.3.3 svg-to-png
+install:
+ - npm install --production
+ - npm install browserify node-lessify uglifyify cordova@5.3.3 svg-to-png
 
 script:
  - npm run merge
