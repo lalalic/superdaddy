@@ -9,28 +9,29 @@ addons:
   packages:
    - sshpass
 
-before_install:
- - echo "install nodejs"
- - nvm install 4.2
- - node --version
- - npm --version
- - nvm --version
+#before_install:
+# - echo "install nodejs"
+# - nvm install 4.2
+# - node --version
+# - npm --version
+# - nvm --version
 
-install:
- - npm install --production
- - npm install browserify node-lessify uglifyify cordova@5.3.3 svg-to-png
+#install:
+# - npm install --production
+# - npm install browserify node-lessify uglifyify cordova@5.3.3 svg-to-png
 
 script:
- - npm run merge
- - npm run merge.debug
- - npm run cordova
- - mv cordova/platforms/android/build/outputs/apk/android-release-unsigned.apk dist/app.apk
- - ls dist -l
+# - npm run merge
+# - npm run merge.debug
+# - npm run cordova
+# - mv cordova/platforms/android/build/outputs/apk/android-release-unsigned.apk dist/app.apk
+# - ls dist -l
  - mkdir superdaddy
- - mv dist/index.html superdaddy
- - mv dist/allin1.html superdaddy
- - mv dist/test.js superdaddy
- - tar -cvfz superdaddy.tgz superdaddy
+# - mv dist/index.html superdaddy
+# - mv dist/allin1.html superdaddy
+# - mv dist/test.js superdaddy
+ - tar cvfz superdaddy.tgz dist
+ - ls -l
  - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null superdaddy.tgz $DEPLOY_PATH
- - sshpass -e ssh $DEPLOY_USER@DEPLOY_HOST $DEPLOY_PATH/deploy.sh
- - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/app.apk $DEPLOY_PATH
+# - sshpass -e ssh $DEPLOY_USER@DEPLOY_HOST $DEPLOY_PATH/deploy.sh
+# - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/app.apk $DEPLOY_PATH
