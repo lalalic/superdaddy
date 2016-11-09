@@ -27,10 +27,11 @@ script:
 # - mv cordova/platforms/android/build/outputs/apk/android-release-unsigned.apk dist/app.apk
 # - ls dist -l
  - mkdir superdaddy
+ - mv dist/* superdaddy
 # - mv dist/index.html superdaddy
 # - mv dist/allin1.html superdaddy
 # - mv dist/test.js superdaddy
- - tar cvfz superdaddy.tgz dist
+ - tar cvfz superdaddy.tgz superdaddy
  - ls -l
  - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null superdaddy.tgz $DEPLOY_PATH
 # - sshpass -e ssh $DEPLOY_USER@DEPLOY_HOST $DEPLOY_PATH/deploy.sh
