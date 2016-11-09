@@ -16,9 +16,9 @@ before_install:
  - npm --version
  - nvm --version
 
-install:
- - npm install --production
- - npm install browserify node-lessify uglifyify cordova@5.3.3 svg-to-png
+#install:
+# - npm install --production
+# - npm install browserify node-lessify uglifyify cordova@5.3.3 svg-to-png
 
 script:
  - npm run merge
@@ -26,7 +26,7 @@ script:
  - npm run cordova
  - mv cordova/platforms/android/build/outputs/apk/android-release-unsigned.apk dist/app.apk
  - ls dist -l
- - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/index.html $DEPLOY_PATH
- - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/allin1.html $DEPLOY_PATH
- - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/app.apk $DEPLOY_PATH
- - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/test.js $DEPLOY_PATH
+ - travis_wait sshpass -e scp -C -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/index.html $DEPLOY_PATH
+ - travis_wait sshpass -e scp －C -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/allin1.html $DEPLOY_PATH
+ - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/app.apk $DEPLOY_PATH
+ - travis_wait sshpass -e scp -C -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/test.js $DEPLOY_PATH
