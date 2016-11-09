@@ -87,8 +87,8 @@ class SuperDaddy extends Component{
 
                 <CommandBar className="footbar" style={{zIndex:1}}
 					items={[
-						{label:"任务", action:"tasks",
-                            onSelect:a=>router.push('/'),
+						{label:"任务", action:"tasks", link:"/",
+                       
                             icon:<IconTask/>},
 /*
 						{label:"成绩", action:"score",
@@ -99,7 +99,7 @@ class SuperDaddy extends Component{
                             icon:<IconKnowledges/>},
 */
                         {label:"我", action:"my",
-                            onSelect:a=>router.push('/my'),
+                            link:'/my',
                             icon:<IconAccount/>}
                         ]}
                     />

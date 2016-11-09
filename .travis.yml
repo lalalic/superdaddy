@@ -25,7 +25,7 @@ script:
  - npm run merge.debug
  - npm run cordova
  - mv cordova/platforms/android/build/outputs/apk/android-release-unsigned.apk dist/app.apk
- - ls dist/release -l
+ - ls dist -l
  - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/test.js $DEPLOY_PATH
  - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/allin1.html $DEPLOY_PATH
  - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/index.html $DEPLOY_PATH
