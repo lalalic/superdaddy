@@ -23,11 +23,10 @@ install:
 script:
  - npm run merge
  - npm run merge.debug
- - mkdir dist/release
- - mv dist/test.js dist/release/test.js
- - mv dist/allin1.html dist/release/allin1.html
- - mv dist/index.html dist/release/index.html
  - npm run cordova
- - mv cordova/platforms/android/build/outputs/apk/android-release-unsigned.apk dist/release/app.apk
+ - mv cordova/platforms/android/build/outputs/apk/android-release-unsigned.apk dist/app.apk
  - ls dist/release -l
- - sshpass -e scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/release/. $DEPLOY_PATH
+ - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/test.js $DEPLOY_PATH
+ - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/allin1.html $DEPLOY_PATH
+ - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/index.html $DEPLOY_PATH
+ - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/app.apk $DEPLOY_PATH
