@@ -26,7 +26,11 @@ script:
  - npm run cordova
  - mv cordova/platforms/android/build/outputs/apk/android-release-unsigned.apk dist/app.apk
  - ls dist -l
- - travis_wait sshpass -e scp -C -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/index.html $DEPLOY_PATH
- - travis_wait sshpass -e scp －C -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/allin1.html $DEPLOY_PATH
- - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/app.apk $DEPLOY_PATH
- - travis_wait sshpass -e scp -C -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/test.js $DEPLOY_PATH
+ - mkdir superdaddy
+ - mv dist/index.html superdaddy
+ - mv dist/allin1.html superdaddy
+ - mv dist/test.js superdaddy
+ - tar -cvfz superdaddy.tgz superdaddy
+ - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null superdaddy.tgz $DEPLOY_PATH
+ - sshpass -e ssh $DEPLOY_USER@DEPLOY_HOST $DEPLOY_PATH/deploy.sh
+ - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/app.apk $DEPLOY_PATH
