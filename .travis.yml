@@ -37,4 +37,4 @@ script:
 # - travis_wait sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST "\"tar xvfz superdaddy.tgz $DEPLOY_PATH\""
 # - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/app.apk $DEPLOY_PATH
  - travis_wait sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST "ls -l"
- - travis_wait sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST "tar xvfz $DEPLOY_PATH/superdaddy.tgz $DEPLOY_PATH/.."
+ - travis_wait sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST "\"tar xvfz $DEPLOY_PATH/superdaddy.tgz $DEPLOY_PATH/..\""
