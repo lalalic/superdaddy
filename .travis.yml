@@ -24,14 +24,14 @@ script:
  - npm run merge
  - npm run merge.debug
  - npm run cordova
- - mkdir superdaddy
- - mv cordova/platforms/android/build/outputs/apk/android-release-unsigned.apk superdaddy/app.apk
- - ls dist -l
- - mv dist/index.html superdaddy
- - mv dist/allin1.html superdaddy
- - mv dist/test.js superdaddy
- - tar cvfz superdaddy.tgz superdaddy
- - ls -l
- - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null superdaddy.tgz "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
- - sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST "tar xvfz $DEPLOY_PATH/superdaddy.tgz -C $DEPLOY_PATH && rm $DEPLOY_PATH/superdaddy.tgz"
- - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/app.apk "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/superdaddy"
+
+ - rm dist/config.xml
+ - rm dist/cordova.html
+ - ren dist $APP_NAME
+ - tar cvfz $APP_NAME.tgz $APP_NAME
+ - ls $APP_NAME -l
+ - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $APP_NAME.tgz "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
+ - sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST "tar xvfz $DEPLOY_PATH/$APP_NAME.tgz -C $DEPLOY_PATH && rm $DEPLOY_PATH/$APP_NAME.tgz"
+ 
+ - mv cordova/platforms/android/build/outputs/apk/android-release-unsigned.apk $APP_NAME/app.apk
+ - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $APP_NAME/app.apk "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$APP_NAME"
