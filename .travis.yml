@@ -1,40 +1,37 @@
 language: android
 android:
  components:
-#  - build-tools-23.0.2
-#  - android-22
+  - build-tools-23.0.2
+  - android-22
 
 addons:
  apt:
   packages:
    - sshpass
 
-#before_install:
-# - echo "install nodejs"
-# - nvm install 4.2
-# - node --version
-# - npm --version
-# - nvm --version
+before_install:
+ - echo "install nodejs"
+ - nvm install 4.2
+ - node --version
+ - npm --version
+ - nvm --version
 
-#install:
-# - npm install --production
-# - npm install browserify node-lessify uglifyify cordova@5.3.3 svg-to-png
+install:
+ - npm install --production
+ - npm install browserify node-lessify uglifyify cordova@5.3.3 svg-to-png
 
 script:
-# - npm run merge
-# - npm run merge.debug
-# - npm run cordova
-# - mv cordova/platforms/android/build/outputs/apk/android-release-unsigned.apk dist/app.apk
-# - ls dist -l
-# - mkdir superdaddy
-# - mv dist/* superdaddy
-# - mv dist/index.html superdaddy
-# - mv dist/allin1.html superdaddy
-# - mv dist/test.js superdaddy
- - tar cvfz superdaddy.tgz dist
-# - ls -l
+ - npm run merge
+ - npm run merge.debug
+ - npm run cordova
+ - mv cordova/platforms/android/build/outputs/apk/android-release-unsigned.apk dist/app.apk
+ - ls dist -l
+ - mkdir superdaddy
+ - mv dist/index.html superdaddy
+ - mv dist/allin1.html superdaddy
+ - mv dist/test.js superdaddy
+ - tar cvfz superdaddy.tgz superdaddy
+ - ls -l
  - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null superdaddy.tgz "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
-# - travis_wait sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST "\"tar xvfz superdaddy.tgz $DEPLOY_PATH\""
-# - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/app.apk $DEPLOY_PATH
- - travis_wait sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST "ls $DEPLOY_PATH -l"
- - travis_wait sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST "tar xvfz $DEPLOY_PATH/superdaddy.tgz -C $DEPLOY_PATH"
+ - sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST "tar xvfz $DEPLOY_PATH/superdaddy.tgz -C $DEPLOY_PATH && rm $DEPLOY_PATH/superdaddy.tgz"
+ - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/app.apk $DEPLOY_PATH/superdaddy
