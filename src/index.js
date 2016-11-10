@@ -16,6 +16,7 @@ import {Family,Knowledge,Table,init} from './db'
 const {Empty, Comment, CommandBar}=UI
 
 const DOMAIN='superdaddy'
+
 const INIT_STATE={}
 export const ACTION={
 	FETCH_FAMILY: ()=>dispatch=>Family.find()
@@ -87,16 +88,21 @@ class SuperDaddy extends Component{
 
                 <CommandBar className="footbar" style={{zIndex:1}}
 					items={[
-						{label:"任务", action:"tasks", link:"/",
-                       
+						{label:"任务", action:"tasks",
+							link:"/",
+                            icon:<IconTask/>},
+
+						{label:"时间管理", action:"time",
+							link:"/time",
                             icon:<IconTask/>},
 /*
 						{label:"成绩", action:"score",
 							onSelect:a=>router.push('/score'),
 							icon:<IconReward/>},
-                        {label:"发现", action:"knowledges",
-                            onSelect:a=>router.push('/knowledges'),
-                            icon:<IconKnowledges/>},
+
+						{label:"发现", action:"knowledges",
+							link:'/knowledges',
+							icon:<IconKnowledges/>},
 */
                         {label:"我", action:"my",
                             link:'/my',
@@ -113,18 +119,21 @@ class SuperDaddy extends Component{
 
 /*
 import TaskUI from './task'
-import KnowledgesUI from './knowledges'
-import KnowledgeUI from './knowledge'
-import NewKnowledgeUI from './newKnowledge'
 import SettingUI from './setting'
 import PublishUI from './publish'
 import TasksUI, {Approvings} from "./tasks"
 import ScoreUI from "./score"
 import InviteUI from "./invite"
+import KnowledgeUI from './knowledge'
+import NewKnowledgeUI from './newKnowledge'
+import KnowledgesUI from './knowledges'
 */
+
 import DashboardUI from "./dashboard"
 import AccountUI from './account'
 import BabyUI, {Creator} from './baby'
+
+import TimeManageUI from "./time-manage"
 
 import {connect} from "react-redux"
 import {getCurrentChild, getChild} from "./selector"
@@ -156,12 +165,22 @@ module.exports=QiliApp.render(
 				})(BabyUI)}/>
 		</Route>
 
+		<Route path="time" component={TimeManageUI}/>
+
 {/*
+	<Route path="knowledge">
+		<IndexRoute contextual={false}
+			component={KnowledgesUI.Creatable}/>
+
+		<Route path="create"
+			contextual={false} component={NewKnowledgeUI}/>
+
+		<Route path=":_id" component={KnowledgeUI}/>
+	</Route>
+
         <Route name="tasks" component={TasksUI}/>
 
         <Route path="score" name="score" component={ScoreUI}/>
-
-        <Route path="knowledges" name="knowledges" contextual={false} component={KnowledgesUI.Creatable}/>
 
         <Route path="account"  name="account" contextual={false} component={AccountUI} />
 
@@ -170,11 +189,6 @@ module.exports=QiliApp.render(
         <Route path="courses">
             <IndexRoute component={KnowledgesUI.Course}/>
             <Route path="done"/>
-        </Route>
-
-        <Route path="knowledge">
-            <IndexRoute contextual={false} component={NewKnowledgeUI}/>
-            <Route path=":_id" component={KnowledgeUI}/>
         </Route>
 
         <Route path="comment/:type/:_id" component={Comment}/>

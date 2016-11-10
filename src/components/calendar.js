@@ -1,9 +1,10 @@
 import React, {Component, PropTypes} from "react"
 
 import _Calendar from 'material-ui/DatePicker/Calendar'
+
 import {isEqualDate, cloneAsDate, getDaysInMonth,dateTimeFormat} from "material-ui/DatePicker/dateUtils"
 
-export * from "material-ui/DatePicker/dateUtils"
+//export * from "material-ui/DatePicker/dateUtils"
 
 export function getLastDayOfMonth(d){
     let days=getDaysInMonth(d)
@@ -46,5 +47,5 @@ export function cnDateTimeFormat(locale, options) {
 }
 
 export default class Calendar extends _Calendar{
-    
+
 }
