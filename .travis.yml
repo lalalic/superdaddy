@@ -33,6 +33,6 @@ script:
 # - mv dist/test.js superdaddy
  - tar cvfz superdaddy.tgz superdaddy
  - ls -l
- - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null superdaddy.tgz $DEPLOY_PATH
-# - sshpass -e ssh $DEPLOY_USER@DEPLOY_HOST $DEPLOY_PATH/deploy.sh
+ - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null superdaddy.tgz "$DEPLOY_USER@DEPLOY_HOST:$DEPLOY_PATH"
+ - travis_wait sshpass -e ssh $DEPLOY_USER@DEPLOY_HOST "tar xvfz superdaddy.tgz $DEPLOY_PATH"
 # - sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null dist/app.apk $DEPLOY_PATH
