@@ -27,7 +27,7 @@ script:
 
  - rm dist/config.xml
  - rm dist/cordova.html
- - ren dist $APP_NAME
+ - mv dist $APP_NAME
  - tar cvfz $APP_NAME.tgz $APP_NAME
  - ls $APP_NAME -l
  - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $APP_NAME.tgz "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
