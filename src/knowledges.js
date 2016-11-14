@@ -13,72 +13,119 @@ import uiKnowledge from './knowledge'
 import {relative} from './components/calendar'
 import FloatingAdd from "./components/floating-add"
 
-const {List, CommandBar, Empty}=UI
+const {CommandBar, Empty}=UI
 
 const {DialogCommand}=CommandBar
 
-export default class Knowledges extends Component{
-    state={model:null}
+const DOMAIN="knowledge"
+const INIT_STATE={
+    query:{
+        title:""
+    }
+    ,knowledges:[]
+}
+export const ACTION={
+    FETCH: query=>dispatch=>dbKnowledge.find(query)
+        .fetch(knowledges=>{
+            dispatch({type:`@@${DOMAIN}/fetched`, payload:{query,knowledges}})
+        })
+    ,SELECT_DOCX: a=>dispatch=>uiKnowledge.selectDocx()
+        .then(docx=>dispatch({type:`@@${DOMAIN}/selectedDocx`,payload:docx}))
 
-    getData(){
-        dbKnowledge.find(this.props.location.query).fetch(model=>{
-            this.setState({model})
+    ,CREATE: docx=>dispatch=>{
+        const {entity}=docx
+        entity.content=""
+        return dbKnowledge.upsert(entity).then(a=>{
+            return docx.upload(entity).then(content=>{
+                entity.photos=docx.getPhotos()
+                entity.content=content
+                return dbKnowledge.upsert(entity)
+            }, a=>{
+                dbKnowledge.remove(entity)
+                return a
+            })
         })
     }
+    ,CLEAR: {type:`@@${DOMAIN}/clear`}
+}
 
+export const REDUCER=(state=INIT_STATE, {type, payload})=>{
+    switch(type){
+    case `@@${DOMAIN}/fetched`:
+        return Object.assign({},state,payload)
+    case `@@${DOMAIN}/selectedDocx`:
+        if(state.selectedDocx)
+            state.selectedDocx.revoke()
+        return Object.assign({},state,{selectedDocx:payload})
+    case `@@${DOMAIN}/clear`:
+        if(state.selectedDocx){
+            state.selectedDocx.revoke()
+            delete state.selectedDocx
+        }
+        return state
+    default:
+        return state
+    }
+}
+
+export class Knowledges extends Component{
     componentDidMount(){
-        this.getData()
+        const {location:{query={}}, dispatch}=this.props
+        dispatch(ACTION.FETCH(query))
+    }
+
+    componentWillReceiveProps(next){
+        const {location:{query}}=this.props
+        const {location:{query:nextQuery}, dispatch}=next
+        if(query.title!=nextQuery.Title)
+            dispatch(ACION.FETCH(next.location.query))
     }
 
     render(){
-        var {model}=this.state,
-            {query={}}=this.props.location
+        const {router}=this.context
+        const {knowledges}=this.props
+        let refSearch=null
+        const search=title=>router.replace(`/knowledge?`+JSON.stringify({title:refSearch.getValue().trim()}))
         return (
             <div>
                 <AppBar
                     iconElementLeft={this.getLeftElement()}
-                    iconElementRight={<IconButton onClick={e=>this.search()}><IconSearch/></IconButton>}
-                    title={<TextField name="search"
+                    iconElementRight={<IconButton onClick={e=>search()}><IconSearch/></IconButton>}
+                    title={<TextField ref={a=>refSearch=a}
                         hintText="查询"
-                        onKeyDown={e=>(e.keycode==13 && this.search(e.target.value))}
-                        fullWidth={true} defaultValue={query.title}/>}/>
+                        onKeyDown={e=>(e.keycode==13 && search())}
+                        fullWidth={true}/>
+                    }
+                    />
 
-                <List
-                    ref="list"
-                    model={model}
-                    empty={<Empty icon={<IconKnowledges/>} text="No knowledge yet, Please stay tune"/>}
-                    pageSize={20}
-                    template={Item}/>
+                <div>
+                    {knowledges.map(a=><Item model={a} key={a._id}/>)}
+                </div>
             </div>
         )
     }
-	
+
 	getLeftElement(){
 		return (<span/>)
 	}
-
-    search(props){
-        this.refs.search.dismiss()
-        var {value:title=""}=ReactDOM.findDOMNode(this.refs.byTitle)
-        title=title.trim()
-        if(title.length)
-            props.title=title
-        this.context.router.replace(this.context.router.createPath("knowledges", props))
-    }
 
 	static contextTypes={router:PropTypes.object}
 
     static Creatable=class extends Knowledges{
         render(){
+            const {dispatch}=this.props
+            const {router}=this.context
             return (
                 <div>
-                    <FloatingAdd onClick={e=>this.context.router.push("knowledge")} mini={true}/>
+                    <FloatingAdd
+                        onClick={e=>dispatch(ACTION.SELECT_DOCX()).then(router.push("/knowledge/create"))}
+                        mini={true}/>
                     {super.render()}
                 </div>
             )
         }
     }
-	
+
 	static Course=class extends Knowledges{
 		getLeftElement(){
 			return (<IconButton onClick={e=>this.context.router.goBack()}><IconBack/></IconButton>)
@@ -235,7 +282,9 @@ class Item extends Component{
         )
     }
     onDetail(){
-        this.context.router.push({pathname:`knowledge/${this.props.model._id}`,state:{knowledge:this.props.model}})
+        this.context.router.push({pathname:`/knowledge/${this.props.model._id}`,state:{knowledge:this.props.model}})
     }
 	static contextTypes={router:PropTypes.object}
 }
+
+export default Object.assign(Knowledges,{ACTION, REDUCER})

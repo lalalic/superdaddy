@@ -99,11 +99,11 @@ class SuperDaddy extends Component{
 						{label:"成绩", action:"score",
 							onSelect:a=>router.push('/score'),
 							icon:<IconReward/>},
-
-						{label:"发现", action:"knowledges",
-							link:'/knowledges',
-							icon:<IconKnowledges/>},
 */
+						{label:"发现", action:"knowledges",
+							link:'/knowledge',
+							icon:<IconKnowledges/>},
+
                         {label:"我", action:"my",
                             link:'/my',
                             icon:<IconAccount/>}
@@ -124,9 +124,6 @@ import PublishUI from './publish'
 import TasksUI, {Approvings} from "./tasks"
 import ScoreUI from "./score"
 import InviteUI from "./invite"
-import KnowledgeUI from './knowledge'
-import NewKnowledgeUI from './newKnowledge'
-import KnowledgesUI from './knowledges'
 */
 
 import DashboardUI from "./dashboard"
@@ -134,6 +131,10 @@ import AccountUI from './account'
 import BabyUI, {Creator} from './baby'
 
 import TimeManageUI from "./time-manage"
+
+import KnowledgeUI from './knowledge'
+import NewKnowledgeUI from './newKnowledge'
+import KnowledgesUI from './knowledges'
 
 import {connect} from "react-redux"
 import {getCurrentChild, getChild} from "./selector"
@@ -167,17 +168,17 @@ module.exports=QiliApp.render(
 
 		<Route path="time" component={TimeManageUI}/>
 
-{/*
 	<Route path="knowledge">
 		<IndexRoute contextual={false}
-			component={KnowledgesUI.Creatable}/>
+			component={connect(state=>state.ui.knowledge)(KnowledgesUI.Creatable)}/>
 
 		<Route path="create"
-			contextual={false} component={NewKnowledgeUI}/>
+			contextual={false} component={connect(state=>({docx:state.ui.knowledge.selectedDocx}))(NewKnowledgeUI)}/>
 
 		<Route path=":_id" component={KnowledgeUI}/>
 	</Route>
 
+	{/*
         <Route name="tasks" component={TasksUI}/>
 
         <Route path="score" name="score" component={ScoreUI}/>
@@ -203,7 +204,7 @@ module.exports=QiliApp.render(
     </Route>)
 	,[
 		{[DOMAIN]:REDUCER}
-		,{ui: (a={})=>a}
+		,{ui: enhancedCombineReducers({knowledge:KnowledgesUI.REDUCER})}
 	]
 )
 
