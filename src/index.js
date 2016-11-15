@@ -137,7 +137,7 @@ import NewKnowledgeUI from './newKnowledge'
 import KnowledgesUI from './knowledges'
 
 import {connect} from "react-redux"
-import {getCurrentChild, getChild} from "./selector"
+import {getCurrentChild, getChild, getCurrentChildTasks, getKnowledges, getKnowledge} from "./selector"
 
 const {Setting:SettingUI, Profile: ProfileUI}=UI
 
@@ -160,7 +160,7 @@ module.exports=QiliApp.render(
 			<Route path=":id"
 				component={connect((state,{params:{id}})=>{
 					let child=getChild(state,id)
-					let info=compact(child,"name","photo","bd","gender")
+					let info=compact(child,"name","photo","bd","gender","todos")
 					info.isCurrent=child==getCurrentChild(state)
 					return info
 				})(BabyUI)}/>
@@ -168,15 +168,23 @@ module.exports=QiliApp.render(
 
 		<Route path="time" component={TimeManageUI}/>
 
-	<Route path="knowledge">
-		<IndexRoute contextual={false}
-			component={connect(state=>state.ui.knowledge)(KnowledgesUI.Creatable)}/>
+		<Route path="knowledge">
+			<IndexRoute contextual={false}
+				component={connect(state=>({knowledges:getKnowledges(state)}))(KnowledgesUI.Creatable)}/>
 
-		<Route path="create"
-			contextual={false} component={connect(state=>({docx:state.ui.knowledge.selectedDocx}))(NewKnowledgeUI)}/>
+			<Route path="create"
+				contextual={false} 
+				component={connect(state=>compact(state.ui.knowledge.selectedDocx,"knowledge"))(NewKnowledgeUI)}/>
 
-		<Route path=":_id" component={KnowledgeUI}/>
-	</Route>
+			<Route path=":_id" 
+				component={connect((state,{params:{_id}})=>({
+					knowledge:getKnowledge(state)
+					,revising:!!state.ui.knowledge.selectedDocx
+					,inTask:!!(getCurrentChildTasks(state)).find(a=>a._id==_id)
+					}))(KnowledgeUI)}/>
+		</Route>
+		
+		<Route path="comment/:type/:_id" component={Comment}/>
 
 	{/*
         <Route name="tasks" component={TasksUI}/>
@@ -192,7 +200,7 @@ module.exports=QiliApp.render(
             <Route path="done"/>
         </Route>
 
-        <Route path="comment/:type/:_id" component={Comment}/>
+
 
         <Route path="publish" component={PublishUI}>
             <IndexRoute/>

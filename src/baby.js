@@ -4,7 +4,6 @@ import {normalize} from "normalizr"
 import {TextField, RadioButtonGroup, RadioButton,DatePicker} from 'material-ui'
 
 import {Family as dbFamily} from './db'
-import RewardGoal from './components/rewards'
 import {getCurrentChild} from "./selector"
 import {ACTION as SuperDaddy} from "."
 
@@ -55,7 +54,7 @@ export class Baby extends Component{
 	}
 
 	render(){
-		const {name,photo,bd:birthday,gender, dispatch}=this.props
+		const {name,photo,bd:birthday,gender, todos, dispatch}=this.props
 		const {nameError}=this.state
 		const {router}=this.context
 
@@ -100,19 +99,6 @@ export class Baby extends Component{
 						<RadioButton value="f" label="女孩"/>
 						<RadioButton value="m" label="男孩" />
 					</RadioButtonGroup>
-
-					<div>
-						<br/>
-						<br/>
-						<div style={{fontSize:"smaller", color:"gray", borderBottom:"1px dotted lightgray"}}>
-							{name}的激励计划
-						</div>
-						{/*
-						<RewardGoal
-							editable={true}
-							style={{marginTop:30}}
-							child={child}/>*/}
-					</div>
 				</div>
 
 				<CommandBar className="footbar"

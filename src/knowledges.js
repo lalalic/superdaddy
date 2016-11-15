@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from "react"
-import {UI} from 'qili-app'
-import ReactDOM from "react-dom"
-import {IconButton, AppBar, TextField} from 'material-ui'
+import {UI, ENTITIES} from 'qili-app'
+import {normalize, arrayOf} from "normalizr"
+import {Link} from "react-router"
+import {IconButton, AppBar, TextField, Paper} from 'material-ui'
 
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconThumbup from "material-ui/svg-icons/action/thumb-up"
@@ -12,63 +13,120 @@ import dbKnowledge from './db/knowledge'
 import uiKnowledge from './knowledge'
 import {relative} from './components/calendar'
 import FloatingAdd from "./components/floating-add"
+import extract from './parser/extractor'
+import {getCurrentChild} from "./selector"
+import {ACTION as TASK_ACTION} from "./time-manage"
 
-const {CommandBar, Empty}=UI
+const {CommandBar, Empty, fileSelector}=UI
 
 const {DialogCommand}=CommandBar
 
 const DOMAIN="knowledge"
 const INIT_STATE={
-    query:{
-        title:""
-    }
-    ,knowledges:[]
+	knowledges:[]
 }
 export const ACTION={
     FETCH: query=>dispatch=>dbKnowledge.find(query)
         .fetch(knowledges=>{
-            dispatch({type:`@@${DOMAIN}/fetched`, payload:{query,knowledges}})
+			if(knowledges && knowledges.length){
+				let data=normalize(knowledges, arrayOf(dbKnowledge.schema))
+				dispatch(ENTITIES(data.entities))
+				dispatch({type:`@@${DOMAIN}/fetched`, payload:data.result})
+			}
         })
-    ,SELECT_DOCX: a=>dispatch=>uiKnowledge.selectDocx()
+    ,SELECT_DOCX: a=>dispatch=>fileSelector.select()
+		.then(file=>extract(file))
         .then(docx=>dispatch({type:`@@${DOMAIN}/selectedDocx`,payload:docx}))
 
-    ,CREATE: docx=>dispatch=>{
-        const {entity}=docx
-        entity.content=""
-        return dbKnowledge.upsert(entity).then(a=>{
-            return docx.upload(entity).then(content=>{
-                entity.photos=docx.getPhotos()
-                entity.content=content
-                return dbKnowledge.upsert(entity)
-            }, a=>{
-                dbKnowledge.remove(entity)
-                return a
-            })
-        })
+    ,CREATE: a=>(dispatch,getState)=>{
+		const state=getState()
+		const docx=state.ui.knowledge.selectedDocx
+        const {knowledge}=docx
+		const photos=docx.getPhotos()
+		let upserted=null
+		if(photos.length){
+			knowledge.content=""
+			upserted=dbKnowledge.upsert(knowledge).then(a=>{
+				return docx.upload(a).then(content=>{
+					a.photos=docx.getPhotos()
+					a.content=content
+					return dbKnowledge.upsert(a)
+				}, a=>{
+					dbKnowledge.remove(knowledge)
+					return Promise.reject(a)
+				})
+			})
+		}else{
+			upserted=dbKnowledge.upsert(knowledge)
+		}
+		
+		return upserted.then(knowledge=>{
+			dispatch(ENTITIES(normalize(knowledge,dbKnowledge.schema).entities))
+			dispatch({type:`@@${DOMAIN}/created`})
+			return knowledge
+		})
     }
-    ,CLEAR: {type:`@@${DOMAIN}/clear`}
+	,FETCH1: a=>(dispatch, getState)=>{
+		const state=getState()
+		const _id=state.routing.params._id
+		dbKnowledge.findOne({_id}, knowledge=>dispatch(ENTITIES(normalize(knowledge,dbKnowledge.schema).entities)))
+	}
+	,UPDATE: a=>(dispatch, getState)=>{
+		const state=getState()
+		const docx=state.ui.knowledge.selectedDocx
+        const {knowledge:newVersion}=docx
+		const photos=docx.getPhotos()
+		
+		const id=state.routing.params._id
+		const current=state.entities[dbKnowledge.schema.getKey()][id]
+		
+		let upserted=null
+		if(photos.length){
+			upserted=docx.upload(current).then(content=>{
+				current.photos=docx.getPhotos()
+				current.content=content
+				return dbKnowledge.upsert(current)
+			})
+		}else{
+			upserted=dbKnowledge.upsert(Object.assign({},current, newVersion))
+		}
+		
+		return upserted.then(knowledge=>{
+			dispatch(ENTITIES(normalize(knowledge,dbKnowledge.schema).entities))
+			dispatch({type:`@@${DOMAIN}/updated`})
+			return knowledge
+		})
+	}
+	,CANCEL: a=>({type:`@@${DOMAIN}/cancel`}) 
+	,TASK: ({_id,title:content,score})=>dispatch=>dispatch(TASK_ACTION.ADD({_id,content,score}))
+	,UNTASK: ({_id})=>dispatch=>dispatch(TASK_ACTION.REMOVE({_id}))
 }
 
 export const REDUCER=(state=INIT_STATE, {type, payload})=>{
     switch(type){
     case `@@${DOMAIN}/fetched`:
-        return Object.assign({},state,payload)
+        return Object.assign({},state,{knowledges:payload})
+		
     case `@@${DOMAIN}/selectedDocx`:
         if(state.selectedDocx)
             state.selectedDocx.revoke()
         return Object.assign({},state,{selectedDocx:payload})
-    case `@@${DOMAIN}/clear`:
-        if(state.selectedDocx){
+    case `@@${DOMAIN}/created`:
+	case `@@${DOMAIN}/updated`:
+	case `@@${DOMAIN}/cancel`:
+		if(state.selectedDocx){
             state.selectedDocx.revoke()
-            delete state.selectedDocx
-        }
-        return state
-    default:
-        return state
+			delete state.selectedDocx
+			return Object.assign({}, state)
+		}
+		break
+	
     }
+	return state
 }
 
 export class Knowledges extends Component{
+	state={filter:null}
     componentDidMount(){
         const {location:{query={}}, dispatch}=this.props
         dispatch(ACTION.FETCH(query))
@@ -84,22 +142,29 @@ export class Knowledges extends Component{
     render(){
         const {router}=this.context
         const {knowledges}=this.props
+		const {filter}=this.state
         let refSearch=null
-        const search=title=>router.replace(`/knowledge?`+JSON.stringify({title:refSearch.getValue().trim()}))
+        const search=title=>{
+			router.replace(encodeURI(`/knowledge?query=${JSON.stringify({title:refSearch.getValue().trim()})}`))
+			this.setState({filter:null})	
+		}
         return (
             <div>
-                <AppBar
-                    iconElementLeft={this.getLeftElement()}
-                    iconElementRight={<IconButton onClick={e=>search()}><IconSearch/></IconButton>}
-                    title={<TextField ref={a=>refSearch=a}
-                        hintText="查询"
-                        onKeyDown={e=>(e.keycode==13 && search())}
-                        fullWidth={true}/>
-                    }
-                    />
+				<Paper>
+					<AppBar
+						iconElementLeft={this.getLeftElement()}
+						iconElementRight={<IconButton onClick={e=>search()}><IconSearch/></IconButton>}
+						title={<TextField ref={a=>refSearch=a}
+							hintText="查询"
+							onChange={(e,value)=>this.setState({filter:value})}
+							onKeyDown={e=>e.keyCode==13 && search()}
+							fullWidth={true}/>
+						}
+						/>
+					</Paper>
 
                 <div>
-                    {knowledges.map(a=><Item model={a} key={a._id}/>)}
+                    {knowledges.filter(a=>filter ? -1!=a.title.indexOf(filter) : true).map(a=><Item model={a} key={a._id}/>)}
                 </div>
             </div>
         )
@@ -118,7 +183,7 @@ export class Knowledges extends Component{
             return (
                 <div>
                     <FloatingAdd
-                        onClick={e=>dispatch(ACTION.SELECT_DOCX()).then(router.push("/knowledge/create"))}
+                        onClick={e=>dispatch(ACTION.SELECT_DOCX()).then(a=>router.replace('/knowledge/create'))}
                         mini={true}/>
                     {super.render()}
                 </div>
@@ -285,6 +350,50 @@ class Item extends Component{
         this.context.router.push({pathname:`/knowledge/${this.props.model._id}`,state:{knowledge:this.props.model}})
     }
 	static contextTypes={router:PropTypes.object}
+}
+
+
+export const Content=({_id, title, content, summary, createdAt, category=[], keywords=[], figure, author})=>{
+	content=<div dangerouslySetInnerHTML={{__html:content}}/>
+
+	if(summary && open!==null){
+		content=(
+			<details open={open}>
+				<summary>{summary}</summary>
+				{content}
+			</details>
+		)
+	}
+
+	let notNewStuff=null
+	if(_id){
+		notNewStuff=[
+			(<h1 key="link0"><Link to={`/knowledge/${_id}`}>{title}</Link></h1>),
+			(<p key="author">
+				{author.name} - <time>{relative(createdAt)}</time>
+			</p>)
+		]
+	}else {
+		notNewStuff=(<h1 key="link1">{title}</h1>)
+	}
+
+	if(figure)
+		figure=(<img src={figure}/>)
+
+	return (
+		<article>
+			<figure>{figure}</figure>
+			<header>
+				{notNewStuff}
+				<p>
+					{category.join(", ")} {keywords.join(", ")}
+				</p>
+			</header>
+			<section>
+				{content}
+			</section>
+		</article>
+	)
 }
 
 export default Object.assign(Knowledges,{ACTION, REDUCER})

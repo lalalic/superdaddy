@@ -7,21 +7,48 @@ import {compact, ENTITIES, UI} from "qili-app"
 import {normalize} from "normalizr"
 
 import IconSmile from "material-ui/svg-icons/social/mood"
-import {getCurrentChild} from "./selector"
+import {getCurrentChild, getCurrentChildTasks} from "./selector"
 import {Family} from "./db"
 
 const {Empty}=UI
 
-const ACTION={
+export const ACTION={
 	ADD: todo=>(dispatch, getState)=>{
 		if(!todo)
 			return Promise.resolve()
 		const state=getState()
 		const child=getCurrentChild(state)
 		let {todos=[]}=child
-		if(!todos.find(a=>a.content==todo)){
-			child.todos=[...todos, {content:todo}]
-			
+		switch(typeof(todo)){
+		case "object":
+			child.todos=[...todos, todo]
+			break
+		default:
+			if(!todos.find(a=>a.content==todo))
+				child.todos=[...todos, {content:todo}]
+		}
+		if(child.todos!=todos){
+			return Family.upsert(child)
+				.then(updated=>dispatch(ENTITIES(normalize(updated, Family.schema).entities)))
+		}else{
+			return Promise.resolve()
+		}
+	}
+	,REMOVE: todo=>(dispatch, getState)=>{
+		if(!todo)
+			return Promise.resolve()
+		const state=getState()
+		const child=getCurrentChild(state)
+		let {todos=[]}=child
+		switch(typeof(todo)){
+		case "object":
+			child.todos=todos.filter(a=>a._id!=todo._id)
+			break
+		default:
+			child.todos=todos.filter(a=>a.content!=todo)
+		}
+		
+		if(child.todos!=todos){	
 			return Family.upsert(child)
 				.then(updated=>dispatch(ENTITIES(normalize(updated, Family.schema).entities)))
 		}else{
@@ -64,7 +91,7 @@ const TodoEditor=connect()(({dispatch, refTask, refForm})=>(
     </form>
 ))
 
-const TaskPad=connect(state=>compact(getCurrentChild(state),"todos"))(({todos=[]})=>(
+const TaskPad=connect(state=>({todos:getCurrentChildTasks(state)}))(({todos=[]})=>(
     <Table>
         <TableHeader   displaySelectAll={false} adjustForCheckbox={false}>
           <TableRow>
