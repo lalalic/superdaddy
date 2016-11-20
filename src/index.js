@@ -166,24 +166,24 @@ module.exports=QiliApp.render(
 				})(BabyUI)}/>
 		</Route>
 
-		<Route path="time" component={TimeManageUI}/>
+		<Route path="time" component={connect(state=>state.ui.time)(TimeManageUI)}/>
 
 		<Route path="knowledge">
 			<IndexRoute contextual={false}
 				component={connect(state=>({knowledges:getKnowledges(state)}))(KnowledgesUI.Creatable)}/>
 
 			<Route path="create"
-				contextual={false} 
+				contextual={false}
 				component={connect(state=>compact(state.ui.knowledge.selectedDocx,"knowledge"))(NewKnowledgeUI)}/>
 
-			<Route path=":_id" 
+			<Route path=":_id"
 				component={connect((state,{params:{_id}})=>({
 					knowledge:getKnowledge(state)
 					,revising:!!state.ui.knowledge.selectedDocx
 					,inTask:!!(getCurrentChildTasks(state)).find(a=>a._id==_id)
 					}))(KnowledgeUI)}/>
 		</Route>
-		
+
 		<Route path="comment/:type/:_id" component={Comment}/>
 
 	{/*
@@ -212,7 +212,10 @@ module.exports=QiliApp.render(
     </Route>)
 	,[
 		{[DOMAIN]:REDUCER}
-		,{ui: enhancedCombineReducers({knowledge:KnowledgesUI.REDUCER})}
+		,{ui: enhancedCombineReducers({
+			knowledge:KnowledgesUI.REDUCER
+			,time:TimeManageUI.reducer
+		})}
 	]
 )
 
