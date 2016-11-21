@@ -16,7 +16,9 @@
     "qili-app": "https://github.com/lalalic/qili-app",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
+    "react-intl": "^2.1.5",
     "react-redux": "^4.4.5",
+    "react-responsive": "^1.2.1",
     "react-router": "^2.4.1",
     "redux": "^3.6.0"
   },
@@ -71,10 +73,8 @@
   },
   "scripts": {
     "build": "babel src -d lib --source-maps inline",
-
     "merge": "NODE_ENV=production browserify -g uglifyify ./lib/index.js -o dist/index.js -i jquery && node node_modules/qili-app/scripts/allin1.js",
     "merge.debug": "browserify -d ./lib/index.js -o dist/test.js -i jquery",
-
     "karma": "karma start",
     "test": "restmock",
     "test.mock": "watchify -v -d ./.test.mock.js -o dist/test.js -i jquery",
