@@ -4,7 +4,7 @@ export const getCurrentChild=state=>{
 	try{
 		return state.entities.children[state.superdaddy.child]
 	}catch(e){
-		
+
 	}
 	return null
 }
@@ -13,14 +13,18 @@ export const getChild=(state,id)=>{
 	try{
 		return state.entities.children[id]
 	}catch(e){
-		
+
 	}
 	return null
 }
 
 export const getCurrentChildTasks=state=>{
 	let child=getCurrentChild(state)
-	const {todos=[]}=child
+	const {todos=[],todoWeek}=child
+	let week=new Date().getWeek()
+	if(todoWeek!==week){
+		//dispatch(TimeManageUI.ACTION.RESET())
+	}
 	return todos
 }
 
@@ -32,7 +36,7 @@ export const getKnowledges=state=>{
 		if(all && ids)
 			return ids.map(id=>all[id])
 	}catch(e){
-		
+
 	}
 	return []
 }
@@ -50,7 +54,7 @@ export const getKnowledge=state=>{
 				return all[id]
 		}
 	}catch(e){
-		
+
 	}
 	return null
 }
