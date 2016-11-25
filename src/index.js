@@ -166,7 +166,12 @@ module.exports=QiliApp.render(
 				})(BabyUI)}/>
 		</Route>
 
-		<Route path="time" component={connect(state=>state.ui.time)(TimeManageUI)}/>
+		<Route path="time" component={connect(state=>{
+				return {
+					...state.ui.time, 
+					todoWeek:getCurrentChild(state).todoWeek||new Date().getWeek()
+				}
+			})(TimeManageUI)}/>
 
 		<Route path="knowledge">
 			<IndexRoute contextual={false}

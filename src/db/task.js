@@ -11,6 +11,27 @@ export default class Task extends Model{
     static get _name(){
         return 'task'
     }
+	
+	static finishWeekTasks(child, tasks){
+		const {todoWeek:week}=child
+		const year=new Date().getFullYear()
+		const getDate=(week,i)=>
+		let finished=tasks.map(task=>{
+			const {dones}=task
+			dones.forEach(i=>{
+				task.week=week
+				task.day=i
+				task.date=getDate(week,i)
+			})
+			
+			task.knowledge=task._id
+			delete task._id
+			
+			task.baby=child._id
+		})
+		
+		return Finished.upsert(finished)
+	}
 
     static plan(knowledge, dates){
         let {_id,title,keywords,category,steps, images=[]}=knowledge

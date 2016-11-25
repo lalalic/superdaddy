@@ -11,10 +11,10 @@
     "docx-template": "^1.x.x",
     "docx4js": "^1.x.x",
     "lodash": "^4.16.6",
-    "material-ui": "^0.15.0",
+    "material-ui": "0.15.0",
     "normalizr": "^2.2.1",
     "qili-app": "https://github.com/lalalic/qili-app",
-    "react": "^15.1.0",
+    "react": "15.1.0",
     "react-dom": "^15.1.0",
     "react-intl": "^2.1.5",
     "react-redux": "^4.4.5",
@@ -79,7 +79,7 @@
     "test": "restmock",
     "test.mock": "watchify -v -d ./.test.mock.js -o dist/test.js -i jquery",
     "test.mongo": "watchify --ignore-watch=\"**/node_modules/!(qili-app)/**\" -v -d ./.test.mongo.js -o dist/test.js -i jquery",
-    "cordova": "cordova create cordova --link-to=dist && cd cordova && cordova platform add android && cordova build --release android"
+    "cordova": "cordova create cordova --link-to=dist && cd cordova && cordova platform add android && cordova build android"
   },
   "keywords": [],
   "repository": {

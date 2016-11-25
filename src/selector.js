@@ -20,11 +20,7 @@ export const getChild=(state,id)=>{
 
 export const getCurrentChildTasks=state=>{
 	let child=getCurrentChild(state)
-	const {todos=[],todoWeek}=child
-	let week=new Date().getWeek()
-	if(todoWeek!==week){
-		//dispatch(TimeManageUI.ACTION.RESET())
-	}
+	const {todos=[]}=child
 	return todos
 }
 

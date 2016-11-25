@@ -33,5 +33,5 @@ script:
  - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $APP_NAME.tgz "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
  - sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST "tar xvfz $DEPLOY_PATH/$APP_NAME.tgz -C $DEPLOY_PATH && rm $DEPLOY_PATH/$APP_NAME.tgz"
  
- - mv cordova/platforms/android/build/outputs/apk/android-release-unsigned.apk $APP_NAME/app.apk
+ - mv cordova/platforms/android/build/outputs/apk/android-debug-unsigned.apk $APP_NAME/app.apk
  - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $APP_NAME/app.apk "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$APP_NAME"

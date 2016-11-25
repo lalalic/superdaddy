@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from "react"
-import {TextField,FlatButton,IconButton, AutoComplete} from "material-ui"
+import {TextField,FlatButton,IconButton, AutoComplete,RaisedButton} from "material-ui"
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
 
 import {connect} from "react-redux"
@@ -15,12 +15,14 @@ import IconDown from "material-ui/svg-icons/navigation/arrow-downward"
 import IconTop from "material-ui/svg-icons/editor/vertical-align-top"
 import IconBottom from "material-ui/svg-icons/editor/vertical-align-bottom"
 
+import IconDone from "material-ui/svg-icons/file/cloud-done"
+
 import IconVisible from "material-ui/svg-icons/action/visibility"
 import IconHidden from "material-ui/svg-icons/action/visibility-off"
 
 
 import {getCurrentChild, getCurrentChildTasks} from "./selector"
-import {Family,Finished} from "./db"
+import {Family,Task} from "./db"
 
 const {Empty}=UI
 
@@ -29,10 +31,16 @@ const DOMAIN="time"
 const changeTodos=f=>(dispatch,getState)=>{
 	const state=getState()
 	const child=getCurrentChild(state)
+	if(child.todoWeek==undefined)
+		child.todoWeek=new Date().getWeek()
+	
 	let {todos=[]}=child
-	f(child.todos=[...todos])
-	return Family.upsert(child)
-		.then(updated=>dispatch(ENTITIES(normalize(updated, Family.schema).entities)))
+	
+	let handled=f(child.todos=[...todos], child)
+	if(!(handled && handled.then))
+		handled=Promise.resolve()
+	return handled.then(a=>Family.upsert(child)
+		.then(updated=>dispatch(ENTITIES(normalize(updated, Family.schema).entities))))
 }
 export const ACTION={
 	ADD: todo=>(dispatch, getState)=>{
@@ -85,14 +93,21 @@ export const ACTION={
 		todos.splice(i,1)
 		todos.push(target)
 	})
-	,TOGGLE_VISIBLE: i=>changeTodos((todos,target=todos[i])=>target.hidden=!!!target.hidden)
+	,TOGGLE_VISIBLE: i=>changeTodos(todos=>{
+		let target=todos[i]
+		target.hidden=!!!target.hidden	
+	})
 	,RESET: a=>(dispatch,getState)=>{
-		return changeTodos(todos=>{
+		return changeTodos((todos,child)=>{
 			//save history
 			let dones=todos.filter(({dones=[]})=>dones.length)
-			//Finished.upsert(dones)
-			//reset
-			todos.forEach(a=>a.dones=[])
+			if(dones.length){
+				return Task.finishWeekTasks(child, dones).then(a=>{
+					todos.forEach(a=>a.dones=[])
+					child.todoWeek=new Date().getWeek()
+				})
+			}else
+				child.todoWeek=new Date().getWeek()
 		})(disptach,getState)
 	}
 }
@@ -106,11 +121,22 @@ export const reducer=(state={editing:0},{type,payload})=>{
 	return state
 }
 
-export const TimeManage=({editing})=>(
+export const TimeManage=({dispatch, editing, todoWeek, week=new Date().getWeek(), isCurrentWeek=todoWeek==week})=>(
     <div>
-        <center><TodoEditor editing={editing}/></center>
+        <center>
+		{isCurrentWeek 
+			? <TodoEditor editing={editing}/> 
+			: <RaisedButton  onClick={e=>dispatch(ACTION.RESET())}
+				icon={<IconDone/>}
+				label={`保存前${week-todoWeek}周完成情况`}
+				/>
+		}
+		</center>
 
-        {editing ? <TaskPadEditor/> : <TaskPad/>}
+        {isCurrentWeek&&editing 
+			? <TaskPadEditor/> 
+			: <TaskPad current={isCurrentWeek ? new Date().getDay() : 7}/>
+		}
 
         <ScorePad/>
     </div>
@@ -155,13 +181,11 @@ const TaskPad=connect(state=>({todos:getCurrentChildTasks(state).filter(a=>!a.hi
             todos.map(({content:task, dones=[]},i)=>(
                 <TableRow key={i}>
                     <TableRowColumn>{task}</TableRowColumn>
-                    <TableRowColumn><TodoStatus todo={task} done={-1!=dones.indexOf(0)} day={0} current={current}/></TableRowColumn>
-                    <TableRowColumn><TodoStatus todo={task} done={-1!=dones.indexOf(1)} day={1} current={current}/></TableRowColumn>
-                    <TableRowColumn><TodoStatus todo={task} done={-1!=dones.indexOf(2)} day={2} current={current}/></TableRowColumn>
-                    <TableRowColumn><TodoStatus todo={task} done={-1!=dones.indexOf(3)} day={3} current={current}/></TableRowColumn>
-                    <TableRowColumn><TodoStatus todo={task} done={-1!=dones.indexOf(4)} day={4} current={current}/></TableRowColumn>
-                    <TableRowColumn><TodoStatus todo={task} done={-1!=dones.indexOf(5)} day={5} current={current}/></TableRowColumn>
-                    <TableRowColumn><TodoStatus todo={task} done={-1!=dones.indexOf(6)} day={6} current={current}/></TableRowColumn>
+					{[0,1,2,3,4,5,6].map(a=>(
+						<TableRowColumn key={a}>
+							<TodoStatus todo={task} done={-1!=dones.indexOf(a)} day={a} current={current}/>
+						</TableRowColumn>
+					))}
                 </TableRow>
             ))
             }
