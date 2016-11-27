@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from "react"
 import IconSmile from "material-ui/svg-icons/social/mood"
 import {ENTITIES, UI} from "qili-app"
 import {normalize} from "normalizr"
-import {Subheader} from "material-ui"
+import {AppBar} from "material-ui"
 
 import FamilyDB from "./db/family"
 import {getCurrentChild} from "./selector"
@@ -69,7 +69,7 @@ export const Dashboard=
 		<div>
 			{totalPerScreen==score ? (<Editor lastScore={score} lastTodo={todo} dispatch={dispatch}/>) : null}
 			<div>
-				<Subheader><center>{todo}</center></Subheader>
+				<AppBar title={todo} iconElementLeft={<span/>}/>
 				{smiles}
 			</div>
 		</div>
@@ -101,7 +101,9 @@ const Editor=({lastScore,lastTodo="目标", dispatch})=>{
 	}
 	return (
 		<div>
-			<h1 style={{textAlign:"center"}}>{lastScore ? `恭喜 ${lastTodo} 实现了` : null}</h1>
+			<AppBar
+				iconElementLeft={<span/>}
+				title={lastScore ? `恭喜 ${lastTodo} 实现了` : `定下第一个目标描述吧`}/>
 			<TextFieldx ref={a=>refGoal=a}
 				floatingLabelText={`笑脸目标数:${lastScore ? '下一个' : '第一个'}目标描述`}
 				hintText={`${lastScore||20}:小马宝莉书一本`}
