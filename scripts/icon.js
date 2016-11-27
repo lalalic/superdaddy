@@ -3,7 +3,10 @@ module.exports=function(context){
 	return require("svg-to-png")
 		.convert(
 			require("fs").readdirSync(root)
-				.filter(a=>a.endsWith("svg"))
+				.filter(a=>{
+					console.log(a)
+					return a.endsWith("svg")
+				})
 				.map(a=>root+a)
 			, `${__dirname}/../cordova/res/`)
 }

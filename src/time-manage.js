@@ -1,21 +1,25 @@
 import React, {Component, PropTypes} from "react"
-import {TextField,FlatButton,IconButton, AutoComplete,RaisedButton} from "material-ui"
+import {AppBar,TextField,FlatButton,IconButton, AutoComplete,RaisedButton, Tabs, Tab} from "material-ui"
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
 
 import {connect} from "react-redux"
 import {compact, ENTITIES, UI} from "qili-app"
 import {normalize} from "normalizr"
 
+import SwipeableTabs from "./components/swipe-tabs"
+
 import IconSmile from "material-ui/svg-icons/social/mood"
 import IconRemove from "material-ui/svg-icons/action/alarm-off"
-import IconAdd from "material-ui/svg-icons/content/add-circle-outline"
+import IconAdd from "material-ui/svg-icons/av/playlist-add"
 
 import IconUp from "material-ui/svg-icons/navigation/arrow-upward"
 import IconDown from "material-ui/svg-icons/navigation/arrow-downward"
 import IconTop from "material-ui/svg-icons/editor/vertical-align-top"
 import IconBottom from "material-ui/svg-icons/editor/vertical-align-bottom"
 
+import IconEdit from "material-ui/svg-icons/editor/mode-edit"
 import IconDone from "material-ui/svg-icons/file/cloud-done"
+
 
 import IconVisible from "material-ui/svg-icons/action/visibility"
 import IconHidden from "material-ui/svg-icons/action/visibility-off"
@@ -33,9 +37,9 @@ const changeTodos=f=>(dispatch,getState)=>{
 	const child=getCurrentChild(state)
 	if(child.todoWeek==undefined)
 		child.todoWeek=new Date().getWeek()
-	
+
 	let {todos=[]}=child
-	
+
 	let handled=f(child.todos=[...todos], child)
 	if(!(handled && handled.then))
 		handled=Promise.resolve()
@@ -66,11 +70,12 @@ export const ACTION={
 			todos.splice(i,1)
 	})
 	,REMOVE_BY_INDEX: i=>changeTodos(todos=>todos.splice(i,1))
-	,DONE: (todo,day)=>changeTodos(todos=>{
+	,DONE: (todo,day)=>changeTodos((todos,child)=>{
 		const task=todos.find(a=>a.content==todo)
 		let {dones=[]}=task
 		dones.push(day)
 		task.dones=dones
+		child.score=child.score+1
 	})
 	,EDITING: (status=0)=>({type:`${DOMAIN}/edit`, payload:status})
 	,UP: i=>changeTodos(todos=>{
@@ -95,7 +100,7 @@ export const ACTION={
 	})
 	,TOGGLE_VISIBLE: i=>changeTodos(todos=>{
 		let target=todos[i]
-		target.hidden=!!!target.hidden	
+		target.hidden=!!!target.hidden
 	})
 	,RESET: a=>(dispatch,getState)=>{
 		return changeTodos((todos,child)=>{
@@ -121,48 +126,62 @@ export const reducer=(state={editing:0},{type,payload})=>{
 	return state
 }
 
-export const TimeManage=({dispatch, editing, todoWeek, week=new Date().getWeek(), isCurrentWeek=todoWeek==week})=>(
+export const TimeManage=({dispatch, goal, editing, todoWeek, week=new Date().getWeek(), isCurrentWeek=todoWeek==week})=>(
     <div>
-        <center>
-		{isCurrentWeek 
-			? <TodoEditor editing={editing}/> 
-			: <RaisedButton  onClick={e=>dispatch(ACTION.RESET())}
-				icon={<IconDone/>}
-				label={`保存前${week-todoWeek}周完成情况`}
-				/>
-		}
-		</center>
+		{goal?
+			(<div>
+		        {isCurrentWeek
+					? <TodoEditor editing={editing}/>
+					: <RaisedButton  onClick={e=>dispatch(ACTION.RESET())}
+						icon={<IconDone/>}
+						label={`保存前${week-todoWeek}周完成情况`}
+						/>
+				}
 
-        {isCurrentWeek&&editing 
-			? <TaskPadEditor/> 
-			: <TaskPad current={isCurrentWeek ? new Date().getDay() : 7}/>
+		        {isCurrentWeek&&editing
+					? <TaskPadEditor/>
+					: <TaskPad current={isCurrentWeek ? new Date().getDay() : 7}/>
+				}
+			</div>) : <ScorePad height={100}/>
 		}
-
-        <ScorePad/>
     </div>
 )
 
 const TodoEditor=connect()(({dispatch, editing, refTask, refForm})=>(
-    <form ref={a=>refForm=a} className="grid" onSubmit={e=>{
-			e.preventDefault()
-			dispatch(ACTION.ADD(refTask.getValue().trim()))
-			return false
-		}}>
-		<AutoComplete ref={a=>refTask=a}
-			dataSource={[]}
-			floatingLabelText="任务"/>
-		<FlatButton label="添加" onClick={e=>refForm.submit()}/>
-		{
-			editing ?
-		 	(<FlatButton label="完成" onClick={e=>dispatch(ACTION.EDITING(0))}/>)
-			:(<FlatButton label="编辑" onClick={e=>dispatch(ACTION.EDITING(1))}/>)
+	<AppBar
+		iconElementLeft={<span/>}
+		iconElementRight={
+			<span>
+				<IconButton onClick={e=>dispatch(ACTION.ADD(refTask.getValue().trim()))}>
+					<IconAdd color="white"/>
+				</IconButton>
+				<IconButton onClick={e=>dispatch(ACTION.EDITING(editing ? 0 : 1))}>
+					{editing?<IconDone color="white"/> : <IconEdit color="white"/>}
+				</IconButton>
+			</span>
 		}
-    </form>
+		title={
+			<AutoComplete ref={a=>refTask=a}
+				dataSource={[]}
+				hintText="任务"
+				fullWidth={true}
+				onKeyDown={e=>e.keyCode==13 && dispatch(ACTION.ADD(refTask.getValue().trim()))}
+				/>
+		}
+		/>
+))
+
+import MediaQuery from "react-responsive"
+const TaskPad=connect(state=>({todos:getCurrentChildTasks(state).filter(a=>!a.hidden)}))(props=>(
+	<MediaQuery maxWidth={960}>
+	{
+		match=>match ? <TaskPadMobile {...props}/> : <TaskPadWide {...props}/>
+	}
+	</MediaQuery>
 ))
 
 const DAYS=(i,a="日一二三四五六".split(""))=>(a.splice(i,1,<b>今天</b>),a)
-const TaskPad=connect(state=>({todos:getCurrentChildTasks(state).filter(a=>!a.hidden)}))
-(({todos=[], dispatch, current=new Date().getDay(),days=DAYS(current)})=>(
+const TaskPadWide=(({todos=[], dispatch, current=new Date().getDay(),days=DAYS(current)})=>(
     <Table>
         <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
           <TableRow>
@@ -193,14 +212,42 @@ const TaskPad=connect(state=>({todos:getCurrentChildTasks(state).filter(a=>!a.hi
     </Table>
 ))
 
+import SwipeableViews from 'react-swipeable-views'
+import {List,ListItem, Subheader, Paper} from "material-ui"
+
+const WEEKDAYS=(i,a="日一二三四五六".split("").map(a=>`${a}`))=>(a.splice(i,1,"今天"),a)
+const TaskPadMobile=({todos=[], dispatch, current=new Date().getDay(),days=WEEKDAYS(current)})=>(
+	<SwipeableTabs index={current}
+		tabs={days.map((day,i)=><Tab key={i} label={day} value={i}/>)}>
+		{
+			days.map((day,i)=>(
+				<Table key={i}>
+					<TableBody  displayRowCheckbox={false}>
+					{
+						todos.map(({content:task,dones=[]},j)=>(
+							<TableRow key={j}>
+								<TableRowColumn style={{width:60}}>
+									<TodoStatus todo={task} done={-1!=dones.indexOf(i)} day={i} current={current}/>
+								</TableRowColumn>
+								<TableRowColumn>{task}</TableRowColumn>
+							</TableRow>
+						))
+					}
+					</TableBody>
+				</Table>
+			))
+		}
+	</SwipeableTabs>
+)
+
 const TaskPadEditor=connect(state=>({todos:getCurrentChildTasks(state)}))(({todos=[], dispatch})=>(
 	<Table>
         <TableHeader  displaySelectAll={false} adjustForCheckbox={false}>
           <TableRow>
             <TableHeaderColumn>任务\操作</TableHeaderColumn>
-            <TableHeaderColumn>删除</TableHeaderColumn>
-			<TableHeaderColumn>隐藏</TableHeaderColumn>
-			<TableHeaderColumn colSpan={4}>顺序</TableHeaderColumn>
+            <TableHeaderColumn style={{width:60}}>删除</TableHeaderColumn>
+			<TableHeaderColumn style={{width:60}}>隐藏</TableHeaderColumn>
+			<TableHeaderColumn colSpan={4} style={{width:4*60}}>顺序</TableHeaderColumn>
           </TableRow>
         </TableHeader>
         <TableBody displayRowCheckbox={false}>
@@ -208,15 +255,15 @@ const TaskPadEditor=connect(state=>({todos:getCurrentChildTasks(state)}))(({todo
             todos.map(({content:task, dones=[], hidden},i)=>(
                 <TableRow key={i}>
                     <TableRowColumn>{task}</TableRowColumn>
-                    <TableRowColumn>
+                    <TableRowColumn style={{width:60}}>
 						<IconButton  onClick={e=>dispatch(ACTION.REMOVE_BY_INDEX(i))}>
 							<IconRemove/>
 						</IconButton>
 					</TableRowColumn>
-                    <TableRowColumn>
+                    <TableRowColumn style={{width:60}}>
 						<Visibility dispatch={dispatch} i={i} visible={!hidden}/>
 					</TableRowColumn>
-					<TableRowColumn colSpan={4}>
+					<TableRowColumn colSpan={4} style={{width:4*60}}>
 						<Order dispatch={dispatch} i={i}/>
 					</TableRowColumn>
                 </TableRow>
@@ -235,9 +282,8 @@ const TodoStatus=connect()(({todo,done, day, dispatch, current})=>{
 		return (<IconSmile color="lightcyan" hoverColor="yellow" onClick={e=>dispatch(ACTION.DONE(todo,day))}/>)
 })
 
-const ScorePad=connect(state=>compact(getCurrentChild(state),"score","goal","todo"))(({score, goal,todo})=>(
-    <Empty icon={<IconSmile color="yellow"/>} text={`${score}/${goal}`}/>
-))
+import Score from "./dashboard"
+const ScorePad=connect(state=>compact(getCurrentChild(state),"score","goal","todo"))(props=><Score {...props}/>)
 
 const Order=({i,dispatch})=>(
 	<span>

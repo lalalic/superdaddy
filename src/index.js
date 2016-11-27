@@ -3,7 +3,7 @@ require('../style/index.less')
 import React, {Component, PropTypes} from "react"
 import {Route, IndexRoute, Direct, IndexRedirect} from "react-router"
 import {User,QiliApp, UI, ENTITIES, compact, enhancedCombineReducers} from 'qili-app'
-import {MenuItem, FloatingActionButton, Avatar} from 'material-ui'
+import {MenuItem, FloatingActionButton, Avatar, Paper} from 'material-ui'
 import {normalize,arrayOf} from "normalizr"
 
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
@@ -19,40 +19,40 @@ const DOMAIN='superdaddy'
 
 const INIT_STATE={}
 export const ACTION={
-	FETCH_FAMILY: ()=>dispatch=>Family.find()
+	FETCH_FAMILY: a=>dispatch=>Family.find()
 		.fetch(all=>{
-			if(all && all.length){
+			if(all.length==0)
+				dispatch(ACTION.CREATE_DEFAULT_FIRST_CHILD())
+			else {
 				let entities=normalize(all,arrayOf(Family.schema)).entities
 				dispatch(ENTITIES(entities))
-				let next
-				if(entities.children)
-					next=entities.children[Object.keys(entities.children)[0]]
-
-				if(next)
-					dispatch({type:'CURRENT_CHILD_CHANGE',payload:next})
-				else
-					dispatch(ACTION.CREATE_DEFAULT_FIRST_CHILD())
+				if(entities.children){
+					let next=entities.children[Object.keys(entities.children)[0]]
+					if(next)
+						dispatch(ACTION.CURRENT_CHILD_CHANGE(next))
+				}
 			}
 		})
 	,CREATE_DEFAULT_FIRST_CHILD: ()=>dispatch=>{
-		return Family.upsert({name:"",score:0})
+		return Family.upsert({name:"宝宝",score:0})
 			.then(child=>{
 				dispatch(ENTITIES(normalize(child,Family.schema).entities))
-				dispatch({type:'CURRENT_CHILD_CHANGE',payload:child})
+				dispatch(ACTION.CURRENT_CHILD_CHANGE(child))
 			})
 	}
 	,SWITCH_CURRENT_CHILD: id=>(dispatch,getState)=>{
 		const state=getState()
 		const children=state.entities.children
 		if(id){
-			dispatch({type:'CURRENT_CHILD_CHANGE',payload:children[id]})
+			dispatch(ACTION.CURRENT_CHILD_CHANGE(children[id]))
 		}else{
 			const current=state[DOMAIN].child
 			const ids=Object.keys(children)
 			let next=ids[(ids.indexOf(current)+1)%ids.length]
-			dispatch({type:'CURRENT_CHILD_CHANGE',payload:children[next]})
+			dispatch(ACTION.CURRENT_CHILD_CHANGE(children[next]))
 		}
 	}
+	,CURRENT_CHILD_CHANGE: child=>({type:'CURRENT_CHILD_CHANGE',payload:child})
 }
 
 const REDUCER=(state=INIT_STATE,{type,payload})=>{
@@ -77,7 +77,8 @@ class SuperDaddy extends Component{
 						dispatch(ACTION.FETCH_FAMILY())
 				}}>
 
-				<FloatingActionButton className="sticky top right"
+				<FloatingActionButton
+					className="sticky top right _3"
 					mini={true}
 					style={contextualStyle}
 					onClick={e=>dispatch(ACTION.SWITCH_CURRENT_CHILD())}>
@@ -88,18 +89,18 @@ class SuperDaddy extends Component{
 
                 <CommandBar className="footbar" style={{zIndex:1}}
 					items={[
-						{label:"任务", action:"tasks",
+						{label:"时间管理", action:"tasks",
 							link:"/",
                             icon:<IconTask/>},
-
+/*
 						{label:"时间管理", action:"time",
 							link:"/time",
                             icon:<IconTask/>},
-/*
+							*/
+
 						{label:"成绩", action:"score",
-							onSelect:a=>router.push('/score'),
+							link:'/score',
 							icon:<IconReward/>},
-*/
 						{label:"发现", action:"knowledges",
 							link:'/knowledge',
 							icon:<IconKnowledges/>},
@@ -144,7 +145,7 @@ const {Setting:SettingUI, Profile: ProfileUI}=UI
 module.exports=QiliApp.render(
     (<Route path="/" component={connect(state=>compact(getCurrentChild(state),"name","photo"))(SuperDaddy)}>
 
-		<IndexRoute component={connect(state=>compact(getCurrentChild(state),"score","goal","todo"))(DashboardUI)}/>
+		<Route path="score" component={connect(state=>compact(getCurrentChild(state),"score","goal","todo"))(DashboardUI)}/>
 
 		<Route path="my" contextual={false}>
 			<IndexRoute component={connect(state=>({babies:Object.values(state.entities.children)}))(AccountUI)}/>
@@ -166,10 +167,13 @@ module.exports=QiliApp.render(
 				})(BabyUI)}/>
 		</Route>
 
-		<Route path="time" component={connect(state=>{
+		<IndexRoute path1="time" component={connect(state=>{
+				let child=getCurrentChild(state)
+				const {todoWeek=new Date().getWeek(), goal=0}=child
 				return {
-					...state.ui.time, 
-					todoWeek:getCurrentChild(state).todoWeek||new Date().getWeek()
+					...state.ui.time,
+					todoWeek,
+					goal
 				}
 			})(TimeManageUI)}/>
 

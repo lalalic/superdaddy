@@ -1,5 +1,6 @@
-import {Model,User} from 'qili-app';
-import Family from './family';
+import {Model,User} from 'qili-app'
+import Family from './family'
+import Finished from "./finished"
 
 function cloneAsDate(d) {
   let clonedDate = new Date(d.getTime());
@@ -11,11 +12,11 @@ export default class Task extends Model{
     static get _name(){
         return 'task'
     }
-	
+
 	static finishWeekTasks(child, tasks){
 		const {todoWeek:week}=child
 		const year=new Date().getFullYear()
-		const getDate=(week,i)=>
+		const getDate=(week,i)=>{}
 		let finished=tasks.map(task=>{
 			const {dones}=task
 			dones.forEach(i=>{
@@ -23,13 +24,13 @@ export default class Task extends Model{
 				task.day=i
 				task.date=getDate(week,i)
 			})
-			
+
 			task.knowledge=task._id
 			delete task._id
-			
+
 			task.baby=child._id
 		})
-		
+
 		return Finished.upsert(finished)
 	}
 
@@ -42,7 +43,7 @@ export default class Task extends Model{
             current:0,
 			child:Family.getCurrentChild._id})
     }
-	
+
     static finish(task){
         task.finishedAt=new Date()
         task.finishedAuthor=User.currentAsAuthor

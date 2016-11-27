@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from "react"
 import IconSmile from "material-ui/svg-icons/social/mood"
 import {ENTITIES, UI} from "qili-app"
 import {normalize} from "normalizr"
+import {Subheader} from "material-ui"
 
 import FamilyDB from "./db/family"
 import {getCurrentChild} from "./selector"
@@ -36,7 +37,7 @@ export const ACTION={
 }
 
 export const Dashboard=
-({dispatch,todo, goal:totalPerScreen=0, score=0, width=window.innerWidth>960 ? 960 : window.innerWidth, height=window.innerHeight-60})=>{
+({dispatch,todo, goal,totalPerScreen=goal, score=0, width=window.innerWidth>960 ? 960 : window.innerWidth, height=window.innerHeight-60})=>{
 	if(totalPerScreen==score){
 		width=width/2
 		height=height/2
@@ -68,6 +69,7 @@ export const Dashboard=
 		<div>
 			{totalPerScreen==score ? (<Editor lastScore={score} lastTodo={todo} dispatch={dispatch}/>) : null}
 			<div>
+				<Subheader><center>{todo}</center></Subheader>
 				{smiles}
 			</div>
 		</div>
