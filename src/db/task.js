@@ -16,6 +16,7 @@ export default class Task extends Model{
 	static finishWeekTasks(child, tasks){
 		const {todoWeek:week}=child
 		const year=new Date().getFullYear()
+		/**@TODO: get date from week+day*/
 		const getDate=(week,i)=>{}
 		let finished=tasks.map(task=>{
 			const {dones}=task
