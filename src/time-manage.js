@@ -113,7 +113,7 @@ export const ACTION={
 				})
 			}else
 				child.todoWeek=new Date().getWeek()
-		})(disptach,getState)
+		})(dispatch,getState)
 	}
 }
 

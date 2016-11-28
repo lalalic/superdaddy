@@ -18,6 +18,8 @@ const {Empty, Comment, CommandBar}=UI
 const DOMAIN='superdaddy'
 
 const INIT_STATE={}
+
+
 export const ACTION={
 	FETCH_FAMILY: a=>dispatch=>Family.find()
 		.fetch(all=>{
@@ -140,6 +142,8 @@ import KnowledgesUI from './knowledges'
 import {connect} from "react-redux"
 import {getCurrentChild, getChild, getCurrentChildTasks, getKnowledges, getKnowledge} from "./selector"
 
+import Test from "./test"
+
 const {Setting:SettingUI, Profile: ProfileUI}=UI
 
 module.exports=QiliApp.render(
@@ -154,6 +158,8 @@ module.exports=QiliApp.render(
 
 			<Route path="profile" component={ProfileUI}/>
 		</Route>
+		
+		
 
 		<Route path="baby" contextual={false}>
 			<IndexRoute component={connect()(Creator)}/>
@@ -194,6 +200,8 @@ module.exports=QiliApp.render(
 		</Route>
 
 		<Route path="comment/:type/:_id" component={Comment}/>
+		
+		<Route path="test" component={Test}/>
 
 	{/*
         <Route name="tasks" component={TasksUI}/>

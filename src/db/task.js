@@ -29,6 +29,7 @@ export default class Task extends Model{
 			delete task._id
 
 			task.baby=child._id
+			return task
 		})
 
 		return Finished.upsert(finished)
