@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from "react"
-import {AppBar,TextField,FlatButton,IconButton, AutoComplete,RaisedButton, Tabs, Tab} from "material-ui"
+import {IconButton, AutoComplete,RaisedButton, Tabs, Tab} from "material-ui"
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
 
 import {connect} from "react-redux"
@@ -26,6 +26,8 @@ import IconHidden from "material-ui/svg-icons/action/visibility-off"
 
 
 import {getCurrentChild, getCurrentChildTasks} from "./selector"
+import AppBar from "./components/app-bar"
+
 import {Family,Task} from "./db"
 
 const {Empty}=UI
@@ -149,7 +151,6 @@ export const TimeManage=({dispatch, goal, editing, todoWeek, week=new Date().get
 
 const TodoEditor=connect()(({dispatch, editing, refTask, refForm})=>(
 	<AppBar
-		iconElementLeft={<span/>}
 		iconElementRight={
 			<span>
 				<IconButton onClick={e=>dispatch(ACTION.ADD(refTask.getValue().trim()))}>
@@ -213,7 +214,7 @@ const TaskPadWide=(({todos=[], dispatch, current=new Date().getDay(),days=DAYS(c
 ))
 
 import SwipeableViews from 'react-swipeable-views'
-import {List,ListItem, Subheader, Paper} from "material-ui"
+import {List,ListItem, Subheader,Divider} from "material-ui"
 
 const WEEKDAYS=(i,a="日一二三四五六".split("").map(a=>`${a}`))=>(a.splice(i,1,"今天"),a)
 const TaskPadMobile=({todos=[], dispatch, current=new Date().getDay(),days=WEEKDAYS(current)})=>(
@@ -221,26 +222,22 @@ const TaskPadMobile=({todos=[], dispatch, current=new Date().getDay(),days=WEEKD
 		tabs={days.map((day,i)=><Tab key={i} label={day} value={i}/>)}>
 		{
 			days.map((day,i)=>(
-				<Table key={i}>
-					<TableBody  displayRowCheckbox={false}>
+				<List key={i}>
 					{
 						todos.map(({content:task,dones=[]},j)=>(
-							<TableRow key={j}>
-								<TableRowColumn style={{width:60}}>
-									<TodoStatus todo={task} done={-1!=dones.indexOf(i)} day={i} current={current}/>
-								</TableRowColumn>
-								<TableRowColumn>{task}</TableRowColumn>
-							</TableRow>
+							<ListItem key={j}
+								primaryText={task}
+								leftCheckbox={<TodoStatus todo={task} done={-1!=dones.indexOf(i)} day={i} current={current}/>}
+							/>
 						))
 					}
-					</TableBody>
-				</Table>
+				</List>
 			))
 		}
 	</SwipeableTabs>
 )
 
-const TaskPadEditor=connect(state=>({todos:getCurrentChildTasks(state)}))(({todos=[], dispatch})=>(
+const TaskPadEditor1=connect(state=>({todos:getCurrentChildTasks(state)}))(({todos=[], dispatch})=>(
 	<Table>
         <TableHeader  displaySelectAll={false} adjustForCheckbox={false}>
           <TableRow>
@@ -273,13 +270,37 @@ const TaskPadEditor=connect(state=>({todos:getCurrentChildTasks(state)}))(({todo
     </Table>
 ))
 
-const TodoStatus=connect()(({todo,done, day, dispatch, current})=>{
+const TaskPadEditor=connect(state=>({todos:getCurrentChildTasks(state)}))(({todos=[], dispatch})=>(
+	<List>
+	{
+	todos.map(({content:task, hidden},i)=>(
+		<ListItem key={i} primaryText={task}
+			rightIconButton={
+				<span>
+					<Remover i={i} dispatch={dispatch}/>
+					<Visibility i={i} dispatch={dispatch} visible={!hidden}/>
+					<Order  i={i} dispatch={dispatch}/>
+				</span>
+			}
+		/>
+	)).reduce((state,a,i)=>{
+			state.push(a)
+			state.push(<Divider inset={false} key={`${i}_1`}/>)
+			return state
+		},[])
+	}
+	</List>
+))
+
+
+
+const TodoStatus=connect()(({todo,done, day, dispatch, current, ...others})=>{
 	if(done)
-		return (<IconSmile color="yellow"/>)
+		return (<IconSmile color="yellow" {...others}/>)
 	else if(day>current)
-		return (<IconSmile color="lightgray"/>)
+		return (<IconSmile color="lightgray" {...others}/>)
 	else
-		return (<IconSmile color="lightcyan" hoverColor="yellow" onClick={e=>dispatch(ACTION.DONE(todo,day))}/>)
+		return (<IconSmile color="lightcyan" hoverColor="yellow" onClick={e=>dispatch(ACTION.DONE(todo,day))}  {...others}/>)
 })
 
 import Score from "./dashboard"
@@ -294,8 +315,16 @@ const Order=({i,dispatch})=>(
 	</span>
 )
 
-const Visibility=({i,dispatch,visible,Icon=(!visible ? IconHidden : IconVisible)})=>(
-	<IconButton onClick={e=>dispatch(ACTION.TOGGLE_VISIBLE(i))}><Icon/></IconButton>
+const Visibility=({i,dispatch,visible,Icon=(!visible ? IconHidden : IconVisible),style})=>(
+	<IconButton onClick={e=>dispatch(ACTION.TOGGLE_VISIBLE(i))} style={style}>
+		<Icon/>
+	</IconButton>
+)
+
+const Remover=({i,dispatch, style})=>(
+	<IconButton onClick={e=>dispatch(ACTION.REMOVE_BY_INDEX(i))} style={style}>
+		<IconRemove/>
+	</IconButton>
 )
 
 export default Object.assign(TimeManage,{reducer})

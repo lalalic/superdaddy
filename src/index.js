@@ -67,7 +67,7 @@ const REDUCER=(state=INIT_STATE,{type,payload})=>{
 
 class SuperDaddy extends Component{
 	render(){
-		const {name:childName, photo:childPhoto, children, routes, dispatch}=this.props
+		const {children, routes, dispatch}=this.props
 		const {router}=this.context
 		let contextualStyle={fontSize:"xx-small"}
 		if(routes.find(a=>a.contextual===false))
@@ -78,14 +78,6 @@ class SuperDaddy extends Component{
 						init()
 						dispatch(ACTION.FETCH_FAMILY())
 				}}>
-
-				<FloatingActionButton
-					className="sticky top right _3"
-					mini={true}
-					style={contextualStyle}
-					onClick={e=>dispatch(ACTION.SWITCH_CURRENT_CHILD())}>
-					{childPhoto ? (<Avatar src={childPhoto}/>) : childName}
-				</FloatingActionButton>
 
 				{children}
 
@@ -147,7 +139,7 @@ import Test from "./test"
 const {Setting:SettingUI, Profile: ProfileUI}=UI
 
 module.exports=QiliApp.render(
-    (<Route path="/" component={connect(state=>compact(getCurrentChild(state),"name","photo"))(SuperDaddy)}>
+    (<Route path="/" component={connect()(SuperDaddy)}>
 
 		<Route path="score" component={connect(state=>compact(getCurrentChild(state),"score","goal","todo"))(DashboardUI)}/>
 

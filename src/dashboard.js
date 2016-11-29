@@ -2,10 +2,10 @@ import React, {Component, PropTypes} from "react"
 import IconSmile from "material-ui/svg-icons/social/mood"
 import {ENTITIES, UI} from "qili-app"
 import {normalize} from "normalizr"
-import {AppBar} from "material-ui"
 
 import FamilyDB from "./db/family"
 import {getCurrentChild} from "./selector"
+import AppBar from "./components/app-bar"
 
 const {TextFieldx}=UI
 
@@ -37,7 +37,7 @@ export const ACTION={
 }
 
 export const Dashboard=
-({dispatch,todo, goal,totalPerScreen=goal, score=0, width=window.innerWidth>960 ? 960 : window.innerWidth, height=window.innerHeight-60})=>{
+({dispatch,todo, goal=0,totalPerScreen=goal, score=0, width=window.innerWidth>960 ? 960 : window.innerWidth, height=window.innerHeight-60})=>{
 	if(totalPerScreen==score){
 		width=width/2
 		height=height/2
@@ -64,12 +64,22 @@ export const Dashboard=
 				<Smile style={style} scored={i<score} onClick={e=>i>=score && dispatch(ACTION.ADDING_SCORE())}/>
 			</span>
 		)
-
+		
+	let title=todo, action=null
+	if(goal==0){
+		title="开始第一个目标"
+		action=(<Editor/>)
+	}else if(goal==score){
+		title="开始下一个目标"
+		action=(<Editor lastScore={score}/>)
+	}else 
+		title=todo;
+	
 	return (
 		<div>
-			{totalPerScreen==score ? (<Editor lastScore={score} lastTodo={todo} dispatch={dispatch}/>) : null}
+			<AppBar title={title}/>
+			{action}
 			<div>
-				<AppBar title={todo} iconElementLeft={<span/>}/>
 				{smiles}
 			</div>
 		</div>
@@ -84,7 +94,7 @@ const Smile=({scored, ...others})=>(
 		/>
 )
 
-const Editor=({lastScore,lastTodo="目标", dispatch})=>{
+const Editor=({lastScore,dispatch})=>{
 	let refGoal
 	const add=value=>{
 		value=value.trim()
@@ -100,17 +110,12 @@ const Editor=({lastScore,lastTodo="目标", dispatch})=>{
 		dispatch(ACTION.ADD_TASK(goal,desc.join(":")))
 	}
 	return (
-		<div>
-			<AppBar
-				iconElementLeft={<span/>}
-				title={lastScore ? `恭喜 ${lastTodo} 实现了` : `定下第一个目标描述吧`}/>
-			<TextFieldx ref={a=>refGoal=a}
-				floatingLabelText={`笑脸目标数:${lastScore ? '下一个' : '第一个'}目标描述`}
-				hintText={`${lastScore||20}:小马宝莉书一本`}
-			 	onBlur={({target:{value}})=>add(value)}
-				onKeyDown={({target:{value},keyCode})=>keyCode==13 && add(value)}
-				fullWidth={true}/>
-		</div>
+		<TextFieldx ref={a=>refGoal=a}
+			floatingLabelText="目标"
+			hintText={`${lastScore||20}:小马宝莉书一本`}
+			onBlur={({target:{value}})=>add(value)}
+			onKeyDown={({target:{value},keyCode})=>keyCode==13 && add(value)}
+			fullWidth={true}/>
 	)
 }
 
