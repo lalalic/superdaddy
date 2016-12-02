@@ -150,8 +150,8 @@ module.exports=QiliApp.render(
 
 			<Route path="profile" component={ProfileUI}/>
 		</Route>
-		
-		
+
+
 
 		<Route path="baby" contextual={false}>
 			<IndexRoute component={connect()(Creator)}/>
@@ -192,7 +192,7 @@ module.exports=QiliApp.render(
 		</Route>
 
 		<Route path="comment/:type/:_id" component={Comment}/>
-		
+
 		<Route path="test" component={Test}/>
 
 	{/*
@@ -227,7 +227,6 @@ module.exports=QiliApp.render(
 		})}
 	]
 )
-
 
 /**
 * quickAction position doesn't change when resizing

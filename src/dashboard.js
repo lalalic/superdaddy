@@ -7,6 +7,13 @@ import FamilyDB from "./db/family"
 import {getCurrentChild} from "./selector"
 import AppBar from "./components/app-bar"
 
+import {
+	yellow500 as COLOR_DONE
+	,yellow200 as COLOR_HOVER
+	,lightblue500 as COLOR_ENABLED
+	,grey300 as COLOR_DISABLED
+} from "material-ui/styles/colors"
+
 const {TextFieldx}=UI
 
 const DOMAIN="score"
@@ -64,7 +71,7 @@ export const Dashboard=
 				<Smile style={style} scored={i<score} onClick={e=>i>=score && dispatch(ACTION.ADDING_SCORE())}/>
 			</span>
 		)
-		
+
 	let title=todo, action=null
 	if(goal==0){
 		title="开始第一个目标"
@@ -72,9 +79,9 @@ export const Dashboard=
 	}else if(goal==score){
 		title="开始下一个目标"
 		action=(<Editor lastScore={score}/>)
-	}else 
+	}else
 		title=todo;
-	
+
 	return (
 		<div>
 			<AppBar title={title}/>
@@ -88,8 +95,8 @@ export const Dashboard=
 
 const Smile=({scored, ...others})=>(
 	<IconSmile
-		color={scored ? "yellow" :"lightgray"}
-		hoverColor={scored ? null : "lightyellow"}
+		color={scored ? COLOR_DONE : COLOR_DISABLED}
+		hoverColor={scored ? null : COLOR_HOVER}
 		{...others}
 		/>
 )
