@@ -22,7 +22,6 @@ install:
 
 script:
  - npm run merge
- - npm run merge.debug
  - npm run cordova
 
  - rm dist/config.xml
