@@ -1,16 +1,16 @@
 import React, {Component, PropTypes} from "react"
 import {findDOMNode} from "react-dom"
-import {ListItem as Li} from "material-ui"
+import {ListItem as Li, IconButton} from "material-ui"
 import {DragSource, DropTarget} from "react-dnd"
 import flow from "lodash.flow"
+
+import IconOrder from "material-ui/svg-icons/action/swap-vert"
 
 class ListItem extends Component{
     componentDidMount(){
         const {connectDragSource, connectDropTarget,connectDragPreview,primaryText}=this.props
-        let dom=findDOMNode(this)
-        connectDragSource(dom)
-        connectDropTarget(dom)
-        connectDragPreview(<div>{primaryText}</div>)
+        connectDragSource(findDOMNode(this.refs.order))
+        connectDropTarget(findDOMNode(this))
     }
 
     componentDidUpdate(){
@@ -25,7 +25,7 @@ class ListItem extends Component{
         }else if(isOver && canDrop){
             others.primaryText="can drop here"
         }
-        return <Li {...others}/>
+        return <Li {...others} rightIconButton={<IconButton  ref="order"><IconOrder/></IconButton>}/>
     }
 }
 
