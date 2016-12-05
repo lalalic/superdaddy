@@ -49,10 +49,13 @@ class List extends Component{
         let items=data.map((a,i)=>React.createElement(ListItem,{...template(a).props,key:i,index:i,parent:this}))
         if(dragging!=-1 && hovering!=-1){
             let [moving]=items.splice(dragging,1)
+            moving=React.createElement(Li,moving.props)
             if(hovering>dragging)
                 items.splice(hovering-1,0,moving)
             else
                 items.splice(hovering,0,moving)
+        }else if(dragging!=-1){
+
         }
 
         return (
@@ -68,8 +71,13 @@ const DEFAULT_TYPE="UNKNOWN"
 function dnd(onDrop,type=DEFAULT_TYPE){
     return flow(
         DragSource(DEFAULT_TYPE,{
-            beginDrag(props,monitor){
-                return {index:props.index}
+            beginDrag({index},monitor,{props:{parent}}){
+                parent.setState({dragging:index,hovering:-1})
+                return {index}
+            },
+
+            endDrag({index},monitor,{props:{parent}}){
+                parent.setState({dragging:-1,hovering:-1})
             }
         },(connector,monitor)=>{
             return {
