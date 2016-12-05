@@ -134,7 +134,7 @@ export const TimeManage=({dispatch, goal, editing, todoWeek, week=new Date().get
 
 		        {isCurrentWeek&&editing
 					? <TaskPadEditor/>
-					: <TaskPad current={isCurrentWeek ? new Date().getDay() : 7}/>
+					: <TaskPad current={isCurrentWeek ? new Date().getDay() : -1}/>
 				}
 			</div>) : <ScorePad height={100}/>
 		}

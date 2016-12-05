@@ -25,7 +25,7 @@ export const TaskPad=connect(state=>({todos:getCurrentChildTasks(state).filter(a
 	</MediaQuery>
 ))
 
-const DAYS=(i,a="日一二三四五六".split(""))=>(a.splice(i,1,<b>今天</b>),a)
+const DAYS=(i,a="日一二三四五六".split(""))=>(i>-1 && a.splice(i,1,<b>今天</b>),a)
 const ITEM_STYLE={
 	display:"inline-block",
 	width:60,
@@ -71,8 +71,7 @@ const TaskPadWide=(({todos=[], dispatch, current=new Date().getDay(),days=DAYS(c
 	</List>
 ))
 
-const WEEKDAYS=(i,a="日一二三四五六".split("").map(a=>`${a}`))=>(a.splice(i,1,"今天"),a)
-const TaskPadMobile=({todos=[], dispatch, current=new Date().getDay(),days=WEEKDAYS(current)})=>(
+const TaskPadMobile=({todos=[], dispatch, current=new Date().getDay(),days=DAYS(current)})=>(
 	<SwipeableTabs index={current}
 		tabs={days.map((day,i)=><Tab key={i} label={day} value={i}/>)}>
 		{
@@ -95,7 +94,7 @@ const TaskPadMobile=({todos=[], dispatch, current=new Date().getDay(),days=WEEKD
 const TodoStatus=connect()(({todo,done, day, dispatch, current, ...others})=>{
 	if(done)
 		return (<IconSmile color={COLOR_DONE} {...others}/>)
-	else if(day>current)
+	else if(current<0 || day>current)
 		return (<IconSmile color={COLOR_DISABLED} {...others}/>)
 	else
 		return (<IconSmile color={COLOR_ENABLED} hoverColor={COLOR_HOVER} onClick={e=>dispatch(ACTION.DONE(todo,day))}  {...others}/>)
