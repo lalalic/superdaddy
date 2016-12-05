@@ -16,7 +16,7 @@ export const TodoEditor=connect()(({dispatch, editing, refTask, refForm})=>(
 	<AppBar
 		iconElementRight={
 			<span>
-				<IconButton onClick={e=>dispatch(ACTION.ADD(refTask.getValue().trim()))}>
+				<IconButton onClick={e=>dispatch(ACTION.ADD(refTask.state.searchText.trim()))}>
 					<IconAdd color="white"/>
 				</IconButton>
 				<IconButton onClick={e=>dispatch(ACTION.EDITING(editing ? 0 : 1))}>
@@ -29,7 +29,7 @@ export const TodoEditor=connect()(({dispatch, editing, refTask, refForm})=>(
 				dataSource={[]}
 				hintText="任务"
 				fullWidth={true}
-				onKeyDown={e=>e.keyCode==13 && dispatch(ACTION.ADD(refTask.getValue().trim()))}
+				onKeyDown={e=>e.keyCode==13 && dispatch(ACTION.ADD(refTask.state.searchText.trim()))}
 				/>
 		}
 		/>

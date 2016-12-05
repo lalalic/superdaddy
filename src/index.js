@@ -167,11 +167,12 @@ module.exports=QiliApp.render(
 
 		<IndexRoute path1="time" component={connect(state=>{
 				let child=getCurrentChild(state)
-				const {todoWeek=new Date().getWeek(), goal=0}=child
+				const {todoWeek=new Date().getWeek(), goal=0, score=0}=child
 				return {
 					...state.ui.time,
 					todoWeek,
-					goal
+					goal,
+					score
 				}
 			})(TimeManageUI)}/>
 
