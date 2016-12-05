@@ -1,30 +1,18 @@
 import React, {Component, PropTypes} from "react"
-
-import {List} from "material-ui"
-
 import IconSmile from "material-ui/svg-icons/social/mood"
 
-import {dnd} from "./components/dnd-list"
-
-const ListItem=dnd((source,target)=>{
-	console.log(`source.text=${source.primaryText}`)
-	console.log(`target.text=${target.primaryText}`)
-})
+import {List,ListItem} from "./components/dnd-list"
 
 class Test extends Component{
 	render(){
 		return (
-			<List>
-				<ListItem
-					primaryText="work"
-					leftIcon={<IconSmile/>}
-				/>
+			<List
+				data={["hello","world"]}
+				template={a=><ListItem primaryText={a}/>}
+				onDrop={(source,target)=>{
 
-				<ListItem
-					primaryText="english"
-					leftIcon={<IconSmile/>}
+				}}
 				/>
-			</List>
 		)
 	}
 }
