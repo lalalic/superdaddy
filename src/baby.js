@@ -76,6 +76,7 @@ export class Baby extends Component{
 							width={150}
 							height={150}
 							src={photo}
+							overwritable={true}
 							onPhoto={url=>dispatch(ACTION.CHANGE(id,"photo",url))}/>
 					</div>
 
@@ -132,22 +133,17 @@ export class Creator extends Component{
 		const {router}=this.context
 		const {nameError}=this.state
 
-		let photo,refName, refBirthday, refGender
+		let refName, refBirthday, refGender
 
 		const send=a=>dispatch(ACTION.CREATE({
 			name: refName.getValue()
 			,bd: refBirthday.getDate()
 			,gender: refGender.getSelectedValue()
-			,photo
 		})).then(baby=>router.replace(`/baby/${baby._id}`),error=>this.setState({nameError:error}))
 
 		return (
 			<div>
 				<div className="form">
-					<div className="child-photo">
-						<Photo onPhoto={url=>photo=url} width={150} height={150}/>
-					</div>
-
 					<TextFieldx ref={a=>refName=a}
 						floatingLabelText="child name"
 						errorText={nameError}
