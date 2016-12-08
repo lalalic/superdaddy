@@ -74,6 +74,20 @@ class SuperDaddy extends Component{
 			contextualStyle.display="none"
         return (
             <QiliApp appId="5746b2c5e4bb3b3700ae1566"
+				tutorial={[
+					{
+						media:"images/tutorial/time.png",
+						title:"任务管理"
+					},
+					{
+						media:"images/tutorial/score.png",
+						title:"正面激励"
+					},
+					{
+						media:"images/tutorial/knowledge.png", 
+						title:"知识查询"
+					}
+				]}
 				init={a=>{
 						init()
 						dispatch(ACTION.FETCH_FAMILY())
