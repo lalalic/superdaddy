@@ -66,6 +66,7 @@ export const ACTION={
 		dones.push(day)
 		task.dones=dones
 		child.score=child.score+1
+		child.totalScore=(child.totalScore||0)+1
 	})
 	,EDITING: (status=0)=>({type:`${DOMAIN}/edit`, payload:status})
 	,UP: i=>changeTodos(todos=>{
