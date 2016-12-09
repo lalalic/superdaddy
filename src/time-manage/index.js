@@ -119,7 +119,7 @@ export const reducer=(state={editing:0},{type,payload})=>{
 
 export const TimeManage=({dispatch, goal, score, editing, todoWeek, week=new Date().getWeek(), isCurrentWeek=todoWeek==week})=>(
     <div>
-		{goal && goal!=score ?
+		{goal && goal>score ?
 			(<div>
 		        {isCurrentWeek
 					? <TodoEditor editing={editing}/>

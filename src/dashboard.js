@@ -35,9 +35,9 @@ export const ACTION={
 	}
 	,ADD_TASK: (goal, todo)=>(dispatch,getState)=>{
 		const child=getCurrentChild(getState())
+		child.score=Math.max((child.score||0)-(child.goal||0),0)
 		child.goal=goal
 		child.todo=todo
-		child.score=0
 		return FamilyDB.upsert(child)
 			.then(updated=>dispatch(ENTITIES(normalize(updated,FamilyDB.schema).entities)))
 	}
@@ -76,7 +76,7 @@ export const Dashboard=
 	if(goal==0){
 		title="开始第一个目标"
 		action=(<Editor/>)
-	}else if(goal==score){
+	}else if(goal<=score){
 		title="开始下一个目标"
 		action=(<Editor lastScore={score}/>)
 	}else
