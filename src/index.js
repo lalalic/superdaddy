@@ -135,7 +135,7 @@ import ScoreUI from "./score"
 import InviteUI from "./invite"
 */
 
-import DashboardUI from "./dashboard"
+import ScorePadUI from "./time-manage/score-pad"
 import AccountUI from './account'
 import BabyUI, {Creator} from './baby'
 
@@ -155,7 +155,7 @@ const {Setting:SettingUI, Profile: ProfileUI}=UI
 module.exports=QiliApp.render(
     (<Route path="/" component={connect()(SuperDaddy)}>
 
-		<Route path="score" component={connect(state=>compact(getCurrentChild(state),"score","goal","todo"))(DashboardUI)}/>
+		<Route path="score" component={ScorePadUI}/>
 
 		<Route path="my" contextual={false}>
 			<IndexRoute component={connect(state=>({babies:Object.values(state.entities.children)}))(AccountUI)}/>
@@ -179,7 +179,7 @@ module.exports=QiliApp.render(
 				})(BabyUI)}/>
 		</Route>
 
-		<IndexRoute path1="time" component={connect(state=>{
+		<IndexRoute component={connect(state=>{
 				let child=getCurrentChild(state)
 				const {todoWeek=new Date().getWeek(), goal=0, score=0}=child
 				return {

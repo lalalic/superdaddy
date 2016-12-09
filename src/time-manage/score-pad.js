@@ -1,11 +1,12 @@
 import React, {Component, PropTypes} from "react"
 import IconSmile from "material-ui/svg-icons/social/mood"
-import {ENTITIES, UI} from "qili-app"
+import {ENTITIES, UI, compact} from "qili-app"
 import {normalize} from "normalizr"
+import {connect} from "react-redux"
 
-import FamilyDB from "./db/family"
-import {getCurrentChild} from "./selector"
-import AppBar from "./components/app-bar"
+import FamilyDB from "../db/family"
+import {getCurrentChild} from "../selector"
+import AppBar from "../components/app-bar"
 
 import {
 	yellow500 as COLOR_DONE
@@ -16,7 +17,6 @@ import {
 
 const {TextFieldx}=UI
 
-const DOMAIN="score"
 var scores=0, timer=null
 export const ACTION={
 	ADDING_SCORE: ()=>dispatch=>{
@@ -43,7 +43,7 @@ export const ACTION={
 	}
 }
 
-export const Dashboard=
+export const ScorePad=
 ({dispatch,todo, goal=0,totalPerScreen=goal, score=0, width=window.innerWidth>960 ? 960 : window.innerWidth, height=window.innerHeight-60})=>{
 	if(totalPerScreen==score){
 		width=width/2
@@ -78,7 +78,7 @@ export const Dashboard=
 		action=(<Editor/>)
 	}else if(goal<=score){
 		title="开始下一个目标"
-		action=(<Editor lastScore={score}/>)
+		action=(<Editor lastScore={score} dispatch={dispatch}/>)
 	}else
 		title=todo;
 
@@ -127,4 +127,4 @@ const Editor=({lastScore,dispatch})=>{
 }
 
 
-export default Dashboard
+export default connect(state=>compact(getCurrentChild(state),"score","goal","todo"))(ScorePad)
