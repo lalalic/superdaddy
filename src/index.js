@@ -84,7 +84,7 @@ class SuperDaddy extends Component{
 						title:"正面激励"
 					},
 					{
-						media:"images/tutorial/knowledge.png", 
+						media:"images/tutorial/knowledge.png",
 						title:"知识查询"
 					}
 				]}
@@ -162,7 +162,9 @@ module.exports=QiliApp.render(
 
 			<Route path="setting" component={SettingUI} />
 
-			<Route path="profile" component={ProfileUI}/>
+			<Route path="profile">
+				<IndexRoute component={ProfileUI}/>
+			</Route>
 		</Route>
 
 

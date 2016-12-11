@@ -71,12 +71,13 @@ const TaskPadWide=(({todos=[], dispatch, current=new Date().getDay(),days=DAYS(c
 	</List>
 ))
 
-const TaskPadMobile=({todos=[], dispatch, current=new Date().getDay(),days=DAYS(current)})=>(
+const TaskPadMobile=({todos=[], dispatch, current=new Date().getDay(),days=DAYS(current)},
+	{muiTheme, minHeight=muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height})=>(
 	<SwipeableTabs index={current}
 		tabs={days.map((day,i)=><Tab key={i} label={day} value={i}/>)}>
 		{
 			days.map((day,i)=>(
-				<List key={i}>
+				<List key={i} style={{minHeight}}>
 					{
 						todos.map(({content:task,dones=[]},j)=>(
 							<ListItem key={j}
@@ -90,6 +91,9 @@ const TaskPadMobile=({todos=[], dispatch, current=new Date().getDay(),days=DAYS(
 		}
 	</SwipeableTabs>
 )
+TaskPadMobile.contextTypes={
+	muiTheme:PropTypes.object
+}
 
 const TodoStatus=connect()(({todo,done, day, dispatch, current, ...others})=>{
 	if(done)
