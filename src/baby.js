@@ -1,11 +1,13 @@
 import React, {Component, PropTypes} from "react"
 import {UI,ENTITIES,REMOVE_ENTITIES} from 'qili-app'
 import {normalize} from "normalizr"
-import {TextField, RadioButtonGroup, RadioButton,DatePicker} from 'material-ui'
+import {TextField, RadioButtonGroup, RadioButton,DatePicker,Subheader} from 'material-ui'
 
 import {Family as dbFamily} from './db'
 import {getCurrentChild, getChild} from "./selector"
 import {ACTION as SuperDaddy} from "."
+
+import {InfoForm, Field} from "qili-app/lib/components/info-form"
 
 const {CommandBar,Photo, TextFieldx}=UI
 
@@ -60,7 +62,7 @@ export class Baby extends Component{
 	}
 
 	render(){
-		const {name,photo,bd:birthday,gender, todos, dispatch,params:{id}}=this.props
+		const {name,photo,bd:birthday,gender, score, todo, goal, totalScore=score, todos, dispatch,params:{id}}=this.props
 		const {nameError}=this.state
 		const {router}=this.context
 
@@ -80,32 +82,29 @@ export class Baby extends Component{
 							onPhoto={url=>dispatch(ACTION.CHANGE(id,"photo",url))}/>
 					</div>
 
-					<TextFieldx ref={a=>refName=a}
-						floatingLabelText="child name"
-						fullWidth={true}
-						value={name}
-						errorText={nameError}
-						onChange={({target:{value}})=>refName.value=value}
-						onBlur={({target:{value}})=>changeName()}
-						onKeyDown={({target:{value},keyCode})=>keyCode==13 && changeName()}
-						/>
+					<InfoForm>
+						<Field primaryText="宝宝名" value={name}
+							onEdit={value=>dispatch(ACTION.CHANGE(id,"name",value))}/>
 
-					<DatePicker
-						floatingLabelText="birthday"
-						fullWidth={true}
-						autoOk={true}
-						maxDate={new Date()}
-						value={birthday}
-						onChange={(nil, value)=>dispatch(ACTION.CHANGE(id,"bd",value))}/>
+						<Field primaryText="生日" value={birthday}
+							type="date"
+							onEdit={value=>dispatch(ACTION.CHANGE(id,"bd",value))}/>
 
-					<RadioButtonGroup
-						style={{marginTop:36}}
-						name="gender"
-						onChange={(e,value)=>dispatch(ACTION.CHANGE(id,"gender",value))}
-						valueSelected={gender||"f"}>
-						<RadioButton value="f" label="女孩"/>
-						<RadioButton value="m" label="男孩" />
-					</RadioButtonGroup>
+						<Field primaryText="性别" value={gender||"f"}
+							type="single"
+							options={[{value:"f",label:"女孩"},{value:"m", label:"男孩"}]}
+							onEdit={value=>dispatch(ACTION.CHANGE(id,"gender",value))}
+							/>
+
+						<Subheader>当前任务</Subheader>
+
+						<Field primaryText="成绩" value={`${score}${totalScore==score ? "" : `/${totalScore}`}`}/>
+
+						<Field primaryText="目标" value={todo}
+							type="input"
+							onEdit={value=>dispatch(ACTION.CHANGE(id,"todo",value))}
+							/>
+					</InfoForm>
 				</div>
 
 				<CommandBar className="footbar"

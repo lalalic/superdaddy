@@ -175,7 +175,7 @@ module.exports=QiliApp.render(
 			<Route path=":id"
 				component={connect((state,{params:{id}})=>{
 					let child=getChild(state,id)
-					let info=compact(child,"name","photo","bd","gender","todos")
+					let info=compact(child,"name","photo","bd","gender","todo","goal","score","totalScore")
 					info.isCurrent=child==getCurrentChild(state)
 					return info
 				})(BabyUI)}/>
