@@ -75,7 +75,7 @@ export const ScorePad=
 	let title=todo, action=null
 	if(goal==0){
 		title="开始第一个目标"
-		action=(<Editor/>)
+		action=(<Editor dispatch={dispatch}/>)
 	}else if(goal<=score){
 		title="开始下一个目标"
 		action=(<Editor lastScore={score} dispatch={dispatch}/>)

@@ -16,7 +16,7 @@ import {TodoEditor} from "./todo-editor"
 
 import IconDone from "material-ui/svg-icons/file/cloud-done"
 
-import Score from "./score-pad"
+import ScorePad from "./score-pad"
 
 const DOMAIN="time"
 
@@ -139,7 +139,5 @@ export const TimeManage=({dispatch, goal, score, editing, todoWeek, week=new Dat
 		}
     </div>
 )
-
-const ScorePad=connect(state=>compact(getCurrentChild(state),"score","goal","todo"))(props=><Score {...props}/>)
 
 export default Object.assign(TimeManage,{reducer})
