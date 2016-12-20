@@ -2,12 +2,15 @@ import {File} from "qili-app"
 import dbKnowledge from "../db/knowledge"
 import parse from "../knowledge/parser"
 
+const reg=/[-,\s+]/
 function splitKey(data){
 	if(typeof(data)=='string')
 		data=[data]
-	var keys=[]
-	data.forEach(a=>a.split(",").forEach(b=>((b=b.trim()).length && keys.push(b))))
-	return keys
+	
+	return data.reduce((keys,piece)=>{
+		piece.split(reg).forEach(a=>keys.push(a))
+		return keys
+	},[]).filter(a=>!!a)
 }
 
 export default function extract(file){

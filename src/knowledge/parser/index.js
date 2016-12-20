@@ -1,12 +1,34 @@
 import docx4js from "docx4js"
-import react from "react"
-import reactDOM from "react-dom/server"
+import React from "react"
+import ReactDOM from "react-dom/server"
 
 export default function parse(file){
 	return docx4js.load(file).then(docx=>{
-		let doc=docx.render(createComponent)
-		let html=reactDOM.renderToStaticMarkup(doc)
-		let {properties, steps, images}=doc.props
+		let properties={}, steps=[], images=[]
+		let doc=docx.render((type,props,children)=>{
+			switch(type){
+			case "property":
+				properties[props.name.toLowerCase()]=props.value
+				return null
+			break
+			case "step":
+			break
+			case "inline.picture":
+				images.push(props.url)
+			break
+			case "block":
+			case "inline":
+				let tag=props.node.children.find(a=>a.name=="w:sdtPr").children.find(a=>a.name=="w:tag")
+				if(tag && tag.attribs["w:val"]=="hidden")
+					props.hidden=true
+			break
+			}
+			return createElement(type,props,children)
+		})
+		
+		let html=ReactDOM.renderToStaticMarkup(doc)
+		html=tidy(html)
+		
 		return {
 			html,
 			properties,
@@ -16,18 +38,55 @@ export default function parse(file){
 	})
 }
 
-const TYPE={
-	"p":"p",
-	"r":"span",
-	"t":({children})=>children,
-	"inline.picture":"img",
-	"hyperlink":"a",
-	"tbl":"table",
-	"tr":"tr",
-	"td":"td",
-	"property":()=>null
+
+
+function createElement(type,props,children){
+	console.log(type)
+	const {pr,node,type:a,...others}=props
+	if(TYPE[type])
+		return React.createElement(TYPE[type], others,...children)
+	else
+		return null
 }
 
-function createComponent(type){
-	return TYPE[type]||"span"
+const wrapper=({children})=>{
+	let content=React.Children.toArray(children)
+	if(!content || content.length==0)
+		return null
+	else if(content.length==1)
+		return React.Children.only(content[0])
+	else
+		return <span>{content}</span>
+}
+
+const TYPE={
+	ignore: a=>null
+	,document:"div"
+	,p:"p"
+	,r:"span"
+	,t:"span"
+	,"inline.picture":({url})=><img src={url}/>
+	,hyperlink:({url,children})=><a href={url}>{children}</a>
+	,tbl:({children})=><table><tbody>{children}</tbody></table>
+	,tr:"tr"
+	,tc:"td"
+	,heading:({level,children})=>{
+		return React.createElement(`h${level}`,{},children)
+	}
+	,list:({numId, level, children})=><ul><li>{children}</li></ul>
+	,property:wrapper
+	,drawing:wrapper
+	,block:({hidden,children})=>hidden ? null : <div>{children}</div>
+	,inline:({hidden,children})=>hidden ? null : <span>{children}</span>
+}
+
+import cheer from "cheerio"
+
+function tidy(html){
+	let raw=cheer(html)
+	raw("span").each((i,el)=>{
+		let $=raw(el)
+		$.replaceWith($.text())
+	})
+	return raw.html()
 }
