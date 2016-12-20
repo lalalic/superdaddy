@@ -13,7 +13,7 @@ import dbKnowledge from './db/knowledge'
 import uiKnowledge from './knowledge'
 import {relative} from './components/calendar'
 import FloatingAdd from "./components/floating-add"
-import extract from './parser/extractor'
+import extract from './knowledge/extractor'
 import {getCurrentChild} from "./selector"
 import {ACTION as TASK_ACTION} from "./time-manage"
 
@@ -59,7 +59,7 @@ export const ACTION={
 		}else{
 			upserted=dbKnowledge.upsert(knowledge)
 		}
-		
+
 		return upserted.then(knowledge=>{
 			dispatch(ENTITIES(normalize(knowledge,dbKnowledge.schema).entities))
 			dispatch({type:`@@${DOMAIN}/created`})
@@ -76,10 +76,10 @@ export const ACTION={
 		const docx=state.ui.knowledge.selectedDocx
         const {knowledge:newVersion}=docx
 		const photos=docx.getPhotos()
-		
+
 		const id=state.routing.params._id
 		const current=state.entities[dbKnowledge.schema.getKey()][id]
-		
+
 		let upserted=null
 		if(photos.length){
 			upserted=docx.upload(current).then(content=>{
@@ -90,14 +90,14 @@ export const ACTION={
 		}else{
 			upserted=dbKnowledge.upsert(Object.assign({},current, newVersion))
 		}
-		
+
 		return upserted.then(knowledge=>{
 			dispatch(ENTITIES(normalize(knowledge,dbKnowledge.schema).entities))
 			dispatch({type:`@@${DOMAIN}/updated`})
 			return knowledge
 		})
 	}
-	,CANCEL: a=>({type:`@@${DOMAIN}/cancel`}) 
+	,CANCEL: a=>({type:`@@${DOMAIN}/cancel`})
 	,TASK: ({_id,title:content,score})=>dispatch=>dispatch(TASK_ACTION.ADD({_id,content,score}))
 	,UNTASK: ({_id})=>dispatch=>dispatch(TASK_ACTION.REMOVE({_id}))
 }
@@ -106,7 +106,7 @@ export const REDUCER=(state=INIT_STATE, {type, payload})=>{
     switch(type){
     case `@@${DOMAIN}/fetched`:
         return Object.assign({},state,{knowledges:payload})
-		
+
     case `@@${DOMAIN}/selectedDocx`:
         if(state.selectedDocx)
             state.selectedDocx.revoke()
@@ -120,7 +120,7 @@ export const REDUCER=(state=INIT_STATE, {type, payload})=>{
 			return Object.assign({}, state)
 		}
 		break
-	
+
     }
 	return state
 }
@@ -146,7 +146,7 @@ export class Knowledges extends Component{
         let refSearch=null
         const search=title=>{
 			router.replace(encodeURI(`/knowledge?query=${JSON.stringify({title:refSearch.getValue().trim()})}`))
-			this.setState({filter:null})	
+			this.setState({filter:null})
 		}
         return (
             <div>

@@ -2,11 +2,14 @@ import docx4js from "docx4js"
 import React from "react"
 import ReactDOM from "react-dom/server"
 
+const uuid=0
 export default function parse(file){
 	return docx4js.load(file).then(docx=>{
-		let properties={}, steps=[], images=[]
+		let properties={}, steps=[], images=[],id=`_parser${uuid++}`
 		let doc=docx.render((type,props,children)=>{
 			switch(type){
+			case "document":
+				props.id=id
 			case "property":
 				properties[props.name.toLowerCase()]=props.value
 				return null
@@ -25,15 +28,16 @@ export default function parse(file){
 			}
 			return createElement(type,props,children)
 		})
-		
+
 		let html=ReactDOM.renderToStaticMarkup(doc)
 		html=tidy(html)
-		
+
 		return {
 			html,
 			properties,
 			steps,
-			images
+			images,
+			id
 		}
 	})
 }
@@ -83,10 +87,15 @@ const TYPE={
 import cheer from "cheerio"
 
 function tidy(html){
-	let raw=cheer(html)
+	let raw=cheer.load(html)
+	raw("span>span:first-child:last-child")
+		.each((i,el)=>raw(el.parent).replaceWith(el))
+
 	raw("span").each((i,el)=>{
 		let $=raw(el)
-		$.replaceWith($.text())
+		if($.has("img,a").length==0)
+			$.replaceWith($.text())
 	})
+
 	return raw.html()
 }

@@ -1,12 +1,12 @@
 import {File} from "qili-app"
 import dbKnowledge from "../db/knowledge"
-import parse from "../knowledge/parser"
+import parse from "./parser"
 
 const reg=/[-,\s+]/
 function splitKey(data){
 	if(typeof(data)=='string')
 		data=[data]
-	
+
 	return data.reduce((keys,piece)=>{
 		piece.split(reg).forEach(a=>keys.push(a))
 		return keys
@@ -34,11 +34,11 @@ export default function extract(file){
 				steps
             },
             revoke(){
-                var nodes=window.document.querySelectorAll(`#${elId} img.__revoking`)
+                var nodes=window.document.querySelectorAll(`#${elId} img[src~="blob:"]`)
                 Array.prototype.forEach.call(nodes, (a)=>URL.revokeObjectURL(a.src))
             },
             getPhotos(){
-                return Array.prototype.map.call(window.document.querySelectorAll(`#${elId} img`),(a)=>a.src)
+                return Array.prototype.map.call(window.document.querySelectorAll(`#${elId} img`),a=>a.src)
             },
             upload(entity){
                 var kind=dbKnowledge._name,
