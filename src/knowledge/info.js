@@ -8,11 +8,11 @@ import IconCancel from "material-ui/svg-icons/navigation/cancel"
 import IconAddTask from "material-ui/svg-icons/action/alarm-add"
 import IconRemoveTask from "material-ui/svg-icons/action/alarm-off"
 
-import Calendar, {cnDateTimeFormat, addDays, relative, isEqualDate, getLastDayOfMonth} from './components/calendar'
-import dbKnowledge from './db/knowledge'
-import dbTask from './db/task'
+import Calendar, {cnDateTimeFormat, addDays, relative, isEqualDate, getLastDayOfMonth} from '../components/calendar'
+import dbKnowledge from '../db/knowledge'
+import dbTask from '../db/task'
 
-import {ACTION, Content} from "./knowledges"
+import {ACTION, Content} from "."
 
 const {List,Loading,Comment,CommandBar,fileSelector, Messager}=UI
 const {DialogCommand}=CommandBar
@@ -61,15 +61,15 @@ export default class KnowledgeEditor extends Component{
 					,label:"删除课程"
 					,icon: <IconRemoveTask/>
 					,onSelect:e=>dispatch(ACTION.UNTASK(knowledge))
-				}) 
-            else   
+				})
+            else
 				commands.push({
 					action:"Add Task"
 					,label:"添加课程"
 					,icon: <IconAddTask/>
 					,onSelect:e=>dispatch(ACTION.TASK(knowledge))
 				})
-			
+
             commands.push(<CommandBar.Comment key="Comment" type={dbKnowledge} model={knowledge}/>)
             commands.push(<CommandBar.Share key="Share" message={knowledge}/>)
         }

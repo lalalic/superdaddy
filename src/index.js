@@ -141,9 +141,9 @@ import BabyUI, {Creator} from './baby'
 
 import TimeManageUI from "./time-manage"
 
-import KnowledgeUI from './knowledge'
-import NewKnowledgeUI from './newKnowledge'
-import KnowledgesUI from './knowledges'
+import KnowledgeUI from './knowledge/info'
+import NewKnowledgeUI from './knowledge/create'
+import KnowledgesUI from './knowledge/'
 
 import {connect} from "react-redux"
 import {getCurrentChild, getChild, getCurrentChildTasks, getKnowledges, getKnowledge} from "./selector"

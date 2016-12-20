@@ -1,6 +1,6 @@
 import {File} from "qili-app"
 import dbKnowledge from "../db/knowledge"
-import parse from "./parser"
+import parse from "./parse"
 
 const reg=/[-,\s+]/
 function splitKey(data){

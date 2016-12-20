@@ -2,7 +2,7 @@ import docx4js from "docx4js"
 import React from "react"
 import ReactDOM from "react-dom/server"
 
-const uuid=0
+let uuid=0
 export default function parse(file){
 	return docx4js.load(file).then(docx=>{
 		let properties={}, steps=[], images=[],id=`_parser${uuid++}`
