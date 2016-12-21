@@ -48,9 +48,10 @@ export const ACTION={
 		if(photos.length){
 			knowledge.content=""
 			upserted=dbKnowledge.upsert(knowledge).then(a=>{
-				return docx.upload(a).then(content=>{
+				return docx.upload(a).then(({content,template})=>{
 					a.photos=docx.getPhotos()
 					a.content=content
+					a.template=template
 					return dbKnowledge.upsert(a)
 				}, a=>{
 					dbKnowledge.remove(knowledge)

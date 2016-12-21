@@ -18,7 +18,7 @@ export default function parse(file){
 			case "step":
 			break
 			case "inline.picture":
-				images.push(props.url)
+				images.push({url:props.url,crc32:props.crc32})
 			break
 			case "block":
 			case "inline":

@@ -44,22 +44,25 @@ export default function extract(file){
                 var kind=dbKnowledge._name,
                     more={entity:{kind,_id:entity._id}}
                 return new Promise((resolve, reject)=>
-                    File.find({params:more,fields:"crc32"}).fetch((files)=>{
-                        var pImages=images.map((image)=>{
-                            var data=image.data,
-                                crc32=data.crc32;
+                    File.find({params:more,fields:"crc32"}).fetch(files=>{
+                        var pImages=images.map(({url,crc32})=>{
                             if(files.find((a)=>a.crc32==crc32))
                                 return undefined;
 
-                            return File.upload(data, "image", Object.assign({crc32,key:"a.jpg"},more))
-                                .then((url)=>image.data=url)
-                        }).filter((a)=>a)
+                            return File.upload(url, Object.assign({crc32,key:"a.jpg"},more))
+                                .then(remoteURL=>{
+									this.knowledge.content.replace(url,image.url=remoteURL)
+									window.document.querySelector(`#${elId} img[src~="url"]`).setAttribute("src",remoteURL)
+								})
+								
+                        }).filter(a=>!!a)
 
-                        var pRawDocx=File.upload(file,"docx", Object.assign({key:"a.docx"},more))
+                        var pRawDocx=File.upload(file, Object.assign({key:"a.docx"},more))
+							.then(url =>this.knowledge.template=url)
 
                         Promise.all([pRawDocx, ...pImages])
                             .then(()=>{
-                                    resolve(this.knowledge.content=doc.html)
+                                    resolve(this.knowledge)
                                 }, reject)
                     })//fetch
                 )//promise
