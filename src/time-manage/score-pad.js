@@ -68,7 +68,7 @@ export const ScorePad=
 	for(let i=0;i<totalPerScreen;i++)
 		smiles.push(
 			<span key={i} style={{display:"inline-block"}}>
-				<Smile style={style} scored={i<score} onClick={e=>i>=score && dispatch(ACTION.ADDING_SCORE())}/>
+				<Smile style={style} scored={i<score}/>
 			</span>
 		)
 
@@ -96,7 +96,6 @@ export const ScorePad=
 const Smile=({scored, ...others})=>(
 	<IconSmile
 		color={scored ? COLOR_DONE : COLOR_DISABLED}
-		hoverColor={scored ? null : COLOR_HOVER}
 		{...others}
 		/>
 )

@@ -25,7 +25,7 @@ export const TaskPad=connect(state=>({todos:getCurrentChildTasks(state).filter(a
 	</MediaQuery>
 ))
 
-const DAYS=(i,a="日一二三四五六".split(""))=>(i>-1 && a.splice(i,1,<b>今天</b>),a)
+const DAYS=(i,a="日一二三四五六".split(""))=>(i<7 && a.splice(i,1,<b>今天</b>),a)
 const ITEM_STYLE={
 	display:"inline-block",
 	width:60,
@@ -73,7 +73,7 @@ const TaskPadWide=(({todos=[], dispatch, current=new Date().getDay(),days=DAYS(c
 
 const TaskPadMobile=({todos=[], dispatch, current=new Date().getDay(),days=DAYS(current)},
 	{muiTheme, minHeight=muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height})=>(
-	<SwipeableTabs index={current}
+	<SwipeableTabs index={current%7}
 		tabs={days.map((day,i)=><Tab key={i} label={day} value={i}/>)}>
 		{
 			days.map((day,i)=>(
@@ -82,6 +82,7 @@ const TaskPadMobile=({todos=[], dispatch, current=new Date().getDay(),days=DAYS(
 						todos.map(({content:task,dones=[]},j)=>(
 							<ListItem key={j}
 								primaryText={task}
+								onClick={e=>-1==dones.indexOf(i) && current>=i && dispatch(ACTION.DONE(task,i))}
 								leftCheckbox={<TodoStatus todo={task} done={-1!=dones.indexOf(i)} day={i} current={current}/>}
 							/>
 						))
@@ -98,7 +99,7 @@ TaskPadMobile.contextTypes={
 const TodoStatus=connect()(({todo,done, day, dispatch, current, ...others})=>{
 	if(done)
 		return (<IconSmile color={COLOR_DONE} {...others}/>)
-	else if(current<0 || day>current)
+	else if(day>current)
 		return (<IconSmile color={COLOR_DISABLED} {...others}/>)
 	else
 		return (<IconSmile color={COLOR_ENABLED} hoverColor={COLOR_HOVER} onClick={e=>dispatch(ACTION.DONE(todo,day))}  {...others}/>)

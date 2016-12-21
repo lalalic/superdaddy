@@ -10,6 +10,7 @@ export default function parse(file){
 			switch(type){
 			case "document":
 				props.id=id
+			break
 			case "property":
 				properties[props.name.toLowerCase()]=props.value
 				return null
@@ -93,9 +94,8 @@ function tidy(html){
 
 	raw("span").each((i,el)=>{
 		let $=raw(el)
-		if($.has("img,a").length==0)
+		if($.find("img,a").length==0)
 			$.replaceWith($.text())
 	})
-
 	return raw.html()
 }

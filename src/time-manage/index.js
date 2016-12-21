@@ -115,27 +115,43 @@ export const reducer=(state={editing:0},{type,payload})=>{
 	return state
 }
 
-export const TimeManage=({dispatch, goal, score, editing, todoWeek, week=new Date().getWeek(), isCurrentWeek=todoWeek==week})=>(
+export const TimeManage=({dispatch, goal, score, editing, todoWeek})=>(
     <div>
-		{goal && goal>score ?
-			(<div>
-		        {isCurrentWeek
-					? <TodoEditor editing={editing}/>
-					: <AppBar
-						iconElementRight={
-							<IconButton onClick={e=>dispatch(ACTION.RESET())}>
-								<IconDone color="white"/>
-							</IconButton>
+		{
+			(week=>{
+				if(!goal){
+					return <ScorePad/>
+				}else{
+					let isCurrentWeek=todoWeek==week
+					if(isCurrentWeek){
+						let accomplished=goal<=score
+						if(!accomplished){
+							return (
+								<div>
+									<TodoEditor editing={editing}/>
+									{editing ? <TaskPadEditor/> : <TaskPad current={new Date().getDay()}/>}
+								</div>	
+							)
+						}else{
+							return <ScorePad/>
 						}
-						title={`保存前${week-todoWeek}周完成情况`}
-						/>
-				}
-
-		        {isCurrentWeek&&editing
-					? <TaskPadEditor/>
-					: <TaskPad current={isCurrentWeek ? new Date().getDay() : -1}/>
-				}
-			</div>) : <ScorePad height={100}/>
+					}else{
+						return (
+							<div>
+								<AppBar
+									iconElementRight={
+										<IconButton onClick={e=>dispatch(ACTION.RESET())}>
+											<IconDone color="white"/>
+										</IconButton>
+									}
+									title={`保存前${week-todoWeek}周完成情况`}
+									/>
+								<TaskPad current={99}/>
+							</div>
+						)
+					}
+				} 
+			})(new Date().getWeek())
 		}
     </div>
 )
