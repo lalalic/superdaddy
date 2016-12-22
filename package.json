@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.18.0",
+    "cheerio": "^0.22.0",
     "docx4js": "git://github.com/lalalic/docx4js.git#react",
     "lodash.flow": "^3.5.0",
     "material-ui": "^0.16.0",
