@@ -13,6 +13,8 @@ import IconReward from "material-ui/svg-icons/places/child-care"
 
 import {Family,Knowledge,Table,init} from './db'
 
+import CheckUpdate from "qili-app/lib/components/check-update"
+
 const {Empty, Comment, CommandBar}=UI
 
 const DOMAIN='superdaddy'
@@ -74,6 +76,7 @@ class SuperDaddy extends Component{
 			contextualStyle.display="none"
         return (
             <QiliApp appId="5746b2c5e4bb3b3700ae1566"
+				project={require("./package.json")}
 				tutorial={[
 					{
 						media:"images/tutorial/time.png",
@@ -115,7 +118,7 @@ class SuperDaddy extends Component{
 
                         {label:"我", action:"my",
                             link:'/my',
-                            icon:<IconAccount/>}
+                            icon:<CheckUpdate><IconAccount/></CheckUpdate>}
                         ]}
                     />
             </QiliApp>
