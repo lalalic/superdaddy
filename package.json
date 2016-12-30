@@ -47,7 +47,6 @@
     "react-stub-context": "^0.7.0",
     "request": "^2.67.0",
     "restmock": "^0.2.2",
-    "svg-to-png": "2.0.1",
     "through2": "^2.0.0",
     "uglifyify": "^3.0.1",
     "walk": "^2.3.9",

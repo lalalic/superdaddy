@@ -11,19 +11,21 @@ addons:
 
 before_install:
  - echo "install nodejs"
- - nvm install 4.2
+ - nvm install 6
  - node --version
  - npm --version
  - nvm --version
 
 install:
  - npm install --production
- - npm install browserify node-lessify uglifyify cordova@5.4.0 svg-to-png
+ - npm install browserify node-lessify uglifyify cordova@5.4.0
 
 script:
  - npm run merge
+ - npm run merge.debug 
  - npm run cordova
 
+after_success:
  - rm dist/config.xml
  - rm dist/cordova.html
  - mv dist $APP_NAME
