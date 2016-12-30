@@ -38,4 +38,4 @@ after_success:
  - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $APP_NAME/app.apk "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$APP_NAME"
 
  - node -p "require('./package.json').version" > app.apk.version
- - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null app.apk.version "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH" 
+ - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null app.apk.version "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$APP_NAME" 
