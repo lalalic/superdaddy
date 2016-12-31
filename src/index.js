@@ -23,7 +23,7 @@ const INIT_STATE={}
 
 
 export const ACTION={
-	FETCH_FAMILY: a=>dispatch=>Family.find()
+	FETCH_FAMILY: a=>(dispatch,getState)=>Family.find({author:User.currentAsAuthor})
 		.fetch(all=>{
 			if(all.length==0)
 				dispatch(ACTION.CREATE_DEFAULT_FIRST_CHILD())
@@ -76,7 +76,7 @@ class SuperDaddy extends Component{
 			contextualStyle.display="none"
         return (
             <QiliApp appId="5746b2c5e4bb3b3700ae1566"
-				project={require("./package.json")}
+				project={require("../package.json")}
 				tutorial={[
 					{
 						media:"images/tutorial/time.png",
