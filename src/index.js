@@ -138,7 +138,7 @@ import ScoreUI from "./score"
 import InviteUI from "./invite"
 */
 
-import ScorePadUI from "./time-manage/score-pad"
+import ScorePadUI from "./time-manage/baby/score-pad"
 import AccountUI from './account'
 import BabyUI, {Creator} from './baby'
 

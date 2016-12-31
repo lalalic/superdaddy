@@ -16,9 +16,8 @@ export const MyAppBar=connect(state=>compact(getCurrentChild(state),"name","phot
 				onClick={e=>dispatch(ACTION.SWITCH_CURRENT_CHILD())}>
 				{photo ? (<Avatar src={photo}/>) : name}
 			</FloatingActionButton>
-		} 
+		}
 		/>
 ))
 
 export default MyAppBar
-
