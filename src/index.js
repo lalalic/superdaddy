@@ -184,16 +184,7 @@ module.exports=QiliApp.render(
 				})(BabyUI)}/>
 		</Route>
 
-		<IndexRoute component={connect(state=>{
-				let child=getCurrentChild(state)
-				const {todoWeek=new Date().getWeek(), goal=0, score=0}=child
-				return {
-					...state.ui.time,
-					todoWeek,
-					goal,
-					score
-				}
-			})(TimeManageUI)}/>
+		<IndexRoute component={TimeManageUI}/>
 
 		<Route path="knowledge">
 			<IndexRoute contextual={false}

@@ -12,7 +12,7 @@ import AppBar from "../../components/app-bar"
 import {ACTION} from "."
 
 
-export const TodoEditor=connect()(({dispatch, editing, refTask, refForm})=>(
+export const TodoEditor=(({dispatch, editing, refTask, refForm})=>(
 	<AppBar
 		iconElementRight={
 			<span>
@@ -34,3 +34,5 @@ export const TodoEditor=connect()(({dispatch, editing, refTask, refForm})=>(
 		}
 		/>
 ))
+
+export default connect()(TodoEditor)

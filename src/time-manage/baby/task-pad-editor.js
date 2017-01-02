@@ -18,9 +18,8 @@ import IconHidden from "material-ui/svg-icons/action/visibility-off"
 import IconRemove from "material-ui/svg-icons/action/alarm-off"
 
 import {ACTION} from "."
-import {getCurrentChildTasks} from "../../selector"
 
-export const TaskPadEditor=connect(state=>({todos:getCurrentChildTasks(state)}))(({todos=[], dispatch})=>(
+export const TaskPadEditor=(({todos=[], dispatch})=>(
 	<List>
 		<ListItem primaryText="任务"/>
 		<Divider/>
@@ -78,3 +77,8 @@ const Remover=({i,dispatch, style})=>(
 )
 
 const Wrapper=({onKeyboardFocus,...others})=>(<span {...others}/>)
+
+
+
+import {getCurrentChildTasks} from "../../selector"
+export default connect(state=>({todos:getCurrentChildTasks(state)}))(TaskPadEditor)

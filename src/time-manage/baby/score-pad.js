@@ -4,9 +4,9 @@ import {ENTITIES, UI, compact} from "qili-app"
 import {normalize} from "normalizr"
 import {connect} from "react-redux"
 
-import FamilyDB from "../../db/family"
-import {getCurrentChild} from "../../selector"
 import AppBar from "../../components/app-bar"
+
+import {ACTION} from "."
 
 import {
 	yellow500 as COLOR_DONE
@@ -16,32 +16,6 @@ import {
 } from "material-ui/styles/colors"
 
 const {TextFieldx}=UI
-
-var scores=0, timer=null
-export const ACTION={
-	ADDING_SCORE: ()=>dispatch=>{
-		if(timer)
-			clearTimeout(timer)
-		scores++
-		timer=setTimeout(dispatch(ACTION.ADD_SCORES()),600)
-	}
-	,ADD_SCORES: ()=>(dispatch,getState)=>{
-		const child=getCurrentChild(getState())
-		child.score=scores+(child.score||0)
-		clearTimeout(timer)
-		scores=0
-		FamilyDB.upsert(child)
-			.then(updated=>dispatch(ENTITIES(normalize(updated,FamilyDB.schema).entities)))
-	}
-	,ADD_TASK: (goal, todo)=>(dispatch,getState)=>{
-		const child=getCurrentChild(getState())
-		child.score=Math.max((child.score||0)-(child.goal||0),0)
-		child.goal=goal
-		child.todo=todo
-		return FamilyDB.upsert(child)
-			.then(updated=>dispatch(ENTITIES(normalize(updated,FamilyDB.schema).entities)))
-	}
-}
 
 export const ScorePad=
 ({dispatch,todo, goal=0,totalPerScreen=goal, score=0, width=window.innerWidth>960 ? 960 : window.innerWidth, height=window.innerHeight-60})=>{
@@ -113,7 +87,7 @@ const Editor=({lastScore,dispatch})=>{
 			refGoal.errorText=`格式错误`
 			return
 		}
-		dispatch(ACTION.ADD_TASK(goal,desc.join(":")))
+		dispatch(ACTION.SET_GOAL(goal,desc.join(":")))
 	}
 	return (
 		<TextFieldx ref={a=>refGoal=a}
@@ -126,4 +100,5 @@ const Editor=({lastScore,dispatch})=>{
 }
 
 
+import {getCurrentChild} from "../../selector"
 export default connect(state=>compact(getCurrentChild(state),"score","goal","todo"))(ScorePad)

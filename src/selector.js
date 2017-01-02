@@ -54,3 +54,13 @@ export const getKnowledge=state=>{
 	}
 	return null
 }
+
+export const getCurrentUser=state=>{
+	return state.qiliApp.user
+}
+
+export const getCurrentUserTasks=state=>{
+	let child=getCurrentUser(state)
+	const {todos=[]}=child
+	return todos
+}

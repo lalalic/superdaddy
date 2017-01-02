@@ -13,11 +13,10 @@ import {
 } from "material-ui/styles/colors"
 
 import {ACTION} from "."
-import {getCurrentChildTasks} from "../../selector"
 import SwipeableTabs from "../../components/swipe-tabs"
 import IconSmile from "material-ui/svg-icons/social/mood"
 
-export const TaskPad=connect(state=>({todos:getCurrentChildTasks(state).filter(a=>!a.hidden)}))(props=>(
+export const TaskPad=(props=>(
 	<MediaQuery maxWidth={960}>
 	{
 		match=>match ? <TaskPadMobile {...props}/> : <TaskPadWide {...props}/>
@@ -105,3 +104,6 @@ const TodoStatus=connect()(({todo,done, day, dispatch, current, ...others})=>{
 		return (<IconSmile color={COLOR_ENABLED} hoverColor={COLOR_HOVER} onClick={e=>dispatch(ACTION.DONE(todo,day))}  {...others}/>)
 })
 const Wrapper=({onKeyboardFocus,...others})=>(<span {...others}/>)
+
+import {getCurrentChildTasks} from "../../selector"
+export default connect(state=>({todos:getCurrentChildTasks(state).filter(a=>!a.hidden)}))(TaskPad)

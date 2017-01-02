@@ -5,20 +5,20 @@ import {connect} from "react-redux"
 import {compact, ENTITIES} from "qili-app"
 import {normalize} from "normalizr"
 
-import {getCurrentChild} from "../../selector"
+import IconDone from "material-ui/svg-icons/file/cloud-done"
 
 import {Family,Task} from "../../db"
 
 import AppBar from "../../components/app-bar"
-import {TaskPad} from "./task-pad"
-import {TaskPadEditor} from "./task-pad-editor"
-import {TodoEditor} from "./todo-editor"
-
-import IconDone from "material-ui/svg-icons/file/cloud-done"
-
+import TaskPad from "./task-pad"
+import TaskPadEditor from "./task-pad-editor"
+import TodoEditor from "./todo-editor"
 import ScorePad from "./score-pad"
 
-const DOMAIN="time"
+import {getCurrentChild} from "../../selector"
+
+
+const DOMAIN="baby"
 
 const changeTodos=f=>(dispatch,getState)=>{
 	const state=getState()
@@ -35,6 +35,14 @@ const changeTodos=f=>(dispatch,getState)=>{
 		.then(updated=>dispatch(ENTITIES(normalize(updated, Family.schema).entities))))
 }
 export const ACTION={
+	SET_GOAL: (goal, todo)=>(dispatch,getState)=>{
+		const child=getCurrentChild(getState())
+		child.score=Math.max((child.score||0)-(child.goal||0),0)
+		child.goal=goal
+		child.todo=todo
+		return Family.upsert(child)
+			.then(updated=>dispatch(ENTITIES(normalize(updated,Family.schema).entities)))
+	},
 	ADD: todo=>(dispatch, getState)=>{
 		if(!todo)
 			return Promise.resolve()
@@ -106,15 +114,6 @@ export const ACTION={
 	}
 }
 
-export const reducer=(state={editing:0},{type,payload})=>{
-	switch(type){
-	case `${DOMAIN}/edit`:
-		return {editing:payload}
-	break
-	}
-	return state
-}
-
 export const TimeManage=({dispatch, goal, score, editing, todoWeek})=>(
     <div>
 		{
@@ -156,4 +155,13 @@ export const TimeManage=({dispatch, goal, score, editing, todoWeek})=>(
     </div>
 )
 
-export default Object.assign(TimeManage,{reducer})
+export default connect(state=>{
+		let child=getCurrentChild(state)
+		const {todoWeek=new Date().getWeek(), goal=0, score=0}=child
+		return {
+			...state.ui.time,
+			todoWeek,
+			goal,
+			score
+		}
+	})(TimeManage)
