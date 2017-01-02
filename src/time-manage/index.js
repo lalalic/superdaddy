@@ -1,4 +1,13 @@
-import TimeManage from "./baby"
-export default TimeManage
+import React from "react"
 
-export * from "./baby"
+import BabyTimeManage from "./baby"
+//import PapaTimeManage from "./papa"
+
+export const TimeManage=(props)=>(
+    <div>
+        <BabyTimeManage {...props}/>
+
+    </div>
+)
+
+export default Object.assign(TimeManage,{reducer:BabyTimeManage.reducer})
