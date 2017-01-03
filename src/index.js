@@ -28,6 +28,7 @@ export const ACTION={
 			if(all.length==0)
 				dispatch(ACTION.CREATE_DEFAULT_FIRST_CHILD())
 			else {
+				all=Family.upgrade(all)
 				let entities=normalize(all,arrayOf(Family.schema)).entities
 				dispatch(ENTITIES(entities))
 				if(entities.children){
@@ -38,7 +39,7 @@ export const ACTION={
 			}
 		})
 	,CREATE_DEFAULT_FIRST_CHILD: ()=>dispatch=>{
-		return Family.upsert({name:"宝宝",score:0})
+		return Family.upsert({name:"宝宝",targets:{baby:{score:0,totalScore:0}}})
 			.then(child=>{
 				dispatch(ENTITIES(normalize(child,Family.schema).entities))
 				dispatch(ACTION.CURRENT_CHILD_CHANGE(child))
@@ -171,7 +172,8 @@ module.exports=QiliApp.render(
 			<Route path=":id"
 				component={connect((state,{params:{id}})=>{
 					let child=getChild(state,id)
-					let info=compact(child,"name","photo","bd","gender","todo","goal","score","totalScore")
+					let target=(child.targets||{})["baby"]
+					let info={...compact(child,"name","photo","bd","gender"),...compact(target,"todo","goal","score","totalScore")}
 					info.isCurrent=child==getCurrentChild(state)
 					return info
 				})(BabyUI)}/>

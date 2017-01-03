@@ -18,22 +18,22 @@ export default class Task extends Model{
 		const target=targets[domain]
 		const {todoWeek:week}=target
 		const year=new Date().getFullYear()
-		
+
 		/**@TODO: get date from week+day*/
-		const getDate=(week,i)=>{}
 		let finished=tasks.map(task=>{
 			const {dones}=task
-			dones.forEach(i=>{
-				task.week=week
-				task.day=i
-				task.date=getDate(week,i)
-			})
+			dones.forEach(i=>task.date=Task.getDate(week,i))
 
 			task.knowledge=task._id
 			delete task._id
 
 			task.baby=child._id
 			task.owner=domain
+
+            if(task._qid){
+                task._id=task._qid
+                delete task._qid
+            }
 			return task
 		})
 
@@ -55,5 +55,13 @@ export default class Task extends Model{
         task.finishedAuthor=User.currentAsAuthor
         task.current=1000
         return this.upsert(task)
+    }
+
+    static getWeekStart(date=new Date()){
+        return date.relativeDate(-1*date.getDay()).toDate().getTime()
+    }
+
+    static getDate(weekStart, day){
+        return new Date(weekStart).relativeDate(day).toDate()
     }
 }

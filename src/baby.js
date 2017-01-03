@@ -12,7 +12,19 @@ import {InfoForm, Field} from "qili-app/lib/components/info-form"
 const {CommandBar,Photo, TextFieldx}=UI
 
 export const ACTION={
-	CHANGE: (id, key,value)=>(dispatch,getState)=>{
+	CHANGE_TODO: (id,value)=>(dispatch,getState)=>{
+        const child=getChild(getState(),id)
+		let target=child.targets["baby"]
+		if(target.todo==value)
+			return Promise.resolve()
+
+        target.todo=value
+        return dbFamily.upsert(child)
+            .then(updated=>{
+				dispatch(ENTITIES(normalize(updated,dbFamily.schema).entities))
+			})
+    }
+	,CHANGE: (id, key,value)=>(dispatch,getState)=>{
         const child=getChild(getState(),id)
 		if(key=="name" && !value){
 			return Promise.reject("名字不能空")
@@ -62,7 +74,7 @@ export class Baby extends Component{
 	}
 
 	render(){
-		const {name,photo,bd:birthday,gender, score, todo, goal, totalScore=score, todos, dispatch,params:{id}}=this.props
+		const {name,photo,bd:birthday,gender, score=0, todo, goal, totalScore=score, todos, dispatch,params:{id}}=this.props
 		const {nameError}=this.state
 		const {router}=this.context
 
@@ -102,7 +114,7 @@ export class Baby extends Component{
 
 						<Field primaryText="目标" value={todo}
 							type="input"
-							onEdit={value=>dispatch(ACTION.CHANGE(id,"todo",value))}
+							onEdit={goal ? value=>dispatch(ACTION.CHANGE_TODO(id,value)) : null}
 							/>
 					</InfoForm>
 				</div>

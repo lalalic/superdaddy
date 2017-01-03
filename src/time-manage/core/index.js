@@ -27,7 +27,7 @@ export function create(AppBar, domain){
 			child.targets={}
 		const target=child.targets[domain]||{}
 		if(target.todoWeek==undefined)
-			target.todoWeek=new Date().getWeek()
+			target.todoWeek=Task.getWeekStart()
 
 		let {todos=[]}=target
 
@@ -39,7 +39,7 @@ export function create(AppBar, domain){
 			.then(updated=>dispatch(ENTITIES(normalize(updated, Family.schema).entities))))
 	}
 	const ACTION={
-		SET_GOAL: (goal, todo)=>(dispatch,getState)=>{
+		SET_GOAL: (goal, gift)=>(dispatch,getState)=>{
 			const child=getCurrentChild(getState())
 			if(!child.targets)
 				child.targets={}
@@ -74,13 +74,13 @@ export function create(AppBar, domain){
 				todos.splice(i,1)
 		})
 		,REMOVE_BY_INDEX: i=>changeTodos(todos=>todos.splice(i,1))
-		,DONE: (todo,day)=>changeTodos((todos,child)=>{
+		,DONE: (todo,day)=>changeTodos((todos,target)=>{
 			const task=todos.find(a=>a.content==todo)
 			let {dones=[]}=task
 			dones.push(day)
 			task.dones=dones
-			child.score=child.score+1
-			child.totalScore=(child.totalScore||0)+1
+			target.score=target.score+1
+			target.totalScore=(target.totalScore||0)+1
 		})
 		,EDITING: (status=0)=>({type:`${DOMAIN}/edit`, payload:status})
 		,UP: i=>changeTodos(todos=>{
@@ -114,19 +114,19 @@ export function create(AppBar, domain){
 				if(dones.length){
 					return Task.finishWeekTasks(child, dones, domain).then(a=>{
 						todos.forEach(a=>a.dones=[])
-						target.todoWeek=new Date().getWeek()
+						target.todoWeek=Task.getWeekStart()
 					})
 				}else
-					target.todoWeek=new Date().getWeek()
+					target.todoWeek=Task.getWeekStart()
 			})(dispatch,getState)
 		}
 	}
 
 	const ScorePad=connect(state=>({...compact(getCurrentChildTarget(state,domain),"score","goal","todo"),AppBar}))(_ScorePad)
-	const TodoEditor=connect()(_TodoEdtior)
+	const TodoEditor=_TodoEdtior
 	const TaskPad=connect(state=>({todos:getCurrentChildTasks(state,domain).filter(a=>!a.hidden)}))(_TaskPad)
 	const TaskPadEditor=connect(state=>({todos:getCurrentChildTasks(state,domain)}))(_TaskPadEditor)
-	
+
 	class TimeManage extends Component{
 		static childContextTypes={
 			AppBar: PropTypes.element,
@@ -172,21 +172,21 @@ export function create(AppBar, domain){
 															<IconDone color="white"/>
 														</IconButton>
 													),
-													title:`保存前${week-todoWeek}周完成情况`
+													title:`保存前${new Date(week).relative(new Date(todoWeek))/7}周完成情况`
 												})
-											}	
+											}
 											<TaskPad current={99}/>
 										</div>
 									)
 								}
 							}
-						})(new Date().getWeek())
+						})(Task.getWeekStart())
 					}
 				</div>
 			)
 		}
 	}
-	
+
 	const reducer=(state={},{type,payload})=>{
 		switch(type){
 		case `${DOMAIN}/edit`:
@@ -198,7 +198,7 @@ export function create(AppBar, domain){
 
 	let TimeManager=connect(state=>{
 			let target=getCurrentChildTarget(state,domain)
-			const {todoWeek=new Date().getWeek(), goal=0, score=0}=target
+			const {todoWeek=Task.getWeekStart(), goal=0, score=0}=target
 			return {
 				editing:state.ui.time[domain],
 				todoWeek,
@@ -206,7 +206,7 @@ export function create(AppBar, domain){
 				score
 			}
 		})(TimeManage)
-	
+
 	TimeManager.reducer=reducer
 	TimeManager.ScorePad=ScorePad
 	return TimeManager

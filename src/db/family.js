@@ -20,8 +20,21 @@ export default class Family extends Model{
 			}
 		)
     }
-    
+
     static invite(id,relationship){
         return Promise.resolve(id)
+    }
+
+    static upgrade(members){
+        return members.map(a=>{
+            if(a.goal){
+                let {todoWeek,goal,score,todos,totalScore,todo}=a
+                let now=new Date().toDate(), week=now.getWeek()
+                todoWeek=now.relativeDate(-1*((week-todoWeek)*7+now.getDay())).getTime()
+                a.targets={baby:{goal,score,todos,totalScore,todoWeek,todo}}
+                "goal,score,todos,totalScore,todoWeek,todo".split(",").forEach(b=>a[b]=undefined)
+            }
+            return a
+        })
     }
 }
