@@ -13,9 +13,12 @@ export default class Task extends Model{
         return 'task'
     }
 
-	static finishWeekTasks(child, tasks){
-		const {todoWeek:week}=child
+	static finishWeekTasks(child, tasks, domain){
+		const targets=child.targets
+		const target=targets[domain]
+		const {todoWeek:week}=target
 		const year=new Date().getFullYear()
+		
 		/**@TODO: get date from week+day*/
 		const getDate=(week,i)=>{}
 		let finished=tasks.map(task=>{
@@ -30,6 +33,7 @@ export default class Task extends Model{
 			delete task._id
 
 			task.baby=child._id
+			task.owner=domain
 			return task
 		})
 

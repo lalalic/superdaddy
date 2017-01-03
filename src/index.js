@@ -100,15 +100,9 @@ class SuperDaddy extends Component{
 
                 <CommandBar className="footbar" style={{zIndex:1}}
 					items={[
-						{label:"时间管理", action:"tasks",
+						{label:"任务管理", action:"tasks",
 							link:"/",
                             icon:<IconTask/>},
-/*
-						{label:"时间管理", action:"time",
-							link:"/time",
-                            icon:<IconTask/>},
-							*/
-
 						{label:"成绩", action:"score",
 							link:'/score',
 							icon:<IconReward/>},
@@ -138,7 +132,6 @@ import ScoreUI from "./score"
 import InviteUI from "./invite"
 */
 
-import ScorePadUI from "./time-manage/baby/score-pad"
 import AccountUI from './account'
 import BabyUI, {Creator} from './baby'
 
@@ -158,7 +151,7 @@ const {Setting:SettingUI, Profile: ProfileUI}=UI
 module.exports=QiliApp.render(
     (<Route path="/" component={connect()(SuperDaddy)}>
 
-		<Route path="score" component={ScorePadUI}/>
+		<Route path="score" component={TimeManageUI.ScorePad}/>
 
 		<Route path="my" contextual={false}>
 			<IndexRoute component={connect(state=>({babies:Object.values(state.entities.children)}))(AccountUI)}/>
@@ -184,7 +177,7 @@ module.exports=QiliApp.render(
 				})(BabyUI)}/>
 		</Route>
 
-		<IndexRoute component={TimeManageUI}/>
+		<IndexRoute component={connect(state=>compact(state.qiliApp.user,"_id"))(TimeManageUI)}/>
 
 		<Route path="knowledge">
 			<IndexRoute contextual={false}

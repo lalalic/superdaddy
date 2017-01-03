@@ -18,10 +18,17 @@ export const getChild=(state,id)=>{
 	return null
 }
 
-export const getCurrentChildTasks=state=>{
-	let child=getCurrentChild(state)
-	const {todos=[]}=child
+export const getCurrentChildTasks=(state,domain="baby")=>{
+	let target=getCurrentChildTarget(state,domain)
+	const {todos=[]}=target
 	return todos
+}
+
+export const getCurrentChildTarget=(state,domain="baby")=>{
+	const child=getCurrentChild(state)
+	if(child.targets && child.targets[domain])
+		return child.targets[domain]
+	return {}
 }
 
 export const getKnowledges=state=>{
@@ -53,14 +60,4 @@ export const getKnowledge=state=>{
 
 	}
 	return null
-}
-
-export const getCurrentUser=state=>{
-	return state.qiliApp.user
-}
-
-export const getCurrentUserTasks=state=>{
-	let child=getCurrentUser(state)
-	const {todos=[]}=child
-	return todos
 }

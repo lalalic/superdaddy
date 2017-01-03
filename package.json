@@ -27,6 +27,7 @@
     "redux": "^3.6.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.18.0",
     "babel-plugin-add-module-exports": "^0.1.2",
     "babel-plugin-transform-class-properties": "^6.6.0",
     "babel-plugin-transform-object-rest-spread": "^6.6.5",
