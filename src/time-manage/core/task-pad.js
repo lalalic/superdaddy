@@ -41,9 +41,9 @@ const TaskPadWide=(({todos=[],current=new Date().getDay(),days=DAYS(current)})=>
 		/>
 		<Divider/>
 
-		{todos.map(({content:task, dones=[]},i)=>(
+		{todos.map(({knowledge, content:task, dones=[]},i)=>(
 			<ListItem key={i}
-				primaryText={task}
+				primaryText={knowledge ? <TaskTitle {...{knowledge,task}}/> : task}
 				rightIconButton={
 					<Wrapper>
 					{[0,1,2,3,4,5,6].map(a=>(
@@ -75,9 +75,9 @@ const TaskPadMobile=({todos=[],current=new Date().getDay(),days=DAYS(current)},
 			days.map((day,i)=>(
 				<List key={i} style={{minHeight:minHeight*3/4}}>
 					{
-						todos.map(({content:task,dones=[]},j)=>(
+						todos.map(({knowledge, content:task,dones=[]},j)=>(
 							<ListItem key={j}
-								primaryText={task}
+								primaryText={knowledge ? <TaskTitle {...{knowledge,task}}/> : task}
 								onClick={e=>-1==dones.indexOf(i) && current>=i && dispatch(ACTION.DONE(task,i))}
 								leftCheckbox={<TodoStatus todo={task} done={-1!=dones.indexOf(i)} day={i} current={current}/>}
 							/>
@@ -108,3 +108,15 @@ TodoStatus.contextTypes={
 	dispatch: PropTypes.func
 }
 const Wrapper=({onKeyboardFocus,...others})=>(<span {...others}/>)
+
+const TaskTitle=({knowledge,task},{router,dispatch,ACTION})=>(
+	<span onClick={e=>dispatch(ACTION.COMMENT(knowledge)).then(todoId=>router.push(`/comment/finished_task/${todoId}`))}>
+		{task}
+	</span>
+)
+
+TaskTitle.contextTypes={
+	router: PropTypes.object,
+	dispatch: PropTypes.func,
+	ACTION: PropTypes.object
+}

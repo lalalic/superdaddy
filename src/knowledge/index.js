@@ -100,8 +100,8 @@ export const ACTION={
 		})
 	}
 	,CANCEL: a=>({type:`@@${DOMAIN}/cancel`})
-	,TASK: ({_id,title:content,score})=>dispatch=>dispatch(TASK_ACTION.ADD({_id,content,score}))
-	,UNTASK: ({_id})=>dispatch=>dispatch(TASK_ACTION.REMOVE({_id}))
+	,TASK: (knowledge)=>dispatch=>dispatch(TASK_ACTION.ADD(knowledge))
+	,UNTASK: (knowledge)=>dispatch=>dispatch(TASK_ACTION.REMOVE(knowledge))
 }
 
 export const REDUCER=(state=INIT_STATE, {type, payload})=>{

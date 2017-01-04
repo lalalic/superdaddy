@@ -32,6 +32,9 @@ export function create(AppBar, domain){
 		let {todos=[]}=target
 
 		let handled=f(target.todos=[...todos], target, child)
+		if(handled===false)
+			return Promise.resolve()
+		
 		if(!(handled && handled.then))
 			handled=Promise.resolve()
 		child.targets[domain]=target
@@ -57,7 +60,8 @@ export function create(AppBar, domain){
 			return changeTodos(todos=>{
 				switch(typeof(todo)){
 				case "object":
-					todos.push(todo)
+					if(!todos.find(a=>a.knowledge==todo.knowledge))
+						todos.push(todo)
 					break
 				default:
 					if(!todos.find(a=>a.content==todo))
@@ -67,7 +71,7 @@ export function create(AppBar, domain){
 		}
 		,REMOVE: todo=>changeTodos(todos=>{
 			let i=typeof(todo)=='object'
-				? todos.findIndex(a=>a._id=todo._id)
+				? todos.findIndex(a=>a.knowledge=todo._id)
 				: todos.findIndex(a=>a.content=todo);
 
 			if(i!=-1)
@@ -119,6 +123,17 @@ export function create(AppBar, domain){
 				}else
 					target.todoWeek=Task.getWeekStart()
 			})(dispatch,getState)
+		}
+		,COMMENT: knowledge=>(dispatch, getState)=>{
+			let todoId
+			return changeTodos((todos,target,child)=>{
+				let todo=todos.find(a=>a.knowledge==knowledge)
+				if(todoId=todo._id){
+					return false
+				}else{
+					todoId=todo._id=Task.createUid()
+				}
+			})(dispatch, getState).then(a=>todoId)
 		}
 	}
 
@@ -209,6 +224,7 @@ export function create(AppBar, domain){
 
 	TimeManager.reducer=reducer
 	TimeManager.ScorePad=ScorePad
+	TimeManager.ACTION=ACTION
 	return TimeManager
 }
 

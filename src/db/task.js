@@ -19,23 +19,13 @@ export default class Task extends Model{
 		const {todoWeek:week}=target
 		const year=new Date().getFullYear()
 
-		/**@TODO: get date from week+day*/
-		let finished=tasks.map(task=>{
-			const {dones}=task
-			dones.forEach(i=>task.date=Task.getDate(week,i))
-
-			task.knowledge=task._id
-			delete task._id
-
-			task.baby=child._id
-			task.owner=domain
-
-            if(task._qid){
-                task._id=task._qid
-                delete task._qid
-            }
-			return task
-		})
+		let finished=tasks.reduce((finished,task)=>{
+			let props={bayb: child._id, owner:domain}
+			task.dones.forEach(i=>{
+				finished.push({...task,date:Task.getDate(week,i), ...props, dones:undefined})
+			})
+			return finished
+		},[])
 
 		return Finished.upsert(finished)
 	}
@@ -64,4 +54,12 @@ export default class Task extends Model{
     static getDate(weekStart, day){
         return new Date(weekStart).relativeDate(day).toDate()
     }
+	
+	static createUid(){
+		return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, c=>{
+			let r = Math.random()*16|0
+			let v = c == 'x' ? r : (r&0x3|0x8)
+			return v.toString(16)
+		})
+	}
 }

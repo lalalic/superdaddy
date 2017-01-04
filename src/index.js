@@ -193,7 +193,7 @@ module.exports=QiliApp.render(
 				component={connect((state,{params:{_id}})=>({
 					knowledge:getKnowledge(state)
 					,revising:!!state.ui.knowledge.selectedDocx
-					,inTask:!!(getCurrentChildTasks(state)).find(a=>a._id==_id)
+					,inTask:!!(getCurrentChildTasks(state)).find(a=>a.knowledge==_id)||!!(getCurrentChildTasks(state,state.qiliApp.user._id)).find(a=>a.knowledge==_id)
 					}))(KnowledgeUI)}/>
 		</Route>
 

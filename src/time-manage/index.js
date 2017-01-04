@@ -3,6 +3,8 @@ import React, {PropTypes} from "react"
 import {AppBar,FloatingActionButton, Paper} from "material-ui"
 import {cyan300 as bgc} from "material-ui/styles/colors"
 
+import {Knowledge} from "../db"
+
 import BabyAppBar from "../components/app-bar"
 
 import TimeManageCreator from "./core"
@@ -30,6 +32,32 @@ export const reducer=(state,next)=>{
 	if(nextState==state && MyTimeManage)
 		nextState=MyTimeManage.reducer(state,next)
 	return nextState
+}
+
+export const ACTION={
+	ADD: knowledge=>(dispatch, getState)=>{
+		let {_id,title,score}=knowledge
+		let task={knowledge:_id,content:title,score}
+		let ps=[]
+		
+		if(Knowledge.isForBaby(knowledge))
+			ps.push(BabyTimeManage.ACTION.ADD(task)(dispatch, getState))
+		
+		if(Knowledge.isForParent(knowledge) && MyTimeManage)
+			ps.push(MyTimeManage.ACTION.ADD(task)(dispatch, getState))
+		
+		return Promise.all(ps)
+	},
+	REMOVE: knowledge=>(dispatch, getState)=>{
+		let ps=[]
+		if(Knowledge.isForBaby(knowledge))
+			ps.push(BabyTimeManage.ACTION.REMOVE({_id:knowledge._id})(dispatch, getState))
+		
+		if(Knowledge.isForParent(knowledge) && MyTimeManage)
+			ps.push(MyTimeManage.ACTION.REMOVE({_id:knowledge._id})(dispatch, getState))
+		
+		return Promise.all(ps)
+	}
 }
 
 export const TimeManage=({_id},{muiTheme, minHeight=(muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height)/2})=>(
