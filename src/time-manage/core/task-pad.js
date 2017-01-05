@@ -110,7 +110,7 @@ TodoStatus.contextTypes={
 const Wrapper=({onKeyboardFocus,...others})=>(<span {...others}/>)
 
 const TaskTitle=({knowledge,task},{router,dispatch,ACTION})=>(
-	<span onClick={e=>dispatch(ACTION.COMMENT(knowledge)).then(todoId=>router.push(`/comment/finished_task/${todoId}`))}>
+	<span onClick={e=>router.push(`/knowledge/${knowledge}`)} style={{color:"blue"}}>
 		{task}
 	</span>
 )
