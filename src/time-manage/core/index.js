@@ -34,7 +34,7 @@ export function create(AppBar, domain){
 		let handled=f(target.todos=[...todos], target, child)
 		if(handled===false)
 			return Promise.resolve()
-		
+
 		if(!(handled && handled.then))
 			handled=Promise.resolve()
 		child.targets[domain]=target
@@ -156,7 +156,7 @@ export function create(AppBar, domain){
 			}
 		}
 		render(){
-			let {goal, score, editing, todoWeek}=this.props
+			let {goal, score, editing, todoWeek, dispatch}=this.props
 			return (
 				<div>
 					{
