@@ -141,6 +141,7 @@ import TimeManageUI from "./time-manage"
 import KnowledgeUI from './knowledge/info'
 import NewKnowledgeUI from './knowledge/create'
 import KnowledgesUI from './knowledge/'
+import KnowledgeComment from "./knowledge/comment" 
 
 import {connect} from "react-redux"
 import {getCurrentChild, getChild, getCurrentChildTasks, getKnowledges, getKnowledge} from "./selector"
@@ -197,7 +198,7 @@ module.exports=QiliApp.render(
 					}))(KnowledgeUI)}/>
 		</Route>
 
-		<Route path="comment/:type/:_id" component={Comment}/>
+		<Route path="comment/:type/:_id" component={KnowledgeComment}/>
 
 		<Route path="test" component={Test}/>
 
