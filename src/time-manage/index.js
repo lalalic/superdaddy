@@ -14,10 +14,11 @@ const MyAppBar=(props=>(
 		iconElementLeft={
 			<FloatingActionButton
 				mini={true}
-				disabled={true}
-				style={{fontSize:"xx-small",backgroundColor:bgc}}
+				backgroundColor={bgc}
+				style={{fontSize:"xx-small"}}
+				zDepth={1}
 				>
-				我
+				我的
 			</FloatingActionButton>
 		}
 		/>
@@ -39,23 +40,23 @@ export const ACTION={
 		let {_id,title,score}=knowledge
 		let task={knowledge:_id,content:title,score}
 		let ps=[]
-		
+
 		if(Knowledge.isForBaby(knowledge))
 			ps.push(BabyTimeManage.ACTION.ADD(task)(dispatch, getState))
-		
+
 		if(Knowledge.isForParent(knowledge) && MyTimeManage)
 			ps.push(MyTimeManage.ACTION.ADD(task)(dispatch, getState))
-		
+
 		return Promise.all(ps)
 	},
 	REMOVE: knowledge=>(dispatch, getState)=>{
 		let ps=[]
 		if(Knowledge.isForBaby(knowledge))
 			ps.push(BabyTimeManage.ACTION.REMOVE({_id:knowledge._id})(dispatch, getState))
-		
+
 		if(Knowledge.isForParent(knowledge) && MyTimeManage)
 			ps.push(MyTimeManage.ACTION.REMOVE({_id:knowledge._id})(dispatch, getState))
-		
+
 		return Promise.all(ps)
 	}
 }
