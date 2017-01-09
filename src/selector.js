@@ -26,7 +26,7 @@ export const getCurrentChildTasks=(state,domain="baby")=>{
 
 export const getCurrentChildTarget=(state,domain="baby")=>{
 	const child=getCurrentChild(state)
-	if(child.targets && child.targets[domain])
+	if(child && child.targets && child.targets[domain])
 		return child.targets[domain]
 	return {}
 }
