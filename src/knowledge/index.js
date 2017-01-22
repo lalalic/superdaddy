@@ -4,6 +4,8 @@ import {normalize, arrayOf} from "normalizr"
 import {Link} from "react-router"
 import {IconButton, AppBar, TextField, Paper} from 'material-ui'
 
+import ReactPullToRefresh from "react-pull-to-refresh"
+
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconThumbup from "material-ui/svg-icons/action/thumb-up"
 import IconSearch from "material-ui/svg-icons/action/search"
@@ -142,7 +144,7 @@ export class Knowledges extends Component{
     }
 
     render(){
-        const {router}=this.context
+        const {router,muiTheme:{page:{height}}}=this.context
         const {knowledges}=this.props
 		const {filter}=this.state
         let refSearch=null
@@ -151,8 +153,11 @@ export class Knowledges extends Component{
 			this.setState({filter:null})
 		}
         return (
-            <div>
-				<Paper>
+            <ReactPullToRefresh
+				onRefresh={(resolve,reject)=>{
+					resolve()
+				}}>
+				<div style={{minHeight:height}}>
 					<AppBar
 						iconElementLeft={this.getLeftElement()}
 						iconElementRight={<IconButton onClick={e=>search()}><IconSearch/></IconButton>}
@@ -163,12 +168,12 @@ export class Knowledges extends Component{
 							fullWidth={true}/>
 						}
 						/>
-					</Paper>
 
-                <div>
-                    {knowledges.filter(a=>filter ? -1!=a.title.indexOf(filter) : true).map(a=><Item model={a} key={a._id}/>)}
-                </div>
-            </div>
+	                <div>
+	                    {knowledges.filter(a=>filter ? -1!=a.title.indexOf(filter) : true).map(a=><Item model={a} key={a._id}/>)}
+	                </div>
+				</div>
+            </ReactPullToRefresh>
         )
     }
 
@@ -176,7 +181,10 @@ export class Knowledges extends Component{
 		return (<span/>)
 	}
 
-	static contextTypes={router:PropTypes.object}
+	static contextTypes={
+		router:PropTypes.object,
+		muiTheme: PropTypes.object
+	}
 
     static Creatable=class extends Knowledges{
         render(){
