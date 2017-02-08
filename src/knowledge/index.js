@@ -10,6 +10,8 @@ import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconThumbup from "material-ui/svg-icons/action/thumb-up"
 import IconSearch from "material-ui/svg-icons/action/search"
 import IconBack from "material-ui/svg-icons/hardware/keyboard-arrow-left"
+import IconPullRefresh from "material-ui/svg-icons/hardware/keyboard-arrow-down"
+
 
 import dbKnowledge from '../db/knowledge'
 import {relative} from '../components/calendar'
@@ -144,7 +146,7 @@ export class Knowledges extends Component{
     }
 
     render(){
-        const {router,muiTheme:{page:{height}}}=this.context
+        const {router,muiTheme:{page:{height}, footbar}}=this.context
         const {knowledges}=this.props
 		const {filter}=this.state
         let refSearch=null
@@ -154,10 +156,9 @@ export class Knowledges extends Component{
 		}
         return (
             <ReactPullToRefresh
-				onRefresh={(resolve,reject)=>{
-					resolve()
-				}}>
-				<div style={{minHeight:height}}>
+				style={{textAlign: 'center'}}
+				onRefresh={(resolve,reject)=>setTimeout(resolve,3000)}>
+				<div style={{minHeight:height-footbar.height}}>
 					<AppBar
 						iconElementLeft={this.getLeftElement()}
 						iconElementRight={<IconButton onClick={e=>search()}><IconSearch/></IconButton>}
