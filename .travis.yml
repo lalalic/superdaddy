@@ -25,8 +25,8 @@ script:
  - npm run cordova
 
 after_success:
- - mv cordova/platforms/android/build/outputs/apk/android-debug.apk $APP_NAME/app.apk
- - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $APP_NAME/app.apk "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$APP_NAME"
+ - mv cordova/platforms/android/build/outputs/apk/android-debug.apk ./app.apk
+ - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./app.apk "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$APP_NAME"
 
  - rm dist/config.xml
  - rm dist/cordova.html
