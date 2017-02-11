@@ -17,8 +17,8 @@ before_install:
  - nvm --version
 
 install:
- - npm install --production
- - npm install browserify node-lessify uglifyify cordova@5.4.0
+ - yarn install
+ - yarn install cordova@5.4.0
 
 script:
  - npm run build.release
