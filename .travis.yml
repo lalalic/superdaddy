@@ -19,7 +19,7 @@ before_install:
 
 install:
  - yarn install
- - yarn install cordova@5.4.0
+ - yarn add cordova@5.4.0
 
 script:
  - npm run build.release
