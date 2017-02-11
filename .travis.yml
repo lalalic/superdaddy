@@ -12,6 +12,7 @@ addons:
 before_install:
  - echo "install nodejs"
  - nvm install 6
+ - npm install yarn -g
  - node --version
  - npm --version
  - nvm --version
