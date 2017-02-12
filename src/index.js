@@ -141,7 +141,7 @@ import TimeManageUI from "./time-manage"
 import KnowledgeUI from './knowledge/info'
 import NewKnowledgeUI from './knowledge/create'
 import KnowledgesUI from './knowledge/'
-import KnowledgeComment from "./knowledge/comment" 
+import KnowledgeComment from "./knowledge/comment"
 
 import {connect} from "react-redux"
 import {getCurrentChild, getChild, getCurrentChildTasks, getKnowledges, getKnowledge} from "./selector"
@@ -156,7 +156,10 @@ module.exports=QiliApp.render(
 		<Route path="score" component={TimeManageUI.ScorePad}/>
 
 		<Route path="my" contextual={false}>
-			<IndexRoute component={connect(state=>({babies:Object.values(state.entities.children)}))(AccountUI)}/>
+			<IndexRoute component={connect(state=>{
+				let children=state.entities.children
+				return {babies:children ? Object.keys(children).map(k=>children[k]) : []}
+			})(AccountUI)}/>
 
 			<Route path="setting" component={SettingUI} />
 
