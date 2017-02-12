@@ -19,11 +19,10 @@ before_install:
 
 install:
  - yarn install
- - yarn add cordova@5.4.0
 
 script:
- - npm run build.release
- - npm run cordova
+ - yarn run build.release
+ - yarn run cordova
 
 after_success:
  - mv cordova/platforms/android/build/outputs/apk/android-debug.apk ./app.apk
