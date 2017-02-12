@@ -80,9 +80,14 @@
     "compile": "babel src -d lib --source-maps inline",
     "build.release": "NODE_ENV=production browserify -g uglifyify ./lib/index.js -o dist/index.js -i jquery && node node_modules/qili-app/scripts/allin1.js",
     "build.debug": "browserify -d ./lib/index.js -o dist/index.js -i jquery",
+
     "build.app": "watchify --ignore-watch=\"**/node_modules/!(.*@qili-app)/**\" -v -d ./lib/index.js -o dist/index.js -i jquery",
     "build.mock": "watchify --ignore-watch=\"**/node_modules/!(.*@qili-app)/**\" -v -d ./.test.mock.js -o dist/index.js -i jquery",
     "build.mongo": "watchify --ignore-watch=\"**/node_modules/!(.*@qili-app)/**\" -v -d ./.test.mongo.js -o dist/index.js -i jquery",
+
+
+
+
     "karma": "karma start",
     "test": "restmock",
     "cordova": "cordova create cordova --link-to=dist && cd cordova && cordova platform add android && cordova build android"
