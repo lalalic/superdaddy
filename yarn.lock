@@ -2336,9 +2336,9 @@ dnd-core@^2.2.3:
     lodash "^4.2.0"
     redux "^3.2.0"
 
-"docx4js@git://github.com/lalalic/docx4js.git#react":
+"docx4js@git+https://github.com/lalalic/docx4js.git#react":
   version "3.0.1"
-  resolved "git://github.com/lalalic/docx4js.git#06722dde9b27d9f3d324acc8f49bdc0c010073c3"
+  resolved "git+https://github.com/lalalic/docx4js.git#d2580b20367c9266ff5c66b1aa59883af3ee665c"
   dependencies:
     cheerio "^0.22.0"
     jszip "^2.6.0"

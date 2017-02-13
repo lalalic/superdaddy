@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "cheerio": "^0.22.0",
-    "docx4js": "git://github.com/lalalic/docx4js.git#react",
+    "docx4js": "git+https://github.com/lalalic/docx4js.git#react",
     "lodash.flow": "^3.5.0",
     "material-ui": "^0.16.0",
     "normalizr": "^2.2.1",
