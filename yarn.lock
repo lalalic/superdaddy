@@ -5144,27 +5144,6 @@ q@^1.1.2, q@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.4.1.tgz#55705bcd93c5f3673530c2c2cbc0c2b3addc286e"
 
-"qili-app@https://github.com/lalalic/qili-app":
-  version "0.7.3"
-  resolved "https://github.com/lalalic/qili-app#c2dfaed80ab16f2dd7ed39ae834637b6bba0c23e"
-  dependencies:
-    material-auto-rotating-carousel "1.1.0"
-    material-ui "^0.16.0"
-    minimongo ">=3.2.13"
-    normalizr "^2.2.1"
-    react "^15.1.0"
-    react-dom "^15.1.0"
-    react-intl "^2.1.5"
-    react-motion "^0.4.5"
-    react-redux "^4.4.5"
-    react-responsive "^1.2.5"
-    react-router "^2.4.1"
-    react-swipeable-views "^0.7.7"
-    react-tap-event-plugin "^2.0.0"
-    reactable "^0.13.2"
-    redux "^3.6.0"
-    redux-thunk "^2.1.0"
-
 qiniu@^6.1.8:
   version "6.1.13"
   resolved "https://registry.yarnpkg.com/qiniu/-/qiniu-6.1.13.tgz#57f5d60974c64d8871d80f27df7d43211ae34f03"
