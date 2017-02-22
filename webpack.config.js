@@ -8,13 +8,15 @@ module.exports={
 		path:path.resolve(__dirname, 'dist')
 	},
 	module:{
-		loaders:[{
+		rules:[{
+			test: /\.js$/,
+			use: ["source-map-loader"],
+			enforce: "pre",
+			include:/(qili-app|docx4js)/
+		  },{
 			test: /.js?$/,
-			loaders: ['react-hot-loader','babel-loader'],
-			exclude: /node_modules/
-		},{
-			test:/.html?$/,
-			loader: "file-loader?name=[name].[ext]"
+			use: ['react-hot-loader','babel-loader'],
+			exclude: /node_modules/,
 		},{
 			test:/.less?$/,
 			use: [
