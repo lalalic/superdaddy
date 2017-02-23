@@ -19,6 +19,7 @@ before_install:
 
 install:
  - yarn install
+ - yarn upgrade docx4js docx-template qili-app@https://github.com/lalalic/qili-app
 
 script:
  - yarn run build.$BUILD_MODE

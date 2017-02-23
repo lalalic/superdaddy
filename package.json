@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "cheerio": "^0.22.0",
-    "docx4js": "~3",
+    "docx-template": "^2.0.2",
     "lodash.flow": "^3.5.0",
     "material-ui": "^0.16.0",
     "normalizr": "^2.2.1",

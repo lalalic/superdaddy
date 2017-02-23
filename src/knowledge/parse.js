@@ -1,10 +1,10 @@
-import docx4js from "docx4js"
+import docxTemplate from "docx-template"
 import React from "react"
 import ReactDOM from "react-dom/server"
 
 let uuid=0
 export default function parse(file){
-	return docx4js.load(file).then(docx=>{
+	return docxTemplate.parse(file).then(varDoc=>varDoc.assemble({})).then(docx=>{
 		let properties={}, steps=[], images=[],id=`_parser${uuid++}`
 		let doc=docx.render((type,props,children)=>{
 			switch(type){
@@ -28,7 +28,7 @@ export default function parse(file){
 			break
 			}
 			return createElement(type,props,children)
-		})
+		}, docxTemplate.identify)
 
 		let html=ReactDOM.renderToStaticMarkup(doc)
 		html=tidy(html)
