@@ -15,7 +15,7 @@ function splitKey(data){
 
 export default function extract(file){
     return parse(file).then(doc=>{
-        var {html:content, properties, id:elId, images, steps}=doc,
+        var {html:content, properties, id:elId, images, steps, applet}=doc,
             {name,title, keywords, category, subject, abstract,description, ...others}=properties
 
 		if(keywords)
@@ -31,6 +31,7 @@ export default function extract(file){
                 summary:abstract||description||subject,
                 keywords,category,
                 props:others,
+				applet,
 				steps
             },
             revoke(){
@@ -41,11 +42,11 @@ export default function extract(file){
                 return Array.prototype.map.call(window.document.querySelectorAll(`#${elId} img`),a=>a.src)
             },
             upload(entity){
-                var kind=dbKnowledge._name,
+                let kind=dbKnowledge._name,
                     more={entity:{kind,_id:entity._id}}
                 return new Promise((resolve, reject)=>
                     File.find({params:more,fields:"crc32"}).fetch(files=>{
-                        var pImages=images.map(({url,crc32})=>{
+                        let pImages=images.map(({url,crc32})=>{
                             if(files.find((a)=>a.crc32==crc32))
                                 return undefined;
 
@@ -57,10 +58,18 @@ export default function extract(file){
 								
                         }).filter(a=>!!a)
 
-                        var pRawDocx=File.upload(file, Object.assign({key:"a.docx"},more))
+                        let pRawDocx=File.upload(file, Object.assign({key:"a.docx"},more))
 							.then(url =>this.knowledge.template=url)
+							
+						let pApplet
+						if(applet){
+							pApplet=File.upload(applet,{key:"a.html"})
+								.then(url=>this.knowledge.applet=url)
+						}else{
+							pApplet=Promise.resolve()
+						}
 
-                        Promise.all([pRawDocx, ...pImages])
+                        Promise.all([pRawDocx, pApplet, ...pImages])
                             .then(()=>{
                                     resolve(this.knowledge)
                                 }, reject)

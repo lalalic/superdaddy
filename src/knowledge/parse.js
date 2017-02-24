@@ -4,8 +4,8 @@ import ReactDOM from "react-dom/server"
 
 let uuid=0
 export default function parse(file){
-	return docxTemplate.parse(file).then(varDoc=>varDoc.assemble({})).then(docx=>{
-		let properties={}, steps=[], images=[],id=`_parser${uuid++}`
+	return docxTemplate.parse(file).then(varDoc=>varDoc.assemble({step:true})).then(docx=>{
+		let properties={}, steps=[], images=[],id=`_parser${uuid++}`, applet
 		let doc=docx.render((type,props,children)=>{
 			switch(type){
 			case "document":
@@ -15,10 +15,15 @@ export default function parse(file){
 				properties[props.name.toLowerCase()]=props.value
 				return null
 			break
-			case "step":
+			case 'step':
+
 			break
 			case "inline.picture":
 				images.push({url:props.url,crc32:props.crc32})
+			break
+			case "applet":
+				applet=props.data.asText()
+				return null
 			break
 			case "block":
 			case "inline":
@@ -38,9 +43,30 @@ export default function parse(file){
 			properties,
 			steps,
 			images,
+			applet,
 			id
 		}
 	})
+}
+
+export function identify(node, officeDocument){
+	let model=docxTemplate.identify(...arguments)
+	if(!model)
+		return model
+	
+	switch(model.type){
+	case 'object':
+		let ole=node.children.find(a=>a.name=="o:OLEObject"), rid
+		if(ole && ole.attribs.ProgID=='Package' 
+			&& ole.attribs.Type=='Embed' 
+			&& (rid=ole.attribs['r:id'])){
+			model.type="applet"
+			model.data=officeDocument.getRel(rid)
+		}
+	break
+	}
+	
+	return model
 }
 
 
