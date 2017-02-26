@@ -7,6 +7,8 @@ import IconCreate from "material-ui/svg-icons/editor/border-color"
 import IconCancel from "material-ui/svg-icons/navigation/cancel"
 import IconAddTask from "material-ui/svg-icons/action/alarm-add"
 import IconRemoveTask from "material-ui/svg-icons/action/alarm-off"
+import IconShare from "material-ui/svg-icons/social/share"
+import IconApplet from "material-ui/svg-icons/social/pages"
 
 import Calendar, {cnDateTimeFormat, addDays, relative, isEqualDate, getLastDayOfMonth} from '../components/calendar'
 import dbKnowledge from '../db/knowledge'
@@ -40,6 +42,7 @@ export default class KnowledgeEditor extends Component{
         if(true || User.current._id==knowledge.author._id)
             commands.push({
 				action:"New Version"
+                ,label:"新版本"
 				,icon:<IconCreate/>
 				,onSelect: a=>dispatch(ACTION.SELECT_DOCX())
 			})
@@ -47,10 +50,12 @@ export default class KnowledgeEditor extends Component{
         if(revising){
             commands.push({
 				action:"Save"
+                ,label:"保存"
 				,onSelect: a=>dispatch(ACTION.UPDATE())
 			})
             commands.push({
 				action:"Cancel"
+                ,label:"放弃"
                 ,onSelect:a=>dispatch(ACTION.CANCEL())
                 ,icon:<IconCancel/>
 			})
@@ -70,14 +75,27 @@ export default class KnowledgeEditor extends Component{
 					,onSelect:e=>dispatch(ACTION.TASK(knowledge))
 				})
 
+
             commands.push(<CommandBar.Comment key="Comment" type={dbKnowledge} model={knowledge}/>)
-            commands.push(<CommandBar.Share key="Share" message={knowledge}/>)
+
+            if(knowledge.applet)
+                commands.push({
+                    action:"applet"
+                    ,label:"工具"
+                    ,icon:<IconApplet/>
+                    ,onSelect:e=>dispatch(ACTION.APPLET(knowledge.applet))
+                })
         }
 
         return (
             <div className="post">
                 <div className="knowledge">
 					<Content {...knowledge}/>
+                </div>
+                <div>
+                    <IconButton>
+                        <IconShare/>
+                    </IconButton>
                 </div>
 
                 <CommandBar className="footbar" items={commands}/>

@@ -26,6 +26,20 @@ const {CommandBar, Empty, fileSelector}=UI
 
 const {DialogCommand}=CommandBar
 
+function validate(knowledge){
+	let errors=[]
+	if(!knowledge.title)
+		errors.push(`没有标题`)
+
+	if(!knowledge.content || knowledge.content.length<256)
+		errors.push(`需要详细的内容`)
+
+	if(errors.length)
+		return errors
+	else
+		return null
+}
+
 const DOMAIN="knowledge"
 const INIT_STATE={
 	knowledges:[]
@@ -43,33 +57,27 @@ export const ACTION={
 		.then(file=>extract(file))
         .then(docx=>dispatch({type:`@@${DOMAIN}/selectedDocx`,payload:docx}))
 
-    ,CREATE: a=>(dispatch,getState)=>{
+    ,CREATE: ()=>(dispatch,getState)=>{
 		const state=getState()
 		const docx=state.ui.knowledge.selectedDocx
         const {knowledge}=docx
-		const photos=docx.getPhotos()
-		let upserted=null
-		if(photos.length){
-			knowledge.content=""
-			upserted=dbKnowledge.upsert(knowledge).then(a=>{
-				return docx.upload(a).then(({content,template})=>{
-					a.photos=docx.getPhotos()
-					a.content=content
-					a.template=template
-					return dbKnowledge.upsert(a)
-				}, a=>{
-					dbKnowledge.remove(knowledge)
-					return Promise.reject(a)
-				})
-			})
-		}else{
-			upserted=dbKnowledge.upsert(knowledge)
-		}
 
-		return upserted.then(knowledge=>{
-			dispatch(ENTITIES(normalize(knowledge,dbKnowledge.schema).entities))
-			dispatch({type:`@@${DOMAIN}/created`})
-			return knowledge
+		let errors=validate(knowledge)
+		if(errors.length)
+			return Promise.reject(errors.join(";"))
+
+		return dbKnowledge.upsert({content:"processing..."}).then(a=>{
+			return docx.upload(a).then(uploaded=>{
+				return dbKnowledge.upsert({...a, ...uploaded, photos: docx.getPhotos()})
+					.then(knowledge=>{
+						dispatch(ENTITIES(normalize(knowledge,dbKnowledge.schema).entities))
+						dispatch({type:`@@${DOMAIN}/created`})
+						return knowledge
+					})
+			}, a=>{
+				dbKnowledge.remove(knowledge)
+				return Promise.reject(a)
+			})
 		})
     }
 	,FETCH1: a=>(dispatch, getState)=>{
@@ -77,35 +85,33 @@ export const ACTION={
 		const _id=state.routing.params._id
 		dbKnowledge.findOne({_id}, knowledge=>dispatch(ENTITIES(normalize(knowledge,dbKnowledge.schema).entities)))
 	}
-	,UPDATE: a=>(dispatch, getState)=>{
+	,UPDATE: ()=>(dispatch, getState)=>{
 		const state=getState()
 		const docx=state.ui.knowledge.selectedDocx
         const {knowledge:newVersion}=docx
-		const photos=docx.getPhotos()
+
+		let errors=validate(knowledge)
+		if(errors.length)
+			return Promise.reject(errors.join(";"))
 
 		const id=state.routing.params._id
 		const current=state.entities[dbKnowledge.schema.getKey()][id]
 
-		let upserted=null
-		if(photos.length){
-			upserted=docx.upload(current).then(content=>{
-				current.photos=docx.getPhotos()
-				current.content=content
-				return dbKnowledge.upsert(current)
-			})
-		}else{
-			upserted=dbKnowledge.upsert(Object.assign({},current, newVersion))
-		}
-
-		return upserted.then(knowledge=>{
-			dispatch(ENTITIES(normalize(knowledge,dbKnowledge.schema).entities))
-			dispatch({type:`@@${DOMAIN}/updated`})
-			return knowledge
+		return docx.upload(current).then(uploaded=>{
+			return dbKnowledge.upsert({...current, ...uploaded, photos: docx.getPhotos()})
+				.then(knowledge=>{
+					dispatch(ENTITIES(normalize(knowledge,dbKnowledge.schema).entities))
+					dispatch({type:`@@${DOMAIN}/updated`})
+					return knowledge
+				})
 		})
 	}
 	,CANCEL: a=>({type:`@@${DOMAIN}/cancel`})
 	,TASK: (knowledge)=>dispatch=>dispatch(TASK_ACTION.ADD(knowledge))
 	,UNTASK: (knowledge)=>dispatch=>dispatch(TASK_ACTION.REMOVE(knowledge))
+	,APPLET: applet=>{
+		window.open(applet,"superdaddy applet")
+	}
 }
 
 export const REDUCER=(state=INIT_STATE, {type, payload})=>{
