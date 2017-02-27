@@ -12,7 +12,7 @@ module.exports={
 			test: /\.js$/,
 			use: ["source-map-loader"],
 			enforce: "pre",
-			include:/(qili-app|docx4js)/
+			include:/(qili-app|docx4js|docx-template)/
 		  },{
 			test: /.js?$/,
 			use: ['react-hot-loader','babel-loader'],

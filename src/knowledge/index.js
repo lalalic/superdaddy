@@ -34,10 +34,7 @@ function validate(knowledge){
 	if(!knowledge.content || knowledge.content.length<256)
 		errors.push(`需要详细的内容`)
 
-	if(errors.length)
-		return errors
-	else
-		return null
+	return errors
 }
 
 const DOMAIN="knowledge"
@@ -90,7 +87,7 @@ export const ACTION={
 		const docx=state.ui.knowledge.selectedDocx
         const {knowledge:newVersion}=docx
 
-		let errors=validate(knowledge)
+		let errors=validate(newVersion)
 		if(errors.length)
 			return Promise.reject(errors.join(";"))
 
@@ -111,6 +108,7 @@ export const ACTION={
 	,UNTASK: (knowledge)=>dispatch=>dispatch(TASK_ACTION.REMOVE(knowledge))
 	,APPLET: applet=>{
 		window.open(applet,"superdaddy applet")
+		return {type:`@@{DOMAIN}/applet`}
 	}
 }
 

@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/server"
 
 let uuid=0
 export default function parse(file){
-	return docxTemplate.parse(file).then(varDoc=>varDoc.assemble({step:true})).then(docx=>{
+	return docxTemplate.parse(file).then(varDoc=>varDoc.assemble({goal:"promote"})).then(docx=>{
 		let properties={}, steps=[], images=[],id=`_parser${uuid++}`, applet
 		let doc=docx.render((type,props,children)=>{
 			switch(type){
@@ -33,7 +33,7 @@ export default function parse(file){
 			break
 			}
 			return createElement(type,props,children)
-		}, docxTemplate.identify)
+		}, identify)
 
 		let html=ReactDOM.renderToStaticMarkup(doc)
 		html=tidy(html)

@@ -1,13 +1,13 @@
 import React, {Component, PropTypes} from "react"
 import {File,UI, User} from 'qili-app'
-import {RaisedButton, DatePicker} from 'material-ui'
+import {RaisedButton, DatePicker,IconButton} from 'material-ui'
 import {Link} from "react-router"
 
 import IconCreate from "material-ui/svg-icons/editor/border-color"
 import IconCancel from "material-ui/svg-icons/navigation/cancel"
 import IconAddTask from "material-ui/svg-icons/action/alarm-add"
 import IconRemoveTask from "material-ui/svg-icons/action/alarm-off"
-import IconShare from "material-ui/svg-icons/social/share"
+import IconShare from "qili-app/lib/icons/wechat"
 import IconApplet from "material-ui/svg-icons/social/pages"
 
 import Calendar, {cnDateTimeFormat, addDays, relative, isEqualDate, getLastDayOfMonth} from '../components/calendar'
@@ -86,16 +86,27 @@ export default class KnowledgeEditor extends Component{
                     ,onSelect:e=>dispatch(ACTION.APPLET(knowledge.applet))
                 })
         }
+		
+		let buttonStyle={
+			width: 120,
+			height: 120
+		}
+		let iconStyle={
+			width: 60,
+			height: 60
+		}
 
         return (
             <div className="post">
                 <div className="knowledge">
 					<Content {...knowledge}/>
                 </div>
-                <div>
-                    <IconButton>
+                <div style={{textAlign:"center"}}>
+					<span>
+                    <IconButton style={buttonStyle} iconStyle={iconStyle}>
                         <IconShare/>
                     </IconButton>
+					</span>
                 </div>
 
                 <CommandBar className="footbar" items={commands}/>

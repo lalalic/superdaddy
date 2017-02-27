@@ -46,14 +46,15 @@ export default function extract(file){
                     more={entity:{kind,_id:entity._id}}
                 return new Promise((resolve, reject)=>
                     File.find({params:more,fields:"crc32"}).fetch(files=>{
-                        let pImages=images.map(({url,crc32})=>{
+                        let pImages=images.map(image=>{
+							const {url,crc32}=image
                             if(files.find((a)=>a.crc32==crc32))
                                 return undefined;
 
                             return File.upload(url, Object.assign({crc32,key:"a.jpg"},more))
                                 .then(remoteURL=>{
-									this.knowledge.content.replace(url,image.url=remoteURL)
-									window.document.querySelector(`#${elId} img[src~="url"]`).setAttribute("src",remoteURL)
+									this.knowledge.content=this.knowledge.content.replace(url,image.url=remoteURL)
+									window.document.querySelector(`#${elId} img[src~='${url}']`).setAttribute("src",remoteURL)
 								})
 								
                         }).filter(a=>!!a)
