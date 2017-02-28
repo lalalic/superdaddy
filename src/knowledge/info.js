@@ -2,23 +2,28 @@ import React, {Component, PropTypes} from "react"
 import {File,UI, User} from 'qili-app'
 import {RaisedButton, DatePicker,IconButton} from 'material-ui'
 import {Link} from "react-router"
+import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation'
 
 import IconCreate from "material-ui/svg-icons/editor/border-color"
 import IconCancel from "material-ui/svg-icons/navigation/cancel"
 import IconAddTask from "material-ui/svg-icons/action/alarm-add"
 import IconRemoveTask from "material-ui/svg-icons/action/alarm-off"
-import IconShare from "qili-app/lib/icons/wechat"
+import {Icon as IconWechatSession, IconTimeline as IconWechatTimeline} from "qili-app/lib/components/wechat"
 import IconApplet from "material-ui/svg-icons/social/pages"
+import IconBuy from "material-ui/svg-icons/action/add-shopping-cart"
+import IconPreview from "material-ui/svg-icons/content/content-copy"
 
 import Calendar, {cnDateTimeFormat, addDays, relative, isEqualDate, getLastDayOfMonth} from '../components/calendar'
 import dbKnowledge from '../db/knowledge'
 import dbTask from '../db/task'
+import AD from '../components/ad'
 
 import {ACTION, Content} from "."
 
 const {List,Loading,Comment,CommandBar,fileSelector, Messager}=UI
 const {DialogCommand}=CommandBar
 
+const COLORS="red,aqua,fuchsia,darkorange,darkmagenta".split(",")
 
 export default class KnowledgeEditor extends Component{
     componentDidMount(){
@@ -48,6 +53,12 @@ export default class KnowledgeEditor extends Component{
 			})
 
         if(revising){
+			commands.push({
+				action:"Preview"
+                ,label:"预览打印"
+                ,onSelect:a=>dispatch(ACTION.PREVIEW())
+                ,icon:<IconPreview/>
+			})			
             commands.push({
 				action:"Save"
                 ,label:"保存"
@@ -76,39 +87,66 @@ export default class KnowledgeEditor extends Component{
 				})
 
 
-            commands.push(<CommandBar.Comment key="Comment" type={dbKnowledge} model={knowledge}/>)
-
-            if(knowledge.applet)
-                commands.push({
-                    action:"applet"
-                    ,label:"工具"
-                    ,icon:<IconApplet/>
-                    ,onSelect:e=>dispatch(ACTION.APPLET(knowledge.applet))
-                })
+            commands.push(<CommandBar.Comment key="Comment" 
+				label="讨论" 
+				type={dbKnowledge} 
+				model={knowledge}/>)
         }
 		
-		let buttonStyle={
-			width: 120,
-			height: 120
-		}
-		let iconStyle={
-			width: 60,
-			height: 60
-		}
-
+		let tools=(knowledge.applets||[]).slice(0,2).map(({data,title,desc},i)=>
+			<BottomNavigationItem 
+				key={`_${i}_${title}`} 
+				label={title} 
+				icon={<IconApplet color={COLORS[Math.floor((Math.random() * 10))%5]}/>}
+				onClick={()=>dispatch(ACTION.APPLET(data,title,knowledge))}
+				/>
+		)
+		
+		tools.unshift(<BottomNavigationItem 
+			key="wechat.session"
+			label="微信好友" 
+			icon={<IconWechatSession/>}
+			onClick={()=>dispatch(ACTION.WECHAT(knowledge,"SESSION"))}
+			/>
+		)
+		
+		tools.unshift(<BottomNavigationItem 
+			key="wechat.timeline"
+			label="微信朋友圈" 
+			icon={<IconWechatTimeline/>}
+			onClick={()=>dispatch(ACTION.WECHAT(knowledge,"TIMELINE"))}
+			/>
+		)
+		
+		if(knowledge.sale)
+			tools.push(<BottomNavigationItem 
+						key="sale"
+						label="购买"
+						icon={<IconBuy color="red"/>}
+						onClick={()=>dispatch(ACTION.BUY(knowledge))}
+						/>)
+		
+		
+		
         return (
             <div className="post">
                 <div className="knowledge">
 					<Content {...knowledge}/>
                 </div>
-                <div style={{textAlign:"center"}}>
-					<span>
-                    <IconButton style={buttonStyle} iconStyle={iconStyle}>
-                        <IconShare/>
-                    </IconButton>
-					</span>
-                </div>
-
+				
+				<article>
+					<section>
+						<BottomNavigation>
+						{tools}
+						</BottomNavigation>
+						
+						<AD object={knowledge}/>
+				
+						
+						<Comment.Inline type={dbKnowledge} model={knowledge}/>
+					</section>
+				</article>
+				
                 <CommandBar className="footbar" items={commands}/>
             </div>
         )

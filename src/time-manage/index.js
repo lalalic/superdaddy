@@ -61,13 +61,16 @@ export const ACTION={
 	}
 }
 
-export const TimeManage=({_id},{muiTheme, minHeight=(muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height)/2})=>(
+export const TimeManage=({_id, manageMyTime},{muiTheme, minHeight=(muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height)/2})=>(
     <div>
 		<div style={{minHeight}}>
 			<BabyTimeManage/>
 		</div>
 		{
 			(function(){
+				if(!manageMyTime)
+					return null
+				
 				if(!MyTimeManage)
 					MyTimeManage=TimeManageCreator(MyAppBar,_id)
 				return React.createElement(MyTimeManage)

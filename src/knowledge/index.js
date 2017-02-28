@@ -106,9 +106,28 @@ export const ACTION={
 	,CANCEL: a=>({type:`@@${DOMAIN}/cancel`})
 	,TASK: (knowledge)=>dispatch=>dispatch(TASK_ACTION.ADD(knowledge))
 	,UNTASK: (knowledge)=>dispatch=>dispatch(TASK_ACTION.REMOVE(knowledge))
-	,APPLET: applet=>{
+	,APPLET: (applet,title,knowledge)=>{
 		window.open(applet,"superdaddy applet")
-		return {type:`@@{DOMAIN}/applet`}
+		return {type:`@@{DOMAIN}/applet`,payload:{title,knowledge}}
+	}
+	,BUY: ({sale})=>{
+		window.open(sale,"superdaddy buy")
+		return {type:`@@{DOMAIN}/buy`,payload:knowledge}
+	}
+	,WECHAT: ({title,summary,figure,_id},scene)=>{
+		Wechat.share({
+				scene:Wechat.Scene[scene]
+				,message:{
+					title
+					,messageExt: summary || title
+					,thumb: figure
+					,media:{
+						type: Wechat.Type.WEBPAGE
+						,webpageUrl: `http://static.papazai.com/${_id}.html`
+					}
+				}
+			},a=>1,e=>e)
+		return {type:`@@{DOMAIN}/share2wechat`, payload:knowledge}
 	}
 }
 
@@ -385,7 +404,7 @@ export const Content=({_id, title, content, summary, createdAt, category=[], key
 		notNewStuff=[
 			(<h1 key="link0"><Link to={`/knowledge/${_id}`}>{title}</Link></h1>),
 			(<p key="author">
-				{author.name} - <time>{relative(createdAt)}</time>
+				{author.username} - <time>{relative(createdAt)}</time>
 			</p>)
 		]
 	}else {
@@ -401,7 +420,7 @@ export const Content=({_id, title, content, summary, createdAt, category=[], key
 			<header>
 				{notNewStuff}
 				<p>
-					{category.join(", ")} {keywords.join(", ")}
+					{[...category,...keywords].join(", ")}
 				</p>
 			</header>
 			<section>

@@ -4,49 +4,71 @@ import ReactDOM from "react-dom/server"
 
 let uuid=0
 export default function parse(file){
-	return docxTemplate.parse(file).then(varDoc=>varDoc.assemble({goal:"promote"})).then(docx=>{
-		let properties={}, steps=[], images=[],id=`_parser${uuid++}`, applet
-		let doc=docx.render((type,props,children)=>{
-			switch(type){
-			case "document":
-				props.id=id
-			break
+	let properties={}, applets=[], sale
+	return docxTemplate.load(file).then(docx0=>{
+		docx0.render(()=>null,function(){
+			let model=identify(...arguments)
+			if(!model)
+				return model
+			switch(model.type){
 			case "property":
-				properties[props.name.toLowerCase()]=props.value
-				return null
-			break
-			case 'step':
-
-			break
-			case "inline.picture":
-				images.push({url:props.url,crc32:props.crc32})
+				properties[model.name.toLowerCase()]=model.value
 			break
 			case "applet":
-				applet=props.data.asText()
-				return null
+				let {title,desc,data}=model
+				applets.unshift({title,desc,data})
 			break
-			case "block":
-			case "inline":
-				let tag=props.node.children.find(a=>a.name=="w:sdtPr").children.find(a=>a.name=="w:tag")
-				if(tag && tag.attribs["w:val"]=="hidden")
-					props.hidden=true
+			case "sale":
+				sale=model.url
 			break
 			}
-			return createElement(type,props,children)
-		}, identify)
+			return model
+		})
+		
+		return docxTemplate.parse(docx0).then(varDoc=>varDoc.assemble({goal:"promote"})).then(docx=>{
+			let steps=[], images=[],id=`_parser${uuid++}`
+			let doc=docx.render((type,props,children)=>{
+				switch(type){
+				case "document":
+					props.id=id
+				break
+				case "applet":
+				case "property":
+					return null
+				break
+				case "inline.picture":
+					images.push({url:props.url,crc32:props.crc32})
+				break
+				break
+				case 'step':
 
-		let html=ReactDOM.renderToStaticMarkup(doc)
-		html=tidy(html)
+				break
+				case "block":
+				case "inline":
+					
+				break
+				case "sale":
+					type="hyperlink"
+				break
+				}
+				return createElement(type,props,children)
+			}, identify)
 
-		return {
-			html,
-			properties,
-			steps,
-			images,
-			applet,
-			id
-		}
+			let html=ReactDOM.renderToStaticMarkup(doc)
+			html=tidy(html)
+
+			return {
+				html,
+				properties,
+				steps,
+				images,
+				applets,
+				sale,
+				id
+			}
+		})
 	})
+	
 }
 
 export function identify(node, officeDocument){
@@ -62,7 +84,19 @@ export function identify(node, officeDocument){
 			&& (rid=ole.attribs['r:id'])){
 			model.type="applet"
 			model.data=officeDocument.getRel(rid)
+			let shape=node.children.find(a=>a.name=="v:shape")
+			if(shape){
+				let alt=(shape.attribs.alt||"").trim()
+				let desc=officeDocument.content(node).closest("w\\:p").text().trim()
+				model.title=alt || desc || "工具"
+				if(desc)
+					model.desc=desc
+			}
 		}
+	break
+	case 'hyperlink':
+		if("买"==officeDocument.content(node).text().trim())
+			model.type="sale"
 	break
 	}
 	
@@ -97,7 +131,7 @@ const TYPE={
 	,r:"span"
 	,t:"span"
 	,"inline.picture":({url})=><img src={url}/>
-	,hyperlink:({url,children})=><a href={url}>{children}</a>
+	,hyperlink:({url,children})=><a>{children}</a>
 	,tbl:({children})=><table><tbody>{children}</tbody></table>
 	,tr:"tr"
 	,tc:"td"
@@ -107,8 +141,8 @@ const TYPE={
 	,list:({numId, level, children})=><ul><li>{children}</li></ul>
 	,property:wrapper
 	,drawing:wrapper
-	,block:({hidden,children})=>hidden ? null : <div>{children}</div>
-	,inline:({hidden,children})=>hidden ? null : <span>{children}</span>
+	,block:({children})=><div>{children}</div>
+	,inline:({children})=><span>{children}</span>
 }
 
 import cheer from "cheerio"

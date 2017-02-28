@@ -2,7 +2,7 @@ import {File} from "qili-app"
 import dbKnowledge from "../db/knowledge"
 import parse from "./parse"
 
-const reg=/[-,\s+]/
+const reg=/[-,，\s+]/
 function splitKey(data){
 	if(typeof(data)=='string')
 		data=[data]
@@ -15,7 +15,7 @@ function splitKey(data){
 
 export default function extract(file){
     return parse(file).then(doc=>{
-        var {html:content, properties, id:elId, images, steps, applet}=doc,
+        var {html:content, properties, id:elId, images, steps, applets,sale}=doc,
             {name,title, keywords, category, subject, abstract,description, ...others}=properties
 
 		if(keywords)
@@ -31,8 +31,9 @@ export default function extract(file){
                 summary:abstract||description||subject,
                 keywords,category,
                 props:others,
-				applet,
-				steps
+				applets,
+				steps,
+				sale
             },
             revoke(){
                 var nodes=window.document.querySelectorAll(`#${elId} img[src~="blob:"]`)
@@ -63,9 +64,11 @@ export default function extract(file){
 							.then(url =>this.knowledge.template=url)
 							
 						let pApplet
-						if(applet){
-							pApplet=File.upload(applet,{key:"a.html"})
-								.then(url=>this.knowledge.applet=url)
+						if(applets.length){
+							pApplet=Promise.all(this.knowledge.applets.map(applet=>{
+								return File.upload(applet.data,{key:"a.html"})
+									.then(url=>applet.data=url)
+							}))
 						}else{
 							pApplet=Promise.resolve()
 						}

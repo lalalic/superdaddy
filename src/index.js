@@ -104,7 +104,7 @@ class SuperDaddy extends Component{
 						{label:"任务管理", action:"tasks",
 							link:"/",
                             icon:<IconTask/>},
-						{label:"成绩", action:"score",
+						{label:"状态", action:"score",
 							link:'/score',
 							icon:<IconReward/>},
 						{label:"发现", action:"knowledges",
@@ -146,9 +146,10 @@ import KnowledgeComment from "./knowledge/comment"
 import {connect} from "react-redux"
 import {getCurrentChild, getChild, getCurrentChildTasks, getKnowledges, getKnowledge} from "./selector"
 
-import Test from "./test"
+const {Setting:SettingUI}=UI
 
-const {Setting:SettingUI, Profile: ProfileUI}=UI
+import ProfileUI from "./profile"
+
 
 module.exports=QiliApp.render(
     (<Route path="/" component={connect()(SuperDaddy)}>
@@ -183,7 +184,7 @@ module.exports=QiliApp.render(
 				})(BabyUI)}/>
 		</Route>
 
-		<IndexRoute component={connect(state=>compact(state.qiliApp.user,"_id"))(TimeManageUI)}/>
+		<IndexRoute component={connect(state=>compact(state.qiliApp.user,"_id", "manageMyTime"))(TimeManageUI)}/>
 
 		<Route path="knowledge">
 			<IndexRoute contextual={false}
@@ -202,8 +203,6 @@ module.exports=QiliApp.render(
 		</Route>
 
 		<Route path="comment/:type/:_id" component={KnowledgeComment}/>
-
-		<Route path="test" component={Test}/>
 
 	{/*
         <Route name="tasks" component={TasksUI}/>

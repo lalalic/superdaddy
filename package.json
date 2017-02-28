@@ -11,6 +11,7 @@
     "cheerio": "^0.22.0",
     "docx-template": "^2.0.2",
     "lodash.flow": "^3.5.0",
+    "lodash.unescape": "^4.0.1",
     "material-ui": "^0.16.0",
     "normalizr": "^2.2.1",
     "qili-app": "https://github.com/lalalic/qili-app",
