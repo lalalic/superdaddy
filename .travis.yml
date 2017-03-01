@@ -19,7 +19,6 @@ before_install:
 
 install:
  - yarn install
- - yarn upgrade docx4js@https://github.com/lalalic/docx4js docx-template@https://github.com/lalalic/docx-template qili-app@https://github.com/lalalic/qili-app
 
 script:
  - yarn run build.$BUILD_MODE

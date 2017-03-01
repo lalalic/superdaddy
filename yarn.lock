@@ -2233,23 +2233,6 @@ dnd-core@^2.2.3:
     lodash "^4.2.0"
     redux "^3.2.0"
 
-"docx-template@https://github.com/lalalic/docx-template":
-  version "2.0.4"
-  resolved "https://github.com/lalalic/docx-template#953c1065e83bcd9ac921fc553ceb73ee3748a83c"
-  dependencies:
-    docx4js "https://github.com/lalalic/docx4js"
-    escodegen "^1.8.0"
-    esprima "^2.7.2"
-    jszip "^2.6.0"
-    lodash.unescape "^4.0.1"
-
-"docx4js@https://github.com/lalalic/docx4js":
-  version "3.1.1"
-  resolved "https://github.com/lalalic/docx4js#ba3d9d6d61287e0c18b82b62c5e0689171e3670d"
-  dependencies:
-    cheerio "^0.22.0"
-    jszip "^2.6.0"
-
 dom-serializer@0, dom-serializer@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/dom-serializer/-/dom-serializer-0.1.0.tgz#073c697546ce0780ce23be4a28e293e40bc30c82"
@@ -5202,27 +5185,6 @@ q@1.0.1:
 q@^1.1.2, q@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.4.1.tgz#55705bcd93c5f3673530c2c2cbc0c2b3addc286e"
-
-"qili-app@https://github.com/lalalic/qili-app":
-  version "0.7.4"
-  resolved "https://github.com/lalalic/qili-app#0c566de082de1fc7ffdf01f8f5d38908e0768f23"
-  dependencies:
-    material-auto-rotating-carousel "1.1.0"
-    material-ui "^0.16.0"
-    minimongo ">=3.2.13"
-    normalizr "^2.2.1"
-    react "^15.1.0"
-    react-dom "^15.1.0"
-    react-intl "^2.1.5"
-    react-motion "^0.4.5"
-    react-redux "^4.4.5"
-    react-responsive "^1.2.5"
-    react-router "^2.4.1"
-    react-swipeable-views "^0.7.7"
-    react-tap-event-plugin "^2.0.0"
-    reactable "^0.13.2"
-    redux "^3.6.0"
-    redux-thunk "^2.1.0"
 
 qiniu@^6.1.8:
   version "6.1.13"

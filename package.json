@@ -10,6 +10,7 @@
   "dependencies": {
     "cheerio": "^0.22.0",
     "docx-template": "https://github.com/lalalic/docx-template",
+    "docx4js": "https://github.com/lalalic/docx4js",
     "lodash.flow": "^3.5.0",
     "material-ui": "^0.16.0",
     "normalizr": "^2.2.1",
