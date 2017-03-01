@@ -7,6 +7,11 @@ import {Family as dbFamily} from './db'
 import {getCurrentChild, getChild} from "./selector"
 import {ACTION as SuperDaddy} from "."
 
+import PublishUI from "./publish"
+
+import IconRemove from "material-ui/svg-icons/content/remove-circle"
+import IconPublish from "material-ui/svg-icons/action/card-giftcard"
+
 import {InfoForm, Field} from "qili-app/lib/components/info-form"
 
 const {CommandBar,Photo, TextFieldx}=UI
@@ -122,12 +127,21 @@ export class Baby extends Component{
 				<CommandBar className="footbar"
 					items={[
 						"Back"
-						, {
+						,{
+							action:"publish",
+							label:"出版",
+							icon:<IconPublish/>,
+							onSelect:a=>router.push("/publish")
+						}
+						,{
 							action:"Remove",
+							label:"删除",
+							icon:<IconRemove/>,
 							onSelect:a=>dispatch(ACTION.REMOVE(id))
 								.then(a=>{
 									router.replace("/")
-								})}
+								})
+						}
 						]}
 					/>
 			</div>

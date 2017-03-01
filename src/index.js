@@ -101,7 +101,7 @@ class SuperDaddy extends Component{
 
                 <CommandBar className="footbar" style={{zIndex:1}}
 					items={[
-						{label:"任务管理", action:"tasks",
+						{label:"任务", action:"tasks",
 							link:"/",
                             icon:<IconTask/>},
 						{label:"状态", action:"score",
@@ -127,7 +127,6 @@ class SuperDaddy extends Component{
 /*
 import TaskUI from './task'
 import SettingUI from './setting'
-import PublishUI from './publish'
 import TasksUI, {Approvings} from "./tasks"
 import ScoreUI from "./score"
 import InviteUI from "./invite"
@@ -135,6 +134,7 @@ import InviteUI from "./invite"
 
 import AccountUI from './account'
 import BabyUI, {Creator} from './baby'
+import PublishUI from './publish'
 
 import TimeManageUI from "./time-manage"
 
@@ -203,6 +203,12 @@ module.exports=QiliApp.render(
 		</Route>
 
 		<Route path="comment/:type/:_id" component={KnowledgeComment}/>
+		
+		<Route path="publish">
+            <IndexRoute component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI)}/>
+            <Route path="list" 
+				component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI.List)}/>
+        </Route>
 
 	{/*
         <Route name="tasks" component={TasksUI}/>

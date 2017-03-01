@@ -1,5 +1,4 @@
-import {Model,User} from 'qili-app'
-import Family from './family'
+import {Model} from 'qili-app'
 
 export default class Publish extends Model{
 	static get _name(){return "publish"}
