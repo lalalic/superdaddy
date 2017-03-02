@@ -1,11 +1,10 @@
 import React, {Component, PropTypes} from "react"
-import {UI,ENTITIES,REMOVE_ENTITIES} from 'qili-app'
+import {UI,ENTITIES,REMOVE_ENTITIES,User} from 'qili-app'
 import {normalize} from "normalizr"
 import {TextField, RadioButtonGroup, RadioButton,DatePicker,Subheader} from 'material-ui'
 
 import {Family as dbFamily} from './db'
 import {getCurrentChild, getChild} from "./selector"
-import {ACTION as SuperDaddy} from "."
 
 import PublishUI from "./publish"
 
@@ -58,10 +57,50 @@ export const ACTION={
 	,REMOVE: id=>(dispatch,getState)=>{
 		return dbFamily.remove(id)
 			.then(a=>{
-				dispatch(SuperDaddy.SWITCH_CURRENT_CHILD(id))
+				dispatch(ACTION.SWITCH_CURRENT_CHILD(id))
 				dispatch(REMOVE_ENTITIES("children",id))
 			})
 	}
+	,FETCH_FAMILY: a=>(dispatch,getState)=>new Promise((resolve,reject)=>
+			dbFamily.find({author:User.currentAsAuthor})
+			.fetch(all=>{
+				if(all.length==0)
+					dispatch(ACTION.CREATE_DEFAULT_FIRST_CHILD()).then(resolve,reject)
+				else {
+					all=dbFamily.upgrade(all)
+					let entities=normalize(all,arrayOf(dbFamily.schema)).entities
+					dispatch(ENTITIES(entities))
+					if(entities.children){
+						let next=entities.children[Object.keys(entities.children)[0]]
+						if(next){
+							dispatch(ACTION.CURRENT_CHILD_CHANGE(next))
+							resolve()
+						}
+					}else
+						dispatch(ACTION.CREATE_DEFAULT_FIRST_CHILD()).then(resolve,reject)
+				}
+			})
+	)
+	,CREATE_DEFAULT_FIRST_CHILD: ()=>dispatch=>{
+		return dbFamily.upsert({name:"宝宝",targets:{baby:{score:0,totalScore:0}}})
+			.then(child=>{
+				dispatch(ENTITIES(normalize(child,Family.schema).entities))
+				dispatch(ACTION.CURRENT_CHILD_CHANGE(child))
+			})
+	}
+	,SWITCH_CURRENT_CHILD: id=>(dispatch,getState)=>{
+		const state=getState()
+		const children=state.entities.children
+		if(id){
+			dispatch(ACTION.CURRENT_CHILD_CHANGE(children[id]))
+		}else{
+			const current=state[DOMAIN].child
+			const ids=Object.keys(children)
+			let next=ids[(ids.indexOf(current)+1)%ids.length]
+			dispatch(ACTION.CURRENT_CHILD_CHANGE(children[next]))
+		}
+	}
+	,CURRENT_CHILD_CHANGE: child=>({type:'CURRENT_CHILD_CHANGE',payload:child})
 }
 
 export class Baby extends Component{
@@ -70,12 +109,12 @@ export class Baby extends Component{
 	componentDidMount(){
 		const {isCurrent,params:{id}, dispatch}=this.props
 		if(!isCurrent)
-			dispatch(SuperDaddy.SWITCH_CURRENT_CHILD(id))
+			dispatch(ACTION.SWITCH_CURRENT_CHILD(id))
 	}
 
 	componentWillReceiveProps({isCurrent,dispatch,params:{id}}){
 		if(!isCurrent)
-			dispatch(SuperDaddy.SWITCH_CURRENT_CHILD(id))
+			dispatch(ACTION.SWITCH_CURRENT_CHILD(id))
 	}
 
 	render(){

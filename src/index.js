@@ -32,50 +32,6 @@ const DOMAIN='superdaddy'
 
 const INIT_STATE={}
 
-export const ACTION={
-	FETCH_FAMILY: a=>(dispatch,getState)=>new Promise((resolve,reject)=>
-			Family.find({author:User.currentAsAuthor})
-			.fetch(all=>{
-				debugger
-				if(all.length==0)
-					dispatch(ACTION.CREATE_DEFAULT_FIRST_CHILD()).then(resolve,reject)
-				else {
-					all=Family.upgrade(all)
-					let entities=normalize(all,arrayOf(Family.schema)).entities
-					dispatch(ENTITIES(entities))
-					if(entities.children){
-						let next=entities.children[Object.keys(entities.children)[0]]
-						if(next){
-							dispatch(ACTION.CURRENT_CHILD_CHANGE(next))
-							resolve()
-						}
-					}else
-						dispatch(ACTION.CREATE_DEFAULT_FIRST_CHILD()).then(resolve,reject)
-				}
-			})
-	)
-	,CREATE_DEFAULT_FIRST_CHILD: ()=>dispatch=>{
-		return Family.upsert({name:"宝宝",targets:{baby:{score:0,totalScore:0}}})
-			.then(child=>{
-				dispatch(ENTITIES(normalize(child,Family.schema).entities))
-				dispatch(ACTION.CURRENT_CHILD_CHANGE(child))
-			})
-	}
-	,SWITCH_CURRENT_CHILD: id=>(dispatch,getState)=>{
-		const state=getState()
-		const children=state.entities.children
-		if(id){
-			dispatch(ACTION.CURRENT_CHILD_CHANGE(children[id]))
-		}else{
-			const current=state[DOMAIN].child
-			const ids=Object.keys(children)
-			let next=ids[(ids.indexOf(current)+1)%ids.length]
-			dispatch(ACTION.CURRENT_CHILD_CHANGE(children[next]))
-		}
-	}
-	,CURRENT_CHILD_CHANGE: child=>({type:'CURRENT_CHILD_CHANGE',payload:child})
-}
-
 export const REDUCER=(state=INIT_STATE,{type,payload})=>{
 	switch(type){
 	case 'CURRENT_CHILD_CHANGE':
@@ -129,12 +85,12 @@ export class SuperDaddy extends Component{
 				]}
 				init={a=>{
 						init()
-						return dispatch(ACTION.FETCH_FAMILY())
+						return dispatch(BabyUI.ACTION.FETCH_FAMILY())
 				}}>
-				
+
 				<Router history={hashHistory}>
 					<Route path="/" component={Navigator}>
-					
+
 						<IndexRoute component={connect(state=>compact(state.qiliApp.user,"_id", "manageMyTime"))(TimeManageUI)}/>
 
 						<Route path="score" component={TimeManageUI.ScorePad}/>
@@ -181,10 +137,10 @@ export class SuperDaddy extends Component{
 						</Route>
 
 						<Route path="comment/:type/:_id" component={KnowledgeComment}/>
-						
+
 						<Route path="publish">
 							<IndexRoute component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI)}/>
-							<Route path="list" 
+							<Route path="list"
 								component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI.List)}/>
 						</Route>
 					</Route>

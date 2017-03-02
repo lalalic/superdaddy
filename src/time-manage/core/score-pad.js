@@ -45,7 +45,7 @@ export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, AppBar},
 		title="开始第一个目标"
 		action=(<Editor/>)
 	}else if(goal<=score){
-		title="开始下一个目标"
+		title=`[${todo}]已完成,开始下一个目标吧`
 		action=(<Editor lastScore={score}/>)
 	}else
 		title=todo;
@@ -75,7 +75,7 @@ const Smile=({scored, ...others})=>(
 		/>
 )
 
-const Editor=({lastScore},{dispatch,ACTION})=>{
+export const Editor=({lastScore},{dispatch,ACTION})=>{
 	let refGoal
 	const add=value=>{
 		value=value.trim()

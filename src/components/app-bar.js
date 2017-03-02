@@ -5,7 +5,7 @@ import {AppBar,FloatingActionButton,Avatar} from "material-ui"
 import {compact} from "qili-app"
 
 import {getCurrentChild} from "../selector"
-import {ACTION} from ".."
+import {ACTION} from "../baby"
 
 export const MyAppBar=connect(state=>compact(getCurrentChild(state),"name","photo"))(({photo,name,dispatch,...others})=>(
 	<AppBar {...others}

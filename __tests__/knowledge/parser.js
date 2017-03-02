@@ -1,3 +1,5 @@
+jest.mock("../style/index.less",()=>jest.fn())
+
 import Parser from "../../src/knowledge"
 
 xdescribe("knowledge docx parser", function(){
@@ -6,9 +8,9 @@ xdescribe("knowledge docx parser", function(){
 		let node=$.root().contents().get(0)
 		expect(!!node).toBe(true)
 		let identified=docx4js.OfficeDocument.identify(node,Object.assign({content:$},officeDocument))
-		
+
 		expect(identified.type).toBe(expected)
-		
+
 		return identified
 	}
     describe("identify", function(){
@@ -43,7 +45,7 @@ xdescribe("knowledge docx parser", function(){
 				})
 			)
 		})
-	
+
         it("paragraph,text", function(done){
             let content=`<w:p><w:r><w:t>hello world</w:t></w:r></w:p>`
             extract(newDocx(content)).then((ex)=>{

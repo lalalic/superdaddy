@@ -24,7 +24,7 @@ const MyAppBar=(props=>(
 		/>
 ))
 
-const BabyTimeManage=TimeManageCreator(BabyAppBar,"baby")
+export const BabyTimeManage=TimeManageCreator(BabyAppBar,"baby")
 let MyTimeManage
 
 
@@ -70,9 +70,10 @@ export const TimeManage=({_id, manageMyTime},{muiTheme, minHeight=(muiTheme.page
 			(function(){
 				if(!manageMyTime)
 					return null
-				
+
 				if(!MyTimeManage)
 					MyTimeManage=TimeManageCreator(MyAppBar,_id)
+				console.log("create MyTimeManage")
 				return React.createElement(MyTimeManage)
 			})()
 		}
