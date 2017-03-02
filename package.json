@@ -11,6 +11,7 @@
     "cheerio": "^0.22.0",
     "docx-template": "https://github.com/lalalic/docx-template",
     "docx4js": "https://github.com/lalalic/docx4js",
+    "enzyme": "^2.7.1",
     "lodash.flow": "^3.5.0",
     "material-ui": "^0.16.0",
     "normalizr": "^2.2.1",
@@ -54,21 +55,11 @@
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.1"
   },
-  "browserify": {
-    "transform": [
-      [
-        "node-lessify",
-        {
-          "plugins": []
-        }
-      ]
-    ]
-  },
   "scripts": {
     "compile": "babel src -d lib --source-maps inline",
     "build.release": "webpack -p && node node_modules/qili-app/scripts/allin1.js",
     "build.debug": "webpack -d",
-    "test": "jest",
+    "test": "jest __tests__",
     "dev": "webpack-dev-server --hot --inline -d --entry=./.test.mongo.js",
     "cordova": "cordova create cordova --link-to=dist && cd cordova && cordova platform add android && cordova build android"
   },
