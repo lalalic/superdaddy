@@ -40,6 +40,7 @@
     "cordova": "5.4.0",
     "css-loader": "^0.26.1",
     "fakexmlhttprequest": "0.0.1",
+    "jest": "^19.0.2",
     "jszip": "^2.5.0",
     "less": "^2.7.2",
     "less-loader": "^2.2.3",
@@ -67,6 +68,7 @@
     "compile": "babel src -d lib --source-maps inline",
     "build.release": "webpack -p && node node_modules/qili-app/scripts/allin1.js",
     "build.debug": "webpack -d",
+    "test": "jest",
     "dev": "webpack-dev-server --hot --inline -d --entry=./.test.mongo.js",
     "cordova": "cordova create cordova --link-to=dist && cd cordova && cordova platform add android && cordova build android"
   },
