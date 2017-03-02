@@ -26,7 +26,7 @@ export const ACTION={
 	FETCH_FAMILY: a=>(dispatch,getState)=>Family.find({author:User.currentAsAuthor})
 		.fetch(all=>{
 			if(all.length==0)
-				dispatch(ACTION.CREATE_DEFAULT_FIRST_CHILD())
+				return dispatch(ACTION.CREATE_DEFAULT_FIRST_CHILD())
 			else {
 				all=Family.upgrade(all)
 				let entities=normalize(all,arrayOf(Family.schema)).entities
@@ -34,8 +34,9 @@ export const ACTION={
 				if(entities.children){
 					let next=entities.children[Object.keys(entities.children)[0]]
 					if(next)
-						dispatch(ACTION.CURRENT_CHILD_CHANGE(next))
-				}
+						return dispatch(ACTION.CURRENT_CHILD_CHANGE(next))
+				}else
+					return dispatch(ACTION.CREATE_DEFAULT_FIRST_CHILD())
 			}
 		})
 	,CREATE_DEFAULT_FIRST_CHILD: ()=>dispatch=>{
@@ -68,7 +69,7 @@ const REDUCER=(state=INIT_STATE,{type,payload})=>{
 	return state
 }
 
-class SuperDaddy extends Component{
+export class SuperDaddy extends Component{
 	render(){
 		const {children, routes, dispatch}=this.props
 		const {router}=this.context
@@ -94,7 +95,7 @@ class SuperDaddy extends Component{
 				]}
 				init={a=>{
 						init()
-						dispatch(ACTION.FETCH_FAMILY())
+						return dispatch(ACTION.FETCH_FAMILY())
 				}}>
 
 				{children}
