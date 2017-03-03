@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from "react"
 import {UI,ENTITIES,REMOVE_ENTITIES,User} from 'qili-app'
-import {normalize} from "normalizr"
+import {normalize,arrayOf} from "normalizr"
 import {TextField, RadioButtonGroup, RadioButton,DatePicker,Subheader} from 'material-ui'
 
 import {Family as dbFamily} from './db'
@@ -94,7 +94,7 @@ export const ACTION={
 		if(id){
 			dispatch(ACTION.CURRENT_CHILD_CHANGE(children[id]))
 		}else{
-			const current=state[DOMAIN].child
+			const current=state.superdaddy.child
 			const ids=Object.keys(children)
 			let next=ids[(ids.indexOf(current)+1)%ids.length]
 			dispatch(ACTION.CURRENT_CHILD_CHANGE(children[next]))

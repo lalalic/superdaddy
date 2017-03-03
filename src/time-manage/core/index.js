@@ -137,20 +137,20 @@ export function create(AppBar, domain){
 		}
 	}
 
-	const ScorePad=connect(state=>({...compact(getCurrentChildTarget(state,domain),"score","goal","todo"),AppBar}))(_ScorePad)
+	const ScorePad=connect(state=>({...compact(getCurrentChildTarget(state,domain),"score","goal","todo")}))(_ScorePad)
 	const TodoEditor=_TodoEdtior
 	const TaskPad=connect(state=>({todos:getCurrentChildTasks(state,domain).filter(a=>!a.hidden)}))(_TaskPad)
 	const TaskPadEditor=connect(state=>({todos:getCurrentChildTasks(state,domain)}))(_TaskPadEditor)
 
 	class TimeManage extends Component{
 		static childContextTypes={
-			AppBar: PropTypes.element,
+			appBar: PropTypes.element,
 			ACTION: PropTypes.object,
 			dispatch: PropTypes.func
 		}
 		getChildContext(){
 			return {
-				AppBar: (<AppBar/>),
+				appBar: (<AppBar/>),
 				ACTION,
 				dispatch: this.props.dispatch
 			}

@@ -5,7 +5,7 @@ import IconAdd from "material-ui/svg-icons/av/playlist-add"
 import IconEdit from "material-ui/svg-icons/editor/mode-edit"
 import IconDone from "material-ui/svg-icons/file/cloud-done"
 
-export const TodoEditor=({editing, refTask, refForm},{dispatch,ACTION,AppBar})=>React.cloneElement(AppBar, {
+export const TodoEditor=({editing, refTask, refForm},{dispatch,ACTION,appBar})=>React.cloneElement(appBar, {
 	iconElementRight:(
 		<span>
 			<IconButton onClick={e=>dispatch(ACTION.ADD(refTask.state.searchText.trim()))}>
@@ -27,7 +27,7 @@ export const TodoEditor=({editing, refTask, refForm},{dispatch,ACTION,AppBar})=>
 })
 
 TodoEditor.contextTypes={
-	AppBar: PropTypes.element,
+	appBar: PropTypes.element,
 	ACTION: PropTypes.object,
 	dispatch: PropTypes.func
 }

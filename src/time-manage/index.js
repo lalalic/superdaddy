@@ -73,7 +73,6 @@ export const TimeManage=({_id, manageMyTime},{muiTheme, minHeight=(muiTheme.page
 
 				if(!MyTimeManage)
 					MyTimeManage=TimeManageCreator(MyAppBar,_id)
-				console.log("create MyTimeManage")
 				return React.createElement(MyTimeManage)
 			})()
 		}

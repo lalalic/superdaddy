@@ -3,7 +3,6 @@ require('../style/index.less')
 import React, {Component, PropTypes} from "react"
 import {Router, Route, IndexRoute, Direct, IndexRedirect, hashHistory} from "react-router"
 import {User,QiliApp, UI, ENTITIES, compact} from 'qili-app'
-import {normalize,arrayOf} from "normalizr"
 import {combineReducers} from "redux"
 import {connect} from "react-redux"
 
@@ -27,8 +26,6 @@ import NewKnowledgeUI from './knowledge/create'
 import KnowledgesUI from './knowledge/'
 import KnowledgeComment from "./knowledge/comment"
 import ProfileUI from "./profile"
-
-const DOMAIN='superdaddy'
 
 const INIT_STATE={}
 
@@ -153,7 +150,7 @@ export class SuperDaddy extends Component{
 const StateSuperDaddy=connect()(SuperDaddy)
 
 export const main=QiliApp.render(<StateSuperDaddy/>, {
-	[DOMAIN]:REDUCER,
+	superdaddy:REDUCER,
 	ui: combineReducers({
 		knowledge:KnowledgesUI.REDUCER,
 		time:TimeManageUI.reducer

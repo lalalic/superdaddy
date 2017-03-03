@@ -11,8 +11,8 @@ import {
 
 const {TextFieldx}=UI
 
-export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, AppBar},
-	{muiTheme, width=muiTheme.page.width, height=muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height})=>{
+export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0},
+	{appBar, muiTheme, width=muiTheme.page.width, height=muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height})=>{
 	if(totalPerScreen==score){
 		width=width/2
 		height=height/2
@@ -52,7 +52,7 @@ export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, AppBar},
 
 	return (
 		<div>
-			{React.createElement(AppBar, {title})}
+			{React.cloneElement(appBar, {title})}
 			{action}
 			<div>
 				{smiles}
@@ -63,7 +63,7 @@ export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, AppBar},
 
 ScorePad.contextTypes={
 	muiTheme:PropTypes.object,
-	AppBar: PropTypes.element,
+	appBar: PropTypes.element,
 	ACTION: PropTypes.object,
 	dispatch: PropTypes.func
 }

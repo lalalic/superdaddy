@@ -5,8 +5,11 @@ jest.mock("../src/db/task", ()=>({
 		return 3
 	}
 }))
-import {shallow as _shallow, render} from "enzyme"
+
+import {shallow, render, mount} from "enzyme"
 import React from "react"
+import {AppBar} from "material-ui"
+import BabyAppBar from "../src/components/app-bar"
 import TimeManage, {BabyTimeManage} from "../src/time-manage"
 
 import {TaskPad} from "../src/time-manage/core/task-pad"
@@ -14,23 +17,20 @@ import {TaskPadEditor} from "../src/time-manage/core/task-pad-editor"
 import {TodoEditor} from "../src/time-manage/core/todo-editor"
 import {ScorePad, Editor as ScorePadEditor} from "../src/time-manage/core/score-pad"
 
-const shallow=node=>_shallow(node,{context:{
-	muiTheme:{
-		page:{height:900, width:600},
-		appBar:{height:60},
-		footbar:{height:60}
-	}
-}})
+import {QiliApp} from "qili-app/lib/qiliApp"
+
+const context={muiTheme:QiliApp.defaultProps.theme}
+const childContextTypes={muiTheme:React.PropTypes.object}
 
 describe("time management", function(){
 	it("manageMyTime=false", function(){
-		let ui=shallow(<TimeManage manageMyTime={false}/>)
+		let ui=shallow(<TimeManage manageMyTime={false}/>, {context})
 		expect(ui.find(BabyTimeManage).length).toBe(1)
 		expect(ui.children().length).toBe(1)
 	})
 
 	it("manageMyTime=true", function(){
-		let ui=shallow(<TimeManage manageMyTime={true} _id="test"/>)
+		let ui=shallow(<TimeManage manageMyTime={true} _id="test"/>, {context})
 		expect(ui.find(BabyTimeManage).length).toBe(1)
 		expect(ui.children().length).toBe(2)
 	})
@@ -43,13 +43,42 @@ describe("time management", function(){
 			goal:20,
 			score:10
 		}
-		fit("no goal => show score pad to set new goal",function(){
-			let ui=render(<BabyTimeManage {...props} {...{goal:0}}/>)
-			let scorePad=ui.find(ScorePad)
-			expect(scorePad.length).toBe(1)
-			console.dir(scorePad)
-			expect(scorePad.find(ScorePadEditor).length).toBe(1)
-			//expect(scorePad.props().title).toContain("第一个目标")
+		beforeAll(()=>console.error=jest.fn())
+		it("no goal => show score pad to set first goal",function(){
+			let ui=shallow(<BabyTimeManage {...props} {...{goal:0}}/>, {context})
+			expect(ui.find(ScorePad).length).toBe(1)
+		})
+		it("goal==score: show score pad to set new goal",function(){
+			let ui=shallow(<BabyTimeManage {...props} {...{score:20}}/>, {context})
+			expect(ui.find(ScorePad).length).toBe(1)
+		})
+		
+		it("goal not done yet at current week: show task pad",function(){
+			let ui=shallow(<BabyTimeManage {...props}/>, {context})
+			expect(ui.find(TaskPad).length).toBe(1)
+			expect(ui.find(TodoEditor).length).toBe(1)
+		})
+		
+		it("goal not done yet(goal>score),but current week is not todo week: show finish pad",function(){
+			let ui=shallow(<BabyTimeManage {...props} {...{todoWeek:2}}/>, {context})
+			expect(ui.find(TaskPad).length).toBe(1)
+			expect(ui.find(BabyAppBar).length).toBe(1)
+			expect(ui.find(BabyAppBar).prop("title")).toContain("保存")
+			expect(ui.find(TodoEditor).length).toBe(0)
+		})
+		
+		it("edit tasks, goal not done yet at current week",function(){
+			let ui=shallow(<BabyTimeManage {...props} editing={true}/>, {context})
+			expect(ui.find(TaskPadEditor).length).toBe(1)
+			expect(ui.find(TodoEditor).length).toBe(1)
+		})
+		
+		describe("score pad",function(){
+			
+		})
+		
+		describe("task pad", function(){
+			
 		})
 	})
 })
