@@ -42,7 +42,7 @@ export function create(AppBar, domain){
 			.then(updated=>dispatch(ENTITIES(normalize(updated, Family.schema).entities))))
 	}
 	const ACTION={
-		SET_GOAL: (goal, gift)=>(dispatch,getState)=>{
+		SET_GOAL: (goal, todo)=>(dispatch,getState)=>{
 			const child=getCurrentChild(getState())
 			if(!child.targets)
 				child.targets={}
