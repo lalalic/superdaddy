@@ -38,8 +38,8 @@ export function create(AppBar, domain){
 		if(!(handled && handled.then))
 			handled=Promise.resolve()
 		child.targets[domain]=target
-		return handled.then(a=>Family.upsert(child)
-			.then(updated=>dispatch(ENTITIES(normalize(updated, Family.schema).entities))))
+		return handled.then(a=>Family.upsert(child))
+			.then(updated=>dispatch(ENTITIES(normalize(updated, Family.schema).entities)))
 	}
 	const ACTION={
 		SET_GOAL: (goal, todo)=>(dispatch,getState)=>{
@@ -137,12 +137,21 @@ export function create(AppBar, domain){
 		}
 	}
 
+	const reducer=(state={},{type,payload})=>{
+		switch(type){
+		case `${DOMAIN}/edit`:
+			return {...state,[domain]:payload}
+		break
+		}
+		return state
+	}
+	
 	const ScorePad=connect(state=>({...compact(getCurrentChildTarget(state,domain),"score","goal","todo")}))(_ScorePad)
 	const TodoEditor=_TodoEdtior
 	const TaskPad=connect(state=>({todos:getCurrentChildTasks(state,domain).filter(a=>!a.hidden)}))(_TaskPad)
 	const TaskPadEditor=connect(state=>({todos:getCurrentChildTasks(state,domain)}))(_TaskPadEditor)
 
-	class TimeManage extends Component{
+	const Provider=connect()(class extends Component{
 		static childContextTypes={
 			appBar: PropTypes.element,
 			ACTION: PropTypes.object,
@@ -155,76 +164,70 @@ export function create(AppBar, domain){
 				dispatch: this.props.dispatch
 			}
 		}
+		
 		render(){
-			let {goal, score, editing, todoWeek, dispatch}=this.props
-			return (
-				<div>
-					{
-						(week=>{
-							if(!goal){
-								return <ScorePad/>
+			return React.Children.only(this.props.children)
+		}
+	})
+	
+	const TimeManage=connect(state=>{
+		let target=getCurrentChildTarget(state,domain)
+		const {todoWeek=Task.getWeekStart(), goal=0, score=0}=target
+		return {
+			editing:state.ui.time[domain],
+			todoWeek,
+			goal: domain=="baby" ? goal : Number.MAX_SAFE_INTEGER,
+			score
+		}
+	})(({goal, score, editing, todoWeek, dispatch})=>(
+		<div>
+			{
+				(week=>{
+					if(!goal){
+						return <ScorePad/>
+					}else{
+						let isCurrentWeek=todoWeek==week
+						if(isCurrentWeek){
+							let accomplished=goal<=score
+							if(!accomplished){
+								return (
+									<div>
+										<TodoEditor editing={editing}/>
+										{editing ? <TaskPadEditor/> : <TaskPad current={new Date().getDay()}/>}
+									</div>
+								)
 							}else{
-								let isCurrentWeek=todoWeek==week
-								if(isCurrentWeek){
-									let accomplished=goal<=score
-									if(!accomplished){
-										return (
-											<div>
-												<TodoEditor editing={editing}/>
-												{editing ? <TaskPadEditor/> : <TaskPad current={new Date().getDay()}/>}
-											</div>
-										)
-									}else{
-										return <ScorePad/>
-									}
-								}else{
-									return (
-										<div>
-											{
-												React.createElement(AppBar,{
-													iconElementRight:(
-														<IconButton onClick={e=>dispatch(ACTION.RESET())}>
-															<IconDone color="white"/>
-														</IconButton>
-													),
-													title:`保存前${new Date(week).relative(new Date(todoWeek))/7}周完成情况`
-												})
-											}
-											<TaskPad current={99}/>
-										</div>
-									)
-								}
+								return <ScorePad/>
 							}
-						})(Task.getWeekStart())
+						}else{
+							return (
+								<div>
+									{
+										React.createElement(AppBar,{
+											iconElementRight:(
+												<IconButton onClick={e=>dispatch(ACTION.RESET())}>
+													<IconDone color="white"/>
+												</IconButton>
+											),
+											title:`保存前${new Date(week).relative(new Date(todoWeek))/7}周完成情况`
+										})
+									}
+									<TaskPad current={99}/>
+								</div>
+							)
+						}
 					}
-				</div>
-			)
-		}
-	}
-
-	const reducer=(state={},{type,payload})=>{
-		switch(type){
-		case `${DOMAIN}/edit`:
-			return {...state,[domain]:payload}
-		break
-		}
-		return state
-	}
-
-	let TimeManager=connect(state=>{
-			let target=getCurrentChildTarget(state,domain)
-			const {todoWeek=Task.getWeekStart(), goal=0, score=0}=target
-			return {
-				editing:state.ui.time[domain],
-				todoWeek,
-				goal: domain=="baby" ? goal : Number.MAX_SAFE_INTEGER,
-				score
+				})(Task.getWeekStart())
 			}
-		})(TimeManage)
+		</div>
+	))
+
+	let TimeManager=(props=>(<Provider><TimeManage {...props}/></Provider>))
 
 	TimeManager.reducer=reducer
-	TimeManager.ScorePad=ScorePad
+	TimeManager.ScorePad=props=>(<Provider><ScorePad {...props}/></Provider>)
 	TimeManager.ACTION=ACTION
+	
 	return TimeManager
 }
 

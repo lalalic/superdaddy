@@ -1,4 +1,4 @@
-jest.mock("../style/index.less",()=>jest.fn())
+jest.mock("../../style/index.less",()=>jest.fn())
 
 import Parser from "../../src/knowledge"
 

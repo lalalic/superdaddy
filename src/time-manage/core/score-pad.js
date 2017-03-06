@@ -11,8 +11,12 @@ import {
 
 const {TextFieldx}=UI
 
-export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0},
-	{appBar, muiTheme, width=muiTheme.page.width, height=muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height})=>{
+export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0},context)=>{
+	const {appBar, muiTheme}=context
+	
+	let width=muiTheme.page.width
+	let height=muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height
+	
 	if(totalPerScreen==score){
 		width=width/2
 		height=height/2
@@ -35,7 +39,7 @@ export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0},
 	let smiles=[]
 	for(let i=0;i<totalPerScreen;i++)
 		smiles.push(
-			<span key={i} style={{display:"inline-block"}}>
+			<span key={i} style={{display:"inline-block"}} className="smile">
 				<Smile style={style} scored={i<score}/>
 			</span>
 		)
