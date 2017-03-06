@@ -71,8 +71,8 @@ export function create(AppBar, domain){
 		}
 		,REMOVE: todo=>changeTodos(todos=>{
 			let i=typeof(todo)=='object'
-				? todos.findIndex(a=>a.knowledge=todo._id)
-				: todos.findIndex(a=>a.content=todo);
+				? todos.findIndex(a=>a.knowledge==todo._id)
+				: todos.findIndex(a=>a.content==todo && !a.knowledge);
 
 			if(i!=-1)
 				todos.splice(i,1)
@@ -145,7 +145,7 @@ export function create(AppBar, domain){
 		}
 		return state
 	}
-	
+
 	const ScorePad=connect(state=>({...compact(getCurrentChildTarget(state,domain),"score","goal","todo")}))(_ScorePad)
 	const TodoEditor=_TodoEdtior
 	const TaskPad=connect(state=>({todos:getCurrentChildTasks(state,domain).filter(a=>!a.hidden)}))(_TaskPad)
@@ -164,12 +164,12 @@ export function create(AppBar, domain){
 				dispatch: this.props.dispatch
 			}
 		}
-		
+
 		render(){
 			return React.Children.only(this.props.children)
 		}
 	})
-	
+
 	const TimeManage=connect(state=>{
 		let target=getCurrentChildTarget(state,domain)
 		const {todoWeek=Task.getWeekStart(), goal=0, score=0}=target
@@ -227,7 +227,7 @@ export function create(AppBar, domain){
 	TimeManager.reducer=reducer
 	TimeManager.ScorePad=props=>(<Provider><ScorePad {...props}/></Provider>)
 	TimeManager.ACTION=ACTION
-	
+
 	return TimeManager
 }
 
