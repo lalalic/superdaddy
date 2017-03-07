@@ -1,10 +1,14 @@
 jest.mock("../../src/db/family",()=>({}))
+jest.mock("../../src/db/finished",()=>({}))
 jest.mock("../../src/db/knowledge",()=>({isForBaby:a=>true, isForParent:a=>false}))
 jest.mock("../../src/selector", ()=>({}))
 jest.mock("normalizr",()=>({}))
 
 import dbFamily from "../../src/db/family"
 import dbKnowledge from "../../src/db/knowledge"
+import dbFinished from "../../src/db/finished"
+import dbTask from "../../src/db/task"
+
 const selector=require("../../src/selector")
 const normalizr=require("normalizr")
 const QiliApp=require("qili-app")
@@ -237,15 +241,31 @@ describe("action and state", function(){
 		})
 	})
 
-	it.skip("finish last week's jobs", function(){
+	it("finish last week's jobs", function(){
+		let child={
+			_id:"test",
+			targets:{
+				baby:{
+					todoWeek:dbTask.getWeekStart(new Date("March 2, 2017")),
+					goal:20,
+					score:18,
+					todos:[{content:"gift", dones:[2,4,5]}, {content:"bike"}]
+				}
+			}
+		}
 		selector.getCurrentChild=jest.fn().mockReturnValue(child)
+		dbFinished.upsert=jest.fn(a=>Promise.resolve(a))
+		
 		return ACTION.RESET()(dispatch, getState)
 			.then(a=>{
-				expect(dbFamily.upsert).toHaveBeenCalled()
-				let child=dbFamily.upsert.mock.calls[0][0]
-				let task=child.targets.baby
-				expect(task.todos.length).toBe(3)
-				expect(task.todos[0]).toMatchObject({content:"gift",hidden:true})
+				expect(dbFinished.upsert).toHaveBeenCalled()
+				let finished=dbFinished.upsert.mock.calls[0][0]
+				expect(finished.length).toBe(3)
+				let [first]=finished
+				expect(first).toMatchObject({baby:"test", content:"gift", owner:"baby"})
+				let date=first.date
+				expect(date.getMonth()).toBe(1)
+				expect(date.getDate()).toBe(28)
 			})
 	})
 

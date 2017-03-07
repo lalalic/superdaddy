@@ -20,7 +20,7 @@ export default class Task extends Model{
 		const year=new Date().getFullYear()
 
 		let finished=tasks.reduce((finished,task)=>{
-			let props={bayb: child._id, owner:domain}
+			let props={baby: child._id, owner:domain}
 			task.dones.forEach(i=>{
 				finished.push({...task,date:Task.getDate(week,i), ...props, dones:undefined})
 			})
@@ -29,23 +29,6 @@ export default class Task extends Model{
 
 		return Finished.upsert(finished)
 	}
-
-    static plan(knowledge, dates){
-        let {_id,title,keywords,category,steps, images=[]}=knowledge
-
-        return this.upsert({
-			knowledge:{_id,title,keywords,category, steps},
-            thumbnail: images[0],
-            current:0,
-			child:Family.getCurrentChild._id})
-    }
-
-    static finish(task){
-        task.finishedAt=new Date()
-        task.finishedAuthor=User.currentAsAuthor
-        task.current=1000
-        return this.upsert(task)
-    }
 
     static getWeekStart(date=new Date()){
         return date.relativeDate(-1*date.getDay()).toDate().getTime()

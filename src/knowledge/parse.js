@@ -106,7 +106,6 @@ export function identify(node, officeDocument){
 
 
 function createElement(type,props,children){
-	console.log(type)
 	const {pr,node,type:a,...others}=props
 	if(TYPE[type])
 		return React.createElement(TYPE[type], others,...children)
