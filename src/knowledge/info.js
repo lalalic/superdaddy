@@ -27,17 +27,17 @@ const COLORS="red,aqua,fuchsia,darkorange,darkmagenta".split(",")
 
 export default class KnowledgeEditor extends Component{
     componentDidMount(){
-		this.props.dispatch(ACTION.FETCH1())
+		this.props.dispatch(ACTION.FETCH1(this.props.params._id))
     }
 
     componentWillReceiveProps(next){
-		const {knowledge}=this.props
+        const {knowledge}=this.props
         if(knowledge && knowledge._id!=next.params._id)
-            next.dispatch(ACTION.FETCH1())
+            next.dispatch(ACTION.FETCH1(next.params._id))
     }
 
     render(){
-		const {knowledge, revising=false, inTask=false, dispatch}=this.props
+		const {knowledge, revising=false, inTask=false, dispatch, params:{_id:id}}=this.props
 
         if(!knowledge)
             return (<Loading/>)
@@ -58,11 +58,11 @@ export default class KnowledgeEditor extends Component{
                 ,label:"预览打印"
                 ,onSelect:a=>dispatch(ACTION.PREVIEW())
                 ,icon:<IconPreview/>
-			})			
+			})
             commands.push({
 				action:"Save"
                 ,label:"保存"
-				,onSelect: a=>dispatch(ACTION.UPDATE())
+				,onSelect: a=>dispatch(ACTION.UPDATE(id))
 			})
             commands.push({
 				action:"Cancel"
@@ -87,66 +87,66 @@ export default class KnowledgeEditor extends Component{
 				})
 
 
-            commands.push(<CommandBar.Comment key="Comment" 
-				label="讨论" 
-				type={dbKnowledge} 
+            commands.push(<CommandBar.Comment key="Comment"
+				label="讨论"
+				type={dbKnowledge}
 				model={knowledge}/>)
         }
-		
+
 		let tools=(knowledge.applets||[]).slice(0,2).map(({data,title,desc},i)=>
-			<BottomNavigationItem 
-				key={`_${i}_${title}`} 
-				label={title} 
+			<BottomNavigationItem
+				key={`_${i}_${title}`}
+				label={title}
 				icon={<IconApplet color={COLORS[Math.floor((Math.random() * 10))%5]}/>}
 				onClick={()=>dispatch(ACTION.APPLET(data,title,knowledge))}
 				/>
 		)
-		
-		tools.unshift(<BottomNavigationItem 
+
+		tools.unshift(<BottomNavigationItem
 			key="wechat.session"
-			label="微信好友" 
+			label="微信好友"
 			icon={<IconWechatSession/>}
 			onClick={()=>dispatch(ACTION.WECHAT(knowledge,"SESSION"))}
 			/>
 		)
-		
-		tools.unshift(<BottomNavigationItem 
+
+		tools.unshift(<BottomNavigationItem
 			key="wechat.timeline"
-			label="微信朋友圈" 
+			label="微信朋友圈"
 			icon={<IconWechatTimeline/>}
 			onClick={()=>dispatch(ACTION.WECHAT(knowledge,"TIMELINE"))}
 			/>
 		)
-		
+
 		if(knowledge.sale)
-			tools.push(<BottomNavigationItem 
+			tools.push(<BottomNavigationItem
 						key="sale"
 						label="购买"
 						icon={<IconBuy color="red"/>}
 						onClick={()=>dispatch(ACTION.BUY(knowledge))}
 						/>)
-		
-		
-		
+
+
+
         return (
             <div className="post">
                 <div className="knowledge">
 					<Content {...knowledge}/>
                 </div>
-				
+
 				<article>
 					<section>
 						<BottomNavigation>
 						{tools}
 						</BottomNavigation>
-						
+
 						<AD object={knowledge}/>
-				
-						
+
+
 						<Comment.Inline type={dbKnowledge} model={knowledge}/>
 					</section>
 				</article>
-				
+
                 <CommandBar className="footbar" items={commands}/>
             </div>
         )

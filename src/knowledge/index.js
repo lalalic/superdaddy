@@ -77,12 +77,11 @@ export const ACTION={
 			})
 		})
     }
-	,FETCH1: a=>(dispatch, getState)=>{
+	,FETCH1: _id=>(dispatch, getState)=>{
 		const state=getState()
-		const _id=state.routing.params._id
 		dbKnowledge.findOne({_id}, knowledge=>dispatch(ENTITIES(normalize(knowledge,dbKnowledge.schema).entities)))
 	}
-	,UPDATE: ()=>(dispatch, getState)=>{
+	,UPDATE: id=>(dispatch, getState)=>{
 		const state=getState()
 		const docx=state.ui.knowledge.selectedDocx
         const {knowledge:newVersion}=docx
@@ -91,7 +90,6 @@ export const ACTION={
 		if(errors.length)
 			return Promise.reject(errors.join(";"))
 
-		const id=state.routing.params._id
 		const current=state.entities[dbKnowledge.schema.getKey()][id]
 
 		return docx.upload(current).then(uploaded=>{
