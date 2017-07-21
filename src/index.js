@@ -60,6 +60,66 @@ const Navigator=({children})=>(
 	</div>
 )
 
+const routes=(
+	<Router history={hashHistory}>
+		<Route path="/" component={Navigator}>
+
+			<IndexRoute component={connect(state=>compact(state.qiliApp.user,"_id", "manageMyTime"))(TimeManageUI)}/>
+
+			<Route path="score" component={TimeManageUI.ScorePad}/>
+
+			<Route path="my">
+				<IndexRoute component={connect(state=>{
+					let children=state.entities.children
+					return {babies:children ? Object.keys(children).map(k=>children[k]) : []}
+				})(AccountUI)}/>
+
+				<Route path="setting" component={SettingUI} />
+
+				<Route path="profile">
+					<IndexRoute component={ProfileUI}/>
+				</Route>
+			</Route>
+
+			<Route path="baby">
+				<IndexRoute component={connect()(Creator)}/>
+
+				<Route path=":id"
+					component={connect((state,{params:{id}})=>{
+						let child=getChild(state,id)
+						let target=(child.targets||{})["baby"]
+						let info={...compact(child,"name","photo","bd","gender"),...compact(target,"todo","goal","score","totalScore")}
+						info.isCurrent=child==getCurrentChild(state)
+						return info
+					})(BabyUI)}/>
+			</Route>
+
+			<Route path="knowledge">
+				<IndexRoute
+					component={connect(state=>({knowledges:getKnowledges(state)}))(KnowledgesUI.Creatable)}/>
+
+				<Route path="create"
+					component={connect(state=>compact(state.ui.knowledge.selectedDocx,"knowledge"))(NewKnowledgeUI)}/>
+
+				<Route path=":_id"
+					component={connect((state,{params:{_id}})=>({
+						knowledge:getKnowledge(state,_id)
+						,revising:!!state.ui.knowledge.selectedDocx
+						,inTask:!!(getCurrentChildTasks(state)).find(a=>a.knowledge==_id)||!!(getCurrentChildTasks(state,state.qiliApp.user._id)).find(a=>a.knowledge==_id)
+						}))(KnowledgeUI)}/>
+			</Route>
+
+			<Route path="comment/:type/:_id" component={KnowledgeComment}/>
+
+			<Route path="publish">
+				<IndexRoute component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI)}/>
+				<Route path="list"
+					component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI.List)}/>
+			</Route>
+		</Route>
+	</Router>
+)
+
 export class SuperDaddy extends Component{
 	render(){
 		const {dispatch}=this.props
@@ -85,63 +145,7 @@ export class SuperDaddy extends Component{
 						return dispatch(BabyUI.ACTION.FETCH_FAMILY())
 				}}>
 
-				<Router history={hashHistory}>
-					<Route path="/" component={Navigator}>
-
-						<IndexRoute component={connect(state=>compact(state.qiliApp.user,"_id", "manageMyTime"))(TimeManageUI)}/>
-
-						<Route path="score" component={TimeManageUI.ScorePad}/>
-
-						<Route path="my">
-							<IndexRoute component={connect(state=>{
-								let children=state.entities.children
-								return {babies:children ? Object.keys(children).map(k=>children[k]) : []}
-							})(AccountUI)}/>
-
-							<Route path="setting" component={SettingUI} />
-
-							<Route path="profile">
-								<IndexRoute component={ProfileUI}/>
-							</Route>
-						</Route>
-
-						<Route path="baby">
-							<IndexRoute component={connect()(Creator)}/>
-
-							<Route path=":id"
-								component={connect((state,{params:{id}})=>{
-									let child=getChild(state,id)
-									let target=(child.targets||{})["baby"]
-									let info={...compact(child,"name","photo","bd","gender"),...compact(target,"todo","goal","score","totalScore")}
-									info.isCurrent=child==getCurrentChild(state)
-									return info
-								})(BabyUI)}/>
-						</Route>
-
-						<Route path="knowledge">
-							<IndexRoute
-								component={connect(state=>({knowledges:getKnowledges(state)}))(KnowledgesUI.Creatable)}/>
-
-							<Route path="create"
-								component={connect(state=>compact(state.ui.knowledge.selectedDocx,"knowledge"))(NewKnowledgeUI)}/>
-
-							<Route path=":_id"
-								component={connect((state,{params:{_id}})=>({
-									knowledge:getKnowledge(state,_id)
-									,revising:!!state.ui.knowledge.selectedDocx
-									,inTask:!!(getCurrentChildTasks(state)).find(a=>a.knowledge==_id)||!!(getCurrentChildTasks(state,state.qiliApp.user._id)).find(a=>a.knowledge==_id)
-									}))(KnowledgeUI)}/>
-						</Route>
-
-						<Route path="comment/:type/:_id" component={KnowledgeComment}/>
-
-						<Route path="publish">
-							<IndexRoute component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI)}/>
-							<Route path="list"
-								component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI.List)}/>
-						</Route>
-					</Route>
-				</Router>
+				{routes}
             </QiliApp>
         )
 	}

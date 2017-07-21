@@ -1,5 +1,6 @@
 import docxTemplate from "docx-template"
 import React from "react"
+import cheer from "cheerio"
 import ReactDOM from "react-dom/server"
 
 let uuid=0
@@ -36,7 +37,7 @@ export default function parse(file){
 				case "property":
 					return null
 				break
-				case "inline.picture":
+				case "picture":
 					images.push({url:props.url,crc32:props.crc32})
 				break
 				break
@@ -75,7 +76,7 @@ export function identify(node, officeDocument){
 	let model=docxTemplate.identify(...arguments)
 	if(!model)
 		return model
-	
+
 	switch(model.type){
 	case 'object':
 		let ole=node.children.find(a=>a.name=="o:OLEObject"), rid
@@ -94,6 +95,7 @@ export function identify(node, officeDocument){
 			}
 		}
 	break
+	
 	case 'hyperlink':
 		if("买"==officeDocument.content(node).text().trim())
 			model.type="sale"
@@ -107,10 +109,8 @@ export function identify(node, officeDocument){
 
 function createElement(type,props,children){
 	const {pr,node,type:a,...others}=props
-	if(TYPE[type])
-		return React.createElement(TYPE[type], others,...children)
-	else
-		return null
+	let Type=TYPE[type]||wrapper
+	return React.createElement(Type, others,...children)
 }
 
 const wrapper=({children})=>{
@@ -129,7 +129,7 @@ const TYPE={
 	,p:"p"
 	,r:"span"
 	,t:"span"
-	,"inline.picture":({url})=><img src={url}/>
+	,picture:({url})=><img src={url}/>
 	,hyperlink:({url,children})=><a>{children}</a>
 	,tbl:({children})=><table><tbody>{children}</tbody></table>
 	,tr:"tr"
@@ -138,13 +138,9 @@ const TYPE={
 		return React.createElement(`h${level}`,{},children)
 	}
 	,list:({numId, level, children})=><ul><li>{children}</li></ul>
-	,property:wrapper
-	,drawing:wrapper
 	,block:({children})=><div>{children}</div>
 	,inline:({children})=><span>{children}</span>
 }
-
-import cheer from "cheerio"
 
 function tidy(html){
 	let raw=cheer.load(html)

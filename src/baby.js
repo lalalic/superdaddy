@@ -54,11 +54,12 @@ export const ACTION={
 					return baby
 				})
 	}
-	,REMOVE: id=>(dispatch,getState)=>{
+	,REMOVE: (id,uiHandle)=>(dispatch,getState)=>{
 		return dbFamily.remove(id)
 			.then(a=>{
-				dispatch(ACTION.SWITCH_CURRENT_CHILD(id))
+				uiHandle()
 				dispatch(REMOVE_ENTITIES("children",id))
+				dispatch(ACTION.SWITCH_CURRENT_CHILD())
 			})
 	}
 	,FETCH_FAMILY: a=>(dispatch,getState)=>new Promise((resolve,reject)=>
@@ -176,10 +177,9 @@ export class Baby extends Component{
 							action:"Remove",
 							label:"删除",
 							icon:<IconRemove/>,
-							onSelect:a=>dispatch(ACTION.REMOVE(id))
-								.then(a=>{
-									router.replace("/")
-								})
+							onSelect:a=>{
+								dispatch(ACTION.REMOVE(id, a=>router.replace("/my")))
+							}
 						}
 						]}
 					/>
