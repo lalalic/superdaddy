@@ -127,7 +127,7 @@ export class SuperDaddy extends Component{
 
 							<Route path=":_id"
 								component={connect((state,{params:{_id}})=>({
-									knowledge:getKnowledge(state)
+									knowledge:getKnowledge(state,_id)
 									,revising:!!state.ui.knowledge.selectedDocx
 									,inTask:!!(getCurrentChildTasks(state)).find(a=>a.knowledge==_id)||!!(getCurrentChildTasks(state,state.qiliApp.user._id)).find(a=>a.knowledge==_id)
 									}))(KnowledgeUI)}/>

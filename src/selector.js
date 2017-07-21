@@ -44,11 +44,10 @@ export const getKnowledges=state=>{
 	return []
 }
 
-export const getKnowledge=state=>{
+export const getKnowledge=(state,id)=>{
 	try{
 		const key=Knowledge.schema.getKey()
 		const all=state.entities[key]
-		const id=state.routing.params._id
 		const selectedDocx=state.ui.knowledge.selectedDocx
 		if(all && id && all[id]){
 			if(selectedDocx)
