@@ -26,6 +26,11 @@ const {DialogCommand}=CommandBar
 const COLORS="red,aqua,fuchsia,darkorange,darkmagenta".split(",")
 
 export default class KnowledgeEditor extends Component{
+    static contextTypes={
+    	muiTheme:PropTypes.object,
+    	appBar: PropTypes.element
+    }
+
     componentDidMount(){
 		this.props.dispatch(ACTION.FETCH1(this.props.params._id))
     }
@@ -126,11 +131,12 @@ export default class KnowledgeEditor extends Component{
 						onClick={()=>dispatch(ACTION.BUY(knowledge))}
 						/>)
 
-
-
+        const {muiTheme}=this.context
+        let minHeight=muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height
+    
         return (
             <div className="post">
-                <div className="knowledge">
+                <div className="knowledge" style={{minHeight}}>
 					<Content {...knowledge}/>
                 </div>
 
@@ -141,9 +147,6 @@ export default class KnowledgeEditor extends Component{
 						</BottomNavigation>
 
 						<AD object={knowledge}/>
-
-
-						<Comment.Inline type={dbKnowledge} model={knowledge}/>
 					</section>
 				</article>
 

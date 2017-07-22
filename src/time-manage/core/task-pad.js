@@ -41,7 +41,7 @@ const TaskPadWide=(({todos=[],current=new Date().getDay(),days=DAYS(current)})=>
 		/>
 		<Divider/>
 
-		{todos.map(({knowledge, content:task, dones=[]},i)=>(
+		{todos.map(({knowledge, days=[], content:task, dones=[]},i)=>(
 			<ListItem key={i}
 				primaryText={knowledge ? <TaskTitle {...{knowledge,task}}/> : task}
 				rightIconButton={
@@ -57,6 +57,10 @@ const TaskPadWide=(({todos=[],current=new Date().getDay(),days=DAYS(current)})=>
 						</span>
 					))}
 					</Wrapper>
+				}
+				open={true}
+				nestedItems={
+					days.map((d,i)=><ListItem key={i} primaryText={d}/>)
 				}
 				/>
 		)).reduce((state,a,i)=>{
@@ -75,11 +79,13 @@ const TaskPadMobile=({todos=[],current=new Date().getDay(),days=DAYS(current)},
 			days.map((day,i)=>(
 				<List key={i} style={{minHeight:minHeight*3/4}}>
 					{
-						todos.map(({knowledge, content:task,dones=[]},j)=>(
+						todos.map(({knowledge, days=[], content:task,dones=[]},j)=>(
 							<ListItem key={j}
 								primaryText={knowledge ? <TaskTitle {...{knowledge,task}}/> : task}
-								onClick={e=>-1==dones.indexOf(i) && current>=i && dispatch(ACTION.DONE(task,i))}
 								leftCheckbox={<TodoStatus todo={task} done={-1!=dones.indexOf(i)} day={i} current={current}/>}
+								nestedItems={
+									days.map((d,i)=><ListItem key={i} leftCheckbox={<span/>} primaryText={d}/>)
+								}
 							/>
 						))
 					}
@@ -100,7 +106,7 @@ const TodoStatus=({todo,done, day, current, ...others},{dispatch,ACTION})=>{
 	else if(day>current)
 		return (<IconSmile color={COLOR_DISABLED} {...others}/>)
 	else
-		return (<IconSmile color={COLOR_ENABLED} hoverColor={COLOR_HOVER} onClick={e=>dispatch(ACTION.DONE(todo,day))}  {...others}/>)
+		return (<IconSmile color={COLOR_ENABLED} hoverColor={COLOR_HOVER} onTouchTap={e=>dispatch(ACTION.DONE(todo,day))}  {...others}/>)
 }
 
 TodoStatus.contextTypes={
