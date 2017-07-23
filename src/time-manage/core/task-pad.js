@@ -12,6 +12,7 @@ import {
 
 import SwipeableTabs from "../../components/swipe-tabs"
 import IconSmile from "material-ui/svg-icons/social/mood"
+import Avatar from 'material-ui/Avatar';
 
 export const TaskPad=(props=>(
 	<MediaQuery maxWidth={960}>
@@ -59,9 +60,7 @@ const TaskPadWide=(({todos=[],current=new Date().getDay(),days=DAYS(current)})=>
 					</Wrapper>
 				}
 				open={true}
-				nestedItems={
-					days.map((d,i)=><ListItem key={i} primaryText={d}/>)
-				}
+				nestedItems={knowledgeTasks({days,dones,current})}
 				/>
 		)).reduce((state,a,i)=>{
 			state.push(a)
@@ -83,9 +82,8 @@ const TaskPadMobile=({todos=[],current=new Date().getDay(),days=DAYS(current)},
 							<ListItem key={j}
 								primaryText={knowledge ? <TaskTitle {...{knowledge,task}}/> : task}
 								leftCheckbox={<TodoStatus todo={task} done={-1!=dones.indexOf(i)} day={i} current={current}/>}
-								nestedItems={
-									days.map((d,i)=><ListItem key={i} leftCheckbox={<span/>} primaryText={d}/>)
-								}
+								initiallyOpen={true}
+								nestedItems={knowledgeTasks({days,dones,current})}
 							/>
 						))
 					}
@@ -120,6 +118,16 @@ const TaskTitle=({knowledge,task},{router,dispatch,ACTION})=>(
 		{task}
 	</span>
 )
+
+function knowledgeTasks({days=[], current, dones=[]}){
+	return days.map((d,i)=><ListItem key={i}
+		style={{fontSize:"smaller"}}
+		leftAvatar={<Avatar
+				style={{fontSize:"smaller"}}
+				color={dones.includes(i) ? COLOR_DONE : (current>i ? COLOR_DISABLED : COLOR_ENABLED)}
+				backgroundColor="transparent">D{i+1}</Avatar>}
+		primaryText={d}/>)
+}
 
 TaskTitle.contextTypes={
 	router: PropTypes.object,

@@ -29,7 +29,7 @@ import ProfileUI from "./profile"
 
 const INIT_STATE={}
 
-export const REDUCER=(state=INIT_STATE,{type,payload})=>{
+const REDUCER=(state=INIT_STATE,{type,payload})=>{
 	switch(type){
 	case 'CURRENT_CHILD_CHANGE':
 		return Object.assign({},state,{child:payload._id})
@@ -120,7 +120,7 @@ const routes=(
 	</Router>
 )
 
-export class SuperDaddy extends Component{
+class SuperDaddy extends Component{
 	render(){
 		const {dispatch}=this.props
         return (
@@ -153,44 +153,10 @@ export class SuperDaddy extends Component{
 
 const StateSuperDaddy=connect()(SuperDaddy)
 
-export const main=QiliApp.render(<StateSuperDaddy/>, {
+QiliApp.render(<StateSuperDaddy/>, {
 	superdaddy:REDUCER,
 	ui: combineReducers({
 		knowledge:KnowledgesUI.REDUCER,
 		time:TimeManageUI.reducer
 	})
 })
-
-
-/*
-import TaskUI from './task'
-import SettingUI from './setting'
-import TasksUI, {Approvings} from "./tasks"
-import ScoreUI from "./score"
-import InviteUI from "./invite"
-*/
-
-
-	{/*
-        <Route name="tasks" component={TasksUI}/>
-
-        <Route path="score" name="score" component={ScoreUI}/>
-
-        <Route path="account"  name="account" contextual={false} component={AccountUI} />
-
-        <Route path="task/:_id" contextual={false} component={TaskUI}/>
-
-        <Route path="courses">
-            <IndexRoute component={KnowledgesUI.Course}/>
-            <Route path="done"/>
-        </Route>
-
-
-
-        <Route path="publish" component={PublishUI}>
-            <IndexRoute/>
-            <Route path=":what"/>
-        </Route>
-
-        <Route path="invite" component={InviteUI}/>
-*/}
