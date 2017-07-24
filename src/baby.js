@@ -7,9 +7,11 @@ import {Family as dbFamily} from './db'
 import {getCurrentChild, getChild} from "./selector"
 
 import PublishUI from "./publish"
+import Plan from "./plan"
 
 import IconRemove from "material-ui/svg-icons/content/remove-circle"
 import IconPublish from "material-ui/svg-icons/action/card-giftcard"
+import IconPlan from "material-ui/svg-icons/editor/linear-scale"
 
 import {InfoForm, Field} from "qili-app/lib/components/info-form"
 
@@ -102,6 +104,9 @@ export const ACTION={
 		}
 	}
 	,CURRENT_CHILD_CHANGE: child=>({type:'CURRENT_CHILD_CHANGE',payload:child})
+	,PLAN: plan=>{
+		return {}
+	}
 }
 
 export class Baby extends Component{
@@ -172,6 +177,12 @@ export class Baby extends Component{
 							label:"出版",
 							icon:<IconPublish/>,
 							onSelect:a=>router.push("/publish")
+						}
+						,{
+							action:"plan",
+							label:"年度计划",
+							icon:<IconPlan/>,
+							onSelect:a=>router.push(`/baby/${id}/plan`)
 						}
 						,{
 							action:"Remove",

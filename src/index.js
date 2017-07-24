@@ -26,6 +26,7 @@ import NewKnowledgeUI from './knowledge/create'
 import KnowledgesUI from './knowledge/'
 import KnowledgeComment from "./knowledge/comment"
 import ProfileUI from "./profile"
+import Plan from "./plan"
 
 const INIT_STATE={}
 
@@ -84,14 +85,25 @@ const routes=(
 			<Route path="baby">
 				<IndexRoute component={connect()(Creator)}/>
 
-				<Route path=":id"
-					component={connect((state,{params:{id}})=>{
+				<Route path=":id">
+					<IndexRoute component={connect((state,{params:{id}})=>{
 						let child=getChild(state,id)
+						if(!child)
+							return {}
 						let target=(child.targets||{})["baby"]
 						let info={...compact(child,"name","photo","bd","gender"),...compact(target,"todo","goal","score","totalScore")}
 						info.isCurrent=child==getCurrentChild(state)
 						return info
 					})(BabyUI)}/>
+					
+					<Route path="plan"  component={connect((state,{params:{id}})=>{
+							let child=getChild(state,id)
+							if(!child)
+								return {}
+							return child.plan||{}
+						})(Plan)}/>
+				</Route>
+					
 			</Route>
 
 			<Route path="knowledge">
