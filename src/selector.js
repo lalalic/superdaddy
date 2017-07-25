@@ -31,7 +31,15 @@ export const getCurrentChildTarget=(state,domain="baby")=>{
 	return {}
 }
 
-export const getKnowledges=state=>{
+export function getChildPlan(state, id){
+	let child=getChild(state,id)
+	if(child && child.plan){
+		return child.plan
+	}
+	return {year: new Date().getFullYear()}
+}
+
+export const getCurrentKnowledges=state=>{
 	try{
 		const key=Knowledge.schema.getKey()
 		const all=state.entities[key]
@@ -44,7 +52,12 @@ export const getKnowledges=state=>{
 	return []
 }
 
-export const getKnowledge=(state,id)=>{
+export function getKnowledges(state){
+	const key=Knowledge.schema.getKey()
+	return state.entities[key]
+}
+
+export const getCurrentKnowledge=(state,id)=>{
 	try{
 		const key=Knowledge.schema.getKey()
 		const all=state.entities[key]
@@ -59,4 +72,14 @@ export const getKnowledge=(state,id)=>{
 
 	}
 	return null
+}
+
+export function getKnowledge(state, id){
+	const key=Knowledge.schema.getKey()
+	const all=state.entities[key]
+	return all[id]
+}
+
+export function getCaps(state){
+	return "专注力,记忆力,观察力,影响力".split(",")
 }

@@ -42,12 +42,16 @@ const INIT_STATE={
 	knowledges:[]
 }
 export const ACTION={
-    FETCH: query=>dispatch=>dbKnowledge.find(query)
+    FETCH: (query,done)=>dispatch=>dbKnowledge.find(query)
         .fetch(knowledges=>{
 			if(knowledges && knowledges.length){
 				let data=normalize(knowledges, arrayOf(dbKnowledge.schema))
 				dispatch(ENTITIES(data.entities))
 				dispatch({type:`@@${DOMAIN}/fetched`, payload:data.result})
+			}
+			
+			if(done){
+				done(knowledges)
 			}
         })
     ,SELECT_DOCX: a=>dispatch=>fileSelector.select()

@@ -13,7 +13,8 @@ import IconReward from "material-ui/svg-icons/places/child-care"
 import CheckUpdate from "qili-app/lib/components/check-update"
 
 import {Family,Knowledge,init} from './db'
-import {getCurrentChild, getChild, getCurrentChildTasks, getKnowledges, getKnowledge} from "./selector"
+import {getCurrentChild, getChild, getCurrentChildTasks, 
+	getCurrentKnowledges, getCurrentKnowledge, getChildPlan} from "./selector"
 
 const {Empty, Comment, CommandBar, Setting:SettingUI}=UI
 
@@ -95,27 +96,20 @@ const routes=(
 						info.isCurrent=child==getCurrentChild(state)
 						return info
 					})(BabyUI)}/>
-					
-					<Route path="plan"  component={connect((state,{params:{id}})=>{
-							let child=getChild(state,id)
-							if(!child)
-								return {}
-							return child.plan||{}
-						})(Plan)}/>
 				</Route>
 					
 			</Route>
 
 			<Route path="knowledge">
 				<IndexRoute
-					component={connect(state=>({knowledges:getKnowledges(state)}))(KnowledgesUI.Creatable)}/>
+					component={connect(state=>({knowledges:getCurrentKnowledges(state)}))(KnowledgesUI.Creatable)}/>
 
 				<Route path="create"
 					component={connect(state=>compact(state.ui.knowledge.selectedDocx,"knowledge"))(NewKnowledgeUI)}/>
 
 				<Route path=":_id"
 					component={connect((state,{params:{_id}})=>({
-						knowledge:getKnowledge(state,_id)
+						knowledge:getUIKnowledge(state,_id)
 						,revising:!!state.ui.knowledge.selectedDocx
 						,inTask:!!(getCurrentChildTasks(state)).find(a=>a.knowledge==_id)||!!(getCurrentChildTasks(state,state.qiliApp.user._id)).find(a=>a.knowledge==_id)
 						}))(KnowledgeUI)}/>
@@ -128,6 +122,14 @@ const routes=(
 				<Route path="list"
 					component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI.List)}/>
 			</Route>
+			
+			<Route path="plan"  component={connect(state=>{
+					let child=getCurrentChild(state)
+					if(child){
+						return {id:child._id, ...getChildPlan(state,child._id)}
+					}
+				})(Plan)}/>
+			
 		</Route>
 	</Router>
 )

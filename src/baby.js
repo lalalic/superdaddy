@@ -182,7 +182,7 @@ export class Baby extends Component{
 							action:"plan",
 							label:"年度计划",
 							icon:<IconPlan/>,
-							onSelect:a=>router.push(`/baby/${id}/plan`)
+							onSelect:a=>router.push("/plan")
 						}
 						,{
 							action:"Remove",
