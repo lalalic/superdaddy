@@ -4,6 +4,8 @@ import cheer from "cheerio"
 import ReactDOM from "react-dom/server"
 
 let uuid=0
+
+const ARRAY=/^([a-z]+)(\d+)$/i
 export default function parse(file){
 	let properties={}, applets=[], sale
 	return docxTemplate.load(file).then(docx0=>{
@@ -27,7 +29,7 @@ export default function parse(file){
 		})
 		
 		return docxTemplate.parse(docx0).then(varDoc=>varDoc.assemble({goal:"promote"})).then(docx=>{
-			let steps=[], images=[],id=`_parser${uuid++}`
+			let steps=[], days=[], images=[],id=`_parser${uuid++}`
 			let doc=docx.render((type,props,children)=>{
 				switch(type){
 				case "document":
@@ -41,12 +43,11 @@ export default function parse(file){
 					images.push({url:props.url,crc32:props.crc32})
 				break
 				break
-				case 'step':
-
+				case '[step]':
+					steps.push(props.text)
 				break
-				case "block":
-				case "inline":
-					
+				case '[day]':
+					days.push(props.text)
 				break
 				case "sale":
 					type="hyperlink"
@@ -62,6 +63,7 @@ export default function parse(file){
 				html,
 				properties,
 				steps,
+				days,
 				images,
 				applets,
 				sale,
@@ -76,7 +78,7 @@ export function identify(node, officeDocument){
 	let model=docxTemplate.identify(...arguments)
 	if(!model)
 		return model
-
+	let $=officeDocument.content
 	switch(model.type){
 	case 'object':
 		let ole=node.children.find(a=>a.name=="o:OLEObject"), rid
@@ -88,16 +90,27 @@ export function identify(node, officeDocument){
 			let shape=node.children.find(a=>a.name=="v:shape")
 			if(shape){
 				let alt=(shape.attribs.alt||"").trim()
-				let desc=officeDocument.content(node).closest("w\\:p").text().trim()
+				let desc=$(node).closest("w\\:p").text().trim()
 				model.title=alt || desc || "工具"
 				if(desc)
 					model.desc=desc
 			}
 		}
 	break
-	
+	case "block":{
+		let title=$(node).find(">w\\:sdtPr>w\\:alias").attr("w:val")
+		if(title){
+			let info=title.match(ARRAY)
+			if(info){
+				let [,key,i]=info
+				model.type=`[${key}]`
+				model.text=$(node).text().trim()
+			}
+		}
+	}
+	break
 	case 'hyperlink':
-		if("买"==officeDocument.content(node).text().trim())
+		if("买"==$(node).text().trim())
 			model.type="sale"
 	break
 	}
