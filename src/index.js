@@ -68,7 +68,12 @@ const routes=(
 
 			<IndexRoute component={connect(state=>compact(state.qiliApp.user,"_id", "manageMyTime"))(TimeManageUI)}/>
 
-			<Route path="score" component={TimeManageUI.ScorePad}/>
+			<Route path="score" component={connect(state=>{
+				let child=getCurrentChild(state)
+				if(child){
+					return {child}
+				}
+			})(TimeManageUI.ScorePad)}/>
 
 			<Route path="my">
 				<IndexRoute component={connect(state=>{

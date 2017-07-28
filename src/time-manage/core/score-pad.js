@@ -1,6 +1,10 @@
 import React, {Component, PropTypes} from "react"
 import IconSmile from "material-ui/svg-icons/social/mood"
-import {UI} from "qili-app"
+import Comment from "qili-app/lib/components/comment"
+import TextFieldx from "qili-app/lib/components/text-field"
+import Paper from 'material-ui/Paper'
+
+import {Family} from "../../db"
 
 import {
 	yellow500 as COLOR_DONE
@@ -9,9 +13,7 @@ import {
 	,grey300 as COLOR_DISABLED
 } from "material-ui/styles/colors"
 
-const {TextFieldx}=UI
-
-export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0},context)=>{
+export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child},context)=>{
 	const {appBar, muiTheme}=context
 	
 	let width=muiTheme.page.width
@@ -61,6 +63,9 @@ export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0},context)=>{
 			<div>
 				{smiles}
 			</div>
+			<Paper zDepth={1} style={{padding:10}}>
+				<Comment.Inline type={Family} model={child} />
+			</Paper>
 		</div>
 	)
 }
