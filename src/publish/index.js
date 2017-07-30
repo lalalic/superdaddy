@@ -14,6 +14,8 @@ import {getCurrentChild} from "../selector"
 
 import History from "./list"
 
+import Assembler from "./assemble"
+
 const ACTION={
 	PUBLISH: info=>(dispatch,getState)=>{
 		let state=getState()
@@ -22,10 +24,14 @@ const ACTION={
 		dbPublish.upsert(info)
 		return {}
 	},
-	PREVIEW: info=>{
+	PREVIEW: info=>(dispatch, getState)=>{
 		let state=getState()
 		const child=getCurrentChild(state)
-		info.child={_id:child._id, name: child.name}
+		info.child=child
+		new Assembler(info)
+			.assemble()
+			.then(docx=>docx.save(`${child.name}.docx`))
+
 		return {}
 	}
 }
@@ -45,12 +51,12 @@ export default class Publisher extends Component{
 					<TextField
 						floatingLabelText="书名"
 						/>
-						
-					<DatePicker 
+
+					<DatePicker
 						floatingLabelText="自从"
 						autoOk={true} mode="landscape"/>
-						
-					<DatePicker 
+
+					<DatePicker
 						floatingLabelText="结束时间"
 						autoOk={true} mode="landscape"/>
 
@@ -79,29 +85,29 @@ export default class Publisher extends Component{
                 <UI.CommandBar className="footbar"
                     items={["Back",
 						{
-							action:"Preview", 
-							label:"预览", 
-							onSelect:e=>dispatch(ACTION.PREVIEW({...this.state})), 
+							action:"Preview",
+							label:"预览",
+							onSelect:e=>dispatch(ACTION.PREVIEW({...this.state})),
 							icon:<IconView/>
 						},
 						{
-							action:"Print", 
-							label:"出版", 
-							onSelect:e=>dispatch(ACTION.PUBLISH({...this.state})), 
+							action:"Print",
+							label:"出版",
+							onSelect:e=>dispatch(ACTION.PUBLISH({...this.state})),
 							icon:<IconPrint/>
 						},
 						{
-							action:"history", 
-							label:"出版列表", 
-							onSelect:e=>router.push("/publish/list"), 
+							action:"history",
+							label:"出版列表",
+							onSelect:e=>router.push("/publish/list"),
 							icon:<IconPrint/>
 						}
 						]}/>
             </div>
         )
     }
-	
+
 	static contextTypes={router:PropTypes.object}
-	
+
 	static List=History
 }

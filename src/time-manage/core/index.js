@@ -16,9 +16,15 @@ import {ScorePad as _ScorePad} from "./score-pad"
 
 import {getCurrentChild, getCurrentChildTarget, getCurrentChildTasks} from "../../selector"
 
+import {ACTION as Comment_ACTION} from "qili-app/lib/db/comment"
 
 export function create(AppBar, domain){
 	const DOMAIN=domain
+
+	let comment=a=>a
+	if(DOMAIN=="baby"){
+		comment=(child,content)=>dispatch(Comment_ACTION.CREATE(Family._name,child._id, content,{system:true}))
+	}
 
 	const changeTodos=f=>(dispatch,getState)=>{
 		const state=getState()
@@ -39,7 +45,10 @@ export function create(AppBar, domain){
 			handled=Promise.resolve()
 		child.targets[domain]=target
 		return handled.then(a=>Family.upsert(child))
-			.then(updated=>dispatch(ENTITIES(normalize(updated, Family.schema).entities)))
+			.then(updated=>{
+				dispatch(ENTITIES(normalize(updated, Family.schema).entities))
+				return updated
+			})
 	}
 	const ACTION={
 		SET_GOAL: (goal, todo)=>(dispatch,getState)=>{
@@ -53,6 +62,7 @@ export function create(AppBar, domain){
 			child.targets[domain]=target
 			return Family.upsert(child)
 				.then(updated=>dispatch(ENTITIES(normalize(updated,Family.schema).entities)))
+				.then(a=>comment(child,`我设置新的目标了，用${goal}个😊就可以得到${todo}`))
 		},
 		ADD: todo=>(dispatch, getState)=>{
 			if(!todo)
@@ -68,24 +78,41 @@ export function create(AppBar, domain){
 						todos.push({content:todo})
 				}
 			})(dispatch,getState)
+				.then(child=>comment(child,`这周又给我加了个新任务：${todo}`))
 		}
 		,REMOVE: todo=>changeTodos(todos=>{
-			let i=typeof(todo)=='object'
-				? todos.findIndex(a=>a.knowledge==todo._id)
-				: todos.findIndex(a=>a.content==todo && !a.knowledge);
+				let i=typeof(todo)=='object'
+					? todos.findIndex(a=>a.knowledge==todo._id)
+					: todos.findIndex(a=>a.content==todo && !a.knowledge);
 
-			if(i!=-1)
-				todos.splice(i,1)
-		})
+				if(i!=-1)
+					todos.splice(i,1)
+			}).then(child=>comment(child,`Yeah, 这周不用做${todo}了`))
+
 		,REMOVE_BY_INDEX: i=>changeTodos(todos=>todos.splice(i,1))
+
 		,DONE: (todo,day)=>changeTodos((todos,target)=>{
-			const task=todos.find(a=>a.content==todo)
-			let {dones=[]}=task
-			dones.push(day)
-			task.dones=dones
-			target.score=target.score+1
-			target.totalScore=(target.totalScore||0)+1
-		})
+				const task=todos.find(a=>a.content==todo)
+				let {dones=[]}=task
+				dones.push(day)
+				task.dones=dones
+				target.score=target.score+1
+				target.totalScore=(target.totalScore||0)+1
+			}).then(child=>{
+				let {goal,todo,score}=child.targets.baby
+				let content=null
+				let left=goal-score
+				if(score==1){
+					comment(child,`Yeah, ${todo}完成了，得到本周的第一个笑脸了，加油`)
+				}else if(left==0){
+					comment(child,`Yeah,任务完成，可以得到${todo}了`)
+				}else if(left<3){
+					comment(child,`Yeah, ${todo}完成了，又得到一个笑脸了，还差${left}个笑脸就可以得到${todo}了，坚持`)
+				}else{
+					comment(child,`Yeah, ${todo}完成了，又得到一个笑脸了，一共有${target.score}个笑脸了，加油`)
+				}
+			})
+
 		,EDITING: (status=0)=>({type:`${DOMAIN}/edit`, payload:status})
 		,UP: i=>changeTodos(todos=>{
 			let target=todos[i]
@@ -123,17 +150,6 @@ export function create(AppBar, domain){
 				}else
 					target.todoWeek=Task.getWeekStart()
 			})(dispatch,getState)
-		}
-		,COMMENT: knowledge=>(dispatch, getState)=>{
-			let todoId
-			return changeTodos((todos,target,child)=>{
-				let todo=todos.find(a=>a.knowledge==knowledge)
-				if(todoId=todo._id){
-					return false
-				}else{
-					todoId=todo._id=Task.createUid()
-				}
-			})(dispatch, getState).then(a=>todoId)
 		}
 	}
 
