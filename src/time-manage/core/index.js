@@ -16,14 +16,14 @@ import {ScorePad as _ScorePad} from "./score-pad"
 
 import {getCurrentChild, getCurrentChildTarget, getCurrentChildTasks} from "../../selector"
 
-import {ACTION as Comment_ACTION} from "qili-app/lib/db/comment"
+import {ACTION as Comment_ACTION} from "qili-app/lib/components/comment"
 
 export function create(AppBar, domain){
 	const DOMAIN=domain
 
 	let comment=a=>a
 	if(DOMAIN=="baby"){
-		comment=(child,content)=>dispatch(Comment_ACTION.CREATE(Family._name,child._id, content,{system:true}))
+		comment=(child,content)=>dispatch=>dispatch(Comment_ACTION.CREATE(Family._name,child._id, content,{system:true}))
 	}
 
 	const changeTodos=f=>(dispatch,getState)=>{
@@ -62,7 +62,7 @@ export function create(AppBar, domain){
 			child.targets[domain]=target
 			return Family.upsert(child)
 				.then(updated=>dispatch(ENTITIES(normalize(updated,Family.schema).entities)))
-				.then(a=>comment(child,`我设置新的目标了，用${goal}个😊就可以得到${todo}`))
+				.then(a=>comment(child,`我设置新的目标了，用${goal}个😊就可以得到${todo}`)(dispatch))
 		},
 		ADD: todo=>(dispatch, getState)=>{
 			if(!todo)
@@ -78,38 +78,38 @@ export function create(AppBar, domain){
 						todos.push({content:todo})
 				}
 			})(dispatch,getState)
-				.then(child=>comment(child,`这周又给我加了个新任务：${todo}`))
+				.then(child=>comment(child,`这周又给我加了个新任务：${todo}`)(dispatch))
 		}
-		,REMOVE: todo=>changeTodos(todos=>{
+		,REMOVE: todo=>(dispatch,getState)=>changeTodos(todos=>{
 				let i=typeof(todo)=='object'
 					? todos.findIndex(a=>a.knowledge==todo._id)
 					: todos.findIndex(a=>a.content==todo && !a.knowledge);
 
 				if(i!=-1)
 					todos.splice(i,1)
-			}).then(child=>comment(child,`Yeah, 这周不用做${todo}了`))
+			})(dispatch,getState).then(child=>comment(child,`Yeah, 这周不用做${todo}了`)(dispatch))
 
 		,REMOVE_BY_INDEX: i=>changeTodos(todos=>todos.splice(i,1))
 
-		,DONE: (todo,day)=>changeTodos((todos,target)=>{
+		,DONE: (todo,day)=>(dispatch,getState)=>changeTodos((todos,target)=>{
 				const task=todos.find(a=>a.content==todo)
 				let {dones=[]}=task
 				dones.push(day)
 				task.dones=dones
 				target.score=target.score+1
 				target.totalScore=(target.totalScore||0)+1
-			}).then(child=>{
+			})(dispatch,getState).then(child=>{
 				let {goal,todo,score}=child.targets.baby
 				let content=null
 				let left=goal-score
 				if(score==1){
-					comment(child,`Yeah, ${todo}完成了，得到本周的第一个笑脸了，加油`)
+					comment(child,`Yeah, ${todo}完成了，得到本周的第一个笑脸了，加油`)(dispatch)
 				}else if(left==0){
-					comment(child,`Yeah,任务完成，可以得到${todo}了`)
+					comment(child,`Yeah,任务完成，可以得到${todo}了`)(dispatch)
 				}else if(left<3){
-					comment(child,`Yeah, ${todo}完成了，又得到一个笑脸了，还差${left}个笑脸就可以得到${todo}了，坚持`)
+					comment(child,`Yeah, ${todo}完成了，又得到一个笑脸了，还差${left}个笑脸就可以得到${todo}了，坚持`)(dispatch)
 				}else{
-					comment(child,`Yeah, ${todo}完成了，又得到一个笑脸了，一共有${target.score}个笑脸了，加油`)
+					comment(child,`Yeah, ${todo}完成了，又得到一个笑脸了，一共有${score}个笑脸了，加油`)(dispatch)
 				}
 			})
 

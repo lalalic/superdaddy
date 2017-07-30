@@ -15,10 +15,10 @@ import {
 
 export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child},context)=>{
 	const {appBar, muiTheme}=context
-	
+
 	let width=muiTheme.page.width
 	let height=muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height
-	
+
 	if(totalPerScreen==score){
 		width=width/2
 		height=height/2
@@ -64,7 +64,7 @@ export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child},contex
 				{smiles}
 			</div>
 			<Paper zDepth={1} style={{padding:10}}>
-				<Comment.Inline type={Family} model={child} />
+				<Comment.Inline type={Family} model={child} system={{thumbnail:child.thumbnail, name:child.name}}/>
 			</Paper>
 		</div>
 	)
