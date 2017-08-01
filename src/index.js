@@ -5,6 +5,7 @@ import {Router, Route, IndexRoute, Direct, IndexRedirect, hashHistory} from "rea
 import {User,QiliApp, UI, ENTITIES, compact} from 'qili-app'
 import {combineReducers} from "redux"
 import {connect} from "react-redux"
+import MediaQuery from "react-responsive"
 
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconAccount from 'material-ui/svg-icons/action/account-box'
@@ -63,80 +64,99 @@ const Navigator=({children})=>(
 )
 
 const routes=(
-	<Router history={hashHistory}>
-		<Route path="/" component={Navigator}>
+	<MediaQuery tv={true}>
+	{(matches)=>{
+		if(matches){
+			return (
+				<Router history={hashHistory}>
+					<Route path="/" component={connect(state=>{
+							let child=getCurrentChild(state)
+							if(child){
+								return {child}
+							}
+						})(TimeManageUI.ScorePad)}/>
+				</Router>
+			)
+		}else{
+			return (
+				<Router history={hashHistory}>
+					<Route path="/" component={Navigator}>
 
-			<IndexRoute component={connect(state=>compact(state.qiliApp.user,"_id", "manageMyTime"))(TimeManageUI)}/>
+						<IndexRoute component={connect(state=>compact(state.qiliApp.user,"_id", "manageMyTime"))(TimeManageUI)}/>
 
-			<Route path="score" component={connect(state=>{
-				let child=getCurrentChild(state)
-				if(child){
-					return {child}
-				}
-			})(TimeManageUI.ScorePad)}/>
+						<Route path="score" component={connect(state=>{
+							let child=getCurrentChild(state)
+							if(child){
+								return {child}
+							}
+						})(TimeManageUI.ScorePad)}/>
 
-			<Route path="my">
-				<IndexRoute component={connect(state=>{
-					let children=state.entities.children
-					return {babies:children ? Object.keys(children).map(k=>children[k]) : []}
-				})(AccountUI)}/>
+						<Route path="my">
+							<IndexRoute component={connect(state=>{
+								let children=state.entities.children
+								return {babies:children ? Object.keys(children).map(k=>children[k]) : []}
+							})(AccountUI)}/>
 
-				<Route path="setting" component={SettingUI} />
+							<Route path="setting" component={SettingUI} />
 
-				<Route path="profile">
-					<IndexRoute component={ProfileUI}/>
-				</Route>
-			</Route>
+							<Route path="profile">
+								<IndexRoute component={ProfileUI}/>
+							</Route>
+						</Route>
 
-			<Route path="baby">
-				<IndexRoute component={connect()(Creator)}/>
+						<Route path="baby">
+							<IndexRoute component={connect()(Creator)}/>
 
-				<Route path=":id">
-					<IndexRoute component={connect((state,{params:{id}})=>{
-						let child=getChild(state,id)
-						if(!child)
-							return {}
-						let target=(child.targets||{})["baby"]
-						let info={...compact(child,"name","photo","bd","gender"),...compact(target,"todo","goal","score","totalScore")}
-						info.isCurrent=child==getCurrentChild(state)
-						return info
-					})(BabyUI)}/>
-				</Route>
-					
-			</Route>
+							<Route path=":id">
+								<IndexRoute component={connect((state,{params:{id}})=>{
+									let child=getChild(state,id)
+									if(!child)
+										return {}
+									let target=(child.targets||{})["baby"]
+									let info={...compact(child,"name","photo","bd","gender"),...compact(target,"todo","goal","score","totalScore")}
+									info.isCurrent=child==getCurrentChild(state)
+									return info
+								})(BabyUI)}/>
+							</Route>
+								
+						</Route>
 
-			<Route path="knowledge">
-				<IndexRoute
-					component={connect(state=>({knowledges:getCurrentKnowledges(state)}))(KnowledgesUI.Creatable)}/>
+						<Route path="knowledge">
+							<IndexRoute
+								component={connect(state=>({knowledges:getCurrentKnowledges(state)}))(KnowledgesUI.Creatable)}/>
 
-				<Route path="create"
-					component={connect(state=>compact(state.ui.knowledge.selectedDocx,"knowledge"))(NewKnowledgeUI)}/>
+							<Route path="create"
+								component={connect(state=>compact(state.ui.knowledge.selectedDocx,"knowledge"))(NewKnowledgeUI)}/>
 
-				<Route path=":_id"
-					component={connect((state,{params:{_id}})=>({
-						knowledge:getCurrentKnowledge(state,_id)
-						,revising:!!state.ui.knowledge.selectedDocx
-						,inTask:!!(getCurrentChildTasks(state)).find(a=>a.knowledge==_id)||!!(getCurrentChildTasks(state,state.qiliApp.user._id)).find(a=>a.knowledge==_id)
-						}))(KnowledgeUI)}/>
-			</Route>
+							<Route path=":_id"
+								component={connect((state,{params:{_id}})=>({
+									knowledge:getCurrentKnowledge(state,_id)
+									,revising:!!state.ui.knowledge.selectedDocx
+									,inTask:!!(getCurrentChildTasks(state)).find(a=>a.knowledge==_id)||!!(getCurrentChildTasks(state,state.qiliApp.user._id)).find(a=>a.knowledge==_id)
+									}))(KnowledgeUI)}/>
+						</Route>
 
-			<Route path="comment/:type/:_id" component={KnowledgeComment}/>
+						<Route path="comment/:type/:_id" component={KnowledgeComment}/>
 
-			<Route path="publish">
-				<IndexRoute component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI)}/>
-				<Route path="list"
-					component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI.List)}/>
-			</Route>
-			
-			<Route path="plan"  component={connect(state=>{
-					let child=getCurrentChild(state)
-					if(child){
-						return {id:child._id, ...getChildPlan(state,child._id)}
-					}
-				})(Plan)}/>
-			
-		</Route>
-	</Router>
+						<Route path="publish">
+							<IndexRoute component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI)}/>
+							<Route path="list"
+								component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI.List)}/>
+						</Route>
+						
+						<Route path="plan"  component={connect(state=>{
+								let child=getCurrentChild(state)
+								if(child){
+									return {id:child._id, ...getChildPlan(state,child._id)}
+								}
+							})(Plan)}/>
+						
+					</Route>
+				</Router>
+			)
+		}
+	}}
+	</MediaQuery>
 )
 
 class SuperDaddy extends Component{
@@ -163,7 +183,6 @@ class SuperDaddy extends Component{
 						init()
 						return dispatch(BabyUI.ACTION.FETCH_FAMILY())
 				}}>
-
 				{routes}
             </QiliApp>
         )
