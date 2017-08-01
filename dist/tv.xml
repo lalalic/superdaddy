@@ -11,7 +11,8 @@
     <plugin name="cordova-plugin-whitelist" spec="1.2.2" />
     <plugin name="cordova-plugin-file" spec="4.2.0" />
     <plugin name="cordova-sqlite-storage" spec="1.4.6" />
-    <plugin name="https://github.com/hughisaacs2/Cordova-Android-TV-Plugin.git"/>
+    <plugin name="com.hughisaacs2.cordova.plugins.androidtvplugin"
+           spec="https://github.com/hughisaacs2/Cordova-Android-TV-Plugin.git" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
