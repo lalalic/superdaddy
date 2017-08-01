@@ -61,8 +61,10 @@
     "build.debug": "webpack -d",
     "test": "jest __tests__",
     "dev": "webpack-dev-server --hot --inline -d --entry=./.test.mongo.js",
-    "cordova": "cordova create cordova --link-to=dist && cd cordova && cordova platform add android && cordova build android"
-  },
+    "cordova": "cordova create cordova --link-to=dist && cd cordova && cordova platform add android && cordova build android",
+    "tv": "cordova create tv --src=dist && cd tv && mv www/tv.xml config.xml && cordova platform add android && cordova build android",
+    "tv.win": "cordova create tv --src=dist && cd tv && copy www\\tv.xml config.xml && cordova platform add android && cordova build android"
+},
   "keywords": [],
   "repository": {
     "type": "git",
