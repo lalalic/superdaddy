@@ -78,7 +78,7 @@ export function create(AppBar, domain){
 						todos.push({content:todo})
 				}
 			})(dispatch,getState)
-				.then(child=>comment(child,`这周又给我加了个新任务：${todo}`)(dispatch))
+				.then(child=>comment(child,`这周又给我加了个新任务：${todo.content||todo}`)(dispatch))
 		}
 		,REMOVE: todo=>(dispatch,getState)=>changeTodos(todos=>{
 				let i=typeof(todo)=='object'
@@ -87,7 +87,7 @@ export function create(AppBar, domain){
 
 				if(i!=-1)
 					todos.splice(i,1)
-			})(dispatch,getState).then(child=>comment(child,`Yeah, 这周不用做${todo}了`)(dispatch))
+			})(dispatch,getState).then(child=>comment(child,`Yeah, 这周不用做[${todo.content||todo}]了`)(dispatch))
 
 		,REMOVE_BY_INDEX: i=>changeTodos(todos=>todos.splice(i,1))
 
@@ -99,15 +99,15 @@ export function create(AppBar, domain){
 				target.score=target.score+1
 				target.totalScore=(target.totalScore||0)+1
 			})(dispatch,getState).then(child=>{
-				let {goal,todo,score}=child.targets.baby
+				let {goal,todo:target,score}=child.targets.baby
 				let content=null
 				let left=goal-score
 				if(score==1){
 					comment(child,`Yeah, ${todo}完成了，得到本周的第一个笑脸了，加油`)(dispatch)
 				}else if(left==0){
-					comment(child,`Yeah,任务完成，可以得到${todo}了`)(dispatch)
+					comment(child,`Yeah,任务完成，可以得到[${target}]了`)(dispatch)
 				}else if(left<3){
-					comment(child,`Yeah, ${todo}完成了，又得到一个笑脸了，还差${left}个笑脸就可以得到${todo}了，坚持`)(dispatch)
+					comment(child,`Yeah, ${todo}完成了，又得到一个笑脸了，还差${left}个笑脸就可以得到${target}了，坚持`)(dispatch)
 				}else{
 					comment(child,`Yeah, ${todo}完成了，又得到一个笑脸了，一共有${score}个笑脸了，加油`)(dispatch)
 				}
@@ -140,15 +140,28 @@ export function create(AppBar, domain){
 		})
 		,RESET: a=>(dispatch,getState)=>{
 			return changeTodos((todos,target,child)=>{
+				const applyMonthPlan=()=>{
+					if(child.plan &&  child.plan.months){
+						let {knowledges=[]}=(child.plan.months[new Date().getMonth()]||{})
+						knowledges.forEach(({_id,title,score, days})=>{
+							if(-1==todos.findIndex(({knowledge})=>knowledge==_id)){
+								todos.push({knowledge:_id, content:title, score,  days})
+							}
+						})
+					}
+				}
 				//save history
 				let dones=todos.filter(({dones=[]})=>dones.length)
 				if(dones.length){
 					return Task.finishWeekTasks(child, dones, domain).then(a=>{
 						todos.forEach(a=>a.dones=[])
 						target.todoWeek=Task.getWeekStart()
+						applyMonthPlan()
 					})
-				}else
+				}else{
 					target.todoWeek=Task.getWeekStart()
+					applyMonthPlan()
+				}
 			})(dispatch,getState)
 		}
 	}

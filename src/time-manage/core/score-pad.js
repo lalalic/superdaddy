@@ -13,7 +13,7 @@ import {
 	,grey300 as COLOR_DISABLED
 } from "material-ui/styles/colors"
 
-export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child},context)=>{
+export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child={}},context)=>{
 	const {appBar, muiTheme}=context
 
 	let width=muiTheme.page.width
@@ -46,15 +46,24 @@ export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child},contex
 			</span>
 		)
 
-	let title=todo, action=null
+	let title=todo, action=null, comment=null
 	if(goal==0){
 		title="开始第一个目标"
 		action=(<Editor/>)
 	}else if(goal<=score){
 		title=`[${todo}]已完成,开始下一个目标吧`
 		action=(<Editor lastScore={score}/>)
-	}else
+	}else{
 		title=todo;
+		comment=(
+			<Paper zDepth={1} style={{padding:10}}>
+				<Comment.Inline type={Family} 
+					model={child} 
+					hint="评论鼓励一下"
+					system={{thumbnail:child.thumbnail, name:child.name}}/>
+			</Paper>
+		)
+	}
 
 	return (
 		<div>
@@ -63,9 +72,7 @@ export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child},contex
 			<div>
 				{smiles}
 			</div>
-			<Paper zDepth={1} style={{padding:10}}>
-				<Comment.Inline type={Family} model={child} system={{thumbnail:child.thumbnail, name:child.name}}/>
-			</Paper>
+			{comment}
 		</div>
 	)
 }
