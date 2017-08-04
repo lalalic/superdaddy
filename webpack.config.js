@@ -37,6 +37,9 @@ module.exports=env=>Object.assign({
 			]
 		}]
 	},
+	externals:{
+		
+	},
 	node:{
 		fs: "empty"
 	},
