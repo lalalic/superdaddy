@@ -8,6 +8,7 @@
     "email": "lalalic@139.com"
   },
   "dependencies": {
+    "babel-polyfill": "^6.23.0",
     "cheerio": "^0.22.0",
     "docx-template": "https://github.com/lalalic/docx-template",
     "docx4js": "https://github.com/lalalic/docx4js",
@@ -58,13 +59,13 @@
   "scripts": {
     "compile": "babel src -d lib --source-maps inline",
     "build.release": "webpack -p && node node_modules/qili-app/scripts/allin1.js",
-    "build.debug": "webpack -d",
+    "build.debug": "webpack",
     "test": "jest __tests__",
-    "dev": "webpack-dev-server --hot --inline -d --entry=./.test.mongo.js",
-    "cordova": "cordova create cordova --link-to=dist && cd cordova && cordova platform add android && cordova build android",
-    "tv": "cordova create tv --src=dist && cd tv && mv www/tv.xml config.xml && cordova platform add android && cordova build android",
-    "tv.win": "cordova create tv --src=dist && cd tv && copy www\\tv.xml config.xml && cordova platform add android && cordova build android"
-},
+    "dev": "webpack-dev-server --hot --inline --env=dev",
+    "cordova": "cordova create cordova --link-to=dist && cd cordova && cp www/phone.xml config.xml && cordova platform add android && cordova build android",
+    "tv": "cordova create tv --link-to=dist && cd tv && cp www/tv.xml config.xml && cordova platform add android && cordova build android",
+    "tv.win": "cordova create tv --link-to=dist && cd tv && copy www\\tv.xml config.xml && cordova platform add android && cordova build android"
+  },
   "keywords": [],
   "repository": {
     "type": "git",

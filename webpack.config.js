@@ -1,12 +1,23 @@
 var path = require('path');
 var webpack = require("webpack");
 
-module.exports={
-	entry:"./src/index.js",
+function envwebpack(env){
+	try{
+		return require(`./webpack.${env}.js`)
+	}catch(e){
+		return {}
+	}
+}
+
+const Mine="qili-app|docx4js|docx-template".split("|")
+
+module.exports=env=>Object.assign({
+	entry:["babel-polyfill","./src/index.js"],
 	output:{
 		filename:"index.js",
 		path:path.resolve(__dirname, 'dist')
 	},
+	devtool: 'source-map',
 	module:{
 		rules:[{
 			test: /\.js$/,
@@ -34,4 +45,4 @@ module.exports={
 		compress: true,
 		port: 9081
 	}
-}
+}, envwebpack(env))
