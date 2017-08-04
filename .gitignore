@@ -36,3 +36,4 @@ dist/allin1.html
 dist/*.map
 tv
 cordova
+.DS_Store
