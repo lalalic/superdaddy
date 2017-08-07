@@ -101,8 +101,8 @@ export class SuperDaddy extends Component{
 	static ROUTER=(
 		<Router history={hashHistory}>
 			<Route path="/tv" component={TV}/>
+			
 			<Route path="/" component={Navigator}>
-
 				<IndexRoute component={connect(state=>compact(state.qiliApp.user,"_id", "manageMyTime"))(TimeManageUI)}/>
 
 				<Route path="score" component={connect(state=>{

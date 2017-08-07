@@ -13,11 +13,11 @@ import {
 	,grey300 as COLOR_DISABLED
 } from "material-ui/styles/colors"
 
-export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child={}},context)=>{
+export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child={}, showComment=true, width=0, height=0},context)=>{
 	const {appBar, muiTheme}=context
 
-	let width=muiTheme.page.width
-	let height=muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height
+	width=width||muiTheme.page.width
+	height=height||(muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height)
 
 	if(totalPerScreen==score){
 		width=width/2
@@ -55,14 +55,16 @@ export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child={}},con
 		action=(<Editor lastScore={score}/>)
 	}else{
 		title=todo;
-		comment=(
-			<Paper zDepth={1} style={{padding:10}}>
-				<Comment.Inline type={Family} 
-					model={child} 
-					hint="评论鼓励一下"
-					system={{thumbnail:child.thumbnail, name:child.name}}/>
-			</Paper>
-		)
+		if(showComment){
+			comment=(
+				<Paper zDepth={1} style={{padding:10}}>
+					<Comment.Inline type={Family} 
+						model={child} 
+						hint="评论鼓励一下"
+						system={{thumbnail:child.thumbnail, name:child.name}}/>
+				</Paper>
+			)
+		}
 	}
 
 	return (
@@ -115,6 +117,7 @@ export const Editor=({lastScore},{dispatch,ACTION})=>{
 			fullWidth={true}/>
 	)
 }
+
 
 Editor.contextTypes={
 	ACTION: PropTypes.object,
