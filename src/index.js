@@ -5,7 +5,6 @@ import {Router, Route, IndexRoute, Direct, IndexRedirect, hashHistory} from "rea
 import {User,QiliApp, UI, ENTITIES, compact} from 'qili-app'
 import {combineReducers} from "redux"
 import {connect} from "react-redux"
-import MediaQuery from "react-responsive"
 
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconAccount from 'material-ui/svg-icons/action/account-box'
@@ -20,7 +19,7 @@ import {getCurrentChild, getChild, getCurrentChildTasks,
 const {Empty, Comment, CommandBar, Setting:SettingUI}=UI
 
 import AccountUI from './account'
-import BabyUI, {Creator} from './baby'
+import BabyUI, {Creator, REDUCER} from './baby'
 import PublishUI from './publish'
 import TimeManageUI from "./time-manage"
 import KnowledgeUI from './knowledge/info'
@@ -29,17 +28,6 @@ import KnowledgesUI from './knowledge/'
 import KnowledgeComment from "./knowledge/comment"
 import ProfileUI from "./profile"
 import Plan from "./plan"
-import TV from "./tv"
-
-const INIT_STATE={}
-
-const REDUCER=(state=INIT_STATE,{type,payload})=>{
-	switch(type){
-	case 'CURRENT_CHILD_CHANGE':
-		return Object.assign({},state,{child:payload._id})
-	}
-	return state
-}
 
 const Navigator=({children})=>(
 	<div>
@@ -100,8 +88,6 @@ export class SuperDaddy extends Component{
 
 	static ROUTER=(
 		<Router history={hashHistory}>
-			<Route path="/tv" component={TV}/>
-			
 			<Route path="/" component={Navigator}>
 				<IndexRoute component={connect(state=>compact(state.qiliApp.user,"_id", "manageMyTime"))(TimeManageUI)}/>
 

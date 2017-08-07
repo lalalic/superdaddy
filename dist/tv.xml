@@ -7,7 +7,7 @@
     <author email="lalalic@139.com">
         lalalic
     </author>
-    <content src="cordova.html" />
+    <content src="tv.html" />
     <plugin name="cordova-plugin-whitelist" spec="1.2.2" />
     <plugin name="cordova-plugin-file" spec="4.2.0" />
     <plugin name="cordova-sqlite-storage" spec="1.4.6" />

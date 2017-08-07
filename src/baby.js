@@ -109,6 +109,14 @@ export const ACTION={
 	}
 }
 
+export const REDUCER=(state={},{type,payload})=>{
+	switch(type){
+	case 'CURRENT_CHILD_CHANGE':
+		return Object.assign({},state,{child:payload._id})
+	}
+	return state
+}
+
 export class Baby extends Component{
 	state={nameError:null}
 

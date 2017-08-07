@@ -1,3 +1,5 @@
 module.exports={
-	entry: "./.test.mongo.js"
+	entry: {
+		index: ["babel-polyfill", "./.test.mongo.js"]
+	}
 }

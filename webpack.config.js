@@ -12,9 +12,12 @@ function envwebpack(env){
 const Mine="qili-app|docx4js|docx-template".split("|")
 
 module.exports=env=>Object.assign({
-	entry:["babel-polyfill","./src/index.js"],
+	entry:{
+		index:["babel-polyfill","./src/index.js"],
+		tv: ["babel-polyfill","./src/tv/index.js"],
+	},
 	output:{
-		filename:"index.js",
+		filename:"[name].js",
 		path:path.resolve(__dirname, 'dist')
 	},
 	devtool: 'source-map',
@@ -38,7 +41,7 @@ module.exports=env=>Object.assign({
 		}]
 	},
 	externals:{
-		
+
 	},
 	node:{
 		fs: "empty"
