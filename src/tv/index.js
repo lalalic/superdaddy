@@ -30,7 +30,7 @@ class TV extends Component{
 		let focus=this.focuses[(this.focuses.indexOf(this.state.focus)-1+this.focuses.length)%this.focuses.length]
 		this.setState({focus})
 	}
-	
+
 	nextFocus(e){
 		e.preventDefault()
 		let focus=this.focuses[(this.focuses.indexOf(this.state.focus)+1)%this.focuses.length]
@@ -38,21 +38,29 @@ class TV extends Component{
 	}
 	componentDidMount(){
 		window.addEventListener("keydown", e=>{
-			switch(e.key) {
-		        case "ArrowLeft":
+			switch(e.key||e.keyIdentifier) {
+				case "Left":
+				case "ArrowLeft":
 		            this.preFocus(e)//tab(e, true)// left key pressed
 		            break;
+				case "Up":
 		        case "ArrowUp":
 		            this.preFocus(e)// up key pressed
 		            break;
+				case "Right":
 		        case "ArrowRight":
 		            this.nextFocus(e)// right key pressed
 		            break;
+				case "Down":
 		        case "ArrowDown":
 		            this.nextFocus(e)// down key pressed
 		            break;
+				case "Enter":
+					if(this.state.focus=="child")
+						this.props.dispatch(ACTION.SWITCH_CURRENT_CHILD())
+					return
 		    }
-			
+
 		}, false)
 		this.focus()
 	}
@@ -73,7 +81,7 @@ class TV extends Component{
 			menu: {height:100,padding:20},
 			icon: {width:60,height:60},
 			menuLayout: {width:"100%",height:"100%",padding:4},
-			child: {height:menuWidth,padding:20},
+			child: {height:menuWidth,padding:20,display:"inline-block"},
 			active: {transform: "scale(1.2)",display:"block"}
 		}
 		let content=null
@@ -95,18 +103,23 @@ class TV extends Component{
 			)
 			break
 		}
-		
+
 		this.focuses.splice(0, this.focuses.length)
 
 		let head=null, tab=0
 		if(switchable){
-			head=(<a tabIndex={++tab} ref="child">
-				<Avatar size={110}
-					style={{fontSize:"larger"}}
+			let avatar=null
+			if(child.photo){
+				avatar=<Avatar size={110}
+					onTouchTap={e=>dispatch(ACTION.SWITCH_CURRENT_CHILD())}
+					src={child.photo}/>
+			}else{
+				avatar=<Avatar size={110}
+					style={{fontSize:"larger", color:"black"}}
                     onTouchTap={e=>dispatch(ACTION.SWITCH_CURRENT_CHILD())}
-					src={child.thumbnail}
 					color="lightgray">{child.name}</Avatar>
-			</a>)
+			}
+			head=(<a tabIndex={++tab} ref="child">{avatar}</a>)
 			this.focuses.push("child")
 		}else{
 			head=(<Avatar size={110}
