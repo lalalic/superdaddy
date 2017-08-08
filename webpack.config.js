@@ -49,6 +49,9 @@ module.exports=env=>Object.assign({
 	devServer:{
 		contentBase: path.join(__dirname, "dist"),
 		compress: true,
-		port: 9081
+		port: 9081,
+		overlay: {
+			errors: true
+		}
 	}
 }, envwebpack(env))
