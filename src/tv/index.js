@@ -81,7 +81,7 @@ class TV extends Component{
 			menu: {height:100,padding:20},
 			icon: {width:60,height:60},
 			menuLayout: {width:"100%",height:"100%",padding:4},
-			child: {height:menuWidth,padding:20,display:"inline-block"},
+			child: {height:menuWidth,padding:20},
 			active: {transform: "scale(1.2)",display:"block"}
 		}
 		let content=null
@@ -119,7 +119,7 @@ class TV extends Component{
                     onTouchTap={e=>dispatch(ACTION.SWITCH_CURRENT_CHILD())}
 					color="lightgray">{child.name}</Avatar>
 			}
-			head=(<a tabIndex={++tab} ref="child">{avatar}</a>)
+			head=(<a tabIndex={++tab} ref="child" style={{display:"inline-block"}}>{avatar}</a>)
 			this.focuses.push("child")
 		}else{
 			head=(<Avatar size={110}
