@@ -19,32 +19,7 @@ export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child={}, sho
 	width=width||muiTheme.page.width
 	height=height||(muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height)
 
-	if(totalPerScreen==score){
-		width=width/2
-		height=height/2
-	}else{
-		width=width*7/8
-		height=height*7/8
-	}
-	const less=Math.min(width,height), more=Math.max(width,height)
-	let widthLess=Math.floor(Math.sqrt(Math.floor(less*less/totalPerScreen)))
-	let widthMore=Math.floor(Math.sqrt(Math.floor(more*more/totalPerScreen)))
-	let style={}
-	if(less==width){
-		style.width=widthLess
-		style.height=widthMore
-	}else{
-		style.width=widthMore
-		style.height=widthLess
-	}
-
-	let smiles=[]
-	for(let i=0;i<totalPerScreen;i++)
-		smiles.push(
-			<span key={i} style={{display:"inline-block"}} className="smile">
-				<Smile style={style} scored={i<score}/>
-			</span>
-		)
+	let smiles=layout(width,height,score,totalPerScreen)
 
 	let title=todo, action=null, comment=null
 	if(goal==0){
@@ -116,6 +91,37 @@ export const Editor=({lastScore},{dispatch,ACTION})=>{
 			onKeyDown={({target:{value},keyCode})=>keyCode==13 && add(value)}
 			fullWidth={true}/>
 	)
+}
+
+export function layout(width,height,score,totalPerScreen){
+	if(totalPerScreen==score){
+		width=width/2
+		height=height/2
+	}else{
+		width=width*7/8
+		height=height*7/8
+	}
+	const less=Math.min(width,height), more=Math.max(width,height)
+	let widthLess=Math.floor(Math.sqrt(Math.floor(less*less/totalPerScreen)))
+	let widthMore=Math.floor(Math.sqrt(Math.floor(more*more/totalPerScreen)))
+	let style={}
+	if(less==width){
+		style.width=widthLess
+		style.height=widthMore
+	}else{
+		style.width=widthMore
+		style.height=widthLess
+	}
+
+	let smiles=[]
+	for(let i=0;i<totalPerScreen;i++){
+		smiles.push(
+			<span key={i} style={{display:"inline-block"}} className="smile">
+				<Smile style={style} scored={i<score}/>
+			</span>
+		)
+	}
+	return smiles
 }
 
 
