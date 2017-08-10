@@ -4,7 +4,7 @@ import Comment from "qili-app/lib/components/comment"
 import TextFieldx from "qili-app/lib/components/text-field"
 import Paper from 'material-ui/Paper'
 
-import {Family} from "../../db"
+import {Family} from "db"
 
 import {
 	yellow500 as COLOR_DONE

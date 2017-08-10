@@ -3,9 +3,9 @@ import React, {PropTypes} from "react"
 import {AppBar,FloatingActionButton, Paper} from "material-ui"
 import {cyan300 as bgc} from "material-ui/styles/colors"
 
-import {Knowledge} from "../db"
+import {Knowledge} from "db"
 
-import BabyAppBar from "../components/app-bar"
+import BabyAppBar from "components/app-bar"
 
 import TimeManageCreator from "./core"
 

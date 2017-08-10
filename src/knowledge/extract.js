@@ -1,5 +1,5 @@
 import {File} from "qili-app"
-import dbKnowledge from "../db/knowledge"
+import dbKnowledge from "db/knowledge"
 import parse from "./parse"
 
 const reg=/[-,，\s+]/

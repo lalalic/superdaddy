@@ -28,7 +28,11 @@ export default function parse(file){
 			return model
 		})
 		
-		return docxTemplate.parse(docx0).then(varDoc=>varDoc.assemble({goal:"promote"})).then(docx=>{
+		return docxTemplate.parse(docx0)
+		.then(varDoc=>{
+			return varDoc.assemble({goal:"promote"})
+		})
+		.then(docx=>{
 			let steps=[], days=[], images=[],id=`_parser${uuid++}`
 			let doc=docx.render((type,props,children)=>{
 				switch(type){

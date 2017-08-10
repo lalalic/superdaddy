@@ -3,7 +3,7 @@ import {FlatButton} from "material-ui"
 import {UI} from "qili-app"
 
 import {ACTION} from "."
-import AppBar from "../components/app-bar"
+import AppBar from "components/app-bar"
 
 import IconEdit from "material-ui/svg-icons/image/edit"
 

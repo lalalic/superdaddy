@@ -7,10 +7,10 @@ import IconSelected from 'material-ui/svg-icons/toggle/star'
 import IconPrint from "material-ui/svg-icons/action/print"
 import IconView from "material-ui/svg-icons/action/pageview"
 
-import dbPublish from "../db/publish"
-import AppBar from "../components/app-bar"
+import dbPublish from "db/publish"
+import AppBar from "components/app-bar"
 
-import {getCurrentChild} from "../selector"
+import {getCurrentChild} from "$/selector"
 
 import History from "./list"
 

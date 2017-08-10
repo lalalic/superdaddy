@@ -4,7 +4,7 @@ import ReactDOM from "react-dom"
 import {TextField, IconButton, Avatar} from 'material-ui'
 import PlusIcon from 'material-ui/svg-icons/action/alarm-add'
 import ForwardIcon from "material-ui/svg-icons/navigation/arrow-forward"
-import {Family as dbFamily, Reward as dbReward, Goal as dbGoal} from '../db'
+import {Family as dbFamily, Reward as dbReward, Goal as dbGoal} from 'db'
 
 export default class Rewards extends Component{
 	static defaultProps={

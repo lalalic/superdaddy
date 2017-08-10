@@ -20,12 +20,12 @@ const {Empty, Comment, CommandBar, Setting:SettingUI}=UI
 
 import AccountUI from './account'
 import BabyUI, {Creator, REDUCER} from './baby'
-import PublishUI from './publish'
-import TimeManageUI from "./time-manage"
-import KnowledgeUI from './knowledge/info'
-import NewKnowledgeUI from './knowledge/create'
-import KnowledgesUI from './knowledge/'
-import KnowledgeComment from "./knowledge/comment"
+import PublishUI from 'publish'
+import TimeManageUI from "time-manage"
+import KnowledgeUI from 'knowledge/info'
+import NewKnowledgeUI from 'knowledge/create'
+import KnowledgesUI from 'knowledge/'
+import KnowledgeComment from "knowledge/comment"
 import ProfileUI from "./profile"
 import Plan from "./plan"
 

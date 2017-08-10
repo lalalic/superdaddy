@@ -13,10 +13,10 @@ import IconApplet from "material-ui/svg-icons/social/pages"
 import IconBuy from "material-ui/svg-icons/action/add-shopping-cart"
 import IconPreview from "material-ui/svg-icons/content/content-copy"
 
-import Calendar, {cnDateTimeFormat, addDays, relative, isEqualDate, getLastDayOfMonth} from '../components/calendar'
-import dbKnowledge from '../db/knowledge'
-import dbTask from '../db/task'
-import AD from '../components/ad'
+import Calendar, {cnDateTimeFormat, addDays, relative, isEqualDate, getLastDayOfMonth} from 'components/calendar'
+import dbKnowledge from 'db/knowledge'
+import dbTask from 'db/task'
+import AD from 'components/ad'
 
 import {ACTION, Content} from "."
 

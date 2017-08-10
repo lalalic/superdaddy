@@ -6,6 +6,18 @@
     "plugins": [
       "babel-plugin-add-module-exports",
       "babel-plugin-transform-object-rest-spread",
-      "babel-plugin-transform-class-properties"
+      "babel-plugin-transform-class-properties",
+	  ["module-resolver",{
+			"root": ["./src"],
+			"alias":{
+				"$":"/",
+				"knowledge":"./knowledge",
+				"publish":"./publish",
+				"time-manage":"./time-manage",
+				"tv":"./tv",
+				"components":"./components",
+				"db":"./db"
+			}
+		}]
     ]
 }

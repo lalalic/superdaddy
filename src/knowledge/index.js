@@ -13,11 +13,11 @@ import IconBack from "material-ui/svg-icons/hardware/keyboard-arrow-left"
 import IconPullRefresh from "material-ui/svg-icons/hardware/keyboard-arrow-down"
 
 
-import dbKnowledge from '../db/knowledge'
-import {relative} from '../components/calendar'
-import FloatingAdd from "../components/floating-add"
-import {getCurrentChild} from "../selector"
-import {ACTION as TASK_ACTION} from "../time-manage"
+import dbKnowledge from 'db/knowledge'
+import {relative} from 'components/calendar'
+import FloatingAdd from "components/floating-add"
+import {getCurrentChild} from "$/selector"
+import {ACTION as TASK_ACTION} from "time-manage"
 
 import uiKnowledge from './info'
 import extract from './extract'

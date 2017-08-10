@@ -7,14 +7,14 @@ import {normalize} from "normalizr"
 
 import IconDone from "material-ui/svg-icons/file/cloud-done"
 
-import {Family,Task} from "../../db"
+import {Family,Task} from "db"
 
 import {TaskPad as _TaskPad} from "./task-pad"
 import {TaskPadEditor as _TaskPadEditor} from "./task-pad-editor"
 import {TodoEditor as _TodoEdtior} from "./todo-editor"
 import {ScorePad as _ScorePad} from "./score-pad"
 
-import {getCurrentChild, getCurrentChildTarget, getCurrentChildTasks} from "../../selector"
+import {getCurrentChild, getCurrentChildTarget, getCurrentChildTasks} from "$/selector"
 
 import {ACTION as Comment_ACTION} from "qili-app/lib/components/comment"
 

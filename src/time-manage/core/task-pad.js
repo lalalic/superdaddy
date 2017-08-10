@@ -10,7 +10,7 @@ import {
 	,grey300 as COLOR_DISABLED
 } from "material-ui/styles/colors"
 
-import SwipeableTabs from "../../components/swipe-tabs"
+import SwipeableTabs from "components/swipe-tabs"
 import IconSmile from "material-ui/svg-icons/social/mood"
 import Avatar from 'material-ui/Avatar';
 
