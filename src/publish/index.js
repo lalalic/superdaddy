@@ -38,11 +38,17 @@ const ACTION={
 
 
 export default class Publisher extends Component{
-	state={template:"light", copy:1}
+	state={
+		template:"light", 
+		copy:1,
+		bookName: `我的${new Date().getFullYear()-1}`,
+		startAt:(d=>{d.setFullYear(d.getFullYear()-1);return d})(new Date()),
+		endAt: new Date()
+	}
 
     render(){
 		const {child, dispatch}=this.props
-		const {template}=this.state
+		const {template, copy, bookName, startAt, endAt}=this.state
 		const {router}=this.context
         return(
             <div>
@@ -50,19 +56,28 @@ export default class Publisher extends Component{
 				<center>
 					<TextField
 						floatingLabelText="书名"
+						value={bookName}
+						onChange={({target:{value}})=>this.setState({bookName:value})}
 						/>
 
 					<DatePicker
 						floatingLabelText="自从"
-						autoOk={true} mode="landscape"/>
+						autoOk={true} 
+						value={startAt}
+						onChange={({target:{date}})=>this.setState({startAt:date})}
+						mode="landscape"/>
 
 					<DatePicker
 						floatingLabelText="结束时间"
-						autoOk={true} mode="landscape"/>
+						autoOk={true} 
+						value={endAt}
+						onChange={({target:{date}})=>this.setState({endAt:date})}
+						mode="landscape"/>
 
 					<TextField
 						floatingLabelText="打印多少本"
-						defaultValue={1}
+						value={copy}
+						onChange={({target:{value}})=>this.setState({copy:value})}
 						type="number"/>
 				</center>
 				<GridList style={{padding:10}} padding={10}>

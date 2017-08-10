@@ -8,7 +8,9 @@ export default class Assembler{
 
     assemble(){
         return this.load()
-            .then(template=>template.assemble(this.data))
+            .then(template=>{
+				return template.assemble(this.data)
+			})
     }
 
     load(){
