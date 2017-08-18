@@ -44,7 +44,9 @@ module.exports=env=>Object.assign({
 
 	},
 	node:{
-		fs: "empty"
+		fs: "empty",
+		net: "empty",
+		module: "empty"
 	},
 	devServer:{
 		contentBase: path.join(__dirname, "dist"),
