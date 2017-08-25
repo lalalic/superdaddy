@@ -18,6 +18,7 @@ import {relative} from 'components/calendar'
 import FloatingAdd from "components/floating-add"
 import {getCurrentChild} from "$/selector"
 import {ACTION as TASK_ACTION} from "time-manage"
+import Assembler from "publish/assemble"
 
 import uiKnowledge from './info'
 import extract from './extract'
@@ -108,13 +109,47 @@ export const ACTION={
 	,CANCEL: a=>({type:`@@${DOMAIN}/cancel`})
 	,TASK: (knowledge)=>dispatch=>dispatch(TASK_ACTION.ADD(knowledge))
 	,UNTASK: (knowledge)=>dispatch=>dispatch(TASK_ACTION.REMOVE(knowledge))
-	,APPLET: (applet,title,knowledge)=>{
-		window.open(applet,"superdaddy applet")
-		return {type:`@@{DOMAIN}/applet`,payload:{title,knowledge}}
-	}
 	,BUY: ({sale})=>{
 		window.open(sale,"superdaddy buy")
 		return {type:`@@{DOMAIN}/buy`,payload:knowledge}
+	}
+	,HOMEWORK: (knowledge, props)=>dispatch=>{
+		let {applet}=knowledge.hasHomework
+		let data
+		if(applet){
+			let vars=Object.keys(props).map(k=>`var ${k}="${props[k]}";`)
+			try{
+				data=eval(`(function(){${vars.join("\r\n")} ${applet} })()`)
+			}catch(e){
+				console.error(e)
+				dispatch({type:"error",payload:e.message})
+			}
+		}
+		
+		let assembler=new Assembler({template:knowledge.template, goal:"homework", ...props, ...data})
+		return assembler.assemble().then(docx=>{
+			docx.save(`作业(${knowledge.title}).docx`)
+			dispatch({type:`@@{DOMAIN}/homework`,payload: {knowledge,props}})
+		})
+	}
+	,PREVIEW: (knowledge, props)=>dispatch=>{
+		let {applet}=knowledge.hasPrint
+		let data
+		if(applet){
+			let vars=Object.keys(props).map(k=>`var ${k}="${props[k]}";`)
+			try{
+				data=eval(`(function(){${vars.join("\r\n")} ${applet} })()`)
+			}catch(e){
+				console.error(e)
+				dispatch({type:"error",payload:e.message})
+			}
+		}
+		
+		let assembler=new Assembler({template:knowledge.template, goal:"print", ...props, ...data})
+		return assembler.assemble().then(docx=>{
+			docx.save(`打印(${knowledge.title}).docx`)
+			dispatch({type:`@@{DOMAIN}/preview`,payload: {knowledge,props}})
+		})
 	}
 	,WECHAT: ({title,summary,figure,_id},scene)=>{
 		Wechat.share({

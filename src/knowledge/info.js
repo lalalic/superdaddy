@@ -11,7 +11,8 @@ import IconRemoveTask from "material-ui/svg-icons/action/alarm-off"
 import {Icon as IconWechatSession, IconTimeline as IconWechatTimeline} from "qili-app/lib/components/wechat"
 import IconApplet from "material-ui/svg-icons/social/pages"
 import IconBuy from "material-ui/svg-icons/action/add-shopping-cart"
-import IconPreview from "material-ui/svg-icons/content/content-copy"
+import IconPreview from "material-ui/svg-icons/action/print"
+import IconHomework from "material-ui/svg-icons/notification/event-note"
 
 import Calendar, {cnDateTimeFormat, addDays, relative, isEqualDate, getLastDayOfMonth} from 'components/calendar'
 import dbKnowledge from 'db/knowledge'
@@ -19,17 +20,20 @@ import dbTask from 'db/task'
 import AD from 'components/ad'
 
 import {ACTION, Content} from "."
+import AutoForm from "components/auto-form"
 
 const {List,Loading,Comment,CommandBar,fileSelector, Messager}=UI
 const {DialogCommand}=CommandBar
-
-const COLORS="red,aqua,fuchsia,darkorange,darkmagenta".split(",")
 
 export default class KnowledgeEditor extends Component{
     static contextTypes={
     	muiTheme:PropTypes.object,
     	appBar: PropTypes.element
     }
+	
+	state={
+		homework:false
+	}
 
     componentDidMount(){
 		this.props.dispatch(ACTION.FETCH1(this.props.params._id))
@@ -58,12 +62,6 @@ export default class KnowledgeEditor extends Component{
 			})
 
         if(revising){
-			commands.push({
-				action:"Preview"
-                ,label:"预览打印"
-                ,onSelect:a=>dispatch(ACTION.PREVIEW())
-                ,icon:<IconPreview/>
-			})
             commands.push({
 				action:"Save"
                 ,label:"保存"
@@ -98,41 +96,90 @@ export default class KnowledgeEditor extends Component{
 				model={knowledge}/>)
         }
 
-		let tools=(knowledge.applets||[]).slice(0,2).map(({data,title,desc},i)=>
+		let tools=[
 			<BottomNavigationItem
-				key={`_${i}_${title}`}
-				label={title}
-				icon={<IconApplet color={COLORS[Math.floor((Math.random() * 10))%5]}/>}
-				onClick={()=>dispatch(ACTION.APPLET(data,title,knowledge))}
-				/>
-		)
-
-		tools.unshift(<BottomNavigationItem
 			key="wechat.session"
 			label="微信好友"
 			icon={<IconWechatSession/>}
 			onClick={()=>dispatch(ACTION.WECHAT(knowledge,"SESSION"))}
-			/>
-		)
-
-		tools.unshift(<BottomNavigationItem
+			/>,
+			<BottomNavigationItem
 			key="wechat.timeline"
 			label="微信朋友圈"
 			icon={<IconWechatTimeline/>}
 			onClick={()=>dispatch(ACTION.WECHAT(knowledge,"TIMELINE"))}
 			/>
-		)
+		]
 
-		if(knowledge.sale)
+		if(knowledge.sale){
 			tools.push(<BottomNavigationItem
 						key="sale"
 						label="购买"
 						icon={<IconBuy color="red"/>}
 						onClick={()=>dispatch(ACTION.BUY(knowledge))}
 						/>)
+		}
+						
+		if(knowledge.hasHomework){
+			tools.push(<BottomNavigationItem
+						key="homework"
+						label="作业"
+						icon={<IconHomework color="aqua"/>}
+						onClick={()=>{
+							if(!knowledge.hasHomework.fields){
+								dispatch(ACTION.HOMEWORK(knowledge))
+							}else{
+								this.setState({homework:true})
+							}
+						}}
+						/>)
+		}
+		
+		if(knowledge.hasPrint){
+			tools.push(<BottomNavigationItem
+						key="preview"
+						label="预览打印"
+						icon={<IconPreview color="fuchsia"/>}
+						onClick={()=>{
+							if(!knowledge.hasPrint.fields){
+								dispatch(ACTION.PREVIEW(knowledge))
+							}else{
+								this.setState({preview:true})
+							}
+						}}
+						/>)
+		}
 
         const {muiTheme}=this.context
         let minHeight=muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height
+		const {homework, preview}=this.state
+		let homeworkForm=null, previewForm=null
+		
+		if(homework){
+			homeworkForm=(<AutoForm 
+				title="参数设置"
+				fields={knowledge.hasHomework.fields}
+				onSubmit={props=>{
+					this.setState({homework:false})
+					dispatch(ACTION.HOMEWORK(knowledge, props))
+				}}
+				onCancel={()=>this.setState({homework:false})}
+				/>
+			)
+		}
+		
+		if(preview){
+			previewForm=(<AutoForm 
+				title="参数设置"
+				fields={knowledge.hasPrint.fields}
+				onSubmit={props=>{
+					this.setState({preview:false})
+					dispatch(ACTION.PREVIEW(knowledge, props))
+				}}
+				onCancel={()=>this.setState({preview:false})}
+				/>
+			)
+		}
     
         return (
             <div className="post">
@@ -149,7 +196,9 @@ export default class KnowledgeEditor extends Component{
 						<AD object={knowledge}/>
 					</section>
 				</article>
-
+				
+				{homeworkForm}
+				
                 <CommandBar className="footbar" items={commands}/>
             </div>
         )

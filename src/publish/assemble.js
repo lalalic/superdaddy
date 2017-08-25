@@ -1,4 +1,4 @@
-import docxTemplate from "docx-template"
+import {DocxTemplate} from "docx-template"
 
 export default class Assembler{
     constructor({template, ...data}){
@@ -14,8 +14,12 @@ export default class Assembler{
     }
 
     load(){
-        return fetch(`/publish/templates/${this.template}.docx`)
-            .then(data=>data.blob())
-            .then(docx=>docxTemplate.parse(docx))
+		if(typeof(this.template)=="string"){
+			return fetch(this.template)
+				.then(data=>data.blob())
+				.then(docx=>DocxTemplate.parse(docx))
+		}else{
+			return DocxTemplate.parse(this.template)
+		}
     }
 }

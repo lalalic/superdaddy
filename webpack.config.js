@@ -9,12 +9,11 @@ function envwebpack(env){
 	}
 }
 
-const Mine="qili-app|docx4js|docx-template".split("|")
-
 module.exports=env=>Object.assign({
 	entry:{
 		index:["babel-polyfill","./src/index.js"],
 		tv: ["babel-polyfill","./src/tv/index.js"],
+		parser: "./src/knowledge/parse.js"
 	},
 	output:{
 		filename:"[name].js",
@@ -40,9 +39,6 @@ module.exports=env=>Object.assign({
 			]
 		}]
 	},
-	externals:{
-
-	},
 	node:{
 		fs: "empty",
 		net: "empty",
@@ -54,6 +50,9 @@ module.exports=env=>Object.assign({
 		port: 9081,
 		overlay: {
 			errors: true
+		},
+		stats:{
+			warnings: false
 		}
 	}
 }, envwebpack(env))

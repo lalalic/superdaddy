@@ -15,7 +15,7 @@ function splitKey(data){
 
 export default function extract(file){
     return parse(file).then(doc=>{
-        var {html:content, properties, id:elId, images, steps, applets,sale}=doc,
+        var {html:content, properties, id:elId, images, steps, applet,sale, hasPrint, hasHomework,fields}=doc,
             {name,title, keywords, category, subject, abstract,description, ...others}=properties
 
 		if(keywords)
@@ -31,9 +31,13 @@ export default function extract(file){
                 summary:abstract||description||subject,
                 keywords,category,
                 props:others,
-				applets,
 				steps,
-				sale
+				sale,
+				hasPrint,
+				hasHomework,
+				applet,
+				fields,
+				template:file
             },
             revoke(){
                 var nodes=window.document.querySelectorAll(`#${elId} img[src~="blob:"]`)
@@ -62,18 +66,8 @@ export default function extract(file){
 
                         let pRawDocx=File.upload(file, Object.assign({key:"a.docx"},more))
 							.then(url =>this.knowledge.template=url)
-							
-						let pApplet
-						if(applets.length){
-							pApplet=Promise.all(this.knowledge.applets.map(applet=>{
-								return File.upload(applet.data,{key:"a.html"})
-									.then(url=>applet.data=url)
-							}))
-						}else{
-							pApplet=Promise.resolve()
-						}
 
-                        Promise.all([pRawDocx, pApplet, ...pImages])
+                        Promise.all([pRawDocx, ...pImages])
                             .then(()=>{
                                     resolve(this.knowledge)
                                 }, reject)
