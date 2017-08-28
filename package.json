@@ -10,9 +10,8 @@
   "dependencies": {
     "babel-plugin-module-resolver": "^2.7.1",
     "babel-polyfill": "^6.23.0",
-    "cfb": "^0.12.1",
     "cheerio": "^0.22.0",
-    "docx-template": "^2.2.2",
+    "docx-template": "^2.2.3",
     "lodash.flow": "^3.5.0",
     "material-ui": "^0.16.0",
     "normalizr": "^2.2.1",

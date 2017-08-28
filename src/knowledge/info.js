@@ -9,7 +9,7 @@ import IconCancel from "material-ui/svg-icons/navigation/cancel"
 import IconAddTask from "material-ui/svg-icons/action/alarm-add"
 import IconRemoveTask from "material-ui/svg-icons/action/alarm-off"
 import {Icon as IconWechatSession, IconTimeline as IconWechatTimeline} from "qili-app/lib/components/wechat"
-import IconApplet from "material-ui/svg-icons/social/pages"
+
 import IconBuy from "material-ui/svg-icons/action/add-shopping-cart"
 import IconPreview from "material-ui/svg-icons/action/print"
 import IconHomework from "material-ui/svg-icons/notification/event-note"

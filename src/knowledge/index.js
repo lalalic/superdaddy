@@ -114,38 +114,14 @@ export const ACTION={
 		return {type:`@@{DOMAIN}/buy`,payload:knowledge}
 	}
 	,HOMEWORK: (knowledge, props)=>dispatch=>{
-		let {applet}=knowledge.hasHomework
-		let data
-		if(applet){
-			let vars=Object.keys(props).map(k=>`var ${k}="${props[k]}";`)
-			try{
-				data=eval(`(function(){${vars.join("\r\n")} ${applet} })()`)
-			}catch(e){
-				console.error(e)
-				dispatch({type:"error",payload:e.message})
-			}
-		}
-		
-		let assembler=new Assembler({template:knowledge.template, goal:"homework", ...props, ...data})
+		let assembler=new Assembler({template:knowledge.template, goal:"homework", ...props})
 		return assembler.assemble().then(docx=>{
 			docx.save(`作业(${knowledge.title}).docx`)
 			dispatch({type:`@@{DOMAIN}/homework`,payload: {knowledge,props}})
 		})
 	}
 	,PREVIEW: (knowledge, props)=>dispatch=>{
-		let {applet}=knowledge.hasPrint
-		let data
-		if(applet){
-			let vars=Object.keys(props).map(k=>`var ${k}="${props[k]}";`)
-			try{
-				data=eval(`(function(){${vars.join("\r\n")} ${applet} })()`)
-			}catch(e){
-				console.error(e)
-				dispatch({type:"error",payload:e.message})
-			}
-		}
-		
-		let assembler=new Assembler({template:knowledge.template, goal:"print", ...props, ...data})
+		let assembler=new Assembler({template:knowledge.template, goal:"print", ...props})
 		return assembler.assemble().then(docx=>{
 			docx.save(`打印(${knowledge.title}).docx`)
 			dispatch({type:`@@{DOMAIN}/preview`,payload: {knowledge,props}})
