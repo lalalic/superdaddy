@@ -39,11 +39,11 @@ export default class AutoForm extends Component{
 				}}			
 				/>
 		]
-		let props=fields.map(({name,title:hintText,options})=>{
+		let props=fields.map(({name,title:floatingLabelText,options})=>{
 			if(options){
 				return (
 					<SelectField 
-						{...{name,hintText,key:name}}
+						{...{name,floatingLabelText,key:name}}
 						value={this.state[name]}
 						onChange={(e,i,value)=>this.setState({[name]:value})}
 						>
@@ -52,7 +52,7 @@ export default class AutoForm extends Component{
 				)
 			}else{
 				return <TextField 
-					{...{name,hintText,key:name}}
+					{...{name,floatingLabelText,key:name}}
 					value={this.state[name]}
 					onChange={(e,value)=>this.setState({[name]:value})}/>
 			}

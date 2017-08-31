@@ -15,8 +15,11 @@ function splitKey(data){
 
 export default function extract(file){
     return parse(file).then(doc=>{
-        var {html:content, properties, id:elId, images, steps, applet,sale, hasPrint, hasHomework,fields}=doc,
-            {name,title, keywords, category, subject, abstract,description, ...others}=properties
+        let {docx, html:content, properties, id:elId, 
+				images, steps, sale, hasPrint, hasHomework,fields}=doc
+				
+        let {name,title, keywords, category, subject, 
+				abstract,description, ...others}=properties
 
 		if(keywords)
 			keywords=splitKey(keywords)
@@ -35,7 +38,6 @@ export default function extract(file){
 				sale,
 				hasPrint,
 				hasHomework,
-				applet,
 				fields,
 				template:file
             },
@@ -47,33 +49,73 @@ export default function extract(file){
                 return Array.prototype.map.call(window.document.querySelectorAll(`#${elId} img`),a=>a.src)
             },
             upload(entity){
-                let kind=dbKnowledge._name,
-                    more={entity:{kind,_id:entity._id}}
+                let kind=dbKnowledge._name
+                let more={entity:{kind,_id:entity._id}}
                 return new Promise((resolve, reject)=>
                     File.find({params:more,fields:"crc32"}).fetch(files=>{
-                        let pImages=images.map(image=>{
+                        let done=images.map(image=>{
 							const {url,crc32}=image
                             if(files.find((a)=>a.crc32==crc32))
-                                return undefined;
+                                return Promise.resolve({url,crc32});
 
                             return File.upload(url, Object.assign({crc32,key:"a.jpg"},more))
                                 .then(remoteURL=>{
 									this.knowledge.content=this.knowledge.content.replace(url,image.url=remoteURL)
 									window.document.querySelector(`#${elId} img[src~='${url}']`).setAttribute("src",remoteURL)
+									return {url: remoteURL, crc32}
 								})
 								
-                        }).filter(a=>!!a)
-
-                        let pRawDocx=File.upload(file, Object.assign({key:"a.docx"},more))
+                        })
+						
+						Promise.all(done)
+							.then(images=>externalizeDocxImage(docx,images))
+							.then(externalizedDocx=>File.upload(externalizedDocx, Object.assign({key:"a.docx"},more)))
 							.then(url =>this.knowledge.template=url)
-
-                        Promise.all([pRawDocx, ...pImages])
-                            .then(()=>{
-                                    resolve(this.knowledge)
-                                }, reject)
+							.then(()=>resolve(this.knowledge),reject)
                     })//fetch
                 )//promise
             }
         }
     })
+}
+
+
+//crc32->part
+function externalizeDocxImage(docx, images){
+	let root=docx.officeDocument.relName.split("/").slice(0,-1).join("/")
+	let parts=docx.officeDocument
+		.rels("[Type$=header]")
+		.add(docx.officeDocument.rels("[Type$=footer]"))
+		.map((i,rel)=>{
+			let partName=`${root}/${rel.attribs.Target}.rels`
+			let part=docx.getPart(partName)
+			if(part && part.cheerio){//parsed means possibly image  handled
+				return part
+			}
+		})
+		.get()
+		.filter(a=>!!a)
+		
+	parts.push(docx.officeDocument.rels)
+	
+	root=docx.officeDocument.folder
+	parts.forEach($=>{
+		$("[Type$=image]").each((i,rel)=>{
+			if(rel.attribs.TargetMode=="External")
+				return
+	
+			let partName=`${root}${rel.attribs.Target}`
+			let crc=docx.getPartCrc32(partName)
+			let found=images.find(({crc32})=>crc32==crc)
+			if(found){
+				rel.attribs.TargetMode="External"
+				rel.attribs.Target=found.url
+				delete docx.parts[partName]
+			}
+		})
+	})
+	
+	docx.save("test")
+	
+	return docx.serialize().generate({type:"nodebuffer"})
 }

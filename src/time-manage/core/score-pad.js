@@ -33,7 +33,7 @@ export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child={}, sho
 		if(showComment){
 			comment=(
 				<Paper zDepth={1} style={{padding:10}}>
-					<Comment.Inline type={Family} 
+					<Comment.Inline kind={Family} 
 						model={child} 
 						hint="评论鼓励一下"
 						system={{thumbnail:child.thumbnail, name:child.name}}/>

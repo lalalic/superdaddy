@@ -2,13 +2,12 @@ import {DocxTemplate as docxTemplate} from "docx-template"
 import React from "react"
 import cheer from "cheerio"
 import ReactDOM from "react-dom/server"
-import OLE from "cfb"
 
 let uuid=0
 
 const ARRAY=/^([a-z]+)(\d+)$/i
 export default function parse(file){
-	let properties={}, applets=[], sale, hasPrint, hasHomework
+	let properties={},  sale, hasPrint, hasHomework
 	let fields=[]
 	return docxTemplate.load(file).then(docx0=>{
 		let $=docx0.officeDocument.content
@@ -19,11 +18,6 @@ export default function parse(file){
 			switch(model.type){
 			case "property":
 				properties[model.name.toLowerCase()]=model.value
-			break
-			case "applet":
-				let {title,desc,data}=model
-				let code=extractOLE(data.asNodeBuffer())
-				applets.unshift({title,desc,code,node})
 			break
 			case "sale":
 				sale=model.url
@@ -49,17 +43,6 @@ export default function parse(file){
 			return null
 		}
 		
-		function appletWithin(domain){
-			let found=applets.findIndex(({node:a})=>$(a).closest(domain).length==1)
-			if(found!=-1){
-				found=applets.splice(found,1)
-				delete found.node
-				return found
-			}
-			
-			return null
-		}
-		
 		return docxTemplate.parse(docx0)
 		.then(varDoc=>{
 			varDoc.children.forEach(({code:{body:[stmt]}, node})=>{
@@ -71,9 +54,6 @@ export default function parse(file){
 							let myFields=fieldsWithin(node)
 							if(myFields)
 								hasPrint.fields=myFields
-							let applet=appletWithin(node)
-							if(applet)
-								hasHomework.applet=applet
 							break
 						}
 						case "homework":{
@@ -81,9 +61,6 @@ export default function parse(file){
 							let myFields=fieldsWithin(node)
 							if(myFields)
 								hasHomework.fields=myFields
-							let applet=appletWithin(node)
-							if(applet)
-								hasHomework.applet=applet
 							break
 						}
 					}
@@ -98,7 +75,6 @@ export default function parse(file){
 				case "document":
 					props.id=id
 				break
-				case "applet":
 				case "property":
 					return null
 				break
@@ -128,6 +104,7 @@ export default function parse(file){
 			html=tidy(html)
 
 			return {
+				docx,
 				html,
 				properties,
 				steps,
@@ -137,8 +114,7 @@ export default function parse(file){
 				hasPrint,
 				hasHomework,
 				id,
-				fields: fields.length>0 ? fields : undefined,
-				applet: applets.length>0 ? applets[0] : undefined
+				fields: fields.length>0 ? fields.map(a=>{delete a.node;return a}) : undefined
 			}
 		})
 	})
@@ -151,23 +127,6 @@ export function identify(node, officeDocument){
 		return model
 	let $=officeDocument.content
 	switch(model.type){
-	case 'object':
-		let ole=node.children.find(a=>a.name=="o:OLEObject"), rid
-		if(ole && ole.attribs.ProgID=='Package' 
-			&& ole.attribs.Type=='Embed' 
-			&& (rid=ole.attribs['r:id'])){
-			model.type="applet"
-			model.data=officeDocument.getRel(rid)
-			let shape=node.children.find(a=>a.name=="v:shape")
-			if(shape){
-				let alt=(shape.attribs.alt||"").trim()
-				let desc=$(node).closest("w\\:p").text().trim()
-				model.title=alt || desc || "工具"
-				if(desc)
-					model.desc=desc
-			}
-		}
-	break
 	case "block":{
 		let title=$(node).find(">w\\:sdtPr>w\\:alias").attr("w:val")
 		if(title){
@@ -190,23 +149,16 @@ export function identify(node, officeDocument){
 }
 
 function extractField(model, node, $){
-	let {type, children, ...props}=model
+	let {type, children, value, options, checked, format,locale}=model
 	let name=$(node).find("w\\:tag").attr("w:val")
 	let title=$(node).find("w\\:alias").attr("w:val")
 	if(name){
-		return {name, title, ...props, node}
+		return {name, title, value, options, checked, format,locale, node}
 	}else{
 		console.warn(`a ${type} without tag is ignored as form field`)
 	}
 }
 
-function extractOLE(data){
-	let ole=OLE.parse(data)
-	let content=ole.find("!ole10Native").content
-	let start=content.slice(0,Math.min(content.length/2,512)).lastIndexOf(0)+1
-	let end=content.indexOf(0,Math.min(start,content.length/2))-1
-	return new TextDecoder("utf-8").decode(content.slice(start,end))
-}
 
 function createElement(type,props,children){
 	const {pr,node,type:a,...others}=props

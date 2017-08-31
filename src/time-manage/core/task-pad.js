@@ -11,7 +11,9 @@ import {
 } from "material-ui/styles/colors"
 
 import SwipeableTabs from "components/swipe-tabs"
+import AutoForm from "components/auto-form"
 import IconSmile from "material-ui/svg-icons/social/mood"
+import SvgIcon from 'material-ui/SvgIcon'
 import Avatar from 'material-ui/Avatar';
 
 export const TaskPad=(props=>(
@@ -30,6 +32,19 @@ const ITEM_STYLE={
 	marginTop:16,
 	marginBottom:16
 }
+
+function fieldsWithValue(i, fields, props={}){
+	let values=props[i+""]
+	if(fields && values){
+		return fields.map(a=>{
+			if(typeof(values[a.name])!="undefined")
+				return {...a, value: values[a.name]}
+			return a
+		})
+	}
+	return fields
+}
+
 const TaskPadWide=(({todos=[],current=new Date().getDay(),days=DAYS(current)})=>(
 	<List>
 		<ListItem
@@ -42,7 +57,7 @@ const TaskPadWide=(({todos=[],current=new Date().getDay(),days=DAYS(current)})=>
 		/>
 		<Divider/>
 
-		{todos.map(({knowledge, days=[], content:task, dones=[]},i)=>(
+		{todos.map(({knowledge, days=[], content:task, dones=[], fields, props},i)=>(
 			<ListItem key={i}
 				primaryText={knowledge ? <TaskTitle {...{knowledge,task}}/> : task}
 				rightIconButton={
@@ -54,6 +69,7 @@ const TaskPadWide=(({todos=[],current=new Date().getDay(),days=DAYS(current)})=>
 								done={-1!=dones.indexOf(a)}
 								day={a}
 								current={current}
+								fields={fieldsWithValue(a, fields, props)}
 								/>
 						</span>
 					))}
@@ -78,10 +94,15 @@ const TaskPadMobile=({todos=[],current=new Date().getDay(),days=DAYS(current)},
 			days.map((day,i)=>(
 				<List key={i} style={{minHeight:minHeight*3/4}}>
 					{
-						todos.map(({knowledge, days=[], content:task,dones=[]},j)=>(
+						todos.map(({knowledge, days=[], content:task,dones=[],fields, props},j)=>(
 							<ListItem key={j}
 								primaryText={knowledge ? <TaskTitle {...{knowledge,task}}/> : task}
-								leftCheckbox={<TodoStatus todo={task} done={-1!=dones.indexOf(i)} day={i} current={current}/>}
+								leftCheckbox={<TodoStatus 
+												todo={task} 
+												done={-1!=dones.indexOf(i)} 
+												day={i} 
+												current={current} 
+												fields={fieldsWithValue(i, fields, props)}/>}
 								initiallyOpen={true}
 								nestedItems={knowledgeTasks({days,dones,current})}
 							/>
@@ -98,19 +119,63 @@ TaskPadMobile.contextTypes={
 	dispatch: PropTypes.func
 }
 
-const TodoStatus=({todo,done, day, current, ...others},{dispatch,ACTION})=>{
-	if(done)
-		return (<IconSmile color={COLOR_DONE} {...others}/>)
-	else if(day>current)
-		return (<IconSmile color={COLOR_DISABLED} {...others}/>)
-	else
-		return (<IconSmile color={COLOR_ENABLED} hoverColor={COLOR_HOVER} onTouchTap={e=>dispatch(ACTION.DONE(todo,day))}  {...others}/>)
+const IconSmileMore=props=>(
+	<SvgIcon {...props}>
+		<path d="M0 0h24v24H0z" fill="none"/>
+		<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+		<circle cx="21" cy="12" r="3" />
+		<circle cx="3"  cy="12" r="3" />
+	</SvgIcon>
+)
+
+class TodoStatus extends Component{
+	state={info:false}
+	render(){
+		const {todo,done, day, current, fields=[], ...others}=this.props
+		const {dispatch,ACTION}=this.context
+		if(done){
+			const {info}=this.state
+			if(!info && fields.length)
+				others.onClick=e=>this.setState({info:true})
+			let icon=null
+			if(fields.length){
+				icon=<IconSmileMore color={COLOR_DONE} {...others}/>
+			}else{
+				icon=<IconSmile color={COLOR_DONE} {...others}/>
+			}
+			
+			if(info){
+				return (
+					<span>
+						<AutoForm 
+							fields={fields} 
+							title="信息"
+							onCancel={e=>this.setState({info:false})}
+							onSubmit={props=>{
+								this.setState({info:false})
+								dispatch(ACTION.INFO(todo,day,props))
+							}}
+							/>
+						{icon}
+					</span>
+				)
+			}else{
+				return icon
+			}
+			
+		}else if(day>current)
+			return (<IconSmile color={COLOR_DISABLED} {...others}/>)
+		else
+			return (<IconSmile color={COLOR_ENABLED} hoverColor={COLOR_HOVER} 
+				onClick={e=>dispatch(ACTION.DONE(todo,day))}  {...others}/>)
+	}
 }
 
 TodoStatus.contextTypes={
 	ACTION: PropTypes.object,
 	dispatch: PropTypes.func
 }
+
 const Wrapper=({onKeyboardFocus,...others})=>(<span {...others}/>)
 
 const TaskTitle=({knowledge,task},{router,dispatch,ACTION})=>(

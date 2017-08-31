@@ -37,8 +37,8 @@ export const reducer=(state,next)=>{
 
 export const ACTION={
 	ADD: knowledge=>(dispatch, getState)=>{//core/index.js ACTION.RESET cloned this logic
-		let {_id,title,score, days}=knowledge
-		let task={knowledge:_id,content:title,score, days}
+		let {_id,title,score, days, fields}=knowledge
+		let task={knowledge:_id,content:title,score, days, fields}
 		let ps=[]
 
 		if(Knowledge.isForBaby(knowledge))

@@ -112,7 +112,13 @@ export function create(AppBar, domain){
 					comment(child,`Yeah, ${todo}完成了，又得到一个笑脸了，一共有${score}个笑脸了，加油`)(dispatch)
 				}
 			})
-
+		,INFO: (todo, day, props)=>(dispatch, getState)=>{
+			return changeTodos((todos,target)=>{
+				const task=todos.find(a=>a.content==todo)
+				task.props={}||task.props
+				task.props[`${day}`]=props
+			})(dispatch,getState)
+		}
 		,EDITING: (status=0)=>({type:`${DOMAIN}/edit`, payload:status})
 		,UP: i=>changeTodos(todos=>{
 			let target=todos[i]
@@ -151,10 +157,13 @@ export function create(AppBar, domain){
 					}
 				}
 				//save history
-				let dones=todos.filter(({dones=[]})=>dones.length)
+				let dones=todos.filter(({dones=[], props})=>dones.length)
 				if(dones.length){
-					return Task.finishWeekTasks(child, dones, domain).then(a=>{
-						todos.forEach(a=>a.dones=[])
+					return Task.finishWeekTasks(child, dones, props, domain).then(a=>{
+						todos.forEach(a=>{
+							a.dones=[]
+							a.props={}
+						})
 						target.todoWeek=Task.getWeekStart()
 						applyMonthPlan()
 					})

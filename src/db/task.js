@@ -13,16 +13,17 @@ export default class Task extends Model{
         return 'task'
     }
 
-	static finishWeekTasks(child, tasks, domain){
+	static finishWeekTasks(child, tasks, attrs, domain){
 		const targets=child.targets
 		const target=targets[domain]
 		const {todoWeek:week}=target
 		const year=new Date().getFullYear()
-
+		
+		attrs=attrs||{}
 		let finished=tasks.reduce((finished,task)=>{
 			let props={baby: child._id, owner:domain}
 			task.dones.forEach(i=>{
-				finished.push({...task,date:Task.getDate(week,i), ...props, dones:undefined})
+				finished.push({...task,date:Task.getDate(week,i), ...props, ...attrs[`${i}`], dones:undefined})
 			})
 			return finished
 		},[])
