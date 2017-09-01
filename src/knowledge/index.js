@@ -191,26 +191,26 @@ export class Knowledges extends Component{
 			this.setState({filter:null})
 		}
         return (
-            <ReactPullToRefresh
-				style={{textAlign: 'center'}}
-				onRefresh={(resolve,reject)=>setTimeout(resolve,3000)}>
-				<div style={{minHeight:height-footbar.height}}>
-					<AppBar
-						iconElementLeft={this.getLeftElement()}
-						iconElementRight={<IconButton onClick={e=>search()}><IconSearch/></IconButton>}
-						title={<TextField ref={a=>refSearch=a}
-							hintText="查询"
-							onChange={(e,value)=>this.setState({filter:value})}
-							onKeyDown={e=>e.keyCode==13 && search()}
-							fullWidth={true}/>
-						}
-						/>
-
-	                <div>
-	                    {knowledges.filter(a=>filter ? -1!=a.title.indexOf(filter) : true).map(a=><Item model={a} key={a._id}/>)}
-	                </div>
-				</div>
-            </ReactPullToRefresh>
+			<div style={{minHeight:height-footbar.height}}>
+				<AppBar
+					iconElementLeft={this.getLeftElement()}
+					iconElementRight={<IconButton onClick={e=>search()}><IconSearch/></IconButton>}
+					title={<TextField ref={a=>refSearch=a}
+						hintText="查询"
+						onChange={(e,value)=>this.setState({filter:value})}
+						onKeyDown={e=>e.keyCode==13 && search()}
+						fullWidth={true}/>
+					}
+					/>
+				<ReactPullToRefresh
+					style={{textAlign: 'center'}}
+					onRefresh={(resolve,reject)=>setTimeout(resolve,3000)}>
+					<div className="ptr_content">
+						{knowledges.filter(a=>filter ? -1!=a.title.indexOf(filter) : true).map(a=><Item model={a} key={a._id}/>)}
+					</div>
+				</ReactPullToRefresh>
+			</div>
+            
         )
     }
 

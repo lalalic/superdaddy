@@ -18,6 +18,7 @@ export class KnowledgeComment extends Component{
 	}
 	render(){
 		const {connected,avatar,uuid,err}=this.state
+		const {muiTheme}=this.context
 		let label=null, code
 		if(connected){
 			if(avatar)
@@ -33,14 +34,16 @@ export class KnowledgeComment extends Component{
 		return (
 			<div>
 				{code}
-				<AppBar iconElementRight={label} title={<span>{err||"微信群"}</span>} />
-				<Comment {...this.props}/>
+				<AppBar style={{position:"fixed"}} iconElementRight={label} title={<span>{err||"微信群"}</span>} />
+				<div style={{paddingTop:muiTheme.appBar.height}}>
+					<Comment {...this.props}/>
+				</div>
 			</div>
 		)
 	}
 	
 	static contextTypes={
-		
+		muiTheme:PropTypes.object
 	}
 }
 

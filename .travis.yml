@@ -19,6 +19,7 @@ before_install:
 
 install:
  - yarn install
+ - yarn upgrade docx-template docx4js qili-app --latest
 
 script:
  - yarn run build.$BUILD_MODE
