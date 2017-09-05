@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from "react"
 import {UI, ENTITIES} from 'qili-app'
 import {normalize, arrayOf} from "normalizr"
 import {Link} from "react-router"
-import {IconButton, AppBar, TextField, Paper} from 'material-ui'
+import {IconButton, TextField, Paper} from 'material-ui'
 
 import ReactPullToRefresh from "react-pull-to-refresh"
 
@@ -16,6 +16,8 @@ import IconPullRefresh from "material-ui/svg-icons/hardware/keyboard-arrow-down"
 import dbKnowledge from 'db/knowledge'
 import {relative} from 'components/calendar'
 import FloatingAdd from "components/floating-add"
+import AppBar from "components/app-bar"
+
 import {getCurrentChild} from "$/selector"
 import {ACTION as TASK_ACTION} from "time-manage"
 import Assembler from "publish/assemble"
@@ -205,9 +207,7 @@ export class Knowledges extends Component{
 				<ReactPullToRefresh
 					style={{textAlign: 'center'}}
 					onRefresh={(resolve,reject)=>setTimeout(resolve,3000)}>
-					<div className="ptr_content">
-						{knowledges.filter(a=>filter ? -1!=a.title.indexOf(filter) : true).map(a=><Item model={a} key={a._id}/>)}
-					</div>
+					{knowledges.filter(a=>filter ? -1!=a.title.indexOf(filter) : true).map(a=><Item model={a} key={a._id}/>)}
 				</ReactPullToRefresh>
 			</div>
             
@@ -415,13 +415,13 @@ export const Content=({_id, title, content, summary, createdAt, category=[], key
 	let notNewStuff=null
 	if(_id){
 		notNewStuff=[
-			(<h1 key="link0"><Link to={`/knowledge/${_id}`}>{title}</Link></h1>),
+			(<AppBar key="appbar" title={<Link to={`/knowledge/${_id}`}>{title}</Link>} />),
 			(<p key="author">
 				{author.username} - <time>{relative(createdAt)}</time>
 			</p>)
 		]
 	}else {
-		notNewStuff=(<h1 key="link1">{title}</h1>)
+		notNewStuff=(<AppBar title={title}/>)
 	}
 
 	if(figure)

@@ -15,7 +15,7 @@ import IconComment from "material-ui/svg-icons/communication/comment"
 
 import {Family,init} from "db"
 import {getCurrentChild, getCurrentChildTarget} from "$/selector"
-import {ACTION,REDUCER} from "$/baby"
+import {ACTION,REDUCER} from "family/baby"
 import TimeManageUI from "time-manage"
 import {layout} from "time-manage/core/score-pad"
 

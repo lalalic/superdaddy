@@ -183,7 +183,7 @@ export default class KnowledgeEditor extends Component{
     
         return (
             <div className="post">
-                <div className="knowledge" style={{minHeight}}>
+				<div className="knowledge" style={{minHeight}}>
 					<Content {...knowledge}/>
                 </div>
 

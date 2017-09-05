@@ -16,7 +16,9 @@
 				"time-manage":"./time-manage",
 				"tv":"./tv",
 				"components":"./components",
-				"db":"./db"
+				"db":"./db",
+				"icons": "./icons",
+				"family": "./family"
 			}
 		}]
     ]

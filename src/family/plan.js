@@ -19,11 +19,11 @@ import Checkbox from 'material-ui/Checkbox'
 
 import {UI,compact} from 'qili-app'
 import {connect} from "react-redux"
-import AppBar from "./components/app-bar"
-import {getChildPlan, getKnowledge, getKnowledges, getCaps} from "./selector"
+import AppBar from "components/app-bar"
+import {getChildPlan, getKnowledge, getKnowledges, getCaps} from "$/selector"
 
-import Baby from "./baby"
-import Knowledge from "./knowledge"
+import Baby from "family/baby"
+import Knowledge from "knowledge"
 
 const {CommandBar}=UI
 

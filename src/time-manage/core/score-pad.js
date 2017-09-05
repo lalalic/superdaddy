@@ -1,8 +1,10 @@
 import React, {Component, PropTypes} from "react"
-import IconSmile from "material-ui/svg-icons/social/mood"
-import Comment from "qili-app/lib/components/comment"
+
+import IconButton from 'material-ui/IconButton'
+import IconComment from "material-ui/svg-icons/communication/comment"
 import TextFieldx from "qili-app/lib/components/text-field"
 import Paper from 'material-ui/Paper'
+import IconSmile from "icons/task"
 
 import {Family} from "db"
 
@@ -13,8 +15,8 @@ import {
 	,grey300 as COLOR_DISABLED
 } from "material-ui/styles/colors"
 
-export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child={}, showComment=true, width=0, height=0},context)=>{
-	const {appBar, muiTheme}=context
+export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child={}, width=0, height=0},context)=>{
+	const {appBar, muiTheme,router}=context
 
 	width=width||muiTheme.page.width
 	height=height||(muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height)
@@ -30,21 +32,16 @@ export const ScorePad=({todo, goal=0,totalPerScreen=goal, score=0, child={}, sho
 		action=(<Editor lastScore={score}/>)
 	}else{
 		title=todo;
-		if(showComment){
-			comment=(
-				<Paper zDepth={1} style={{padding:10}}>
-					<Comment.Inline kind={Family} 
-						model={child} 
-						hint="评论鼓励一下"
-						system={{thumbnail:child.thumbnail, name:child.name}}/>
-				</Paper>
-			)
-		}
 	}
-
+	let iconElementRight=(
+		<IconButton onClick={e=>router.push(`/comment/${Family._name}/${child._id}`)}>
+			<IconComment/>
+		</IconButton>
+	)
+	
 	return (
 		<div>
-			{React.cloneElement(appBar, {title})}
+			{React.cloneElement(appBar, {title, iconElementRight})}
 			{action}
 			<div>
 				{smiles}
@@ -58,7 +55,8 @@ ScorePad.contextTypes={
 	muiTheme:PropTypes.object,
 	appBar: PropTypes.element,
 	ACTION: PropTypes.object,
-	dispatch: PropTypes.func
+	dispatch: PropTypes.func,
+	router: PropTypes.object
 }
 
 const Smile=({scored, ...others})=>(

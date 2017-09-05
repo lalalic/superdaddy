@@ -3,11 +3,14 @@ import {UI,ENTITIES,REMOVE_ENTITIES,User} from 'qili-app'
 import {normalize,arrayOf} from "normalizr"
 import {TextField, RadioButtonGroup, RadioButton,DatePicker,Subheader} from 'material-ui'
 
-import {Family as dbFamily} from './db'
-import {getCurrentChild, getChild} from "./selector"
+import {Family as dbFamily} from 'db'
+import {getCurrentChild, getChild} from "$/selector"
 
-import PublishUI from "./publish"
-import Plan from "./plan"
+import PublishUI from "publish"
+import Plan from "family/plan"
+import {Icons} from "icons/task"
+
+import {yellow500 as COLOR_DONE} from "material-ui/styles/colors"
 
 import IconRemove from "material-ui/svg-icons/content/remove-circle"
 import IconPublish from "material-ui/svg-icons/action/card-giftcard"
@@ -132,7 +135,10 @@ export class Baby extends Component{
 	}
 
 	render(){
-		const {name,photo,bd:birthday,gender, score=0, todo, goal, totalScore=score, todos, dispatch,params:{id}}=this.props
+		const {name,photo,bd:birthday,gender, score=0, 
+				todo, goal, totalScore=score, todos,
+				icon,
+				dispatch,params:{id}}=this.props
 		const {nameError}=this.state
 		const {router}=this.context
 
@@ -164,6 +170,21 @@ export class Baby extends Component{
 							type="single"
 							options={[{value:"f",label:"女孩"},{value:"m", label:"男孩"}]}
 							onEdit={value=>dispatch(ACTION.CHANGE(id,"gender",value))}
+							/>
+							
+						<Field primaryText="个性图标" value={icon||"Smile"}
+							type="single"
+							options={
+								Object.keys(Icons)
+									.map(k=>{
+										let Icon=Icons[k]
+										return {
+											value:k, 
+											label: (<Icon color={COLOR_DONE}/>)
+										}
+									})
+							}
+							onEdit={value=>dispatch(ACTION.CHANGE(id,"icon",value))}
 							/>
 
 						<Subheader>当前任务</Subheader>

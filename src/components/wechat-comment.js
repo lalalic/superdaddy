@@ -7,7 +7,7 @@ import ReactPullToRefresh from "react-pull-to-refresh"
 
 import Wechat from "wechat4u"
 
-export class KnowledgeComment extends Component{
+export class WechatComment extends Component{
 	state={connected:false}
 	constructor(){
 		super() 
@@ -20,7 +20,7 @@ export class KnowledgeComment extends Component{
 	}
 	render(){
 		const {connected,avatar,uuid,err}=this.state
-		const {title}=this.props.params
+		const {title}=this.props
 		const {muiTheme}=this.context
 		let label=null, code
 		if(connected){
@@ -52,4 +52,4 @@ export class KnowledgeComment extends Component{
 	}
 }
 
-export default KnowledgeComment
+export default WechatComment

@@ -16,18 +16,21 @@ import {Family,Knowledge,init} from './db'
 import {getCurrentChild, getChild, getCurrentChildTasks,
 	getCurrentKnowledges, getCurrentKnowledge, getChildPlan} from "./selector"
 
-const {Empty, Comment, CommandBar, Setting:SettingUI}=UI
+const {Empty, CommandBar, Setting:SettingUI}=UI
 
-import AccountUI from './account'
-import BabyUI, {Creator, REDUCER} from './baby'
-import PublishUI from 'publish'
-import TimeManageUI from "time-manage"
+import AccountUI from 'setting/account'
+import ProfileUI from "setting/profile"
+
+import BabyUI, {Creator, REDUCER} from 'family/baby'
+import Plan from "family/plan"
+
+import KnowledgesUI from 'knowledge/'
 import KnowledgeUI from 'knowledge/info'
 import NewKnowledgeUI from 'knowledge/create'
-import KnowledgesUI from 'knowledge/'
-import KnowledgeComment from "knowledge/comment"
-import ProfileUI from "./profile"
-import Plan from "./plan"
+
+import Comment from "components/wechat-comment"
+import PublishUI from 'publish'
+import TimeManageUI from "time-manage"
 
 const Navigator=({children})=>(
 	<div>
@@ -120,7 +123,7 @@ export class SuperDaddy extends Component{
 							if(!child)
 								return {}
 							let target=(child.targets||{})["baby"]
-							let info={...compact(child,"name","photo","bd","gender"),...compact(target,"todo","goal","score","totalScore")}
+							let info={...compact(child,"name","photo","bd","gender","icon"),...compact(target,"todo","goal","score","totalScore")}
 							info.isCurrent=child==getCurrentChild(state)
 							return info
 						})(BabyUI)}/>
@@ -143,7 +146,7 @@ export class SuperDaddy extends Component{
 							}))(KnowledgeUI)}/>
 				</Route>
 
-				<Route path="comment/:type/:_id" component={KnowledgeComment}/>
+				<Route path="comment/:type/:_id" component={Comment}/>
 
 				<Route path="publish">
 					<IndexRoute component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI)}/>
