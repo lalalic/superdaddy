@@ -4,7 +4,7 @@ import {normalize, arrayOf} from "normalizr"
 import {Link} from "react-router"
 import {IconButton, TextField, Paper} from 'material-ui'
 
-import ReactPullToRefresh from "react-pull-to-refresh"
+import PullToRefresh from "components/pull-to-refresh"
 
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconThumbup from "material-ui/svg-icons/action/thumb-up"
@@ -57,6 +57,12 @@ export const ACTION={
 				done(knowledges)
 			}
         })
+	,FETCH_MORE: ()=>(dispatch,getState)=>{
+		return Promise.resolve()
+	}
+	,FETCH_FRESH:()=>(dispatch,getState)=>{
+		return Promise.resolve()
+	}
     ,SELECT_DOCX: a=>dispatch=>fileSelector.select()
 		.then(file=>extract(file))
         .then(docx=>dispatch({type:`@@${DOMAIN}/selectedDocx`,payload:docx}))
@@ -185,7 +191,7 @@ export class Knowledges extends Component{
 
     render(){
         const {router,muiTheme:{page:{height}, footbar}}=this.context
-        const {knowledges}=this.props
+        const {knowledges,dispatch}=this.props
 		const {filter}=this.state
         let refSearch=null
         const search=title=>{
@@ -204,11 +210,12 @@ export class Knowledges extends Component{
 						fullWidth={true}/>
 					}
 					/>
-				<ReactPullToRefresh
-					style={{textAlign: 'center'}}
-					onRefresh={(resolve,reject)=>setTimeout(resolve,3000)}>
+				<PullToRefresh
+					onMore={(resolve,reject)=>dispatch(ACTION.FETCH_MORE()).then(resolve,reject)}
+					onRefresh={(resolve,reject)=>dispatch(ACTION.FETCH_FRESH()).then(resolve,reject)}
+					>
 					{knowledges.filter(a=>filter ? -1!=a.title.indexOf(filter) : true).map(a=><Item model={a} key={a._id}/>)}
-				</ReactPullToRefresh>
+				</PullToRefresh>
 			</div>
             
         )
@@ -430,7 +437,7 @@ export const Content=({_id, title, content, summary, createdAt, category=[], key
 	return (
 		<article>
 			<figure>{figure}</figure>
-			<header>
+			<header  style={{backgroundColor:"transparent"}}>
 				{notNewStuff}
 				<p>
 					{[...category,...keywords].join(", ")}

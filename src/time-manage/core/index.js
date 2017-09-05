@@ -157,9 +157,10 @@ export function create(AppBar, domain){
 					}
 				}
 				//save history
-				let dones=todos.filter(({dones=[], props})=>dones.length)
+				let dones=todos.filter(({dones=[]})=>dones.length)
 				if(dones.length){
-					return Task.finishWeekTasks(child, dones, props, domain).then(a=>{
+					return Task.finishWeekTasks(child, dones, domain).then(a=>{
+						dispatch(ACTION.STAT(todos))
 						todos.forEach(a=>{
 							a.dones=[]
 							a.props={}
@@ -173,6 +174,7 @@ export function create(AppBar, domain){
 				}
 			})(dispatch,getState)
 		}
+		,STAT: todos=>({type:`${DOMAIN}/stat`})
 	}
 
 	const reducer=(state={},{type,payload})=>{

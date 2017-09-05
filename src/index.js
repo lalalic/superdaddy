@@ -146,7 +146,12 @@ export class SuperDaddy extends Component{
 							}))(KnowledgeUI)}/>
 				</Route>
 
-				<Route path="comment/:type/:_id" component={Comment}/>
+				<Route path="comment/:type/:_id" component={
+					connect(state=>{
+						let {name,photo:thumbnail}=getCurrentChild(state)
+						return {system:{name,thumbnail}}
+					})(Comment)
+				}/>
 
 				<Route path="publish">
 					<IndexRoute component={connect(state=>({child:getCurrentChild(state).name}))(PublishUI)}/>

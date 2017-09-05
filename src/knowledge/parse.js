@@ -45,8 +45,8 @@ export default function parse(file){
 		
 		return docxTemplate.parse(docx0)
 		.then(varDoc=>{
-			varDoc.children.forEach(({code:{body:[stmt]}, node})=>{
-				if(stmt.type=="IfStatement"){
+			varDoc.children.forEach(({code:{body:[stmt]=[]}, node})=>{
+				if(stmt && stmt.type=="IfStatement"){
 					let {right,left}=stmt.test
 					switch(right.value){
 						case "print":{

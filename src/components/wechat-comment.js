@@ -3,7 +3,7 @@ import Comment from "qili-app/lib/components/comment"
 
 import AppBar from "components/app-bar"
 import {FlatButton, Avatar} from "material-ui"
-import ReactPullToRefresh from "react-pull-to-refresh"
+import PullToRefresh from "components/pull-to-refresh"
 
 import Wechat from "wechat4u"
 
@@ -37,12 +37,14 @@ export class WechatComment extends Component{
 		return (
 			<div>
 				{code}
-				<AppBar style={{position:"fixed", width: muiTheme.page.width}} 
-					iconElementRight={label} 
+				<AppBar iconElementRight={label} 
 					title={<span>{err||title}</span>} />
-				<div style={{paddingTop:muiTheme.appBar.height}}>
+				<PullToRefresh 
+					onMore={(resolve,reject)=>dispatch(Comment.ACTION.FETCH_MORE()).then(resolve,reject)}
+					onRefresh={(resolve,reject)=>dispatch(Comment.ACTION.FETCH_FRESH()).then(resolve,reject)}
+					>
 					<Comment {...this.props}/>
-				</div>
+				</PullToRefresh>
 			</div>
 		)
 	}
