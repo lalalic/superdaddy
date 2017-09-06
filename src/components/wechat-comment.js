@@ -1,9 +1,8 @@
 import React, {Component, PropTypes} from "react"
-import Comment from "qili-app/lib/components/comment"
+import Comment, {ACTION} from "qili-app/lib/components/comment"
 
 import AppBar from "components/app-bar"
 import {FlatButton, Avatar} from "material-ui"
-import PullToRefresh from "components/pull-to-refresh"
 
 import Wechat from "wechat4u"
 
@@ -20,7 +19,7 @@ export class WechatComment extends Component{
 	}
 	render(){
 		const {connected,avatar,uuid,err}=this.state
-		const {title}=this.props
+		const {title,dispatch}=this.props
 		const {muiTheme}=this.context
 		let label=null, code
 		if(connected){
@@ -39,12 +38,7 @@ export class WechatComment extends Component{
 				{code}
 				<AppBar iconElementRight={label} 
 					title={<span>{err||title}</span>} />
-				<PullToRefresh 
-					onMore={(resolve,reject)=>dispatch(Comment.ACTION.FETCH_MORE()).then(resolve,reject)}
-					onRefresh={(resolve,reject)=>dispatch(Comment.ACTION.FETCH_FRESH()).then(resolve,reject)}
-					>
-					<Comment {...this.props}/>
-				</PullToRefresh>
+				<Comment {...this.props}/>
 			</div>
 		)
 	}

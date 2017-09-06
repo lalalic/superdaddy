@@ -4,7 +4,7 @@ import {normalize, arrayOf} from "normalizr"
 import {Link} from "react-router"
 import {IconButton, TextField, Paper} from 'material-ui'
 
-import PullToRefresh from "components/pull-to-refresh"
+import PullToRefresh from "pull-to-refresh2"
 
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconThumbup from "material-ui/svg-icons/action/thumb-up"
@@ -50,18 +50,28 @@ export const ACTION={
 			if(knowledges && knowledges.length){
 				let data=normalize(knowledges, arrayOf(dbKnowledge.schema))
 				dispatch(ENTITIES(data.entities))
-				dispatch({type:`@@${DOMAIN}/fetched`, payload:data.result})
+				dispatch({type:`@@${DOMAIN}/fetched`, payload:{knowledges: data.result, query}})
 			}
 			
 			if(done){
 				done(knowledges)
 			}
         })
-	,FETCH_MORE: ()=>(dispatch,getState)=>{
-		return Promise.resolve()
+	,FETCH_MORE: ok=>(dispatch,getState)=>{
+		const state=getState()
+		const {query,knowledges}=state.ui.knowledge
+		dbKnowledge.find(query,{limit:20, skip: knowledges.length})
+			.fetch(knowledges=>{
+				if(knowledges && knowledges.length){
+					let data=normalize(knowledges, arrayOf(dbKnowledge.schema))
+					dispatch(ENTITIES(data.entities))
+					dispatch({type:`@@${DOMAIN}/fetched_more`, payload:{knowledges: data.result}})
+				}
+				ok()
+			})
 	}
-	,FETCH_FRESH:()=>(dispatch,getState)=>{
-		return Promise.resolve()
+	,FETCH_REFRESH:ok=>(dispatch,getState)=>{
+		ok()
 	}
     ,SELECT_DOCX: a=>dispatch=>fileSelector.select()
 		.then(file=>extract(file))
@@ -155,7 +165,9 @@ export const ACTION={
 export const REDUCER=(state=INIT_STATE, {type, payload})=>{
     switch(type){
     case `@@${DOMAIN}/fetched`:
-        return Object.assign({},state,{knowledges:payload})
+        return {...state,...payload}
+    case `@@${DOMAIN}/fetched_more`:
+        return {...state,knowledges: [...payload.knowledges,...state.knowledges]}
 
     case `@@${DOMAIN}/selectedDocx`:
         if(state.selectedDocx)
@@ -211,8 +223,8 @@ export class Knowledges extends Component{
 					}
 					/>
 				<PullToRefresh
-					onMore={(resolve,reject)=>dispatch(ACTION.FETCH_MORE()).then(resolve,reject)}
-					onRefresh={(resolve,reject)=>dispatch(ACTION.FETCH_FRESH()).then(resolve,reject)}
+					onRefresh={ok=>dispatch(ACTION.FETCH_REFRESH(ok))}
+					onMore={ok=>dispatch(ACTION.FETCH_MORE(ok))}
 					>
 					{knowledges.filter(a=>filter ? -1!=a.title.indexOf(filter) : true).map(a=><Item model={a} key={a._id}/>)}
 				</PullToRefresh>

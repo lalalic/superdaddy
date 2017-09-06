@@ -12,13 +12,14 @@
     "babel-polyfill": "^6.23.0",
     "cheerio": "^0.22.0",
     "docx-template": "^2.2.3",
+    "docx4js": "^3.1.12",
     "lodash.flow": "^3.5.0",
     "material-ui": "^0.16.0",
     "normalizr": "^2.2.1",
+    "pull-to-refresh2": "^0.0.2",
     "qili-app": "https://github.com/lalalic/qili-app",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
-    "react-hammerjs": "^0.5.0",
     "react-intl": "^2.1.5",
     "react-motion": "^0.4.5",
     "react-redux": "^4.4.5",
@@ -30,6 +31,9 @@
     "wechat4u": "^0.6.8"
   },
   "devDependencies": {
+    "@storybook/addon-actions": "^3.2.6",
+    "@storybook/addon-links": "^3.2.6",
+    "@storybook/react": "^3.2.8",
     "babel-cli": "^6.18.0",
     "babel-loader": "^7.1.1",
     "babel-plugin-add-module-exports": "^0.1.2",
@@ -62,7 +66,9 @@
     "dev": "webpack-dev-server --hot --inline --env=dev",
     "cordova": "cordova create cordova --link-to=dist && cd cordova && cp www/phone.xml config.xml && cordova platform add android && cordova build android",
     "tv": "cordova create tv --link-to=dist && cd tv && cp www/tv.xml config.xml && cordova platform add android && cordova build android",
-    "tv.win": "cordova create tv --link-to=dist && cd tv && copy www\\tv.xml config.xml && cordova platform add android && cordova build android"
+    "tv.win": "cordova create tv --link-to=dist && cd tv && copy www\\tv.xml config.xml && cordova platform add android && cordova build android",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "keywords": [],
   "repository": {
