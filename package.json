@@ -17,7 +17,7 @@
     "material-ui": "^0.16.0",
     "normalizr": "^2.2.1",
     "pull-to-refresh2": "^0.0.2",
-    "qili-app": "https://github.com/lalalic/qili-app",
+    "qili-app": "https://github.com/lalalic/qili-app#relay",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-intl": "^2.1.5",
