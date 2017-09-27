@@ -1,0 +1,143 @@
+type Child implements Node {
+  id: ID!
+  name: String!
+  birthday: Date
+  createdAt: Date
+  photo(size: Int = 25): String
+  gender: Gender
+  author: User
+  score: Int
+  todo: String
+  goal: Int
+  totalScore: Int
+  todos: [String]
+  icon: String
+}
+
+scalar Date
+
+type File {
+  id: ID!
+  url: String
+  host: ID!
+}
+
+type FileToken {
+  token: String!
+  expires: Int!
+}
+
+type FinishedTask implements Node {
+  id: ID!
+  author: User
+}
+
+enum Gender {
+  girl
+  boy
+}
+
+type Knowledge implements Node {
+  id: ID!
+  author: User
+}
+
+type KnowledgeConnection {
+  edges: [KnowledgeEdge]
+  pageInfo: PageInfo
+}
+
+type KnowledgeEdge {
+  node: Knowledge
+  cursor: String
+}
+
+type Mutation {
+  requestToken(contact: String!): Boolean
+  login(contact: String!, token: String!, name: String): User
+  logout: Boolean
+  user_update(username: String, birthday: Date, gender: Gender, location: String, signature: String): Date
+  role_create(name: String): Role
+  role_update(_id: ObjectID!, name: String): Date
+  role_remove(_id: ObjectID!): Boolean
+  role_user_add(_id: ObjectID!, users: [String!]!): Date
+  role_user_remove(_id: ObjectID!, users: [String!]!): Date
+  file_link(url: String!, id: ID!, field: String!): Boolean
+  file_token(key: String): FileToken
+  file_clean(host: ID!): Boolean
+  child_remove(_id: ObjectID!): Boolean
+  child_create(name: String!, photo: String, birthday: Date, gender: Gender): Child
+  child_update(_id: ObjectID!, name: String, photo: String, birthday: Date, gender: Gender): Date
+}
+
+interface Named {
+  id: ID!
+  name: String
+  photo(size: Int = 25): String
+}
+
+interface Node {
+  id: ID!
+}
+
+# mongodb ID
+scalar ObjectID
+
+type PageInfo {
+  hasNextPage: Boolean
+  endCursor: String
+  hasPreviousPage: Boolean
+  startCursor: String
+}
+
+type Plan implements Node {
+  id: ID!
+  author: User
+  owner: User
+}
+
+type Query {
+  version: String!
+  node(id: ID!): Node
+  schema: String!
+  me: User!
+  knowledges(categories: [String], tags: [String], author: ObjectID): KnowledgeConnection
+}
+
+type Role implements Node {
+  id: ID!
+  name: String!
+  createdAt: Date!
+  updatedAt: Date
+  author: Named
+  users: [Named]
+}
+
+type Subscription {
+  ping: Boolean
+}
+
+type Task implements Node {
+  id: ID!
+  author: User
+}
+
+type User implements Node, Named {
+  id: ID!
+  photo(size: Int = 25): String
+  name: String
+  email: String
+  phone: String
+  createdAt: Date!
+  updatedAt: Date
+  token: String
+  username: String
+  birthday: Date
+  gender: Gender
+  location: String
+  signature: String
+  roles: [Role]
+  children: [Child]
+  child(_id: ObjectID): Child
+  works: [Knowledge]
+}

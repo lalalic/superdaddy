@@ -11,7 +11,7 @@ function envwebpack(env){
 
 module.exports=env=>Object.assign({
 	entry:{
-		index:["babel-polyfill","./src/index.js"],
+		index:["babel-polyfill","./style/index.less","./src/index.js"],
 		tv: ["babel-polyfill","./src/tv/index.js"],
 		parser: "./src/knowledge/parse.js"
 	},

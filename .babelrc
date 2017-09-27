@@ -7,10 +7,11 @@
       "babel-plugin-add-module-exports",
       "babel-plugin-transform-object-rest-spread",
       "babel-plugin-transform-class-properties",
+	  "babel-plugin-relay",
 	  ["module-resolver",{
 			"root": ["./src"],
 			"alias":{
-				"$":"/",
+				"main":"index.js",
 				"knowledge":"./knowledge",
 				"publish":"./publish",
 				"time-manage":"./time-manage",
@@ -18,7 +19,7 @@
 				"components":"./components",
 				"db":"./db",
 				"icons": "./icons",
-				"family": "./family"
+				"family": "./family",
 			}
 		}]
     ]
