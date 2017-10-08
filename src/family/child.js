@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from "react"
 import {connect} from "react-redux"
 import {compose, setStatic, getContext, withProps} from "recompose"
-import {withMutation, withFragment} from "qili-app/lib/tools/recompose"
+import {withMutation, withFragment,setPhoto} from "qili/tools/recompose"
 import {graphql} from "react-relay"
 
 import {TextField, RadioButtonGroup, RadioButton,DatePicker,Subheader} from 'material-ui'
@@ -14,10 +14,10 @@ import IconRemove from "material-ui/svg-icons/content/remove-circle"
 import IconPublish from "material-ui/svg-icons/action/card-giftcard"
 import IconPlan from "material-ui/svg-icons/editor/linear-scale"
 
-import {InfoForm, Field} from "qili-app/lib/components/info-form"
-import CommandBar from "qili-app/lib/components/command-bar"
-import Photo from "qili-app/lib/components/photo"
-import TextFieldx from "qili-app/lib/components/text-field"
+import {InfoForm, Field} from "qili/components/info-form"
+import CommandBar from "qili/components/command-bar"
+import Photo from "qili/components/photo"
+import TextFieldx from "qili/components/text-field"
 
 import {ACTION} from "main"
 
@@ -30,8 +30,8 @@ export class Child extends Component{
 
 	render(){
 		const {name,photo,birthday,gender, 
-				score=0,todo, goal, totalScore=score,icon,
-				update, remove, publish, plan
+				score=0,todo, goal, totalScore=score,plan:{icon},
+				update, remove, toPublish, toPlan, setPhoto,setIcon,
 				}=this.props
 		const {nameError}=this.state
 
@@ -44,7 +44,7 @@ export class Child extends Component{
 							height={150}
 							src={photo}
 							overwritable={true}
-							onPhoto={photo=>update({photo})}/>
+							onPhoto={url=>setPhoto({photo})}/>
 					</div>
 
 					<InfoForm>
@@ -79,7 +79,7 @@ export class Child extends Component{
 										}
 									})
 							}
-							onEdit={icon=>update({icon})}
+							onEdit={icon=>setIcon({icon})}
 							/>
 
 						<Subheader>当前任务</Subheader>
@@ -100,13 +100,13 @@ export class Child extends Component{
 							action:"publish",
 							label:"出版",
 							icon:<IconPublish/>,
-							onSelect:publish
+							onSelect:toPublish
 						}
 						,{
 							action:"plan",
 							label:"年度计划",
 							icon:<IconPlan/>,
-							onSelect:plan
+							onSelect:toPlan
 						}
 						,{
 							action:"Remove",
@@ -187,12 +187,8 @@ export default compose(
 				}
 			`
 		}),
-		getContext({router: PropTypes.object}),
-		withProps(({mutate,router})=>({
-			create(data){
-				return mutate(data)
-					.then(({id})=>router.replace(`/child/${id}`))
-			}
+		withProps(({mutate,toChild})=>({
+			create:data=>mutate(data).then(({id})=>toChild(id)),
 		})),
 	)(Creator)),
 	
@@ -203,12 +199,14 @@ export default compose(
 			photo
 			birthday
 			gender
+			totalScore:score
 			
-			score
-			totalScore
-			goal
-			todo
-			icon
+			plan{
+				score
+				goal
+				todo
+				icon
+			}
 		}
 	`),
 	withProps(({data})=>({...data,birthday:data.birthday ? new Date(data.birthday) : undefined})),
@@ -216,11 +214,25 @@ export default compose(
 		name:"update",
 		patch4:id,
 		promise:true,
+		variables:{id},
 		mutation: graphql`
-			mutation child_update_Mutation($id:ObjectID!, $name:String, $photo:String, $birthday:Date,$gender:Gender){
-				child_update(_id:$id, name:$name, photo:$photo, birthday:$birthday,gender:$gender)
+			mutation child_update_Mutation($id:ObjectID!, $name:String, $birthday:Date,$gender:Gender){
+				child_update(_id:$id, name:$name, birthday:$birthday,gender:$gender)
 			}
 		`
+	})),
+	withMutation(({id}, plan)=>({
+		name: "setIcon",
+		patch4: `plans:${id.split(":").pop()}`,
+		variables:{id,  plan},
+		mutation:graphql`
+			mutation child_planupdate_Mutation($id:ObjectID,$plan:JSON){
+				plan_update(_id:$id, plan:$plan){
+					id
+					icon
+				}
+			}
+		`,
 	})),
 	withMutation(({id})=>({
 		name:"doRemove",
@@ -232,22 +244,17 @@ export default compose(
 		`,
 	})),
 	connect(null,
-		(dispatch,{doUpload, router,id, name, doRemove,showMessage,switchChild})=>({
+		(dispatch,{id, name, doRemove,showMessage,switchChild, toMy})=>({
 			syncCurrent(newID){
 				if(newID!=id)
 					dispatch(ACTION.CURRENT_CHILD(newID))
-			},
-
-			upload(){
-				file.select()
-					.then(doUpload)
 			},
 			
 			remove(){
 				let removing=prompt("请输入要删除的宝宝名称").trim()
 				if(removing && removing==name){
 					doRemove()
-					router.replace("/my")
+					toMy()
 					switchChild()
 				}else{
 					showMessage({
@@ -256,14 +263,7 @@ export default compose(
 					})
 				}
 			},
-			
-			publish(){
-				router.push("/publish")
-			},
-			
-			plan(){
-				router.push("/plan")
-			}
 		})
 	),
+	setPhoto(),
 )(Child)

@@ -20,6 +20,7 @@
 				"db":"./db",
 				"icons": "./icons",
 				"family": "./family",
+				"qili":"qili-app/lib",
 			}
 		}]
     ]

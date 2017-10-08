@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 1680f6bd8e353e8e734fab3c12bd8361
+ * @relayHash 6ded0aef0160def10ee802e067114a48
  */
 
 /* eslint-disable */
@@ -12,7 +12,6 @@ import type {ConcreteBatch} from 'relay-runtime';
 export type child_update_MutationVariables = {|
   id: any;
   name?: ?string;
-  photo?: ?string;
   birthday?: ?any;
   gender?: ?"girl" | "boy";
 |};
@@ -26,11 +25,10 @@ export type child_update_MutationResponse = {|
 mutation child_update_Mutation(
   $id: ObjectID!
   $name: String
-  $photo: String
   $birthday: Date
   $gender: Gender
 ) {
-  child_update(_id: $id, name: $name, photo: $photo, birthday: $birthday, gender: $gender)
+  child_update(_id: $id, name: $name, birthday: $birthday, gender: $gender)
 }
 */
 
@@ -46,12 +44,6 @@ const batch /*: ConcreteBatch*/ = {
       {
         "kind": "LocalArgument",
         "name": "name",
-        "type": "String",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "photo",
         "type": "String",
         "defaultValue": null
       },
@@ -99,12 +91,6 @@ const batch /*: ConcreteBatch*/ = {
             "name": "name",
             "variableName": "name",
             "type": "String"
-          },
-          {
-            "kind": "Variable",
-            "name": "photo",
-            "variableName": "photo",
-            "type": "String"
           }
         ],
         "name": "child_update",
@@ -128,12 +114,6 @@ const batch /*: ConcreteBatch*/ = {
       {
         "kind": "LocalArgument",
         "name": "name",
-        "type": "String",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "photo",
         "type": "String",
         "defaultValue": null
       },
@@ -181,12 +161,6 @@ const batch /*: ConcreteBatch*/ = {
             "name": "name",
             "variableName": "name",
             "type": "String"
-          },
-          {
-            "kind": "Variable",
-            "name": "photo",
-            "variableName": "photo",
-            "type": "String"
           }
         ],
         "name": "child_update",
@@ -194,7 +168,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "mutation child_update_Mutation(\n  $id: ObjectID!\n  $name: String\n  $photo: String\n  $birthday: Date\n  $gender: Gender\n) {\n  child_update(_id: $id, name: $name, photo: $photo, birthday: $birthday, gender: $gender)\n}\n"
+  "text": "mutation child_update_Mutation(\n  $id: ObjectID!\n  $name: String\n  $birthday: Date\n  $gender: Gender\n) {\n  child_update(_id: $id, name: $name, birthday: $birthday, gender: $gender)\n}\n"
 };
 
 module.exports = batch;

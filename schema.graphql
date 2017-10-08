@@ -7,11 +7,8 @@ type Child implements Node {
   gender: Gender
   author: User
   score: Int
-  todo: String
-  goal: Int
-  totalScore: Int
-  todos: [String]
-  icon: String
+  publishs: [Publish]
+  plan: Plan
 }
 
 scalar Date
@@ -37,9 +34,24 @@ enum Gender {
   boy
 }
 
+# The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+scalar JSON
+
 type Knowledge implements Node {
   id: ID!
   author: User
+  title: String!
+  content: String
+  createdAt: Date
+  updatedAt: Date
+  summary: String
+  figure: String
+  photos: [String]
+  zans: Int
+  category: [String]
+  keywords: [String]
+  inTask(child: ObjectID): Boolean
+  files: [File]
 }
 
 type KnowledgeConnection {
@@ -50,6 +62,11 @@ type KnowledgeConnection {
 type KnowledgeEdge {
   node: Knowledge
   cursor: String
+}
+
+type MonthPlan {
+  goals: [String]
+  knowledges: [Knowledge]
 }
 
 type Mutation {
@@ -63,11 +80,18 @@ type Mutation {
   role_user_add(_id: ObjectID!, users: [String!]!): Date
   role_user_remove(_id: ObjectID!, users: [String!]!): Date
   file_link(url: String!, id: ID!, field: String!): Boolean
-  file_token(key: String): FileToken
+  file_tokens(count: Int): [FileToken]
   file_clean(host: ID!): Boolean
   child_remove(_id: ObjectID!): Boolean
   child_create(name: String!, photo: String, birthday: Date, gender: Gender): Child
-  child_update(_id: ObjectID!, name: String, photo: String, birthday: Date, gender: Gender): Date
+  child_update(_id: ObjectID!, name: String, photo: String, birthday: Date, icon: String, gender: Gender): Date
+  plan_update(_id: ObjectID, plan: JSON): Plan
+  plan_task(_id: ObjectID, content: String, knowledge: ObjectID): Plan
+  plan_untask(_id: ObjectID, content: String, knowledge: ObjectID): Plan
+  knowledge_create(knowledge: JSON): Knowledge
+  knowledge_update(_id: ObjectID, knowledge: JSON): Date
+  publish_create(template: String, child: ObjectID, from: Date, to: Date, name: String, copies: Int): Publish
+  publish_remove(_id: ObjectID): Boolean
 }
 
 interface Named {
@@ -92,8 +116,26 @@ type PageInfo {
 
 type Plan implements Node {
   id: ID!
+  icon: String
+  goal: Int
+  score: Int
+  todo: String
+  week: Int
+  todos: [Todo]
+  goals: [String]
+  months: [MonthPlan]
+}
+
+type Publish implements Node {
+  id: ID!
   author: User
-  owner: User
+  child: Child
+  name: String
+  template: String
+  copies: Int
+  from: Date
+  to: Date
+  createdAt: Date
 }
 
 type Query {
@@ -101,7 +143,8 @@ type Query {
   node(id: ID!): Node
   schema: String!
   me: User!
-  knowledges(categories: [String], tags: [String], author: ObjectID): KnowledgeConnection
+  knowledges(first: Int, after: JSON): KnowledgeConnection
+  knowledge(_id: ObjectID): Knowledge
 }
 
 type Role implements Node {
@@ -120,6 +163,18 @@ type Subscription {
 type Task implements Node {
   id: ID!
   author: User
+}
+
+type Todo {
+  knowledge: ObjectID
+  content: String
+  day0: JSON
+  day1: JSON
+  day2: JSON
+  day3: JSON
+  day4: JSON
+  day5: JSON
+  day6: JSON
 }
 
 type User implements Node, Named {

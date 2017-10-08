@@ -8,19 +8,15 @@
 
 /*::
 import type {ConcreteFragment} from 'relay-runtime';
-export type child = {|
+export type account = {|
   +id: string;
-  +name: string;
+  +username: ?string;
   +photo: ?string;
-  +birthday: ?any;
-  +gender: ?"girl" | "boy";
-  +totalScore: ?number;
-  +plan: ?{|
-    +score: ?number;
-    +goal: ?number;
-    +todo: ?string;
-    +icon: ?string;
-  |};
+  +children: ?$ReadOnlyArray<?{|
+    +id: string;
+    +photo: ?string;
+    +name: string;
+  |}>;
 |};
 */
 
@@ -29,7 +25,7 @@ const fragment /*: ConcreteFragment*/ = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "child",
+  "name": "account",
   "selections": [
     {
       "kind": "ScalarField",
@@ -42,7 +38,7 @@ const fragment /*: ConcreteFragment*/ = {
       "kind": "ScalarField",
       "alias": null,
       "args": null,
-      "name": "name",
+      "name": "username",
       "storageKey": null
     },
     {
@@ -53,67 +49,39 @@ const fragment /*: ConcreteFragment*/ = {
       "storageKey": null
     },
     {
-      "kind": "ScalarField",
-      "alias": null,
-      "args": null,
-      "name": "birthday",
-      "storageKey": null
-    },
-    {
-      "kind": "ScalarField",
-      "alias": null,
-      "args": null,
-      "name": "gender",
-      "storageKey": null
-    },
-    {
-      "kind": "ScalarField",
-      "alias": "totalScore",
-      "args": null,
-      "name": "score",
-      "storageKey": null
-    },
-    {
       "kind": "LinkedField",
       "alias": null,
       "args": null,
-      "concreteType": "Plan",
-      "name": "plan",
-      "plural": false,
+      "concreteType": "Child",
+      "name": "children",
+      "plural": true,
       "selections": [
         {
           "kind": "ScalarField",
           "alias": null,
           "args": null,
-          "name": "score",
+          "name": "id",
           "storageKey": null
         },
         {
           "kind": "ScalarField",
           "alias": null,
           "args": null,
-          "name": "goal",
+          "name": "photo",
           "storageKey": null
         },
         {
           "kind": "ScalarField",
           "alias": null,
           "args": null,
-          "name": "todo",
-          "storageKey": null
-        },
-        {
-          "kind": "ScalarField",
-          "alias": null,
-          "args": null,
-          "name": "icon",
+          "name": "name",
           "storageKey": null
         }
       ],
       "storageKey": null
     }
   ],
-  "type": "Child"
+  "type": "User"
 };
 
 module.exports = fragment;

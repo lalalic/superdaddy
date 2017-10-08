@@ -1,4 +1,9 @@
 import React, {Component, PropTypes} from "react"
+import {connect} from "react-redux"
+import {compose,getContext,withProps} from "recompose"
+import {withFragment,withMutation} from "qili/tools/recompose"
+import {graphql} from "react-relay"
+
 import {
   Step,
   Stepper,
@@ -17,61 +22,14 @@ import {List, ListItem} from 'material-ui/List'
 import Subheader from 'material-ui/Subheader'
 import Checkbox from 'material-ui/Checkbox'
 
-import {UI,compact} from 'qili-app'
-import {connect} from "react-redux"
-import AppBar from "components/app-bar"
-import {getChildPlan, getKnowledge, getKnowledges, getCaps} from "$/selector"
+import CommandBar from "qili/components/command-bar"
 
-import Baby from "family/baby"
+import AppBar from "components/app-bar"
+import Baby from "family/child"
 import Knowledge from "knowledge"
 
-const {CommandBar}=UI
-
+//{months=[{goals=[], knowledges=[]},{}]}
 const ACTION={
-	PLAN: (child,pending)=>(dispatch,getState)=>{
-		 const plan=getChildPlan(getState(),child)
-		 return Baby.ACTION.CHANGE(child, "plan", {...plan, ...pending})(dispatch,getState)
-	},
-	REMOVE_MONTH_GOAL:(child,month,goal)=>(dispatch,getState)=>{
-		 const plan=getChildPlan(getState(),child)
-		 let {months=[]}=plan
-		 let {goals=[]}=(months[month]=months[month]||{})
-		 goals=goals.filter(a=>a!=goal)
-		 months=[...months]
-		 months[month]={...months[month], goals}
-		 return Baby.ACTION.CHANGE(child, "plan", {...plan, months})(dispatch,getState)
-	},
-	ADD_MONTH_GOAL:(child,month,goal)=>(dispatch,getState)=>{
-		 const plan=getChildPlan(getState(),child)
-		 let {months=[]}=plan
-		 let {goals=[]}=(months[month]=months[month]||{})
-		 goals=[...goals,goal]
-		 months=[...months]
-		 months[month]={...months[month], goals}
-		 return Baby.ACTION.CHANGE(child, "plan", {...plan, months})(dispatch,getState)
-	},
-	REMOVE_MONTH_KNOWLEDGE:(child,month,knowledge)=>(dispatch,getState)=>{
-		 const plan=getChildPlan(getState(),child)
-		 let {months=[]}=plan
-		 let {knowledges=[]}=(months[month]=(months[month]||{}))
-		 knowledges=knowledges.filter(({_id})=>_id!=knowledge)
-		 months=[...months]
-		 months[month]={...months[month], knowledges}
-		 return Baby.ACTION.CHANGE(child, "plan", {...plan, months})(dispatch,getState)
-	},
-	ADD_MONTH_KNOWLEDGE:(child,month,knowledge)=>(dispatch,getState)=>{
-		 const state=getState()
-		 const plan=getChildPlan(state,child)
-		 let {months=[]}=plan
-		 let {knowledges=[]}=(months[month]=months[month]||{})
-		 knowledges=[...knowledges,compact(getKnowledge(state,knowledge), "_id","title","props")]
-		 months=[...months]
-		 months[month]={...months[month], knowledges}
-		 return Baby.ACTION.CHANGE(child, "plan", {...plan, months})(dispatch,getState)
-	},
-	SEARCH_KNOWLEDGE:(child, filter, goals, done)=>(dispatch,getState)=>{
-		 return Knowledge.ACTION.FETCH({limit:3}, done)(dispatch,getState)
-	},
 	AUTO_PLAN:(child)=>(dispatch,getState)=>{
 		const state=getState()
 		const plan=getChildPlan(state,child)
@@ -136,22 +94,18 @@ export class Plan extends Component{
         search:""
 	}
 	render(){
-		let {year=new Date().getFullYear(), goals, dispatch, id}=this.props
-		let years=[year].map(y=><MenuItem key={year} value={year} primaryText={year}/>)
+		let {goals, months, 
+			autoPlan,update,searchKnowledges,
+			addMonthGoal,removeMonthGoal,addMonthTask,removeMonthTask}=this.props
 		return (
 			<div>
                 <AppBar title={`年度目标，计划`}/>
-				<center>
-					<SelectField hintText="年" value={year}>
-					{years}
-					</SelectField>
-				</center>
-
-				<YearGoal {...this.props}/>
+	
+				<YearGoal {...{goals,update}}/>
 
 				<Divider/>
 
-				<MonthGoals {...this.props}/>
+				<MonthGoals {...{searchKnowledges,addMonthGoal,removeMonthGoal,addMonthTask,removeMonthTask,goals,months}}/>
 
 				<CommandBar className="footbar"
 					items={[
@@ -160,9 +114,7 @@ export class Plan extends Component{
 							action:"plan",
 							label:"自动安排",
 							icon:<IconAutoPlan/>,
-							onSelect:a=>{
-								dispatch(ACTION.AUTO_PLAN(id))
-							}
+							onSelect:autoPlan
 						}
 						]}
 					/>
@@ -171,7 +123,7 @@ export class Plan extends Component{
 	}
 }
 
-const YearGoal=connect(state=>({caps:getCaps(state)}))(class  extends Component{
+class YearGoal extends Component{
 	static defaultProps={
 		caps:"专注力,记忆力".split(",")
 	}
@@ -202,16 +154,16 @@ const YearGoal=connect(state=>({caps:getCaps(state)}))(class  extends Component{
 	}
 
 	toggle(cap){
-		let {goals=[], dispatch, id}=this.props
+		let {goals=[],update}=this.props
 		if(goals.includes(cap)){
 			goals=goals.filter(a=>a!=cap)
 		}else{
 			goals=[...goals,cap]
 		}
 
-		dispatch(ACTION.PLAN(id,{goals}))
+		update({goals})
 	}
-})
+}
 
 class MonthGoals extends Component{
 	state={
@@ -220,7 +172,8 @@ class MonthGoals extends Component{
 	render(){
 		let current=new Date().getMonth()
 		let {month}=this.state
-		let {goals,dispatch, id, months=[]}=this.props
+		let {months=[], addMonthGoal, 
+			removeMonthGoal, addMonthTask, removeMonthTask,searchKnowledges}=this.props
 
 		let steps=new Array(12)
 		steps.fill(1)
@@ -234,7 +187,8 @@ class MonthGoals extends Component{
                             {this.renderGoalSelector(month)}
 						</StepLabel>
 						<StepContent>
-							<MonthPlan {...months[month]} dispatch={dispatch} id={id} month={month}/>
+							<MonthPlan {...months[month]} month={month} 
+								{...{addMonthTask, removeMonthTask,searchKnowledges}}/>
 						</StepContent>
 					</Step>
 				)
@@ -260,7 +214,7 @@ class MonthGoals extends Component{
 	}
 
     renderMonthGoals(m){
-		let {months=[], dispatch, id}=this.props
+		let {months=[], removeMonthGoal}=this.props
         let {goals=[]}=months[m]||{}
         return (
             <span style={{display:"flex", flexWrap:"wrap",zoom:0.8}}>
@@ -268,7 +222,7 @@ class MonthGoals extends Component{
                     <Chip key={a}
                         children={a}
                         backgroundColor="transparent"
-                        onRequestDelete={e=>dispatch(ACTION.REMOVE_MONTH_GOAL(id,m,a))}/>
+                        onRequestDelete={e=>removeMonthGoal(m,a)}/>
                 )}
             </span>
         )
@@ -276,7 +230,7 @@ class MonthGoals extends Component{
 
     renderGoalSelector(m){
         let {search}=this.state
-        let {goals=[],months=[], dispatch, id}=this.props
+        let {goals=[],months=[], addMonthGoal}=this.props
         let {goals:used=[]}=months[m]||{}
         let unused=goals.filter(a=>!used.includes(a))
         if(unused.length==0)
@@ -293,7 +247,7 @@ class MonthGoals extends Component{
             underlineShow={false}
             onNewRequest={(text,i)=>{
                 if(i!=-1){
-                    dispatch(ACTION.ADD_MONTH_GOAL(id,m,unused[i]))
+                    addMonthGoal(m,unused[i])
                     this.setState({search:""})
                 }else{
 
@@ -304,15 +258,20 @@ class MonthGoals extends Component{
     }
 }
 
-const MonthPlan=connect(state=>({entities:getKnowledges(state)}))(class extends Component{
+const MonthPlan=compose(
+	getContext({client:PropTypes.object}),
+	withProps(({client})=>({
+		knowledges:client.getAll("Knowledge")
+	})),
+)(class extends Component{
     state={
         search:""
     }
 	render(){
         const {search}=this.state
 		let searched=this.filter(search)
-		const {goals,knowledges=[], dispatch, id:child, month}=this.props
-		searched=searched.filter(({_id})=>!knowledges.find(a=>a._id===_id))
+		const {knowledges=[], month, removeMonthTask, addMonthTask}=this.props
+		searched=searched.filter(({id})=>!knowledges.find(a=>a==id))
         return (
             <List>
                 <Subheader>
@@ -325,24 +284,24 @@ const MonthPlan=connect(state=>({entities:getKnowledges(state)}))(class extends 
                             dataSource={[]}/>
                     </center>
                 </Subheader>
-                {knowledges.map(({_id,title})=>
-                    <ListItem key={_id}
+                {knowledges.map(({id,title})=>
+                    <ListItem key={id}
                         primaryText={title}
 						leftCheckbox={
 							<Checkbox 
 								checked={true} 
-								onCheck={()=>dispatch(ACTION.REMOVE_MONTH_KNOWLEDGE(child,month,_id))}/>
+								onCheck={()=>removeMonthTask(month,id)}/>
 						}
                         />
                 )}
 
-                {searched.map(({_id, title})=>
-                    <ListItem key={_id}
+                {searched.map(({id, title})=>
+                    <ListItem key={id}
                         primaryText={title}
 						leftCheckbox={
 							<Checkbox 
 								checked={false}
-								onCheck={()=>dispatch(ACTION.ADD_MONTH_KNOWLEDGE(child,month,_id))}/>
+								onCheck={()=>addMonthTask(month,id)}/>
 						}
                         />
                 )}
@@ -370,10 +329,82 @@ const MonthPlan=connect(state=>({entities:getKnowledges(state)}))(class extends 
     searchKnowledge(search){
 		this.setState({search})
 		if(search){
-			const {dispatch, goals, id}=this.props
-			dispatch(ACTION.SEARCH_KNOWLEDGE(id,search,goals))
+			this.props.searchKnowledges(search,goals)
 		}
     }
 })
 
-export default Plan
+export default compose(
+	withFragment(graphql`
+		fragment plan on Plan{
+			goals
+			months{
+				goals
+				knowledges{
+					id
+					title
+				}
+			}
+		}
+	`),
+	withMutation(({child})=>({
+		patch4:child,
+		variables:{child},
+		mutation: graphql`
+			mutation plan_update_Mutation($child:ObjectID, $plan:JSON){
+				plan_update(_id: $child, plan:$plan){
+					 ...plan
+				}
+			}
+		`,
+	})),
+	withProps(({mutate,plan})=>({
+		update(data){
+			return mutate({...plan,...data})
+		},
+		removeMonthGoal(month,goal){
+			let {months=[]}=plan
+			let {goals=[]}=(months[month]=months[month]||{})
+			goals=goals.filter(a=>a!=goal)
+			months=[...months]
+			months[month]={...months[month], goals}
+			return mutate({months})
+		},
+		
+		addMonthGoal(month,goal){
+			let {months=[]}=plan
+			let {goals=[]}=(months[month]=months[month]||{})
+			goals=[...goals,goal]
+			months=[...months]
+			months[month]={...months[month], goals}
+			return mutate({months})
+		},
+		
+		removeMonthTask(month,knowledge){
+			let {months=[]}=plan
+			let {knowledges=[]}=(months[month]=(months[month]||{}))
+			knowledges=knowledges.filter(a=>a!=knowledge)
+			months=[...months]
+			months[month]={...months[month], knowledges}
+			return mutate({months})
+		},
+		
+		addMonthTask(month,knowledge){
+			const plan=getChildPlan(state,child)
+			let {months=[]}=plan
+			let {knowledges=[]}=(months[month]=months[month]||{})
+			knowledges=[...knowledges,knowledge]
+			months=[...months]
+			months[month]={...months[month], knowledges}
+			return mutate({months})
+		},
+		
+		autoPlan(){
+			
+		},
+		
+		searchKnowledges(title, caps){
+			
+		}
+	})),
+)(Plan)

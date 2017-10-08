@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash c1b8d5655886c06378b9d5c85a6d9037
+ * @relayHash 8cce36084f36ab7a17fc2772981897dc
  */
 
 /* eslint-disable */
@@ -11,11 +11,12 @@
 import type {ConcreteBatch} from 'relay-runtime';
 export type src_prefetch_QueryResponse = {|
   +me: {|
-    +name: ?string;
+    +id: string;
     +token: ?string;
     +children: ?$ReadOnlyArray<?{|
       +id: string;
       +name: string;
+      +photo: ?string;
     |}>;
   |};
 |};
@@ -25,13 +26,13 @@ export type src_prefetch_QueryResponse = {|
 /*
 query src_prefetch_Query {
   me {
-    name
+    id
     token
     children {
       id
       name
+      photo
     }
-    id
   }
 }
 */
@@ -55,7 +56,7 @@ const batch /*: ConcreteBatch*/ = {
             "kind": "ScalarField",
             "alias": null,
             "args": null,
-            "name": "name",
+            "name": "id",
             "storageKey": null
           },
           {
@@ -85,6 +86,13 @@ const batch /*: ConcreteBatch*/ = {
                 "alias": null,
                 "args": null,
                 "name": "name",
+                "storageKey": null
+              },
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "args": null,
+                "name": "photo",
                 "storageKey": null
               }
             ],
@@ -118,7 +126,7 @@ const batch /*: ConcreteBatch*/ = {
             "kind": "ScalarField",
             "alias": null,
             "args": null,
-            "name": "name",
+            "name": "id",
             "storageKey": null
           },
           {
@@ -149,15 +157,15 @@ const batch /*: ConcreteBatch*/ = {
                 "args": null,
                 "name": "name",
                 "storageKey": null
+              },
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "args": null,
+                "name": "photo",
+                "storageKey": null
               }
             ],
-            "storageKey": null
-          },
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "args": null,
-            "name": "id",
             "storageKey": null
           }
         ],
@@ -165,7 +173,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query src_prefetch_Query {\n  me {\n    name\n    token\n    children {\n      id\n      name\n    }\n    id\n  }\n}\n"
+  "text": "query src_prefetch_Query {\n  me {\n    id\n    token\n    children {\n      id\n      name\n      photo\n    }\n  }\n}\n"
 };
 
 module.exports = batch;

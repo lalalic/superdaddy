@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 45cfa38427751956d354504798aacbac
+ * @relayHash 5908967841f969cb1be1b00e5fd8291f
  */
 
 /* eslint-disable */
@@ -9,7 +9,7 @@
 
 /*::
 import type {ConcreteBatch} from 'relay-runtime';
-export type src_child_QueryResponse = {|
+export type src_publishes_QueryResponse = {|
   +me: {|
     +child: ?{| |};
   |};
@@ -18,31 +18,26 @@ export type src_child_QueryResponse = {|
 
 
 /*
-query src_child_Query(
-  $id: ObjectID
+query src_publishes_Query(
+  $child: ObjectID
 ) {
   me {
-    child(_id: $id) {
-      ...child
+    child(_id: $child) {
+      ...list_publishes
       id
     }
     id
   }
 }
 
-fragment child on Child {
-  id
-  name
-  photo
-  birthday
-  gender
-  totalScore: score
-  plan {
-    score
-    goal
-    todo
-    icon
+fragment list_publishes on Child {
+  publishs {
     id
+    name
+    template
+    from
+    to
+    copies
   }
 }
 */
@@ -52,14 +47,14 @@ const batch /*: ConcreteBatch*/ = {
     "argumentDefinitions": [
       {
         "kind": "LocalArgument",
-        "name": "id",
+        "name": "child",
         "type": "ObjectID",
         "defaultValue": null
       }
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "src_child_Query",
+    "name": "src_publishes_Query",
     "selections": [
       {
         "kind": "LinkedField",
@@ -76,7 +71,7 @@ const batch /*: ConcreteBatch*/ = {
               {
                 "kind": "Variable",
                 "name": "_id",
-                "variableName": "id",
+                "variableName": "child",
                 "type": "ObjectID"
               }
             ],
@@ -86,7 +81,7 @@ const batch /*: ConcreteBatch*/ = {
             "selections": [
               {
                 "kind": "FragmentSpread",
-                "name": "child",
+                "name": "list_publishes",
                 "args": null
               }
             ],
@@ -101,18 +96,18 @@ const batch /*: ConcreteBatch*/ = {
   "id": null,
   "kind": "Batch",
   "metadata": {},
-  "name": "src_child_Query",
+  "name": "src_publishes_Query",
   "query": {
     "argumentDefinitions": [
       {
         "kind": "LocalArgument",
-        "name": "id",
+        "name": "child",
         "type": "ObjectID",
         "defaultValue": null
       }
     ],
     "kind": "Root",
-    "name": "src_child_Query",
+    "name": "src_publishes_Query",
     "operation": "query",
     "selections": [
       {
@@ -130,7 +125,7 @@ const batch /*: ConcreteBatch*/ = {
               {
                 "kind": "Variable",
                 "name": "_id",
-                "variableName": "id",
+                "variableName": "child",
                 "type": "ObjectID"
               }
             ],
@@ -139,91 +134,63 @@ const batch /*: ConcreteBatch*/ = {
             "plural": false,
             "selections": [
               {
-                "kind": "ScalarField",
-                "alias": null,
-                "args": null,
-                "name": "id",
-                "storageKey": null
-              },
-              {
-                "kind": "ScalarField",
-                "alias": null,
-                "args": null,
-                "name": "name",
-                "storageKey": null
-              },
-              {
-                "kind": "ScalarField",
-                "alias": null,
-                "args": null,
-                "name": "photo",
-                "storageKey": null
-              },
-              {
-                "kind": "ScalarField",
-                "alias": null,
-                "args": null,
-                "name": "birthday",
-                "storageKey": null
-              },
-              {
-                "kind": "ScalarField",
-                "alias": null,
-                "args": null,
-                "name": "gender",
-                "storageKey": null
-              },
-              {
-                "kind": "ScalarField",
-                "alias": "totalScore",
-                "args": null,
-                "name": "score",
-                "storageKey": null
-              },
-              {
                 "kind": "LinkedField",
                 "alias": null,
                 "args": null,
-                "concreteType": "Plan",
-                "name": "plan",
-                "plural": false,
+                "concreteType": "Publish",
+                "name": "publishs",
+                "plural": true,
                 "selections": [
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "args": null,
-                    "name": "score",
-                    "storageKey": null
-                  },
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "args": null,
-                    "name": "goal",
-                    "storageKey": null
-                  },
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "args": null,
-                    "name": "todo",
-                    "storageKey": null
-                  },
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "args": null,
-                    "name": "icon",
-                    "storageKey": null
-                  },
                   {
                     "kind": "ScalarField",
                     "alias": null,
                     "args": null,
                     "name": "id",
                     "storageKey": null
+                  },
+                  {
+                    "kind": "ScalarField",
+                    "alias": null,
+                    "args": null,
+                    "name": "name",
+                    "storageKey": null
+                  },
+                  {
+                    "kind": "ScalarField",
+                    "alias": null,
+                    "args": null,
+                    "name": "template",
+                    "storageKey": null
+                  },
+                  {
+                    "kind": "ScalarField",
+                    "alias": null,
+                    "args": null,
+                    "name": "from",
+                    "storageKey": null
+                  },
+                  {
+                    "kind": "ScalarField",
+                    "alias": null,
+                    "args": null,
+                    "name": "to",
+                    "storageKey": null
+                  },
+                  {
+                    "kind": "ScalarField",
+                    "alias": null,
+                    "args": null,
+                    "name": "copies",
+                    "storageKey": null
                   }
                 ],
+                "storageKey": null
+              },
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "args": null,
+                "name": "id",
                 "storageKey": null
               }
             ],
@@ -241,7 +208,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query src_child_Query(\n  $id: ObjectID\n) {\n  me {\n    child(_id: $id) {\n      ...child\n      id\n    }\n    id\n  }\n}\n\nfragment child on Child {\n  id\n  name\n  photo\n  birthday\n  gender\n  totalScore: score\n  plan {\n    score\n    goal\n    todo\n    icon\n    id\n  }\n}\n"
+  "text": "query src_publishes_Query(\n  $child: ObjectID\n) {\n  me {\n    child(_id: $child) {\n      ...list_publishes\n      id\n    }\n    id\n  }\n}\n\nfragment list_publishes on Child {\n  publishs {\n    id\n    name\n    template\n    from\n    to\n    copies\n  }\n}\n"
 };
 
 module.exports = batch;
