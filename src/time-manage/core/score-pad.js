@@ -1,9 +1,10 @@
 import React, {Component, PropTypes} from "react"
 import {connect} from "react-redux"
-import {compose,getContext,} from "recompose"
-import {withFragment,withMutation} from "qili/tools/recompose"
+import {compose,getContext,withProps} from "recompose"
+import {withFragment} from "qili/tools/recompose"
 
 import TextFieldx from "qili/components/text-field"
+import AppBar from "components/app-bar"
 
 import IconButton from 'material-ui/IconButton'
 import IconComment from "material-ui/svg-icons/communication/comment"
@@ -17,20 +18,19 @@ import {
 } from "material-ui/styles/colors"
 
 export const ScorePad=({
-	todo, goal=0,totalPerScreen=goal, score=0, child, 
+	todo, goal=0,score=0,totalPerScreen=goal, 
 	width=0, height=0,
-	toComment,setGoal,
-	appBar
+	toComment,setTodoGoal
 	})=>{
 	let smiles=layout(width,height,score,totalPerScreen)
 
 	let title=todo, action=null
 	if(goal==0){
 		title="开始第一个目标"
-		action=(<Editor setGoal={setGoal}/>)
+		action=(<Editor setTodoGoal={setTodoGoal}/>)
 	}else if(goal<=score){
 		title=`[${todo}]已完成,开始下一个目标吧`
-		action=(<Editor lastScore={score} setGoal={setGoal}/>)
+		action=(<Editor lastScore={score} setTodoGoal={setTodoGoal}/>)
 	}else{
 		title=todo;
 	}
@@ -42,7 +42,7 @@ export const ScorePad=({
 	
 	return (
 		<div>
-			{React.cloneElement(appBar, {title, iconElementRight})}
+			<AppBar {...{title,iconElementRight}}/>
 			{action}
 			<div>
 				{smiles}
@@ -119,33 +119,25 @@ export default compose(
 		client:PropTypes.object,
 		muiTheme: PropTypes.object,
 		router: PropTypes.object,
-		appBar: PropTypes.object,
+		actions: PropTypes.object,
 	}),
-	connect((state,{width,height,muiTheme})=>({
-		child:client.get(state.superdaddy.current),
+	connect((state,{client,width,height,muiTheme, actions:{planUpdate}})=>({
+		child: state.superdaddy.current,
 		width: width||muiTheme.page.width,
-		height: height||muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height,
+		height: height||muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height-50,
 		toComment:()=>router.push(`/comment/${state.superdaddy.current}`),
+		setTodoGoal(plan){
+			return planUpdate({plan})
+		}
 	})),
 	withFragment(graphql`
-		fragment scorePad_scores on Plan{
+		fragment scorePad on Plan{
 			todo
 			goal
 			score
 		}
 	`),
-	withMutation(({child},plan)=>({
-		patch4:`plans:${child.id}`,
-		variables:{
-			_id:child.id,
-			plan,
-		},
-		mutation:graphql`
-			mutation scorePad_setTodoGoal_Mutation($id:ObjectID, $plan:JSON){
-				plan_update(_id:$id, plan:$plan){
-					id
-				}
-			}
-		`,
+	withProps(({data:{todo,goal,score}})=>({
+		todo,goal,score
 	}))
 )(ScorePad)

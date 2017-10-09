@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from "react"
 import {connect} from "react-redux"
-import {compose, getContext} from "recompose"
+import {compose, getContext, mapProps,} from "recompose"
 
 import SvgIcon from 'material-ui/SvgIcon'
 import IconSmile from "material-ui/svg-icons/social/mood"
@@ -27,10 +27,11 @@ export const Task=({type,more, color,...others})=>{
 
 export default compose(
 	getContext({client:PropTypes.object}),
-	connect(({current}, {client})=>{
-		let {icon="Smile"}=client.get(current)
+	connect((state, {client})=>{
+		let {icon="Smile"}=client.get(state.superdaddy.current)
 		return {type:icon}
 	}),
+	mapProps(({dispatch, client, ...others})=>others),
 )(Task)
 
 

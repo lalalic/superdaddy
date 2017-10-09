@@ -29,8 +29,9 @@ Cloud.typeDefs=`
 	}
 	
 	type Todo{
-		knowledge: ObjectID
+		knowledge: Knowledge
 		content: String
+		hidden: Boolean
 		day0: JSON
 		day1: JSON
 		day2: JSON
@@ -58,8 +59,9 @@ Cloud.typeDefs=`
 		zans: Int
 		category: [String]
 		keywords: [String]
+		fields: [JSON]
+		days: [JSON]
 		inTask(child:ObjectID): Boolean
-		
 		files: [File]
 	}
 	
@@ -105,8 +107,8 @@ Cloud.typeDefs=`
 		child_update(_id:ObjectID!, name:String, photo:String, birthday:Date,icon:String, gender:Gender): Date
 				
 		plan_update(_id:ObjectID, plan:JSON):Plan
-		plan_task(_id:ObjectID, content:String, knowledge:ObjectID):Plan
-		plan_untask(_id:ObjectID, content:String, knowledge:ObjectID):Plan
+		plan_task_done(_id:ObjectID, content:String, day:Int, props: JSON):Plan
+		plan_reset(_id:ObjectID):Plan
 		
 		knowledge_create(knowledge:JSON):Knowledge
 		knowledge_update(_id:ObjectID, knowledge:JSON):Date
@@ -232,50 +234,91 @@ Cloud.resolver={
 			let conn = await app.collection("plans")
 			try{
 				let {modifiedCount,upsertedId}=await conn.updateOne({_id},{$set:plan},{upsert:true})
-				debugger
 				return await conn.findOne({_id})
 			}finally{
 				conn.close()
 			}
+		},	
+
+		async plan_task_done(_,{_id,content,knowledge,props,day},{app,user}){
+			let {score=1}=await app.get1Entity("knowledges",{_id:knowledge})
+			let childScore=app.patchEntity("childs", {_id}, {score:{$inc:score}})
+			let plan=await app.get1Entity("plans",{_id})
+			let task=plan.todos.find(a=>knowledge ? a.knowledge==knowledge : a.content=content)
+			task[`day${day}`]=props||true
+			let planScore=app.patchEntity("plans",{_id},{score:plan.score++,todos:plan.todos})
+			await Promise.all([childScore,planScore])
+			return plan
 		},
 		
-		plan_task(_,{_id, content,knowledge}, {app,user}){
-			return app.get1Entity("plans",{_id})
-				.then(plan=>{
-					let todos=null
-					if(!plan || !plan.todos){
-						todos=[]
-					}else{
-						todos=plan.todos
-					}
-					
-					if(!todos.find(a=>knowledge ? a.knowledge===knowledge : a.content===content)){
-						todos.push({content,knowledge})
-						return Cloud.resolver.Mutation.plan_update(_,{_id,todos},{app,user})
-					}
-					
-					return plan
-				})
+		async plan_reset(_,{_id},{app,user}){
+			let plan=await app.get1Entity("plans",{_id})
+			function relativeDate(d, days){
+				return new Date(d.getTime()+24*60*60*1000*days)
+			}
+			
+			function saveFinishedTasks(){
+				let {week,todos}=plan
+				let startDate=new Date(week)
+				let tasks=todos.map(({content,knowledge,...others})=>{
+					return [0,1,2,3,4,5,6].map(i=>{
+						let day=others[`day${i}`]
+						if(day){
+							let when=relativeDate(startDate,i)
+							when.setHours(0,0,0,0)
+							let task={owner:"childs:"+_id,when,content,knowledge,createdAt:new Date()}
+							if(typeof(day)=="object")
+								task.props=day
+							return task
+						}
+					}).filter(a=>!!a)
+				}).reduce((collected,a)=>(collected.splice(-1,0,...a),collected),[])
+				//save tasks
+				if(tasks.length==0)
+					return Promise.resolve()
+
+				return app.collection("historys")
+					.then(conn=>conn.insertMany(tasks)
+							.then(()=>conn.close())
+							.catch(()=>conn.close())
+						)
+			}
+			
+			function reset4CurrentWeek(){
+				let {todos, months}=plan
+				let week=new Date()
+				week=relativeDate(-1*week.getDay())
+				week.setHours(0,0,0,0)
+				week=week.getTime()
+				
+				todos=todos.map(({day0,day1,day2,day3,day4,day5,day6,...others})=>others)
+				
+				let applyPlan=null
+				if(months){
+					let {knowledges=[]}=(months[new Date().getMonth()]||{})
+					applyPlan=Promise.all(
+						knowledges.map(a=>{
+							if(-1==todos.findIndex(({knowledge})=>knowledge==a)){
+								return app.get1Entity("knowledges",{_id:a})
+									.then(({title})=>todos.push({knowledge:a, content:title}))
+								
+							}
+						}).filter(a=>!!a)
+					)
+				}else{
+					applyPlan=Promise.resolve()
+				}
+				
+				return applyPlan.then(()=>{
+					plan.todos=todos
+					return app.patchEntity("plans",{_id},{todos})
+				}).then(()=>plan)
+			}
+			
+			saveFinishedTasks()
+			
+			return reset4CurrentWeek()
 		},
-		plan_untask(_,{_id, content,knowledge}, {app,user}){
-			return app.get1Entity("plans",{_id})
-				.then(plan=>{
-					let todos=null
-					if(!plan || !plan.todos){
-						todos=[]
-					}else{
-						todos=plan.todos
-					}
-					
-					let index=todos.findIndex(a=>knowledge ? a.knowledge===knowledge : a.content===content)
-					if(index!=-1){
-						todos.splice(index,1)
-						return Cloud.resolver.Mutation.plan_update(_,{_id,todos},{app,user})
-					}
-					
-					return plan
-				})
-		},				
 	},
 	
 	Knowledge: {
@@ -313,6 +356,11 @@ Cloud.resolver={
 	MonthPlan:{
 		knowledges({knowledges=[]},{},{app,user}){
 			return Promise.all(knowledges.map(_id=>app.get1Entity("knowledges",{_id})))
+		}
+	},
+	Todo: {
+		knowledge({knowledge},{},{app,user}){
+			return app.get1Entity("knowledges",{_id:knowledge})
 		}
 	}
 }

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 19b667a55cd79d42c0d7fcf40e4fa1dd
+ * @relayHash c9f5d39020aa70321b5ce44e1cb2fb2e
  */
 
 /* eslint-disable */
@@ -17,6 +17,7 @@ export type child_planupdate_MutationResponse = {|
   +plan_update: ?{|
     +id: string;
     +icon: ?string;
+    +todo: ?string;
   |};
 |};
 */
@@ -30,6 +31,7 @@ mutation child_planupdate_Mutation(
   plan_update(_id: $id, plan: $plan) {
     id
     icon
+    todo
   }
 }
 */
@@ -87,6 +89,13 @@ const batch /*: ConcreteBatch*/ = {
             "alias": null,
             "args": null,
             "name": "icon",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "todo",
             "storageKey": null
           }
         ],
@@ -152,13 +161,20 @@ const batch /*: ConcreteBatch*/ = {
             "args": null,
             "name": "icon",
             "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "todo",
+            "storageKey": null
           }
         ],
         "storageKey": null
       }
     ]
   },
-  "text": "mutation child_planupdate_Mutation(\n  $id: ObjectID\n  $plan: JSON\n) {\n  plan_update(_id: $id, plan: $plan) {\n    id\n    icon\n  }\n}\n"
+  "text": "mutation child_planupdate_Mutation(\n  $id: ObjectID\n  $plan: JSON\n) {\n  plan_update(_id: $id, plan: $plan) {\n    id\n    icon\n    todo\n  }\n}\n"
 };
 
 module.exports = batch;

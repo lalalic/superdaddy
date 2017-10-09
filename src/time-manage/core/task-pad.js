@@ -1,4 +1,7 @@
 import React, {Component, PropTypes} from "react"
+import {compose, getContext, withProps} from "recompose"
+import {withFragment} from "qili/tools/recompose"
+
 import MediaQuery from "react-responsive"
 import {List,ListItem, Subheader,Divider,Tab, FlatButton,IconButton} from "material-ui"
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
@@ -13,16 +16,8 @@ import {
 import SwipeableTabs from "components/swipe-tabs"
 import AutoForm from "components/auto-form"
 
-import Avatar from 'material-ui/Avatar';
+import Avatar from 'material-ui/Avatar'
 import IconSmile from "icons/task"
-
-export const TaskPad=(props=>(
-	<MediaQuery maxWidth={960}>
-	{
-		match=>match ? <TaskPadMobile {...props}/> : <TaskPadWide {...props}/>
-	}
-	</MediaQuery>
-))
 
 const DAYS=(i,a="日一二三四五六".split(""))=>(i<7 && a.splice(i,1,<b>今天</b>),a)
 const ITEM_STYLE={
@@ -45,7 +40,7 @@ function fieldsWithValue(i, fields, props={}){
 	return fields
 }
 
-const TaskPadWide=(({todos=[],current=new Date().getDay(),days=DAYS(current)})=>(
+const TaskPadWide=(({todos=[],current,days})=>(
 	<List>
 		<ListItem
 			primaryText="任务\星期"
@@ -57,9 +52,9 @@ const TaskPadWide=(({todos=[],current=new Date().getDay(),days=DAYS(current)})=>
 		/>
 		<Divider/>
 
-		{todos.map(({knowledge, days=[], content:task, dones=[], fields, props},i)=>(
+		{todos.map(({toKnowledge, days=[], content:task, dones=[], fields, props},i)=>(
 			<ListItem key={i}
-				primaryText={knowledge ? <TaskTitle {...{knowledge,task}}/> : task}
+				primaryText={<TaskTitle {...{toKnowledge,task}}/>}
 				rightIconButton={
 					<Wrapper>
 					{[0,1,2,3,4,5,6].map(a=>(
@@ -86,17 +81,16 @@ const TaskPadWide=(({todos=[],current=new Date().getDay(),days=DAYS(current)})=>
 	</List>
 ))
 
-const TaskPadMobile=({todos=[],current=new Date().getDay(),days=DAYS(current)},
-	{dispatch,ACTION,muiTheme, minHeight=muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height})=>(
+const TaskPadMobile=({todos=[],current,days,minHeight})=>(
 	<SwipeableTabs index={current%7}
 		tabs={days.map((day,i)=><Tab key={i} label={day} value={i}/>)}>
 		{
 			days.map((day,i)=>(
-				<List key={i} style={{minHeight:minHeight*3/4}}>
+				<List key={i} style={{minHeight}}>
 					{
-						todos.map(({knowledge, days=[], content:task,dones=[],fields, props},j)=>(
+						todos.map(({toKnowledge, days=[], content:task,dones=[],fields, props},j)=>(
 							<ListItem key={j}
-								primaryText={knowledge ? <TaskTitle {...{knowledge,task}}/> : task}
+								primaryText={<TaskTitle {...{toKnowledge,task}}/>}
 								leftCheckbox={<TodoStatus 
 												todo={task} 
 												done={-1!=dones.indexOf(i)} 
@@ -113,17 +107,16 @@ const TaskPadMobile=({todos=[],current=new Date().getDay(),days=DAYS(current)},
 		}
 	</SwipeableTabs>
 )
-TaskPadMobile.contextTypes={
-	muiTheme:PropTypes.object,
-	ACTION: PropTypes.object,
-	dispatch: PropTypes.func
-}
 
-class TodoStatus extends Component{
+const TodoStatus=compose(
+	getContext({actions:PropTypes.object}),
+	withProps(({actions:{taskDone}})=>({
+		taskDone
+	}))
+)(class extends Component{
 	state={info:false}
 	render(){
-		const {todo,done, day, current, fields=[], ...others}=this.props
-		const {dispatch,ACTION}=this.context
+		const {todo,done, day, current, fields=[], taskDone, ...others}=this.props
 		if(done){
 			const {info}=this.state
 			if(!info && fields.length)
@@ -144,7 +137,7 @@ class TodoStatus extends Component{
 							onCancel={e=>this.setState({info:false})}
 							onSubmit={props=>{
 								this.setState({info:false})
-								dispatch(ACTION.INFO(todo,day,props))
+								taskDone({todo,day,props})
 							}}
 							/>
 						{icon}
@@ -158,19 +151,14 @@ class TodoStatus extends Component{
 			return (<IconSmile color={COLOR_DISABLED} {...others}/>)
 		else
 			return (<IconSmile color={COLOR_ENABLED} hoverColor={COLOR_HOVER} 
-				onClick={e=>dispatch(ACTION.DONE(todo,day))}  {...others}/>)
+				onClick={taskDone({todo,day})}  {...others}/>)
 	}
-}
-
-TodoStatus.contextTypes={
-	ACTION: PropTypes.object,
-	dispatch: PropTypes.func
-}
+})
 
 const Wrapper=({onKeyboardFocus,...others})=>(<span {...others}/>)
 
-const TaskTitle=({knowledge,task},{router,dispatch,ACTION})=>(
-	<span onClick={e=>router.push(`/knowledge/${knowledge}`)} style={{color:"blue"}}>
+const TaskTitle=({toKnowledge,task})=>(
+	<span onClick={toKnowledge} style={{color:toKnowledge ? "blue" : ""}}>
 		{task}
 	</span>
 )
@@ -185,8 +173,58 @@ function knowledgeTasks({days=[], current, dones=[]}){
 		primaryText={d}/>)
 }
 
-TaskTitle.contextTypes={
-	router: PropTypes.object,
-	dispatch: PropTypes.func,
-	ACTION: PropTypes.object
-}
+export const TaskPad=(props=>(
+	<MediaQuery maxWidth={960}>
+	{
+		match=>match ? <TaskPadMobile {...props}/> : <TaskPadWide {...props}/>
+	}
+	</MediaQuery>
+))
+
+export default compose(
+	getContext({
+		router:PropTypes.object,
+		muiTheme: PropTypes.object,
+	}),
+	withFragment(graphql`
+		fragment taskPad on Plan{
+			todos{
+				knowledge{
+					fields
+				}
+				content
+				day0
+				day1
+				day2
+				day3
+				day4
+				day5
+				day6
+			}
+		}
+	`),
+
+	withProps(({router,muiTheme, data,current=new Date().getDay()})=>{
+		const toKnowledge=id=>router.push(`/knowledge/${id}`)
+		return {
+			minHeight:(muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height)*3/4,
+			current,
+			days: DAYS(current),
+			todos: (data.todos||[]).map(a=>{
+				if(a.knowledge){
+					a.fields=a.knowledge.fields
+					a.props=[0,1,2,3,4,5,6].reduce((state,i)=>{
+						const {dones,props}=state
+						let prop=props[`${i}`]=a[`day${i}`]
+						if(prop){
+							dones.push(i)
+						}
+						return state
+					}, {dones:[], props})
+					a.toKnowledge=()=>toKnowledge(a.knowledge.id)
+				}
+				return a
+			})
+		}
+	}),	
+)(TaskPad)

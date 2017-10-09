@@ -8,10 +8,10 @@
 
 /*::
 import type {ConcreteFragment} from 'relay-runtime';
-export type scorePad_scores = {|
-  +todo: ?string;
+export type core_timeManage = {|
   +goal: ?number;
   +score: ?number;
+  +week: ?number;
 |};
 */
 
@@ -20,15 +20,8 @@ const fragment /*: ConcreteFragment*/ = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "scorePad_scores",
+  "name": "core_timeManage",
   "selections": [
-    {
-      "kind": "ScalarField",
-      "alias": null,
-      "args": null,
-      "name": "todo",
-      "storageKey": null
-    },
     {
       "kind": "ScalarField",
       "alias": null,
@@ -42,6 +35,28 @@ const fragment /*: ConcreteFragment*/ = {
       "args": null,
       "name": "score",
       "storageKey": null
+    },
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "args": null,
+      "name": "week",
+      "storageKey": null
+    },
+    {
+      "kind": "FragmentSpread",
+      "name": "scorePad",
+      "args": null
+    },
+    {
+      "kind": "FragmentSpread",
+      "name": "taskPad",
+      "args": null
+    },
+    {
+      "kind": "FragmentSpread",
+      "name": "taskPadEditor",
+      "args": null
     }
   ],
   "type": "Plan"

@@ -50,6 +50,8 @@ type Knowledge implements Node {
   zans: Int
   category: [String]
   keywords: [String]
+  fields: [JSON]
+  days: [JSON]
   inTask(child: ObjectID): Boolean
   files: [File]
 }
@@ -86,8 +88,8 @@ type Mutation {
   child_create(name: String!, photo: String, birthday: Date, gender: Gender): Child
   child_update(_id: ObjectID!, name: String, photo: String, birthday: Date, icon: String, gender: Gender): Date
   plan_update(_id: ObjectID, plan: JSON): Plan
-  plan_task(_id: ObjectID, content: String, knowledge: ObjectID): Plan
-  plan_untask(_id: ObjectID, content: String, knowledge: ObjectID): Plan
+  plan_task_done(_id: ObjectID, content: String, day: Int, props: JSON): Plan
+  plan_reset(_id: ObjectID): Plan
   knowledge_create(knowledge: JSON): Knowledge
   knowledge_update(_id: ObjectID, knowledge: JSON): Date
   publish_create(template: String, child: ObjectID, from: Date, to: Date, name: String, copies: Int): Publish
@@ -166,8 +168,9 @@ type Task implements Node {
 }
 
 type Todo {
-  knowledge: ObjectID
+  knowledge: Knowledge
   content: String
+  hidden: Boolean
   day0: JSON
   day1: JSON
   day2: JSON

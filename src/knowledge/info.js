@@ -26,7 +26,7 @@ import AutoForm from "components/auto-form"
 
 import {ACTION} from "."
 import Content from "./content"
-
+import {withPlanActions} from "time-manage"
 
 export class KnowledgeEditor extends Component{
 	state={homework:false}
@@ -34,7 +34,7 @@ export class KnowledgeEditor extends Component{
     render(){
 		const {
 			knowledge, isMyWork, minHeight, revising=false, inTask=false,
-			selectDocx, update, cancel, taks, untask, preview, buy,
+			selectDocx, update, cancel, task, untask, preview, buy,
 			outputHomework, wechat_seesion,wechat_timeline,
 			toComment,
 		}=this.props
@@ -238,51 +238,13 @@ export default compose(
 			}
 		`,
 	})),
-	withMutation(({knowledge, child}, info)=>({
-		variables:{
-			id:child,
-			knowledge:knowledge.id,
-			content:knowledge.title
+	
+	withPlanActions(({knowledge:{title,id},actions:{add, remove}})=>({
+		task(){
+			add(title,id)
 		},
-		mutation:graphql`
-			mutation info_task_Mutation($id:ObjectID, $knowledge:ObjectID, $content:String){
-				plan_task(_id:$id, knowledge:$knowledge,content:$content){
-					todos{
-						knowledge
-						content
-						day0
-						day1
-						day2
-						day3
-						day4
-						day5
-						day6
-					}
-				}
-			}
-		`,
-	})),
-	withMutation(({knowledge, child}, info)=>({
-		variables:{
-			id:child,
-			knowledge:knowledge.id
+		untask(){
+			remove(title,id)
 		},
-		mutation:graphql`
-			mutation info_untask_Mutation($id:ObjectID, $knowledge:ObjectID){
-				plan_untask(_id:$id, knowledge:$knowledge){
-					todos{
-						knowledge
-						content
-						day0
-						day1
-						day2
-						day3
-						day4
-						day5
-						day6
-					}
-				}
-			}
-		`,
 	})),
 )(KnowledgeEditor)

@@ -29,9 +29,9 @@ export class Child extends Component{
 	}
 
 	render(){
-		const {name,photo,birthday,gender, 
-				score=0,todo, goal, totalScore=score,plan:{icon},
-				update, remove, toPublish, toPlan, setPhoto,setIcon,
+		const {name,photo,birthday,gender, totalScore=score,
+				plan:{icon,todo,goal,score=0},
+				update, remove, toPublish, toPlan, setPhoto,updatePlan,
 				}=this.props
 		const {nameError}=this.state
 
@@ -79,7 +79,7 @@ export class Child extends Component{
 										}
 									})
 							}
-							onEdit={icon=>setIcon({icon})}
+							onEdit={icon=>updatePlan({icon})}
 							/>
 
 						<Subheader>当前任务</Subheader>
@@ -88,7 +88,7 @@ export class Child extends Component{
 
 						<Field primaryText="目标" value={todo}
 							type="input"
-							onEdit={goal ? todo=>update({todo}) : null}
+							onEdit={goal ? todo=>updatePlan({todo}) : null}
 							/>
 					</InfoForm>
 				</div>
@@ -222,7 +222,7 @@ export default compose(
 		`
 	})),
 	withMutation(({id}, plan)=>({
-		name: "setIcon",
+		name: "updatePlan",
 		patch4: `plans:${id.split(":").pop()}`,
 		variables:{id,  plan},
 		mutation:graphql`
@@ -230,6 +230,7 @@ export default compose(
 				plan_update(_id:$id, plan:$plan){
 					id
 					icon
+					todo
 				}
 			}
 		`,

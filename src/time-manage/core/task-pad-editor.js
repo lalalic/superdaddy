@@ -1,4 +1,7 @@
 import React, {Component, PropTypes} from "react"
+import {compose, getContext,withProps} from "recompose"
+import {withFragment} from "qili/tools/recompose"
+
 import {List,ListItem, Subheader,Divider,Tab, IconButton} from "material-ui"
 import MediaQuery from "react-responsive"
 
@@ -9,10 +12,8 @@ import IconUp from "material-ui/svg-icons/navigation/arrow-upward"
 import IconDown from "material-ui/svg-icons/navigation/arrow-downward"
 import IconTop from "material-ui/svg-icons/editor/vertical-align-top"
 import IconBottom from "material-ui/svg-icons/editor/vertical-align-bottom"
-
 import IconVisible from "material-ui/svg-icons/action/visibility"
 import IconHidden from "material-ui/svg-icons/action/visibility-off"
-
 import IconRemove from "material-ui/svg-icons/action/alarm-off"
 
 export const TaskPadEditor=(({todos=[]})=>(
@@ -39,52 +40,67 @@ export const TaskPadEditor=(({todos=[]})=>(
 	</List>
 ))
 
-const Order=({i},{ACTION,dispatch})=>(
+const Order=compose(
+	getContext({actions:PropTypes.object}),
+	withProps(({actions:{top,bottom,up,down}})=>({
+		top,bottom,up,down
+	}))
+)(({i})=>(
 	<Wrapper>
 		<MediaQuery minWidth={960}>
-            <IconButton onClick={e=>dispatch(ACTION.TOP(i))}>
+            <IconButton onClick={e=>top(i)}>
                 <IconTop color={COLOR_ENABLED}/>
             </IconButton>
         </MediaQuery>
-		<IconButton onClick={e=>dispatch(ACTION.UP(i))}>
+		<IconButton onClick={e=>up(i)}>
             <IconUp color={COLOR_ENABLED}/>
         </IconButton>
-		<IconButton onClick={e=>dispatch(ACTION.DOWN(i))}>
+		<IconButton onClick={e=>down(i)}>
             <IconDown color={COLOR_ENABLED}/>
         </IconButton>
         <MediaQuery minWidth={960}>
-		      <IconButton onClick={e=>dispatch(ACTION.BOTTOM(i))}>
+		      <IconButton onClick={e=>bottom(i)}>
                 <IconBottom color={COLOR_ENABLED}/>
             </IconButton>
         </MediaQuery>
 	</Wrapper>
-)
+))
 
-Order.contextTypes={
-	ACTION: PropTypes.object,
-	dispatch: PropTypes.func
-}
 
-const Visibility=({i,visible,Icon=(!visible ? IconHidden : IconVisible),style},{ACTION,dispatch})=>(
-	<IconButton onClick={e=>dispatch(ACTION.TOGGLE_VISIBLE(i))} style={style}>
+const Visibility=compose(
+	getContext({actions:PropTypes.object}),
+	withProps(({actions:{toggleVisible}})=>({
+		toggleVisible
+	}))
+)(({i,visible,Icon=(!visible ? IconHidden : IconVisible),style})=>(
+	<IconButton onClick={e=>toggleVisible(i)} style={style}>
 		<Icon color={COLOR_ENABLED}/>
 	</IconButton>
-)
+))
 
-Visibility.contextTypes={
-	ACTION: PropTypes.object,
-	dispatch: PropTypes.func
-}
-
-const Remover=({i,style},{ACTION,dispatch})=>(
-	<IconButton onClick={e=>dispatch(ACTION.REMOVE_BY_INDEX(i))} style={style}>
+const Remover=compose(
+	getContext({actions:PropTypes.object}),
+	withProps(({actions:{removeNth}})=>({
+		removeNth
+	}))
+)(({i,style})=>(
+	<IconButton onClick={e=>removeNth(i)} style={style}>
 		<IconRemove color={COLOR_ENABLED}/>
 	</IconButton>
-)
-
-Remover.contextTypes={
-	ACTION: PropTypes.object,
-	dispatch: PropTypes.func
-}
+))
 
 const Wrapper=({onKeyboardFocus,...others})=>(<span {...others}/>)
+
+export default compose(
+	withFragment(graphql`
+		fragment taskPadEditor on Plan{
+			todos{
+				content
+				hidden
+			}
+		}
+	`),
+	withProps(({data})=>({
+		todos:data.todos
+	}))
+)(TaskPadEditor)

@@ -1,6 +1,6 @@
 import React, {PropTypes} from "react"
 import {connect} from "react-redux"
-import {compose, getContext, withProps,withState} from "recompose"
+import {compose, getContext, withProps,withState,withContext} from "recompose"
 import {withInit, withQuery, withPagination} from "qili/tools/recompose"
 
 import {graphql} from "react-relay"
@@ -29,6 +29,7 @@ const ACTION={
 
 function reducer(state={},{type,payload}){
 	state=knowledge_reducer(...arguments)
+	state=plan_reducer(...arguments)
 	switch(type){
 	case `@@${DOMAIN}/CURRENT_CHILD`:
 		return {...state, current:payload}
@@ -87,7 +88,10 @@ import {
 const router=(
 	<Router history={hashHistory}>
 		<Route path="/">
-			<IndexRoute component={()=><div>hello, Not ready yet!</div>}/>
+			<IndexRoute component={compose(
+				withCurrent(),
+				withNavigator(),
+			)(()=><div>hello, Not ready yet!</div>)}/>
 			
 			<Route path="my">
 				<IndexRoute component={compose(
@@ -290,18 +294,45 @@ const router=(
 					data: me.child.plan
 				})),
 			)(Plan)}/>
-			{/*
+			
+			<Route path="task" component={compose(
+				connect(state=>({
+					child:state.superdaddy.current,
+				})),
+				withQuery(({child})=>({
+					variables:{child},
+					query: graphql`
+						query src_scorepad_Query($child:ObjectID){
+							me{
+								child(_id:$child){
+									plan{
+										...core
+									}
+								}
+							}
+						}
+					`,
+				})),
+				withProps(({me})=>({
+					data: me.child.plan,
+				})),
+				withPlanActions(),
+				withContext({actions:PropTypes.object},({actions})=>({actions})),
+				withNavigator(),
+			)(TimeManage)}/>
+
 			<Route path="score" component={compose(
 				connect(state=>({
 					child:state.superdaddy.current,
 				})),
-				withQuery(({})=>({
+				withQuery(({child})=>({
+					variables:{child},
 					query: graphql`
 						query src_scorepad_Query($child:ObjectID){
 							me{
-								child(id:$child){
+								child(_id:$child){
 									plan{
-										...scorepad
+										...scorePad
 									}
 								}
 							}
@@ -311,11 +342,14 @@ const router=(
 				withProps(({me})=>({
 					data: me.child.plan
 				})),
+				withPlanActions(),
+				withContext({actions:PropTypes.object},({actions})=>({actions})),
+				withNavigator(),
 			)(ScorePad)}/>
-			*/}
+
 		</Route>
 	</Router>
 )
-import {ScorePad} from "time-manage"
+import TimeManage, {ScorePad, reducer as plan_reducer, withPlanActions} from "time-manage"
 
 QiliApp.render(<SuperDaddy>{router}</SuperDaddy>)

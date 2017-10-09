@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 64855ffda35a3c20150540f136257dae
+ * @relayHash 813480b535c0f283f9bde76545af9800
  */
 
 /* eslint-disable */
@@ -9,11 +9,11 @@
 
 /*::
 import type {ConcreteBatch} from 'relay-runtime';
-export type scorePad_setTodoGoal_MutationVariables = {|
-  id?: ?any;
+export type timeManage_status_MutationVariables = {|
+  child?: ?any;
   plan?: ?any;
 |};
-export type scorePad_setTodoGoal_MutationResponse = {|
+export type timeManage_status_MutationResponse = {|
   +plan_update: ?{|
     +id: string;
   |};
@@ -22,11 +22,11 @@ export type scorePad_setTodoGoal_MutationResponse = {|
 
 
 /*
-mutation scorePad_setTodoGoal_Mutation(
-  $id: ObjectID
+mutation timeManage_status_Mutation(
+  $child: ObjectID
   $plan: JSON
 ) {
-  plan_update(_id: $id, plan: $plan) {
+  plan_update(_id: $child, plan: $plan) {
     id
   }
 }
@@ -37,7 +37,7 @@ const batch /*: ConcreteBatch*/ = {
     "argumentDefinitions": [
       {
         "kind": "LocalArgument",
-        "name": "id",
+        "name": "child",
         "type": "ObjectID",
         "defaultValue": null
       },
@@ -50,7 +50,7 @@ const batch /*: ConcreteBatch*/ = {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "scorePad_setTodoGoal_Mutation",
+    "name": "timeManage_status_Mutation",
     "selections": [
       {
         "kind": "LinkedField",
@@ -59,7 +59,7 @@ const batch /*: ConcreteBatch*/ = {
           {
             "kind": "Variable",
             "name": "_id",
-            "variableName": "id",
+            "variableName": "child",
             "type": "ObjectID"
           },
           {
@@ -89,12 +89,12 @@ const batch /*: ConcreteBatch*/ = {
   "id": null,
   "kind": "Batch",
   "metadata": {},
-  "name": "scorePad_setTodoGoal_Mutation",
+  "name": "timeManage_status_Mutation",
   "query": {
     "argumentDefinitions": [
       {
         "kind": "LocalArgument",
-        "name": "id",
+        "name": "child",
         "type": "ObjectID",
         "defaultValue": null
       },
@@ -106,7 +106,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ],
     "kind": "Root",
-    "name": "scorePad_setTodoGoal_Mutation",
+    "name": "timeManage_status_Mutation",
     "operation": "mutation",
     "selections": [
       {
@@ -116,7 +116,7 @@ const batch /*: ConcreteBatch*/ = {
           {
             "kind": "Variable",
             "name": "_id",
-            "variableName": "id",
+            "variableName": "child",
             "type": "ObjectID"
           },
           {
@@ -142,7 +142,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "mutation scorePad_setTodoGoal_Mutation(\n  $id: ObjectID\n  $plan: JSON\n) {\n  plan_update(_id: $id, plan: $plan) {\n    id\n  }\n}\n"
+  "text": "mutation timeManage_status_Mutation(\n  $child: ObjectID\n  $plan: JSON\n) {\n  plan_update(_id: $child, plan: $plan) {\n    id\n  }\n}\n"
 };
 
 module.exports = batch;
