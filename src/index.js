@@ -306,7 +306,7 @@ const router=(
 							me{
 								child(_id:$child){
 									plan{
-										...core
+										...core_timeManage
 									}
 								}
 							}
