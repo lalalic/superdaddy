@@ -64,15 +64,23 @@ export const withPlanActions=props=>compose(
 		`,
 	})),	
 	
-	withProps(({dispatch,todos=[], taskDone,planUpdate,reset})=>{
+	withFragment(graphql`
+		fragment timeManage on Plan{
+			...taskPad
+		}
+	`),
+	
+	withProps(({dispatch,data, taskDone,planUpdate,reset})=>{
+		const todos=data.todos||[]
 		const exists=(content,knowledge)=>1+todos.findIndex(a=>knowledge ? a.knowledge===knowledge : a.content===content)
 		const actions={
+			planUpdate,
 			setEditing(payload){
 				dispatch({type:"child/plan/edit",payload})
 			},
 			
 			add(content,knowledge){
-				if(exists(content,knnowledge))
+				if(exists(content,knowledge))
 					return Promise.resolve()
 
 				return planUpdate({todos:[...todos,{content,knowledge}]})
@@ -128,7 +136,7 @@ export const withPlanActions=props=>compose(
 		}
 		return {actions}
 	}),
-	mapProps(({dispatch,reset, taskDone, ...others})=>{
+	mapProps(({dispatch,reset, taskDone, planUpdate, ...others})=>{
 		if(typeof(props)=="function")
 			return {...others, ...props(others)}
 		return others

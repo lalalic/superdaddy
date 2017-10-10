@@ -8,7 +8,7 @@
 
 /*::
 import type {ConcreteFragment} from 'relay-runtime';
-export type core_timeManage = {|
+export type core = {|
   +goal: ?number;
   +score: ?number;
   +week: ?number;
@@ -20,7 +20,7 @@ const fragment /*: ConcreteFragment*/ = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "core_timeManage",
+  "name": "core",
   "selections": [
     {
       "kind": "ScalarField",

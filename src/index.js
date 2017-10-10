@@ -89,9 +89,56 @@ const router=(
 	<Router history={hashHistory}>
 		<Route path="/">
 			<IndexRoute component={compose(
-				withCurrent(),
+				connect(state=>({
+					child:state.superdaddy.current,
+				})),
+				withQuery(({child})=>({
+					variables:{child},
+					query: graphql`
+						query src_timeManage_Query($child:ObjectID){
+							me{
+								child(_id:$child){
+									plan{
+										...core
+									}
+								}
+							}
+						}
+					`,
+				})),
+				withProps(({me})=>({
+					data: me.child.plan,
+				})),
+				withPlanActions(),
+				withContext({actions:PropTypes.object},({actions})=>({actions})),
 				withNavigator(),
-			)(()=><div>hello, Not ready yet!</div>)}/>
+			)(TimeManage)}/>
+
+			<Route path="score" component={compose(
+				connect(state=>({
+					child:state.superdaddy.current,
+				})),
+				withQuery(({child})=>({
+					variables:{child},
+					query: graphql`
+						query src_scorepad_Query($child:ObjectID){
+							me{
+								child(_id:$child){
+									plan{
+										...scorePad
+									}
+								}
+							}
+						}
+					`,
+				})),
+				withProps(({me})=>({
+					data: me.child.plan
+				})),
+				withPlanActions(),
+				withContext({actions:PropTypes.object},({actions})=>({actions})),
+				withNavigator(),
+			)(ScorePad)}/>
 			
 			<Route path="my">
 				<IndexRoute component={compose(
@@ -294,59 +341,6 @@ const router=(
 					data: me.child.plan
 				})),
 			)(Plan)}/>
-			
-			<Route path="task" component={compose(
-				connect(state=>({
-					child:state.superdaddy.current,
-				})),
-				withQuery(({child})=>({
-					variables:{child},
-					query: graphql`
-						query src_scorepad_Query($child:ObjectID){
-							me{
-								child(_id:$child){
-									plan{
-										...core_timeManage
-									}
-								}
-							}
-						}
-					`,
-				})),
-				withProps(({me})=>({
-					data: me.child.plan,
-				})),
-				withPlanActions(),
-				withContext({actions:PropTypes.object},({actions})=>({actions})),
-				withNavigator(),
-			)(TimeManage)}/>
-
-			<Route path="score" component={compose(
-				connect(state=>({
-					child:state.superdaddy.current,
-				})),
-				withQuery(({child})=>({
-					variables:{child},
-					query: graphql`
-						query src_scorepad_Query($child:ObjectID){
-							me{
-								child(_id:$child){
-									plan{
-										...scorePad
-									}
-								}
-							}
-						}
-					`,
-				})),
-				withProps(({me})=>({
-					data: me.child.plan
-				})),
-				withPlanActions(),
-				withContext({actions:PropTypes.object},({actions})=>({actions})),
-				withNavigator(),
-			)(ScorePad)}/>
-
 		</Route>
 	</Router>
 )

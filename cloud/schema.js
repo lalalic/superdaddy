@@ -118,6 +118,17 @@ Cloud.typeDefs=`
 	}
 `
 
+function relativeDate(d, days){
+	return new Date(d.getTime()+24*60*60*1000*days)
+}
+
+function currentWeek(){
+	let week=new Date()
+	week=relativeDate(week,-1*week.getDay())
+	week.setHours(0,0,0,0)
+	return week.getTime()/1000000
+}
+
 Cloud.resolver={
 	Child:{
 		birthday:({birthday,bd})=>birthday||bd,
@@ -128,13 +139,18 @@ Cloud.resolver={
 		},
 		plan({_id},{},{app}){
 			return app.get1Entity("plans",{_id})
-				.then(plan=>plan||{_id,score:0})
+				.then(plan=>{
+					if(!plan){
+						return app.createEntity("plans",{_id,week:currentWeek(),score:0,goal:0,todos:[]})
+					}
+					return plan
+				})
 		}
 	},
 	
 	Plan:{
 		id: ({_id})=>`plans:${_id}`,
-		score: ({score})=>score||0,
+		score: ({score})=>score,
 	},
 	
 	User:{
@@ -253,13 +269,10 @@ Cloud.resolver={
 		
 		async plan_reset(_,{_id},{app,user}){
 			let plan=await app.get1Entity("plans",{_id})
-			function relativeDate(d, days){
-				return new Date(d.getTime()+24*60*60*1000*days)
-			}
-			
+
 			function saveFinishedTasks(){
 				let {week,todos}=plan
-				let startDate=new Date(week)
+				let startDate=new Date(week*1000000)
 				let tasks=todos.map(({content,knowledge,...others})=>{
 					return [0,1,2,3,4,5,6].map(i=>{
 						let day=others[`day${i}`]
@@ -286,11 +299,7 @@ Cloud.resolver={
 			
 			function reset4CurrentWeek(){
 				let {todos, months}=plan
-				let week=new Date()
-				week=relativeDate(-1*week.getDay())
-				week.setHours(0,0,0,0)
-				week=week.getTime()
-				
+				let week=currentWeek()
 				todos=todos.map(({day0,day1,day2,day3,day4,day5,day6,...others})=>others)
 				
 				let applyPlan=null

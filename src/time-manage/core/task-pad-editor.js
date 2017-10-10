@@ -101,6 +101,6 @@ export default compose(
 		}
 	`),
 	withProps(({data})=>({
-		todos:data.todos
+		todos:data.todos||[]
 	}))
 )(TaskPadEditor)

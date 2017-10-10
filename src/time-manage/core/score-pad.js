@@ -18,17 +18,17 @@ import {
 } from "material-ui/styles/colors"
 
 export const ScorePad=({
-	todo, goal=0,score=0,totalPerScreen=goal, 
+	todo, goal,score,totalPerScreen=goal, 
 	width=0, height=0,
 	toComment,setTodoGoal
 	})=>{
 	let smiles=layout(width,height,score,totalPerScreen)
 
 	let title=todo, action=null
-	if(goal==0){
+	if(!goal){
 		title="开始第一个目标"
 		action=(<Editor setTodoGoal={setTodoGoal}/>)
-	}else if(goal<=score){
+	}else if(todo && goal<=score){
 		title=`[${todo}]已完成,开始下一个目标吧`
 		action=(<Editor lastScore={score} setTodoGoal={setTodoGoal}/>)
 	}else{
@@ -127,7 +127,7 @@ export default compose(
 		height: height||muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height-50,
 		toComment:()=>router.push(`/comment/${state.superdaddy.current}`),
 		setTodoGoal(plan){
-			return planUpdate({plan})
+			return planUpdate(plan)
 		}
 	})),
 	withFragment(graphql`

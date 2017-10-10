@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from "react"
-import {compose, getContext, withProps} from "recompose"
+import {compose, getContext, mapProps, withProps} from "recompose"
 import {withFragment} from "qili/tools/recompose"
 
 import MediaQuery from "react-responsive"
@@ -110,8 +110,9 @@ const TaskPadMobile=({todos=[],current,days,minHeight})=>(
 
 const TodoStatus=compose(
 	getContext({actions:PropTypes.object}),
-	withProps(({actions:{taskDone}})=>({
-		taskDone
+	mapProps(({actions:{taskDone},...others})=>({
+		taskDone,
+		...others
 	}))
 )(class extends Component{
 	state={info:false}
@@ -150,8 +151,10 @@ const TodoStatus=compose(
 		}else if(day>current)
 			return (<IconSmile color={COLOR_DISABLED} {...others}/>)
 		else
-			return (<IconSmile color={COLOR_ENABLED} hoverColor={COLOR_HOVER} 
-				onClick={taskDone({todo,day})}  {...others}/>)
+			return (<IconSmile color={COLOR_ENABLED} 
+						hoverColor={COLOR_HOVER} 
+						onClick={e=>taskDone({todo,day})}  
+						{...others}/>)
 	}
 })
 
@@ -204,9 +207,10 @@ export default compose(
 		}
 	`),
 
-	withProps(({router,muiTheme, data,current=new Date().getDay()})=>{
+	mapProps(({router,muiTheme, data,current=new Date().getDay(),...others})=>{
 		const toKnowledge=id=>router.push(`/knowledge/${id}`)
 		return {
+			...others,
 			minHeight:(muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height)*3/4,
 			current,
 			days: DAYS(current),

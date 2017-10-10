@@ -84,7 +84,7 @@ export class Child extends Component{
 
 						<Subheader>当前任务</Subheader>
 
-						<Field primaryText="成绩" value={`${score}${totalScore==score ? "" : `/${totalScore}`}`}/>
+						<Field primaryText="成绩" value={`${score}/${goal}${totalScore==score ? "" : `/${totalScore}`}`}/>
 
 						<Field primaryText="目标" value={todo}
 							type="input"
