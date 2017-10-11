@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash b836d0a75c08ce77fdbf3470e56ed75e
+ * @relayHash 89a77ac646536e53b8c388cb17b8d410
  */
 
 /* eslint-disable */
@@ -9,22 +9,20 @@
 
 /*::
 import type {ConcreteBatch} from 'relay-runtime';
-export type timeManage_status_MutationVariables = {|
+export type timeManage_reset_MutationVariables = {|
   child?: ?any;
-  plan?: ?any;
 |};
-export type timeManage_status_MutationResponse = {|
-  +plan_update: ?{| |};
+export type timeManage_reset_MutationResponse = {|
+  +plan_reset: ?{| |};
 |};
 */
 
 
 /*
-mutation timeManage_status_Mutation(
+mutation timeManage_reset_Mutation(
   $child: ObjectID
-  $plan: JSON
 ) {
-  plan_update(_id: $child, plan: $plan) {
+  plan_reset(_id: $child) {
     ...core
     id
   }
@@ -79,17 +77,11 @@ const batch /*: ConcreteBatch*/ = {
         "name": "child",
         "type": "ObjectID",
         "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "plan",
-        "type": "JSON",
-        "defaultValue": null
       }
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "timeManage_status_Mutation",
+    "name": "timeManage_reset_Mutation",
     "selections": [
       {
         "kind": "LinkedField",
@@ -100,16 +92,10 @@ const batch /*: ConcreteBatch*/ = {
             "name": "_id",
             "variableName": "child",
             "type": "ObjectID"
-          },
-          {
-            "kind": "Variable",
-            "name": "plan",
-            "variableName": "plan",
-            "type": "JSON"
           }
         ],
         "concreteType": "Plan",
-        "name": "plan_update",
+        "name": "plan_reset",
         "plural": false,
         "selections": [
           {
@@ -126,7 +112,7 @@ const batch /*: ConcreteBatch*/ = {
   "id": null,
   "kind": "Batch",
   "metadata": {},
-  "name": "timeManage_status_Mutation",
+  "name": "timeManage_reset_Mutation",
   "query": {
     "argumentDefinitions": [
       {
@@ -134,16 +120,10 @@ const batch /*: ConcreteBatch*/ = {
         "name": "child",
         "type": "ObjectID",
         "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "plan",
-        "type": "JSON",
-        "defaultValue": null
       }
     ],
     "kind": "Root",
-    "name": "timeManage_status_Mutation",
+    "name": "timeManage_reset_Mutation",
     "operation": "mutation",
     "selections": [
       {
@@ -155,16 +135,10 @@ const batch /*: ConcreteBatch*/ = {
             "name": "_id",
             "variableName": "child",
             "type": "ObjectID"
-          },
-          {
-            "kind": "Variable",
-            "name": "plan",
-            "variableName": "plan",
-            "type": "JSON"
           }
         ],
         "concreteType": "Plan",
-        "name": "plan_update",
+        "name": "plan_reset",
         "plural": false,
         "selections": [
           {
@@ -306,7 +280,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "mutation timeManage_status_Mutation(\n  $child: ObjectID\n  $plan: JSON\n) {\n  plan_update(_id: $child, plan: $plan) {\n    ...core\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n"
+  "text": "mutation timeManage_reset_Mutation(\n  $child: ObjectID\n) {\n  plan_reset(_id: $child) {\n    ...core\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n"
 };
 
 module.exports = batch;

@@ -241,10 +241,10 @@ export default compose(
 	
 	withPlanActions(({knowledge:{title,id},actions:{add, remove}})=>({
 		task(){
-			add(title,id)
+			return add({content:title,knowledge:id})
 		},
 		untask(){
-			remove(title,id)
+			return remove({knowledge:id})
 		},
 	})),
 )(KnowledgeEditor)

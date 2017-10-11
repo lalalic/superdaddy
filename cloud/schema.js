@@ -24,6 +24,7 @@ Cloud.typeDefs=`
 		
 		todos: [Todo]
 		
+		caps:[String]
 		goals:[String]
 		months:[MonthPlan]
 	}
@@ -107,8 +108,17 @@ Cloud.typeDefs=`
 		child_update(_id:ObjectID!, name:String, photo:String, birthday:Date,icon:String, gender:Gender): Date
 				
 		plan_update(_id:ObjectID, plan:JSON):Plan
-		plan_task_done(_id:ObjectID, content:String, day:Int, props: JSON):Plan
+		plan_task_done(_id:ObjectID, content:String, knowledge:ObjectID, day:Int, props: JSON):Child
 		plan_reset(_id:ObjectID):Plan
+		plan_todos_add(_id:ObjectID, content:String, knowledge:ObjectID):Plan
+		plan_todos_remove(_id:ObjectID,content:String, knowledge:ObjectID):Plan
+		plan_todos_removeNth(_id:ObjectID,i:Int):Plan
+		plan_todos_up(_id:ObjectID,i:Int):Plan
+		plan_todos_down(_id:ObjectID,i:Int):Plan
+		plan_todos_top(_id:ObjectID,i:Int):Plan
+		plan_todos_bottom(_id:ObjectID,i:Int):Plan
+		plan_todos_toggle(_id:ObjectID,i:Int):Plan
+		plan_auto(_id:ObjectID):Plan
 		
 		knowledge_create(knowledge:JSON):Knowledge
 		knowledge_update(_id:ObjectID, knowledge:JSON):Date
@@ -129,6 +139,9 @@ function currentWeek(){
 	return week.getTime()/1000000
 }
 
+const exists=(todos, content,knowledge)=>1+todos.findIndex(a=>knowledge ? a.knowledge===knowledge : a.content===content)
+
+const CAPS=["观察能力","自制力","专注力","记忆力"]
 Cloud.resolver={
 	Child:{
 		birthday:({birthday,bd})=>birthday||bd,
@@ -151,6 +164,7 @@ Cloud.resolver={
 	Plan:{
 		id: ({_id})=>`plans:${_id}`,
 		score: ({score})=>score,
+		caps: ()=>CAPS,
 	},
 	
 	User:{
@@ -257,14 +271,19 @@ Cloud.resolver={
 		},	
 
 		async plan_task_done(_,{_id,content,knowledge,props,day},{app,user}){
-			let {score=1}=await app.get1Entity("knowledges",{_id:knowledge})
-			let childScore=app.patchEntity("childs", {_id}, {score:{$inc:score}})
+			let score=1
+			if(knowledge){
+				let kl=await app.get1Entity("knowledges",{_id:knowledge})
+				if(kl && kl.score)
+					score=kl.score
+			}
+			let childScore=app.updateEntity("users", {_id}, {$inc:{score:1}})
 			let plan=await app.get1Entity("plans",{_id})
-			let task=plan.todos.find(a=>knowledge ? a.knowledge==knowledge : a.content=content)
+			let task=plan.todos.find(a=>knowledge ? a.knowledge==knowledge : a.content==content)
 			task[`day${day}`]=props||true
-			let planScore=app.patchEntity("plans",{_id},{score:plan.score++,todos:plan.todos})
-			await Promise.all([childScore,planScore])
-			return plan
+			let planScore=app.updateEntity("plans",{_id},{$inc:{score:1},$set:{todos:plan.todos}})
+			return Promise.all([childScore,planScore])
+				.then(()=>app.get1Entity("users",{_id}))
 		},
 		
 		async plan_reset(_,{_id},{app,user}){
@@ -327,6 +346,157 @@ Cloud.resolver={
 			saveFinishedTasks()
 			
 			return reset4CurrentWeek()
+		},
+		
+		plan_todos_add(_,{_id, content, knowledge},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then(plan=>{
+					let {todos=[]}=plan
+					if(exists(todos,content,knowledge))
+						return plan
+					todos=[...todos,{content,knowledge:knowledge||undefined}]
+					plan.todos=todos
+					return app.patchEntity("plans",{_id},{todos})
+						.then(()=>plan)
+				})
+		},
+		plan_todos_remove(_,{_id, content, knowledge},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then((plan,i)=>{
+					let {todos=[]}=plan
+					if(!(i=exists(todos,content,knowledge)))
+						return plan
+					todos.splice(i-1,1)
+					plan.todos=todos
+					return app.patchEntity("plans",{_id},{todos})
+						.then(()=>plan)
+				})
+		},
+		plan_todos_removeNth(_,{_id, i},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then(plan=>{
+					let {todos=[]}=plan
+					todos.splice(i-1,1)
+					plan.todos=todos
+					return app.patchEntity("plans",{_id},{todos})
+						.then(()=>plan)
+				})
+		},
+		plan_todos_up(_,{_id, i},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then(plan=>{
+					let {todos=[]}=plan
+					let target=todos[i]
+					todos.splice(i,1)
+					todos.splice((i-1)%(todos.length+1),0,target)
+					plan.todos=todos
+					return app.patchEntity("plans",{_id},{todos})
+						.then(()=>plan)
+				})
+		},
+		plan_todos_down(_,{_id, i},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then(plan=>{
+					let {todos=[]}=plan
+					let target=todos[i]
+					todos.splice(i,1)
+					todos.splice((i+1)%(todos.length+1),0,target)
+					plan.todos=todos
+					return app.patchEntity("plans",{_id},{todos})
+						.then(()=>plan)
+				})
+		},
+		plan_todos_top(_,{_id, i},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then(plan=>{
+					let {todos=[]}=plan
+					let target=todos[i]
+					todos.splice(i,1)
+					todos.unshift(target)
+					plan.todos=todos
+					return app.patchEntity("plans",{_id},{todos})
+						.then(()=>plan)
+				})
+		},
+		plan_todos_bottom(_,{_id, i},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then(plan=>{
+					let {todos=[]}=plan
+					let target=todos[i]
+					todos.splice(i,1)
+					todos.push(target)
+					plan.todos=todos
+					return app.patchEntity("plans",{_id},{todos})
+						.then(()=>plan)
+				})
+		},
+		plan_todos_toggle(_,{_id,i},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then(plan=>{
+					let {todos=[]}=plan
+					let target=todos[i]
+					target.hidden=!!!target.hidden
+					plan.todos=todos
+					return app.patchEntity("plans",{_id},{todos})
+						.then(()=>plan)
+				})
+		},
+		plan_auto(_,{_id},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then(plan=>{
+					let {goals=[], months=[]}=plan
+					let month=new Date().getMonth()
+					let count=12-month
+					if(goals.length==0){
+						goals=CAPS.slice(0,Math.floor(count/3))
+					}
+					
+					let pending=new Array(count)
+					pending.fill(1)
+					pending.forEach((a,i)=>{
+						let {goals:currentGoals=[],knowledges=[]}=months[i+month]||{}
+						if(currentGoals.length==0)
+							currentGoals[0]=goals[i%goals.length]
+						months[i+month]={goals:currentGoals, knowledges}
+					})
+					
+					let all=pending.map((a,i)=>{
+						return new Promise((resolve, reject)=>{
+							let {goals,knowledges=[]}=months[i+month]
+							if(knowledges.length==0){
+								app.findEntity("knowledges",{categories:{$in:goals}}, (cursor)=>cursor.limit(3))
+									.then(array=>{
+										months[i+month].knowledges=array.map(({_id})=>_id)
+										resolve()
+									},reject)
+							}else{
+								resolve()
+							}
+						})
+					})
+					return Promise.all(all)
+						.then(()=>{
+							plan.months=[...months]
+							plan.goals=[...goals]
+							
+							let all=[]
+							if(!plan.todos || plan.todos.length==0){
+								months[month].knowledges
+									.forEach(a=>all.push(app.get1Entity("knowledges",{_id:a})))
+							}
+							return Promise.all(all)
+								.then(knowledges=>{
+									if(knowledges)
+										plan.todos=knowledges.map(({_id,title})=>({knowledge:_id,content:title}))
+									return app.updateEntity("plan",{_id},{
+										months:plan.months,
+										goals:plan.goals, 
+										todos:plan.todos,
+									})
+								})
+						})
+						.then(()=>plan)
+				})
 		},
 	},
 	

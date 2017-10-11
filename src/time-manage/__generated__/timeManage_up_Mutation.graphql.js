@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash b836d0a75c08ce77fdbf3470e56ed75e
+ * @relayHash b9e86282b12c9eb653b78cb1b433c2df
  */
 
 /* eslint-disable */
@@ -9,22 +9,22 @@
 
 /*::
 import type {ConcreteBatch} from 'relay-runtime';
-export type timeManage_status_MutationVariables = {|
+export type timeManage_up_MutationVariables = {|
   child?: ?any;
-  plan?: ?any;
+  i?: ?number;
 |};
-export type timeManage_status_MutationResponse = {|
-  +plan_update: ?{| |};
+export type timeManage_up_MutationResponse = {|
+  +plan_todos_up: ?{| |};
 |};
 */
 
 
 /*
-mutation timeManage_status_Mutation(
+mutation timeManage_up_Mutation(
   $child: ObjectID
-  $plan: JSON
+  $i: Int
 ) {
-  plan_update(_id: $child, plan: $plan) {
+  plan_todos_up(_id: $child, i: $i) {
     ...core
     id
   }
@@ -82,14 +82,14 @@ const batch /*: ConcreteBatch*/ = {
       },
       {
         "kind": "LocalArgument",
-        "name": "plan",
-        "type": "JSON",
+        "name": "i",
+        "type": "Int",
         "defaultValue": null
       }
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "timeManage_status_Mutation",
+    "name": "timeManage_up_Mutation",
     "selections": [
       {
         "kind": "LinkedField",
@@ -103,13 +103,13 @@ const batch /*: ConcreteBatch*/ = {
           },
           {
             "kind": "Variable",
-            "name": "plan",
-            "variableName": "plan",
-            "type": "JSON"
+            "name": "i",
+            "variableName": "i",
+            "type": "Int"
           }
         ],
         "concreteType": "Plan",
-        "name": "plan_update",
+        "name": "plan_todos_up",
         "plural": false,
         "selections": [
           {
@@ -126,7 +126,7 @@ const batch /*: ConcreteBatch*/ = {
   "id": null,
   "kind": "Batch",
   "metadata": {},
-  "name": "timeManage_status_Mutation",
+  "name": "timeManage_up_Mutation",
   "query": {
     "argumentDefinitions": [
       {
@@ -137,13 +137,13 @@ const batch /*: ConcreteBatch*/ = {
       },
       {
         "kind": "LocalArgument",
-        "name": "plan",
-        "type": "JSON",
+        "name": "i",
+        "type": "Int",
         "defaultValue": null
       }
     ],
     "kind": "Root",
-    "name": "timeManage_status_Mutation",
+    "name": "timeManage_up_Mutation",
     "operation": "mutation",
     "selections": [
       {
@@ -158,13 +158,13 @@ const batch /*: ConcreteBatch*/ = {
           },
           {
             "kind": "Variable",
-            "name": "plan",
-            "variableName": "plan",
-            "type": "JSON"
+            "name": "i",
+            "variableName": "i",
+            "type": "Int"
           }
         ],
         "concreteType": "Plan",
-        "name": "plan_update",
+        "name": "plan_todos_up",
         "plural": false,
         "selections": [
           {
@@ -306,7 +306,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "mutation timeManage_status_Mutation(\n  $child: ObjectID\n  $plan: JSON\n) {\n  plan_update(_id: $child, plan: $plan) {\n    ...core\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n"
+  "text": "mutation timeManage_up_Mutation(\n  $child: ObjectID\n  $i: Int\n) {\n  plan_todos_up(_id: $child, i: $i) {\n    ...core\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n"
 };
 
 module.exports = batch;

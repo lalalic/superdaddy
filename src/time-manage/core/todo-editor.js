@@ -12,7 +12,7 @@ import IconDone from "material-ui/svg-icons/file/cloud-done"
 export const TodoEditor=({editing, setEditing, add, refTask})=><AppBar 
 	iconElementRight={
 		<span>
-			<IconButton onClick={e=>add(refTask.state.searchText.trim())}>
+			<IconButton onClick={e=>add({content:refTask.state.searchText.trim()})}>
 				<IconAdd color="white"/>
 			</IconButton>
 			<IconButton onClick={e=>setEditing(editing ? 0 : 1)}>
@@ -25,7 +25,7 @@ export const TodoEditor=({editing, setEditing, add, refTask})=><AppBar
 			dataSource={[]}
 			hintText="任务"
 			fullWidth={true}
-			onKeyDown={e=>e.keyCode==13 && add(refTask.state.searchText.trim())}
+			onKeyDown={e=>e.keyCode==13 && add({content:refTask.state.searchText.trim()})}
 			/>
 	}
 />

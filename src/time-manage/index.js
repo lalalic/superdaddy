@@ -1,5 +1,5 @@
 import {connect} from "react-redux"
-import {compose, withProps, mapProps} from "recompose"
+import {compose, mapProps} from "recompose"
 import {withMutation} from "qili/tools/recompose"
 import TimeManage from "./core"
 
@@ -28,117 +28,155 @@ export const withPlanActions=props=>compose(
 		mutation: graphql`
 			mutation timeManage_status_Mutation($child:ObjectID, $plan: JSON){
 				plan_update(_id:$child, plan:$plan){
-					id
+					...core
 				}
 			}
 		`,
 	})),
 	
-	withMutation(({child},plan)=>({
+	withMutation(({child})=>({
 		promise:true,
 		name:"taskDone",
-		patch4: `plans:${child.split(":").pop()}`,
-		variables:{child,plan},
+		variables:{child},
 		mutation: graphql`
 			mutation timeManage_taskDone_Mutation($child:ObjectID, $task:String, $knowledge:ObjectID, $day:Int){
 				plan_task_done(_id:$child, content:$task, knowledge:$knowledge, day:$day ){
 					score
-					...taskPad
+					plan{
+						...core
+					}
 				}
 			}
 		`,
 	})),
 	
-	withMutation(({child},plan)=>({
+	withMutation(({child})=>({
 		promise:true,
 		name:"reset",
-		patch4: `plans:${child.split(":").pop()}`,
-		variables:{child,plan},
+		variables:{child},
 		mutation: graphql`
-			mutation timeManage_taskDone_Mutation($child:ObjectID){
+			mutation timeManage_reset_Mutation($child:ObjectID){
 				plan_reset(_id:$child){
-					score
-					...taskPad
+					...core
 				}
 			}
 		`,
-	})),	
+	})),
 	
-	withFragment(graphql`
-		fragment timeManage on Plan{
-			...taskPad
-		}
-	`),
+	withMutation(({child})=>({
+		promise:true,
+		name:"add",
+		variables:{child},
+		mutation: graphql`
+			mutation timeManage_add_Mutation($child:ObjectID, $content:String, $knowledge:ObjectID){
+				plan_todos_add(_id:$child, content:$content, knowledge:$knowledge){
+					...core
+				}
+			}
+		`,
+	})),
 	
-	withProps(({dispatch,data, taskDone,planUpdate,reset})=>{
-		const todos=data.todos||[]
-		const exists=(content,knowledge)=>1+todos.findIndex(a=>knowledge ? a.knowledge===knowledge : a.content===content)
-		const actions={
-			planUpdate,
+	withMutation(({child})=>({
+		promise:true,
+		name:"remove",
+		variables:{child},
+		mutation: graphql`
+			mutation timeManage_remove_Mutation($child:ObjectID, $content:String, $knowledge:ObjectID){
+				plan_todos_remove(_id:$child, content:$content, knowledge:$knowledge){
+					...core
+				}
+			}
+		`,
+	})),
+	
+
+	withMutation(({child},i)=>({
+		promise:true,
+		name:"removeNth",
+		variables:{child,i},
+		mutation: graphql`
+			mutation timeManage_removeNth_Mutation($child:ObjectID, $i:Int){
+				plan_todos_removeNth(_id:$child, i:$i){
+					...core
+				}
+			}
+		`,
+	})),
+	
+	withMutation(({child},i)=>({
+		promise:true,
+		name:"top",
+		variables:{child,i},
+		mutation: graphql`
+			mutation timeManage_top_Mutation($child:ObjectID, $i:Int){
+				plan_todos_top(_id:$child, i:$i){
+					...core
+				}
+			}
+		`,
+	})),
+	
+	withMutation(({child},i)=>({
+		promise:true,
+		name:"up",
+		variables:{child,i},
+		mutation: graphql`
+			mutation timeManage_up_Mutation($child:ObjectID, $i:Int){
+				plan_todos_up(_id:$child, i:$i){
+					...core
+				}
+			}
+		`,
+	})),
+	
+	withMutation(({child},i)=>({
+		promise:true,
+		name:"down",
+		variables:{child,i},
+		mutation: graphql`
+			mutation timeManage_down_Mutation($child:ObjectID, $i:Int){
+				plan_todos_down(_id:$child, i:$i){
+					...core
+				}
+			}
+		`,
+	})),
+	
+	withMutation(({child},i)=>({
+		promise:true,
+		name:"bottom",
+		variables:{child,i},
+		mutation: graphql`
+			mutation timeManage_bottom_Mutation($child:ObjectID, $i:Int){
+				plan_todos_bottom(_id:$child, i:$i){
+					...core
+				}
+			}
+		`,
+	})),
+	
+	withMutation(({child},i)=>({
+		promise:true,
+		name:"toggle",
+		variables:{child,i},
+		mutation: graphql`
+			mutation timeManage_toggle_Mutation($child:ObjectID, $i:Int){
+				plan_todos_toggle(_id:$child, i:$i){
+					...core
+				}
+			}
+		`,
+	})),
+	
+	mapProps(({dispatch, taskDone,planUpdate,reset,add,remove,removeNth,up,down,top,bottom,toggle,...others})=>{
+		let actions={
 			setEditing(payload){
 				dispatch({type:"child/plan/edit",payload})
 			},
-			
-			add(content,knowledge){
-				if(exists(content,knowledge))
-					return Promise.resolve()
-
-				return planUpdate({todos:[...todos,{content,knowledge}]})
-			},
-			
-			remove(content,knowledge,i){
-				if(!(i=exists(content,knowledge)))
-					return Promise.resolve()
-				return actions.removeNth(i-1)
-			},
-			
-			removeNth(i){
-				return planUpdate({todos:[...todos].splice(i,1)})
-			},
-			
-			up(i){
-				let target=todos[i]
-				todos.splice(i,1)
-				todos.splice((i-1)%(todos.length+1),0,target)
-				return planUpdate({todos})
-			},
-			down(i){
-				let target=todos[i]
-				todos.splice(i,1)
-				todos.splice((i+1)%(todos.length+1),0,target)
-				return planUpdate({todos})
-			},
-			
-			top(i){
-				let target=todos[i]
-				todos.splice(i,1)
-				todos.unshift(target)
-				return planUpdate({todos})
-			},
-			
-			bottom(i){
-				let target=todos[i]
-				todos.splice(i,1)
-				todos.push(target)
-				return planUpdate({todos})
-			},
-			
-			toggleVisible(i){
-				todos[i].hidden=!!!todos[i].hidden
-				return planUpdate({todos})
-			},
-			
-			taskDone(content,day,props,knowledge){
-				return taskDone({day,content,props,knowledge})
-			},
-			
-			reset,
+			taskDone,planUpdate,reset,add,remove,removeNth,up,down,top,bottom,toggle,
 		}
-		return {actions}
-	}),
-	mapProps(({dispatch,reset, taskDone, planUpdate, ...others})=>{
 		if(typeof(props)=="function")
-			return {...others, ...props(others)}
-		return others
-	}),
+			return {...others,...props(others)}
+		return {...others,actions}
+	})
 )

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 3ff21de8677784e2584e5367e9a8b188
+ * @relayHash 62a7396d274b2b59864dccaafa50b277
  */
 
 /* eslint-disable */
@@ -36,6 +36,7 @@ query src_plan_Query(
 }
 
 fragment plan on Plan {
+  caps
   goals
   months {
     goals
@@ -161,6 +162,13 @@ const batch /*: ConcreteBatch*/ = {
                     "kind": "ScalarField",
                     "alias": null,
                     "args": null,
+                    "name": "caps",
+                    "storageKey": null
+                  },
+                  {
+                    "kind": "ScalarField",
+                    "alias": null,
+                    "args": null,
                     "name": "goals",
                     "storageKey": null
                   },
@@ -239,7 +247,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query src_plan_Query(\n  $child: ObjectID\n) {\n  me {\n    child(_id: $child) {\n      plan {\n        ...plan\n        id\n      }\n      id\n    }\n    id\n  }\n}\n\nfragment plan on Plan {\n  goals\n  months {\n    goals\n    knowledges {\n      id\n      title\n    }\n  }\n}\n"
+  "text": "query src_plan_Query(\n  $child: ObjectID\n) {\n  me {\n    child(_id: $child) {\n      plan {\n        ...plan\n        id\n      }\n      id\n    }\n    id\n  }\n}\n\nfragment plan on Plan {\n  caps\n  goals\n  months {\n    goals\n    knowledges {\n      id\n      title\n    }\n  }\n}\n"
 };
 
 module.exports = batch;

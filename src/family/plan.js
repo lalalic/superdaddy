@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from "react"
 import {connect} from "react-redux"
-import {compose,getContext,withProps} from "recompose"
+import {compose,getContext,mapProps} from "recompose"
 import {withFragment,withMutation} from "qili/tools/recompose"
 import {graphql} from "react-relay"
 
@@ -29,6 +29,8 @@ import Baby from "family/child"
 import Knowledge from "knowledge"
 
 //{months=[{goals=[], knowledges=[]},{}]}
+
+/**
 const ACTION={
 	AUTO_PLAN:(child)=>(dispatch,getState)=>{
 		const state=getState()
@@ -74,7 +76,6 @@ const ACTION={
 	}
 }
 
-/**
 {
     plan: {
         year:2017,
@@ -89,19 +90,15 @@ const ACTION={
 }
  */
 export class Plan extends Component{
-	static defaultProps={
-		goals:"专注力".split(","),
-        search:""
-	}
 	render(){
-		let {goals, months, 
+		let {goals=[], months=[], caps=[],
 			autoPlan,update,searchKnowledges,
 			addMonthGoal,removeMonthGoal,addMonthTask,removeMonthTask}=this.props
 		return (
 			<div>
                 <AppBar title={`年度目标，计划`}/>
 	
-				<YearGoal {...{goals,update}}/>
+				<YearGoal {...{goals,update,caps}}/>
 
 				<Divider/>
 
@@ -260,8 +257,9 @@ class MonthGoals extends Component{
 
 const MonthPlan=compose(
 	getContext({client:PropTypes.object}),
-	withProps(({client})=>({
-		knowledges:client.getAll("Knowledge")
+	mapProps(({client,...others})=>({
+		knowledges:client.getAll("Knowledge"),
+		...others,
 	})),
 )(class extends Component{
     state={
@@ -337,6 +335,7 @@ const MonthPlan=compose(
 export default compose(
 	withFragment(graphql`
 		fragment plan on Plan{
+			caps
 			goals
 			months{
 				goals
@@ -348,7 +347,6 @@ export default compose(
 		}
 	`),
 	withMutation(({child})=>({
-		patch4:child,
 		variables:{child},
 		mutation: graphql`
 			mutation plan_update_Mutation($child:ObjectID, $plan:JSON){
@@ -358,51 +356,61 @@ export default compose(
 			}
 		`,
 	})),
-	withProps(({mutate,plan})=>({
+	withMutation(({child})=>({
+		name:"autoPlan",
+		variables:{child},
+		mutation: graphql`
+			mutation plan_auto_Mutation($child:ObjectID){
+				plan_auto(_id: $child){
+					 ...plan
+				}
+			}
+		`,
+	})),
+	mapProps(({mutate, autoPlan,data:{goals:g,months:m,caps:c}, months=[...m],goals=[...g], caps=[...c],...others})=>({
+		...others,
+		caps,
+		goals,
+		months,
+		autoPlan,
 		update(data){
-			return mutate({...plan,...data})
+			return mutate({plan:data})
 		},
 		removeMonthGoal(month,goal){
-			let {months=[]}=plan
 			let {goals=[]}=(months[month]=months[month]||{})
 			goals=goals.filter(a=>a!=goal)
 			months=[...months]
 			months[month]={...months[month], goals}
-			return mutate({months})
+			return mutate({plan:{months}})
 		},
 		
 		addMonthGoal(month,goal){
-			let {months=[]}=plan
 			let {goals=[]}=(months[month]=months[month]||{})
+			if(goals.includes(goal))
+				return 
 			goals=[...goals,goal]
 			months=[...months]
 			months[month]={...months[month], goals}
-			return mutate({months})
+			return mutate({plan:{months}})
 		},
 		
 		removeMonthTask(month,knowledge){
-			let {months=[]}=plan
 			let {knowledges=[]}=(months[month]=(months[month]||{}))
 			knowledges=knowledges.filter(a=>a!=knowledge)
 			months=[...months]
 			months[month]={...months[month], knowledges}
-			return mutate({months})
+			return mutate({plan:{months}})
 		},
 		
 		addMonthTask(month,knowledge){
-			const plan=getChildPlan(state,child)
-			let {months=[]}=plan
 			let {knowledges=[]}=(months[month]=months[month]||{})
+			if(knowledges.includes(knowledge))
+				return 
 			knowledges=[...knowledges,knowledge]
 			months=[...months]
 			months[month]={...months[month], knowledges}
-			return mutate({months})
+			return mutate({plan:{months}})
 		},
-		
-		autoPlan(){
-			
-		},
-		
 		searchKnowledges(title, caps){
 			
 		}

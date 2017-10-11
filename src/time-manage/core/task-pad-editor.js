@@ -45,7 +45,7 @@ const Order=compose(
 	withProps(({actions:{top,bottom,up,down}})=>({
 		top,bottom,up,down
 	}))
-)(({i})=>(
+)(({i,top,bottom,up,down})=>(
 	<Wrapper>
 		<MediaQuery minWidth={960}>
             <IconButton onClick={e=>top(i)}>
@@ -69,11 +69,11 @@ const Order=compose(
 
 const Visibility=compose(
 	getContext({actions:PropTypes.object}),
-	withProps(({actions:{toggleVisible}})=>({
-		toggleVisible
+	withProps(({actions:{toggle}})=>({
+		toggle
 	}))
-)(({i,visible,Icon=(!visible ? IconHidden : IconVisible),style})=>(
-	<IconButton onClick={e=>toggleVisible(i)} style={style}>
+)(({i,toggle,visible,Icon=(!visible ? IconHidden : IconVisible),style})=>(
+	<IconButton onClick={e=>toggle(i)} style={style}>
 		<Icon color={COLOR_ENABLED}/>
 	</IconButton>
 ))
@@ -83,7 +83,7 @@ const Remover=compose(
 	withProps(({actions:{removeNth}})=>({
 		removeNth
 	}))
-)(({i,style})=>(
+)(({i,removeNth,style})=>(
 	<IconButton onClick={e=>removeNth(i)} style={style}>
 		<IconRemove color={COLOR_ENABLED}/>
 	</IconButton>

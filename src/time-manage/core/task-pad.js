@@ -88,8 +88,8 @@ const TaskPadMobile=({todos=[],current,days,minHeight})=>(
 			days.map((day,i)=>(
 				<List key={i} style={{minHeight}}>
 					{
-						todos.map(({toKnowledge, days=[], content:task,dones=[],fields, props},j)=>(
-							<ListItem key={j}
+						todos.map(({toKnowledge, days=[], content:task,dones=[],fields, props})=>(
+							<ListItem key={task}
 								primaryText={<TaskTitle {...{toKnowledge,task}}/>}
 								leftCheckbox={<TodoStatus 
 												todo={task} 
@@ -138,7 +138,7 @@ const TodoStatus=compose(
 							onCancel={e=>this.setState({info:false})}
 							onSubmit={props=>{
 								this.setState({info:false})
-								taskDone({todo,day,props})
+								taskDone({task:todo,day,props})
 							}}
 							/>
 						{icon}
@@ -153,7 +153,7 @@ const TodoStatus=compose(
 		else
 			return (<IconSmile color={COLOR_ENABLED} 
 						hoverColor={COLOR_HOVER} 
-						onClick={e=>taskDone({todo,day})}  
+						onClick={e=>taskDone({task:todo,day})}  
 						{...others}/>)
 	}
 })
@@ -193,9 +193,11 @@ export default compose(
 		fragment taskPad on Plan{
 			todos{
 				knowledge{
+					id
 					fields
 				}
 				content
+				hidden
 				day0
 				day1
 				day2
@@ -215,20 +217,26 @@ export default compose(
 			current,
 			days: DAYS(current),
 			todos: (data.todos||[]).map(a=>{
+				if(a.hidden)
+					return null
+				let todo={...a}
+				
 				if(a.knowledge){
-					a.fields=a.knowledge.fields
-					a.props=[0,1,2,3,4,5,6].reduce((state,i)=>{
-						const {dones,props}=state
-						let prop=props[`${i}`]=a[`day${i}`]
-						if(prop){
-							dones.push(i)
-						}
-						return state
-					}, {dones:[], props})
-					a.toKnowledge=()=>toKnowledge(a.knowledge.id)
+					todo.fields=a.knowledge.fields
+					todo.toKnowledge=()=>toKnowledge(a.knowledge.id)
 				}
-				return a
-			})
+				let {dones, props}=[0,1,2,3,4,5,6].reduce((state,i)=>{
+					const {dones,props}=state
+					let prop=props[`${i}`]=a[`day${i}`]
+					if(prop){
+						dones.push(i)
+					}
+					return state
+				}, {dones:[], props:{}})
+				todo.dones=dones
+				todo.props=props
+				return todo
+			}).filter(a=>!!a)
 		}
 	}),	
 )(TaskPad)

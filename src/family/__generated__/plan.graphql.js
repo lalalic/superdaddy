@@ -9,6 +9,7 @@
 /*::
 import type {ConcreteFragment} from 'relay-runtime';
 export type plan = {|
+  +caps: ?$ReadOnlyArray<?string>;
   +goals: ?$ReadOnlyArray<?string>;
   +months: ?$ReadOnlyArray<?{|
     +goals: ?$ReadOnlyArray<?string>;
@@ -27,6 +28,13 @@ const fragment /*: ConcreteFragment*/ = {
   "metadata": null,
   "name": "plan",
   "selections": [
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "args": null,
+      "name": "caps",
+      "storageKey": null
+    },
     {
       "kind": "ScalarField",
       "alias": null,

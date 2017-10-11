@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 8bc4b0ed330b8000e9182850fbb0a909
+ * @relayHash 819792484cfe6b641e5a4d1602616917
  */
 
 /* eslint-disable */
@@ -9,22 +9,20 @@
 
 /*::
 import type {ConcreteBatch} from 'relay-runtime';
-export type plan_update_MutationVariables = {|
+export type plan_auto_MutationVariables = {|
   child?: ?any;
-  plan?: ?any;
 |};
-export type plan_update_MutationResponse = {|
-  +plan_update: ?{| |};
+export type plan_auto_MutationResponse = {|
+  +plan_auto: ?{| |};
 |};
 */
 
 
 /*
-mutation plan_update_Mutation(
+mutation plan_auto_Mutation(
   $child: ObjectID
-  $plan: JSON
 ) {
-  plan_update(_id: $child, plan: $plan) {
+  plan_auto(_id: $child) {
     ...plan
     id
   }
@@ -51,17 +49,11 @@ const batch /*: ConcreteBatch*/ = {
         "name": "child",
         "type": "ObjectID",
         "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "plan",
-        "type": "JSON",
-        "defaultValue": null
       }
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "plan_update_Mutation",
+    "name": "plan_auto_Mutation",
     "selections": [
       {
         "kind": "LinkedField",
@@ -72,16 +64,10 @@ const batch /*: ConcreteBatch*/ = {
             "name": "_id",
             "variableName": "child",
             "type": "ObjectID"
-          },
-          {
-            "kind": "Variable",
-            "name": "plan",
-            "variableName": "plan",
-            "type": "JSON"
           }
         ],
         "concreteType": "Plan",
-        "name": "plan_update",
+        "name": "plan_auto",
         "plural": false,
         "selections": [
           {
@@ -98,7 +84,7 @@ const batch /*: ConcreteBatch*/ = {
   "id": null,
   "kind": "Batch",
   "metadata": {},
-  "name": "plan_update_Mutation",
+  "name": "plan_auto_Mutation",
   "query": {
     "argumentDefinitions": [
       {
@@ -106,16 +92,10 @@ const batch /*: ConcreteBatch*/ = {
         "name": "child",
         "type": "ObjectID",
         "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "plan",
-        "type": "JSON",
-        "defaultValue": null
       }
     ],
     "kind": "Root",
-    "name": "plan_update_Mutation",
+    "name": "plan_auto_Mutation",
     "operation": "mutation",
     "selections": [
       {
@@ -127,16 +107,10 @@ const batch /*: ConcreteBatch*/ = {
             "name": "_id",
             "variableName": "child",
             "type": "ObjectID"
-          },
-          {
-            "kind": "Variable",
-            "name": "plan",
-            "variableName": "plan",
-            "type": "JSON"
           }
         ],
         "concreteType": "Plan",
-        "name": "plan_update",
+        "name": "plan_auto",
         "plural": false,
         "selections": [
           {
@@ -208,7 +182,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "mutation plan_update_Mutation(\n  $child: ObjectID\n  $plan: JSON\n) {\n  plan_update(_id: $child, plan: $plan) {\n    ...plan\n    id\n  }\n}\n\nfragment plan on Plan {\n  caps\n  goals\n  months {\n    goals\n    knowledges {\n      id\n      title\n    }\n  }\n}\n"
+  "text": "mutation plan_auto_Mutation(\n  $child: ObjectID\n) {\n  plan_auto(_id: $child) {\n    ...plan\n    id\n  }\n}\n\nfragment plan on Plan {\n  caps\n  goals\n  months {\n    goals\n    knowledges {\n      id\n      title\n    }\n  }\n}\n"
 };
 
 module.exports = batch;

@@ -88,8 +88,17 @@ type Mutation {
   child_create(name: String!, photo: String, birthday: Date, gender: Gender): Child
   child_update(_id: ObjectID!, name: String, photo: String, birthday: Date, icon: String, gender: Gender): Date
   plan_update(_id: ObjectID, plan: JSON): Plan
-  plan_task_done(_id: ObjectID, content: String, day: Int, props: JSON): Plan
+  plan_task_done(_id: ObjectID, content: String, knowledge: ObjectID, day: Int, props: JSON): Child
   plan_reset(_id: ObjectID): Plan
+  plan_todos_add(_id: ObjectID, content: String, knowledge: ObjectID): Plan
+  plan_todos_remove(_id: ObjectID, content: String, knowledge: ObjectID): Plan
+  plan_todos_removeNth(_id: ObjectID, i: Int): Plan
+  plan_todos_up(_id: ObjectID, i: Int): Plan
+  plan_todos_down(_id: ObjectID, i: Int): Plan
+  plan_todos_top(_id: ObjectID, i: Int): Plan
+  plan_todos_bottom(_id: ObjectID, i: Int): Plan
+  plan_todos_toggle(_id: ObjectID, i: Int): Plan
+  plan_auto(_id: ObjectID): Plan
   knowledge_create(knowledge: JSON): Knowledge
   knowledge_update(_id: ObjectID, knowledge: JSON): Date
   publish_create(template: String, child: ObjectID, from: Date, to: Date, name: String, copies: Int): Publish
@@ -124,6 +133,7 @@ type Plan implements Node {
   todo: String
   week: Int
   todos: [Todo]
+  caps: [String]
   goals: [String]
   months: [MonthPlan]
 }

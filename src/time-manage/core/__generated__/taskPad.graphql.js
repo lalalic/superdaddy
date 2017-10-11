@@ -11,9 +11,11 @@ import type {ConcreteFragment} from 'relay-runtime';
 export type taskPad = {|
   +todos: ?$ReadOnlyArray<?{|
     +knowledge: ?{|
+      +id: string;
       +fields: ?$ReadOnlyArray<?any>;
     |};
     +content: ?string;
+    +hidden: ?boolean;
     +day0: ?any;
     +day1: ?any;
     +day2: ?any;
@@ -52,6 +54,13 @@ const fragment /*: ConcreteFragment*/ = {
               "kind": "ScalarField",
               "alias": null,
               "args": null,
+              "name": "id",
+              "storageKey": null
+            },
+            {
+              "kind": "ScalarField",
+              "alias": null,
+              "args": null,
               "name": "fields",
               "storageKey": null
             }
@@ -63,6 +72,13 @@ const fragment /*: ConcreteFragment*/ = {
           "alias": null,
           "args": null,
           "name": "content",
+          "storageKey": null
+        },
+        {
+          "kind": "ScalarField",
+          "alias": null,
+          "args": null,
+          "name": "hidden",
           "storageKey": null
         },
         {

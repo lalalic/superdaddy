@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash c9db2f6bfc893147bda8ac581d5b441c
+ * @relayHash 121c1ffe598902f177206753865f97bb
  */
 
 /* eslint-disable */
@@ -53,10 +53,11 @@ fragment scorePad on Plan {
 fragment taskPad on Plan {
   todos {
     knowledge {
-      fields
       id
+      fields
     }
     content
+    hidden
     day0
     day1
     day2
@@ -233,14 +234,14 @@ const batch /*: ConcreteBatch*/ = {
                             "kind": "ScalarField",
                             "alias": null,
                             "args": null,
-                            "name": "fields",
+                            "name": "id",
                             "storageKey": null
                           },
                           {
                             "kind": "ScalarField",
                             "alias": null,
                             "args": null,
-                            "name": "id",
+                            "name": "fields",
                             "storageKey": null
                           }
                         ],
@@ -251,6 +252,13 @@ const batch /*: ConcreteBatch*/ = {
                         "alias": null,
                         "args": null,
                         "name": "content",
+                        "storageKey": null
+                      },
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "args": null,
+                        "name": "hidden",
                         "storageKey": null
                       },
                       {
@@ -301,13 +309,6 @@ const batch /*: ConcreteBatch*/ = {
                         "args": null,
                         "name": "day6",
                         "storageKey": null
-                      },
-                      {
-                        "kind": "ScalarField",
-                        "alias": null,
-                        "args": null,
-                        "name": "hidden",
-                        "storageKey": null
                       }
                     ],
                     "storageKey": null
@@ -344,7 +345,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query src_timeManage_Query(\n  $child: ObjectID\n) {\n  me {\n    child(_id: $child) {\n      plan {\n        ...core\n        id\n      }\n      id\n    }\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      fields\n      id\n    }\n    content\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n"
+  "text": "query src_timeManage_Query(\n  $child: ObjectID\n) {\n  me {\n    child(_id: $child) {\n      plan {\n        ...core\n        id\n      }\n      id\n    }\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n"
 };
 
 module.exports = batch;
