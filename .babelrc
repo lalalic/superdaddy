@@ -9,17 +9,17 @@
       "babel-plugin-transform-class-properties",
 	  "babel-plugin-relay",
 	  ["module-resolver",{
-			"root": ["./src"],
+			"root": ["."],
 			"alias":{
-				"main":"index.js",
-				"knowledge":"./knowledge",
-				"publish":"./publish",
-				"time-manage":"./time-manage",
+				"main":"./src/index.js",
+				"knowledge":"./src/knowledge",
+				"publish":"./src/publish",
+				"time-manage":"./src/time-manage",
+				"setting":"./src/setting",
 				"tv":"./tv",
-				"components":"./components",
-				"db":"./db",
-				"icons": "./icons",
-				"family": "./family",
+				"components":"./src/components",
+				"icons": "./src/icons",
+				"family": "./src/family",
 				"qili":"qili-app/lib",
 			}
 		}]

@@ -10,6 +10,7 @@
 import type {ConcreteFragment} from 'relay-runtime';
 export type info_knowledge = {|
   +id: string;
+  +isMyWork: ?boolean;
   +inTask: ?boolean;
 |};
 */
@@ -32,6 +33,13 @@ const fragment /*: ConcreteFragment*/ = {
       "alias": null,
       "args": null,
       "name": "id",
+      "storageKey": null
+    },
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "args": null,
+      "name": "isMyWork",
       "storageKey": null
     },
     {

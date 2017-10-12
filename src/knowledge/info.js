@@ -33,15 +33,15 @@ export class KnowledgeEditor extends Component{
 
     render(){
 		const {
-			knowledge, isMyWork, minHeight, revising=false, inTask=false,
+			knowledge, minHeight, revising=false,
 			selectDocx, update, cancel, task, untask, preview, buy,
-			outputHomework, wechat_seesion,wechat_timeline,
+			outputHomework, wechat_session,wechat_timeline,
 			toComment,
 		}=this.props
 
         const commands=["Back"]
 
-        if(isMyWork)
+        if(knowledge.isMyWork)
             commands.push({
 				action:"New Version"
                 ,label:"新版本"
@@ -62,7 +62,7 @@ export class KnowledgeEditor extends Component{
                 ,icon:<IconCancel/>
 			})
         }else{
-			if(inTask)
+			if(knowledge.inTask)
 				commands.push({
 					action:"Remove Task"
 					,label:"删除课程"
@@ -89,7 +89,7 @@ export class KnowledgeEditor extends Component{
 			key="wechat.session"
 			label="微信好友"
 			icon={<IconWechatSession/>}
-			onClick={webchat_session}
+			onClick={wechat_session}
 			/>,
 			<BottomNavigationItem
 			key="wechat.timeline"
@@ -200,18 +200,20 @@ export default compose(
 	withFragment(graphql`
 		fragment info_knowledge on Knowledge{
 			id
+			isMyWork
 			inTask(child:$child)
 			...content_knowledge
 		}
 	`),
 	connect(
-		({qili:{user},superdaddy:{current,selectedDocx}},{id, muiTheme})=>({
-			isMyWork: id==user.id,
+		({qili:{user},superdaddy:{current,selectedDocx}})=>({
 			revising:!!selectedDocx,
 			child:current,
-			minHeight:muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height,
 		}),
-		(dispatch, {knowledge})=>({
+		(dispatch, {router, knowledge, muiTheme})=>({
+			router:undefined,
+			muiTheme:undefined,
+			minHeight:muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height,
 			selectDocx:()=>dispatch(ACTION.SELECT_DOCX()),
 			cancel(){
 				dispatch(ACTION.RESET())

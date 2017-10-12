@@ -176,7 +176,7 @@ export const withPlanActions=props=>compose(
 			taskDone,planUpdate,reset,add,remove,removeNth,up,down,top,bottom,toggle,
 		}
 		if(typeof(props)=="function")
-			return {...others,...props(others)}
+			return {...others,...props({...others,actions})}
 		return {...others,actions}
 	})
 )

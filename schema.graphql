@@ -11,6 +11,11 @@ type Child implements Node {
   plan: Plan
 }
 
+enum CommentType {
+  photo
+  text
+}
+
 scalar Date
 
 type File {
@@ -53,7 +58,28 @@ type Knowledge implements Node {
   fields: [JSON]
   days: [JSON]
   inTask(child: ObjectID): Boolean
+  isMyWork: Boolean
   files: [File]
+}
+
+type KnowledgeComment implements Node {
+  id: ID!
+  content: String!
+  type: CommentType
+  author: User!
+  createdAt: Date!
+  parent: ObjectID!
+  isOwner: Boolean
+}
+
+type KnowledgeCommentConnection {
+  edges: [KnowledgeCommentEdge]
+  pageInfo: PageInfo
+}
+
+type KnowledgeCommentEdge {
+  node: KnowledgeComment
+  cursor: JSON
 }
 
 type KnowledgeConnection {
@@ -63,7 +89,7 @@ type KnowledgeConnection {
 
 type KnowledgeEdge {
   node: Knowledge
-  cursor: String
+  cursor: JSON
 }
 
 type MonthPlan {
@@ -84,6 +110,7 @@ type Mutation {
   file_link(url: String!, id: ID!, field: String!): Boolean
   file_tokens(count: Int): [FileToken]
   file_clean(host: ID!): Boolean
+  knowledge_create_comment(parent: ObjectID, content: String!, type: CommentType): KnowledgeComment
   child_remove(_id: ObjectID!): Boolean
   child_create(name: String!, photo: String, birthday: Date, gender: Gender): Child
   child_update(_id: ObjectID!, name: String, photo: String, birthday: Date, icon: String, gender: Gender): Date
@@ -120,9 +147,9 @@ scalar ObjectID
 
 type PageInfo {
   hasNextPage: Boolean
-  endCursor: String
+  endCursor: JSON
   hasPreviousPage: Boolean
-  startCursor: String
+  startCursor: JSON
 }
 
 type Plan implements Node {
@@ -155,6 +182,7 @@ type Query {
   node(id: ID!): Node
   schema: String!
   me: User!
+  knowledge_comments(parent: ObjectID, last: Int, before: JSON): KnowledgeCommentConnection
   knowledges(first: Int, after: JSON): KnowledgeConnection
   knowledge(_id: ObjectID): Knowledge
 }

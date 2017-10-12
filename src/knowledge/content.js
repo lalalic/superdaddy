@@ -10,8 +10,10 @@ import AppBar from "components/app-bar"
 
 export const Content=({
 		toKnowledgeUrl,
-		knowledge:{id, title, content, summary, createdAt, category=[], keywords=[], figure, author,}
+		knowledge:{id, title, content, summary, createdAt, category, keywords, figure, author,}
 	})=>{
+	category=category||[]
+	keywords=keywords||[]	
 	content=<div dangerouslySetInnerHTML={{__html:content}}/>
 
 	if(summary && open!==null){
@@ -28,7 +30,7 @@ export const Content=({
 		notNewStuff=[
 			(<AppBar key="appbar" title={<Link to={toKnowledgeUrl}>{title}</Link>} />),
 			(<p key="author">
-				{author.username} - <time>{relative(createdAt)}</time>
+				{author.name} - <time>{relative(createdAt)}</time>
 			</p>)
 		]
 	}else {
@@ -66,7 +68,7 @@ export default compose(
 			keywords 
 			figure
 			author{
-				username
+				name
 			}
 		}
 	`),

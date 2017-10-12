@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 2da83d50bf0731b8217b7ba33672bb9e
+ * @relayHash 2f69e1f9830a02d1d00e0b68b9fb4442
  */
 
 /* eslint-disable */
@@ -9,43 +9,42 @@
 
 /*::
 import type {ConcreteBatch} from 'relay-runtime';
-export type src_knowleges_QueryResponse = {| |};
+export type src_comment_QueryResponse = {| |};
 */
 
 
 /*
-query src_knowleges_Query(
-  $first: Int
-  $after: JSON
+query src_comment_Query(
+  $parent: ObjectID!
+  $count: Int = 10
+  $cursor: JSON
 ) {
-  ...list
+  ...src_knowledgeComments
 }
 
-fragment list on Query {
-  knowledges(first: $first, after: $after) {
+fragment src_knowledgeComments on Query {
+  knowledge_comments(parent: $parent, last: $count, before: $cursor) {
     edges {
       node {
         __typename
+        content
+        type
+        createdAt
+        author {
+          id
+          name
+          photo
+        }
+        isOwner
         id
-        ...listItem
       }
       cursor
     }
     pageInfo {
-      hasNextPage
-      endCursor
+      hasPreviousPage
+      startCursor
     }
   }
-}
-
-fragment listItem on Knowledge {
-  id
-  title
-  summary
-  photos
-  zans
-  createdAt
-  updatedAt
 }
 */
 
@@ -54,24 +53,30 @@ const batch /*: ConcreteBatch*/ = {
     "argumentDefinitions": [
       {
         "kind": "LocalArgument",
-        "name": "first",
-        "type": "Int",
+        "name": "parent",
+        "type": "ObjectID!",
         "defaultValue": null
       },
       {
         "kind": "LocalArgument",
-        "name": "after",
+        "name": "count",
+        "type": "Int",
+        "defaultValue": 10
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "cursor",
         "type": "JSON",
         "defaultValue": null
       }
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "src_knowleges_Query",
+    "name": "src_comment_Query",
     "selections": [
       {
         "kind": "FragmentSpread",
-        "name": "list",
+        "name": "src_knowledgeComments",
         "args": null
       }
     ],
@@ -80,24 +85,30 @@ const batch /*: ConcreteBatch*/ = {
   "id": null,
   "kind": "Batch",
   "metadata": {},
-  "name": "src_knowleges_Query",
+  "name": "src_comment_Query",
   "query": {
     "argumentDefinitions": [
       {
         "kind": "LocalArgument",
-        "name": "first",
-        "type": "Int",
+        "name": "parent",
+        "type": "ObjectID!",
         "defaultValue": null
       },
       {
         "kind": "LocalArgument",
-        "name": "after",
+        "name": "count",
+        "type": "Int",
+        "defaultValue": 10
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "cursor",
         "type": "JSON",
         "defaultValue": null
       }
     ],
     "kind": "Root",
-    "name": "src_knowleges_Query",
+    "name": "src_comment_Query",
     "operation": "query",
     "selections": [
       {
@@ -106,26 +117,32 @@ const batch /*: ConcreteBatch*/ = {
         "args": [
           {
             "kind": "Variable",
-            "name": "after",
-            "variableName": "after",
+            "name": "before",
+            "variableName": "cursor",
             "type": "JSON"
           },
           {
             "kind": "Variable",
-            "name": "first",
-            "variableName": "first",
+            "name": "last",
+            "variableName": "count",
             "type": "Int"
+          },
+          {
+            "kind": "Variable",
+            "name": "parent",
+            "variableName": "parent",
+            "type": "ObjectID"
           }
         ],
-        "concreteType": "KnowledgeConnection",
-        "name": "knowledges",
+        "concreteType": "KnowledgeCommentConnection",
+        "name": "knowledge_comments",
         "plural": false,
         "selections": [
           {
             "kind": "LinkedField",
             "alias": null,
             "args": null,
-            "concreteType": "KnowledgeEdge",
+            "concreteType": "KnowledgeCommentEdge",
             "name": "edges",
             "plural": true,
             "selections": [
@@ -133,7 +150,7 @@ const batch /*: ConcreteBatch*/ = {
                 "kind": "LinkedField",
                 "alias": null,
                 "args": null,
-                "concreteType": "Knowledge",
+                "concreteType": "KnowledgeComment",
                 "name": "node",
                 "plural": false,
                 "selections": [
@@ -148,35 +165,14 @@ const batch /*: ConcreteBatch*/ = {
                     "kind": "ScalarField",
                     "alias": null,
                     "args": null,
-                    "name": "id",
+                    "name": "content",
                     "storageKey": null
                   },
                   {
                     "kind": "ScalarField",
                     "alias": null,
                     "args": null,
-                    "name": "title",
-                    "storageKey": null
-                  },
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "args": null,
-                    "name": "summary",
-                    "storageKey": null
-                  },
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "args": null,
-                    "name": "photos",
-                    "storageKey": null
-                  },
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "args": null,
-                    "name": "zans",
+                    "name": "type",
                     "storageKey": null
                   },
                   {
@@ -187,10 +183,49 @@ const batch /*: ConcreteBatch*/ = {
                     "storageKey": null
                   },
                   {
+                    "kind": "LinkedField",
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "User",
+                    "name": "author",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "args": null,
+                        "name": "id",
+                        "storageKey": null
+                      },
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "args": null,
+                        "name": "name",
+                        "storageKey": null
+                      },
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "args": null,
+                        "name": "photo",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
                     "kind": "ScalarField",
                     "alias": null,
                     "args": null,
-                    "name": "updatedAt",
+                    "name": "isOwner",
+                    "storageKey": null
+                  },
+                  {
+                    "kind": "ScalarField",
+                    "alias": null,
+                    "args": null,
+                    "name": "id",
                     "storageKey": null
                   }
                 ],
@@ -218,14 +253,14 @@ const batch /*: ConcreteBatch*/ = {
                 "kind": "ScalarField",
                 "alias": null,
                 "args": null,
-                "name": "hasNextPage",
+                "name": "hasPreviousPage",
                 "storageKey": null
               },
               {
                 "kind": "ScalarField",
                 "alias": null,
                 "args": null,
-                "name": "endCursor",
+                "name": "startCursor",
                 "storageKey": null
               }
             ],
@@ -240,25 +275,33 @@ const batch /*: ConcreteBatch*/ = {
         "args": [
           {
             "kind": "Variable",
-            "name": "after",
-            "variableName": "after",
+            "name": "before",
+            "variableName": "cursor",
             "type": "JSON"
           },
           {
             "kind": "Variable",
-            "name": "first",
-            "variableName": "first",
+            "name": "last",
+            "variableName": "count",
             "type": "Int"
+          },
+          {
+            "kind": "Variable",
+            "name": "parent",
+            "variableName": "parent",
+            "type": "ObjectID"
           }
         ],
         "handle": "connection",
-        "name": "knowledges",
-        "key": "list_knowledges",
-        "filters": null
+        "name": "knowledge_comments",
+        "key": "main_knowledge_comments",
+        "filters": [
+          "parent"
+        ]
       }
     ]
   },
-  "text": "query src_knowleges_Query(\n  $first: Int\n  $after: JSON\n) {\n  ...list\n}\n\nfragment list on Query {\n  knowledges(first: $first, after: $after) {\n    edges {\n      node {\n        __typename\n        id\n        ...listItem\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n\nfragment listItem on Knowledge {\n  id\n  title\n  summary\n  photos\n  zans\n  createdAt\n  updatedAt\n}\n"
+  "text": "query src_comment_Query(\n  $parent: ObjectID!\n  $count: Int = 10\n  $cursor: JSON\n) {\n  ...src_knowledgeComments\n}\n\nfragment src_knowledgeComments on Query {\n  knowledge_comments(parent: $parent, last: $count, before: $cursor) {\n    edges {\n      node {\n        __typename\n        content\n        type\n        createdAt\n        author {\n          id\n          name\n          photo\n        }\n        isOwner\n        id\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n"
 };
 
 module.exports = batch;

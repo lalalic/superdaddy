@@ -103,7 +103,7 @@ export default compose(
 			}
 		`,
 	})),
-	connect(null,(dispatch,{selectedDocx, knowledge,mutate, getTokens})=>({
+	connect(null,(dispatch,{selectedDocx, knowledge, toKnowledge, mutate, getTokens})=>({
 		create(){
 			selectedDocx.upload({getTokens})
 				.then(knowledge=>mutate(knowledge))

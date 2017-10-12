@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash f7bb38fa07aea7094f4ae61a263cc13e
+ * @relayHash bbba1c2a554d0e9afba00b7815152b5a
  */
 
 /* eslint-disable */
@@ -28,6 +28,7 @@ query src_knowledge_Query(
 
 fragment info_knowledge on Knowledge {
   id
+  isMyWork
   inTask(child: $child)
   ...content_knowledge
 }
@@ -42,7 +43,7 @@ fragment content_knowledge on Knowledge {
   keywords
   figure
   author {
-    username
+    name
     id
   }
 }
@@ -142,6 +143,13 @@ const batch /*: ConcreteBatch*/ = {
           {
             "kind": "ScalarField",
             "alias": null,
+            "args": null,
+            "name": "isMyWork",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
             "args": [
               {
                 "kind": "Variable",
@@ -214,7 +222,7 @@ const batch /*: ConcreteBatch*/ = {
                 "kind": "ScalarField",
                 "alias": null,
                 "args": null,
-                "name": "username",
+                "name": "name",
                 "storageKey": null
               },
               {
@@ -232,7 +240,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query src_knowledge_Query(\n  $id: ObjectID\n  $child: ObjectID\n) {\n  knowledge(_id: $id) {\n    ...info_knowledge\n    id\n  }\n}\n\nfragment info_knowledge on Knowledge {\n  id\n  inTask(child: $child)\n  ...content_knowledge\n}\n\nfragment content_knowledge on Knowledge {\n  id\n  title\n  content\n  summary\n  createdAt\n  category\n  keywords\n  figure\n  author {\n    username\n    id\n  }\n}\n"
+  "text": "query src_knowledge_Query(\n  $id: ObjectID\n  $child: ObjectID\n) {\n  knowledge(_id: $id) {\n    ...info_knowledge\n    id\n  }\n}\n\nfragment info_knowledge on Knowledge {\n  id\n  isMyWork\n  inTask(child: $child)\n  ...content_knowledge\n}\n\nfragment content_knowledge on Knowledge {\n  id\n  title\n  content\n  summary\n  createdAt\n  category\n  keywords\n  figure\n  author {\n    name\n    id\n  }\n}\n"
 };
 
 module.exports = batch;

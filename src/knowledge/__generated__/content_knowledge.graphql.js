@@ -18,7 +18,7 @@ export type content_knowledge = {|
   +keywords: ?$ReadOnlyArray<?string>;
   +figure: ?string;
   +author: ?{|
-    +username: ?string;
+    +name: ?string;
   |};
 |};
 */
@@ -98,7 +98,7 @@ const fragment /*: ConcreteFragment*/ = {
           "kind": "ScalarField",
           "alias": null,
           "args": null,
-          "name": "username",
+          "name": "name",
           "storageKey": null
         }
       ],

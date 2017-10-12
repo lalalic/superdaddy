@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from "react"
-import {compose, withProps, getContext} from "recompose"
+import {compose, mapProps, getContext} from "recompose"
 import {withFragment} from "qili/tools/recompose"
 
 import {IconButton, TextField} from 'material-ui'
@@ -64,10 +64,11 @@ export class Knowledges extends Component{
 	
 export default compose(
 	withFragment(graphql`
-		fragment list_knowledges on Query{
+		fragment list on Query{
 			knowledges(first:$first,after:$after) @connection(key:"list_knowledges"){
 				edges{
 					node{
+						id
 						...listItem
 					}
 				}
@@ -81,14 +82,17 @@ export default compose(
 	getContext({
 		muiTheme: PropTypes.object,
 	}),
-	withProps(({knowledges, muiTheme:{page:{height}, footbar}})=>({
-		knowledges:knowledges||[],
-		minHeight: height-footbar.height,
-		refresh(){
-			
-		},
-		loadMore(){
-			
-		},
-	})),
+	mapProps(({data:{knowledges:{edges=[]},pageInfo},  muiTheme:{page:{height}, footbar},...others})=>{
+		return {
+			...others,
+			knowledges:edges.map(a=>a.node),
+			minHeight: height-footbar.height,
+			refresh(){
+				
+			},
+			loadMore(){
+				
+			}
+		}
+	}),
 )(Knowledges)

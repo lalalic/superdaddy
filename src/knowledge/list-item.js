@@ -2,6 +2,8 @@ import React, {Component, PropTypes} from "react"
 import {compose, getContext, withProps} from "recompose"
 import {withFragment} from "qili/tools/recompose"
 
+import {relative} from 'components/calendar'
+
 export class Item extends Component{
     render(){
         const {model:{photos=[]}}=this.props
@@ -17,9 +19,9 @@ export class Item extends Component{
     }
 
     _0photo(){
-        var {model,toKnowledge,...others}=this.props
+        var {model,toKnowledge,style,}=this.props
         return (
-            <div className="li inset photo0" {...others} onClick={()=>toKnowledge()}>
+            <div className="li inset photo0" style={style} onClick={()=>toKnowledge(model.id)}>
                 <div className="title">{model.title}</div>
                 <div className="summary">{model.summary}</div>
                 {this._more(model)}
@@ -27,9 +29,9 @@ export class Item extends Component{
         )
     }
     _1photo(){
-        var {model,toKnowledge,...others}=this.props
+        var {model,toKnowledge,style,}=this.props
         return (
-            <div className="li inset photo1" {...others} onClick={()=>toKnowledge()}>
+            <div className="li inset photo1" style={style} onClick={()=>toKnowledge(model.id)}>
                 <div className="layout">
                     <div>
                         <div className="title">{model.title}</div>
@@ -44,9 +46,9 @@ export class Item extends Component{
     }
 
     _3photo(){
-        var {model,toKnowledge,...others}=this.props
+        var {model,toKnowledge,style,}=this.props
         return (
-            <div className="li inset photo3" {...others} onClick={()=>toKnowledge()}>
+            <div className="li inset photo3" style={style} onClick={()=>toKnowledge(model.id)}>
                 <div className="title">{model.title}</div>
                 <div className="photos">
                     <div><img src={model.photos[0]}/></div>

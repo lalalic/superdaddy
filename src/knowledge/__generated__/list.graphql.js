@@ -8,14 +8,16 @@
 
 /*::
 import type {ConcreteFragment} from 'relay-runtime';
-export type list_knowledges = {|
+export type list = {|
   +knowledges: ?{|
     +edges: ?$ReadOnlyArray<?{|
-      +node: ?{| |};
+      +node: ?{|
+        +id: string;
+      |};
     |}>;
     +pageInfo: ?{|
       +hasNextPage: ?boolean;
-      +endCursor: ?string;
+      +endCursor: ?any;
     |};
   |};
 |};
@@ -48,7 +50,7 @@ const fragment /*: ConcreteFragment*/ = {
       }
     ]
   },
-  "name": "list_knowledges",
+  "name": "list",
   "selections": [
     {
       "kind": "LinkedField",
@@ -74,6 +76,13 @@ const fragment /*: ConcreteFragment*/ = {
               "name": "node",
               "plural": false,
               "selections": [
+                {
+                  "kind": "ScalarField",
+                  "alias": null,
+                  "args": null,
+                  "name": "id",
+                  "storageKey": null
+                },
                 {
                   "kind": "FragmentSpread",
                   "name": "listItem",

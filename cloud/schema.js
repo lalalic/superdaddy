@@ -1,3 +1,5 @@
+const KnowledgeComment=Cloud.buildComment("Knowledge")
+
 Cloud.typeDefs=`
 	type Child implements Node{
 		id:ID!
@@ -63,6 +65,7 @@ Cloud.typeDefs=`
 		fields: [JSON]
 		days: [JSON]
 		inTask(child:ObjectID): Boolean
+		isMyWork: Boolean
 		files: [File]
 	}
 	
@@ -77,7 +80,8 @@ Cloud.typeDefs=`
 		author:User
 	}
 	
-	${Cloud.pagination("Knowledge").typeDefs}
+	${Cloud.pagination("Knowledge","JSON").typeDefs}
+	${KnowledgeComment.typeDefs}
 	
 	type Publish implements Node{
 		id:ID!
@@ -142,7 +146,7 @@ function currentWeek(){
 const exists=(todos, content,knowledge)=>1+todos.findIndex(a=>knowledge ? a.knowledge===knowledge : a.content===content)
 
 const CAPS=["观察能力","自制力","专注力","记忆力"]
-Cloud.resolver={
+Cloud.resolver=Cloud.merge({
 	Child:{
 		birthday:({birthday,bd})=>birthday||bd,
         id: ({_id})=>`childs:${_id}`,
@@ -163,7 +167,7 @@ Cloud.resolver={
 	
 	Plan:{
 		id: ({_id})=>`plans:${_id}`,
-		score: ({score})=>score,
+
 		caps: ()=>CAPS,
 	},
 	
@@ -178,6 +182,9 @@ Cloud.resolver={
 	},
 	
 	Query:{
+		knowledge(_,{_id},{app}){
+			return app.get1Entity("knowledges",{_id})
+		},
 		knowledges(_,{first=10,after={}},{app}){
 			const {title,categories,tags,createdAt,_id}=after
 			const query={}
@@ -515,6 +522,14 @@ Cloud.resolver={
 					return !!plan.todos.find(({knowledge})=>knowledge==_id)
 				})
 		},
+		
+		isMyWork:({author},{},{app,user})=>author==user._id,
+		
+		author({author},{},{app,user}){
+			if(author==user._id)
+				return user
+			return app.get1Entity("users",{_id:author})
+		}
 	},
 	
 	Publish: {
@@ -542,4 +557,6 @@ Cloud.resolver={
 			return app.get1Entity("knowledges",{_id:knowledge})
 		}
 	}
-}
+},
+KnowledgeComment.resolver,
+)

@@ -1,6 +1,6 @@
 import React, {PropTypes} from "react"
 import {connect} from "react-redux"
-import {compose, getContext, withProps,withState,withContext} from "recompose"
+import {compose, getContext, withProps, mapProps, withState,withContext} from "recompose"
 import {withInit, withQuery, withPagination} from "qili/tools/recompose"
 
 import {graphql} from "react-relay"
@@ -27,9 +27,10 @@ const ACTION={
 	})
 }
 
-function reducer(state={},{type,payload}){
-	state=knowledge_reducer(...arguments)
-	state=plan_reducer(...arguments)
+function reducer(state={},action){
+	const {type,payload}=action
+	state=knowledge_reducer(state,action)
+	state=plan_reducer(state,action)
 	switch(type){
 	case `@@${DOMAIN}/CURRENT_CHILD`:
 		return {...state, current:payload}
@@ -73,7 +74,7 @@ const SuperDaddy=compose(
 import Child from "family/child"
 import Account from "setting/account"
 import Setting from "qili/ui/setting"
-//import Profile from "setting/profile"
+import Comment from "qili/components/comment"
 import Profile from "qili/ui/user-profile"
 import Publish, {Publishes} from "publish"
 import Plan from "family/plan"
@@ -245,13 +246,13 @@ const router=(
 						},
 						query: graphql`
 							query src_knowleges_Query($first:Int,$after:JSON){
-								...list_knowledges
+								...list
 							}
 						`,
 					})),
 					getContext({router:PropTypes.object}),
-					withProps(({knowledges,earchByTitle})=>({
-						knowledges:knowledges||null,
+					mapProps(({searchByTitle,router,...others})=>({
+						...others,
 						search({title}){
 							if(title){
 								searchByTitle(title)
@@ -279,11 +280,8 @@ const router=(
 					connect(state=>({
 						child:state.superdaddy.current,
 					})),
-					withQuery(({id:_id,child})=>({
-						variables:{
-							_id,
-							child,
-						},
+					withQuery(({params:{id},child})=>({
+						variables:{id,child},
 						query:graphql`
 							query src_knowledge_Query($id:ObjectID, $child: ObjectID){
 								knowledge(_id:$id){
@@ -341,6 +339,58 @@ const router=(
 					data: me.child.plan
 				})),
 			)(Plan)}/>
+			
+			<Route path="knowledge_comment/:id" component={compose(
+				withMutation(({params:{id:parent}})=>({
+					variables:{parent},
+					mutation:graphql`
+						mutation src_comment_create_Mutation($parent:ObjectID!, $content:String!, $type: CommentType){
+							knowledge_create_comment(parent:$parent, content:$content, type:$type){
+								id
+								createdAt
+							}
+						}
+					`
+				})),
+				withPagination(({params:{id:parent}})=>({
+					variables:{parent},
+					query: graphql`
+				        query src_comment_Query($parent:ObjectID!, $count: Int=10, $cursor: JSON){
+				            ...src_knowledgeComments
+				        }
+				    `,
+				})),
+				withProps(({data})=>({
+					knowledgeComments:data,
+				})),
+				withFragment(graphql`
+					fragment src_knowledgeComments on Query{
+						knowledge_comments(parent:$parent, last:$count, before: $cursor)@connection(key:"main_knowledge_comments"){
+							edges{
+								node{
+									content
+									type
+									createdAt
+									author{
+										id
+										name
+										photo
+									}
+									isOwner
+								}
+							}
+							pageInfo{
+								hasPreviousPage
+								startCursor
+							}
+						}
+					}
+				`),
+				withProps(({knowledgeComments})=>({
+					data:knowledgeComments.knowledge_comments.edges.map(({node})=>node),
+				})),
+				withCurrent(),
+			)(Comment)}/>
 		</Route>
 	</Router>
 )
