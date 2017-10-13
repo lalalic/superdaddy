@@ -11,6 +11,16 @@ type Child implements Node {
   plan: Plan
 }
 
+interface Comment {
+  id: ID!
+  content: String!
+  type: CommentType
+  author: User!
+  createdAt: Date!
+  parent: ObjectID!
+  isOwner: Boolean
+}
+
 enum CommentType {
   photo
   text
@@ -62,7 +72,7 @@ type Knowledge implements Node {
   files: [File]
 }
 
-type KnowledgeComment implements Node {
+type KnowledgeComment implements Comment, Node {
   id: ID!
   content: String!
   type: CommentType
@@ -110,7 +120,6 @@ type Mutation {
   file_link(url: String!, id: ID!, field: String!): Boolean
   file_tokens(count: Int): [FileToken]
   file_clean(host: ID!): Boolean
-  knowledge_create_comment(parent: ObjectID, content: String!, type: CommentType): KnowledgeComment
   child_remove(_id: ObjectID!): Boolean
   child_create(name: String!, photo: String, birthday: Date, gender: Gender): Child
   child_update(_id: ObjectID!, name: String, photo: String, birthday: Date, icon: String, gender: Gender): Date
@@ -130,6 +139,7 @@ type Mutation {
   knowledge_update(_id: ObjectID, knowledge: JSON): Date
   publish_create(template: String, child: ObjectID, from: Date, to: Date, name: String, copies: Int): Publish
   publish_remove(_id: ObjectID): Boolean
+  comment_create(parent: ID, content: String!, type: CommentType): Comment
 }
 
 interface Named {

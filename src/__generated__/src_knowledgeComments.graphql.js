@@ -9,9 +9,10 @@
 /*::
 import type {ConcreteFragment} from 'relay-runtime';
 export type src_knowledgeComments = {|
-  +knowledge_comments: ?{|
+  +comments: ?{|
     +edges: ?$ReadOnlyArray<?{|
       +node: ?{|
+        +id: string;
         +content: string;
         +type: ?"photo" | "text";
         +createdAt: any;
@@ -58,7 +59,7 @@ const fragment /*: ConcreteFragment*/ = {
         "cursor": "cursor",
         "direction": "backward",
         "path": [
-          "knowledge_comments"
+          "comments"
         ]
       }
     ]
@@ -67,7 +68,7 @@ const fragment /*: ConcreteFragment*/ = {
   "selections": [
     {
       "kind": "LinkedField",
-      "alias": "knowledge_comments",
+      "alias": "comments",
       "args": [
         {
           "kind": "Variable",
@@ -77,7 +78,7 @@ const fragment /*: ConcreteFragment*/ = {
         }
       ],
       "concreteType": "KnowledgeCommentConnection",
-      "name": "__main_knowledge_comments_connection",
+      "name": "__knowledge_comments_connection",
       "plural": false,
       "selections": [
         {
@@ -96,6 +97,13 @@ const fragment /*: ConcreteFragment*/ = {
               "name": "node",
               "plural": false,
               "selections": [
+                {
+                  "kind": "ScalarField",
+                  "alias": null,
+                  "args": null,
+                  "name": "id",
+                  "storageKey": null
+                },
                 {
                   "kind": "ScalarField",
                   "alias": null,

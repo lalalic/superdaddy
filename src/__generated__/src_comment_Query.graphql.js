@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 2f69e1f9830a02d1d00e0b68b9fb4442
+ * @relayHash cd86f3731249bd46db7c3e26cdfa9ec5
  */
 
 /* eslint-disable */
@@ -23,10 +23,11 @@ query src_comment_Query(
 }
 
 fragment src_knowledgeComments on Query {
-  knowledge_comments(parent: $parent, last: $count, before: $cursor) {
+  comments: knowledge_comments(parent: $parent, last: $count, before: $cursor) {
     edges {
       node {
         __typename
+        id
         content
         type
         createdAt
@@ -36,7 +37,6 @@ fragment src_knowledgeComments on Query {
           photo
         }
         isOwner
-        id
       }
       cursor
     }
@@ -113,7 +113,7 @@ const batch /*: ConcreteBatch*/ = {
     "selections": [
       {
         "kind": "LinkedField",
-        "alias": null,
+        "alias": "comments",
         "args": [
           {
             "kind": "Variable",
@@ -159,6 +159,13 @@ const batch /*: ConcreteBatch*/ = {
                     "alias": null,
                     "args": null,
                     "name": "__typename",
+                    "storageKey": null
+                  },
+                  {
+                    "kind": "ScalarField",
+                    "alias": null,
+                    "args": null,
+                    "name": "id",
                     "storageKey": null
                   },
                   {
@@ -220,13 +227,6 @@ const batch /*: ConcreteBatch*/ = {
                     "args": null,
                     "name": "isOwner",
                     "storageKey": null
-                  },
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "args": null,
-                    "name": "id",
-                    "storageKey": null
                   }
                 ],
                 "storageKey": null
@@ -271,7 +271,7 @@ const batch /*: ConcreteBatch*/ = {
       },
       {
         "kind": "LinkedHandle",
-        "alias": null,
+        "alias": "comments",
         "args": [
           {
             "kind": "Variable",
@@ -294,14 +294,14 @@ const batch /*: ConcreteBatch*/ = {
         ],
         "handle": "connection",
         "name": "knowledge_comments",
-        "key": "main_knowledge_comments",
+        "key": "knowledge_comments",
         "filters": [
           "parent"
         ]
       }
     ]
   },
-  "text": "query src_comment_Query(\n  $parent: ObjectID!\n  $count: Int = 10\n  $cursor: JSON\n) {\n  ...src_knowledgeComments\n}\n\nfragment src_knowledgeComments on Query {\n  knowledge_comments(parent: $parent, last: $count, before: $cursor) {\n    edges {\n      node {\n        __typename\n        content\n        type\n        createdAt\n        author {\n          id\n          name\n          photo\n        }\n        isOwner\n        id\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n"
+  "text": "query src_comment_Query(\n  $parent: ObjectID!\n  $count: Int = 10\n  $cursor: JSON\n) {\n  ...src_knowledgeComments\n}\n\nfragment src_knowledgeComments on Query {\n  comments: knowledge_comments(parent: $parent, last: $count, before: $cursor) {\n    edges {\n      node {\n        __typename\n        id\n        content\n        type\n        createdAt\n        author {\n          id\n          name\n          photo\n        }\n        isOwner\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n"
 };
 
 module.exports = batch;

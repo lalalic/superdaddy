@@ -1,7 +1,7 @@
 import React, {PropTypes} from "react"
 import {connect} from "react-redux"
 import {compose, getContext, withProps, mapProps, withState,withContext} from "recompose"
-import {withInit, withQuery, withPagination} from "qili/tools/recompose"
+import {withInit, withQuery, withPagination, withFragment} from "qili/tools/recompose"
 
 import {graphql} from "react-relay"
 import {Router, Route, IndexRoute, Direct, IndexRedirect, hashHistory} from "react-router"
@@ -277,8 +277,11 @@ const router=(
 				)(NewKnowledge)}/>
 
 				<Route path=":id" component={compose(
-					connect(state=>({
+					getContext({router:PropTypes.object}),
+					connect((state,{router,params:{id}})=>({
 						child:state.superdaddy.current,
+						toComment:()=>router.push(`knowledge/${id}/comment`),
+						router:undefined,
 					})),
 					withQuery(({params:{id},child})=>({
 						variables:{id,child},
@@ -292,6 +295,45 @@ const router=(
 					})),
 				)(Knowledge)}/>
 
+				<Route path=":id/comment" component={compose(
+					withPagination(({params:{id:parent}})=>({
+						variables:{parent},
+						query: graphql`
+							query src_comment_Query($parent:ObjectID!, $count: Int=10, $cursor: JSON){
+								...src_knowledgeComments
+							}
+						`,
+					})),
+					withFragment({data:graphql`
+						fragment src_knowledgeComments on Query{
+							comments:knowledge_comments(parent:$parent, last:$count, before: $cursor)@connection(key:"knowledge_comments"){
+								edges{
+									node{
+										id
+										content
+										type
+										createdAt
+										author{
+											id
+											name
+											photo
+										}
+										isOwner
+									}
+								}
+								pageInfo{
+									hasPreviousPage
+									startCursor
+								}
+							}
+						}
+					`}),
+					withProps(({params:{id:parent}})=>({
+						parent,
+						connection:"knowledge_comments"
+					})),
+					withCurrent(),
+				)(Comment)}/>
 			</Route>
 			
 			<Route path="publish">
@@ -340,57 +382,6 @@ const router=(
 				})),
 			)(Plan)}/>
 			
-			<Route path="knowledge_comment/:id" component={compose(
-				withMutation(({params:{id:parent}})=>({
-					variables:{parent},
-					mutation:graphql`
-						mutation src_comment_create_Mutation($parent:ObjectID!, $content:String!, $type: CommentType){
-							knowledge_create_comment(parent:$parent, content:$content, type:$type){
-								id
-								createdAt
-							}
-						}
-					`
-				})),
-				withPagination(({params:{id:parent}})=>({
-					variables:{parent},
-					query: graphql`
-				        query src_comment_Query($parent:ObjectID!, $count: Int=10, $cursor: JSON){
-				            ...src_knowledgeComments
-				        }
-				    `,
-				})),
-				withProps(({data})=>({
-					knowledgeComments:data,
-				})),
-				withFragment(graphql`
-					fragment src_knowledgeComments on Query{
-						knowledge_comments(parent:$parent, last:$count, before: $cursor)@connection(key:"main_knowledge_comments"){
-							edges{
-								node{
-									content
-									type
-									createdAt
-									author{
-										id
-										name
-										photo
-									}
-									isOwner
-								}
-							}
-							pageInfo{
-								hasPreviousPage
-								startCursor
-							}
-						}
-					}
-				`),
-				withProps(({knowledgeComments})=>({
-					data:knowledgeComments.knowledge_comments.edges.map(({node})=>node),
-				})),
-				withCurrent(),
-			)(Comment)}/>
 		</Route>
 	</Router>
 )

@@ -194,8 +194,6 @@ export class KnowledgeEditor extends Component{
 export default compose(
 	getContext({
     	muiTheme:PropTypes.object,
-    	router: PropTypes.object,
-		
     }),
 	withFragment(graphql`
 		fragment info_knowledge on Knowledge{
@@ -210,8 +208,7 @@ export default compose(
 			revising:!!selectedDocx,
 			child:current,
 		}),
-		(dispatch, {router, knowledge, muiTheme})=>({
-			router:undefined,
+		(dispatch, {knowledge, muiTheme})=>({
 			muiTheme:undefined,
 			minHeight:muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height,
 			selectDocx:()=>dispatch(ACTION.SELECT_DOCX()),
@@ -229,7 +226,6 @@ export default compose(
 			},
 			wechat_session:()=>dispatch(ACTION.WECHAT(knowledge,"SESSION")),
 			wechat_timeline:()=>dispatch(ACTION.WECHAT(knowledge,"TIMELINE")),
-			toComment: ()=>router.push(`comment/${knowledge.id}`),
 		})
 	),	
 	withMutation(({knowledge}, info)=>({
