@@ -125,7 +125,7 @@ Cloud.typeDefs=`
 		plan_auto(_id:ObjectID):Plan
 		
 		knowledge_create(knowledge:JSON):Knowledge
-		knowledge_update(_id:ObjectID, knowledge:JSON):Date
+		knowledge_update(_id:ObjectID, knowledge:JSON):Knowledge
 
 		publish_create(template:String, child:ObjectID, from: Date, to: Date, name: String, copies: Int):Publish
 		publish_remove(_id:ObjectID):Boolean
@@ -186,6 +186,7 @@ Cloud.resolver=Cloud.merge({
 			return app.get1Entity("knowledges",{_id})
 		},
 		knowledges(_,{first=10,after={}},{app}){
+			debugger
 			const {title,categories,tags,createdAt,_id}=after
 			const query={}
 			return app.findEntity("knowledges", {}, cursor=>{
@@ -255,8 +256,8 @@ Cloud.resolver=Cloud.merge({
 					if(newPhotos){
 						Cloud.file_link(`knowledges:${_id}`,newPhotos)
 					}
-					return updatedAt
 				})
+				.then(()=>app.get1Entity("knowledges", {_id}))
 		},
 		
 		publish_create(_, doc, {app,user}){

@@ -69,6 +69,7 @@ export default compose(
 				edges{
 					node{
 						id
+						title
 						...listItem
 					}
 				}
@@ -82,7 +83,7 @@ export default compose(
 	getContext({
 		muiTheme: PropTypes.object,
 	}),
-	mapProps(({data:{knowledges:{edges=[]},pageInfo},  muiTheme:{page:{height}, footbar},...others})=>{
+	mapProps(({data:{knowledges:{edges},pageInfo}, relay, muiTheme:{page:{height}, footbar},...others})=>{
 		return {
 			...others,
 			knowledges:edges.map(a=>a.node),
@@ -90,8 +91,15 @@ export default compose(
 			refresh(){
 				
 			},
-			loadMore(){
-				
+			loadMore(ok){
+				if(relay.hasMore() && !relay.isLoading()){
+					relay.loadMore(1, e=>{
+						ok()
+						if(e){
+							console.error(e)
+						}
+					})
+				}
 			}
 		}
 	}),

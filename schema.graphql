@@ -136,7 +136,7 @@ type Mutation {
   plan_todos_toggle(_id: ObjectID, i: Int): Plan
   plan_auto(_id: ObjectID): Plan
   knowledge_create(knowledge: JSON): Knowledge
-  knowledge_update(_id: ObjectID, knowledge: JSON): Date
+  knowledge_update(_id: ObjectID, knowledge: JSON): Knowledge
   publish_create(template: String, child: ObjectID, from: Date, to: Date, name: String, copies: Int): Publish
   publish_remove(_id: ObjectID): Boolean
   comment_create(parent: ID, content: String!, type: CommentType): Comment

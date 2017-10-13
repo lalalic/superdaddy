@@ -13,6 +13,7 @@ export type list = {|
     +edges: ?$ReadOnlyArray<?{|
       +node: ?{|
         +id: string;
+        +title: string;
       |};
     |}>;
     +pageInfo: ?{|
@@ -81,6 +82,13 @@ const fragment /*: ConcreteFragment*/ = {
                   "alias": null,
                   "args": null,
                   "name": "id",
+                  "storageKey": null
+                },
+                {
+                  "kind": "ScalarField",
+                  "alias": null,
+                  "args": null,
+                  "name": "title",
                   "storageKey": null
                 },
                 {

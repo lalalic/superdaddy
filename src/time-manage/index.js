@@ -63,31 +63,51 @@ export const withPlanActions=props=>compose(
 		`,
 	})),
 	
-	withMutation(({child})=>({
-		promise:true,
-		name:"add",
-		variables:{child},
-		mutation: graphql`
-			mutation timeManage_add_Mutation($child:ObjectID, $content:String, $knowledge:ObjectID){
-				plan_todos_add(_id:$child, content:$content, knowledge:$knowledge){
-					...core
-				}
+	withMutation(({child},{knowledge})=>{
+		const updater=(store,data)=>{
+			if(knowledge){
+				let node=store.get(knowledge)
+				node.setValue(true,"inTask",{child})
 			}
-		`,
-	})),
+		}
+		return {
+			promise:true,
+			name:"add",
+			variables:{child},
+			mutation: graphql`
+				mutation timeManage_add_Mutation($child:ObjectID, $content:String, $knowledge:ObjectID){
+					plan_todos_add(_id:$child, content:$content, knowledge:$knowledge){
+						...core
+					}
+				}
+			`,
+			updater,
+			optimisticUpdater:updater,
+		}
+	}),
 	
-	withMutation(({child})=>({
-		promise:true,
-		name:"remove",
-		variables:{child},
-		mutation: graphql`
-			mutation timeManage_remove_Mutation($child:ObjectID, $content:String, $knowledge:ObjectID){
-				plan_todos_remove(_id:$child, content:$content, knowledge:$knowledge){
-					...core
-				}
+	withMutation(({child},{knowledge})=>{
+		const updater=(store,data)=>{
+			if(knowledge){
+				let node=store.get(knowledge)
+				node.setValue(false,"inTask",{child})
 			}
-		`,
-	})),
+		}
+		return {
+			promise:true,
+			name:"remove",
+			variables:{child},
+			mutation: graphql`
+				mutation timeManage_remove_Mutation($child:ObjectID, $content:String, $knowledge:ObjectID){
+					plan_todos_remove(_id:$child, content:$content, knowledge:$knowledge){
+						...core
+					}
+				}
+			`,
+			updater,
+			optimisticUpdater:updater,
+		}
+	}),
 	
 
 	withMutation(({child},i)=>({

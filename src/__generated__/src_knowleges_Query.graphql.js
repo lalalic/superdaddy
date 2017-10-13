@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 2da83d50bf0731b8217b7ba33672bb9e
+ * @relayHash c8321f9a5a0d43f3fa51f8f29839b005
  */
 
 /* eslint-disable */
@@ -27,6 +27,7 @@ fragment list on Query {
       node {
         __typename
         id
+        title
         ...listItem
       }
       cursor
@@ -258,7 +259,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query src_knowleges_Query(\n  $first: Int\n  $after: JSON\n) {\n  ...list\n}\n\nfragment list on Query {\n  knowledges(first: $first, after: $after) {\n    edges {\n      node {\n        __typename\n        id\n        ...listItem\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n\nfragment listItem on Knowledge {\n  id\n  title\n  summary\n  photos\n  zans\n  createdAt\n  updatedAt\n}\n"
+  "text": "query src_knowleges_Query(\n  $first: Int\n  $after: JSON\n) {\n  ...list\n}\n\nfragment list on Query {\n  knowledges(first: $first, after: $after) {\n    edges {\n      node {\n        __typename\n        id\n        title\n        ...listItem\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n\nfragment listItem on Knowledge {\n  id\n  title\n  summary\n  photos\n  zans\n  createdAt\n  updatedAt\n}\n"
 };
 
 module.exports = batch;

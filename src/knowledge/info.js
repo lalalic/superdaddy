@@ -203,15 +203,48 @@ export default compose(
 			...content_knowledge
 		}
 	`),
+	withMutation(({},count)=>({
+		name:"getTokens",
+		promise:true,
+		variables:{count},
+		mutation:graphql`
+			mutation info_tokens_Mutation($count:Int){
+				file_tokens(count:$count){
+					token
+				}
+			}
+		`,
+	})),
+	withMutation(({knowledge}, info)=>({
+		name:"updateKnowledge",
+		variables:{info,id:knowledge.id},
+		mutation:graphql`
+			mutation info_update_Mutation($id:ObjectID, $info:JSON){
+				knowledge_update(_id:$id, knowledge:$info){
+					...content_knowledge
+				}
+			}
+		`,
+	})),	
 	connect(
 		({qili:{user},superdaddy:{current,selectedDocx}})=>({
+			selectedDocx,
 			revising:!!selectedDocx,
 			child:current,
-		}),
-		(dispatch, {knowledge, muiTheme})=>({
+		})),
+	connect(null,
+		(dispatch, {knowledge, muiTheme,selectedDocx,getTokens,updateKnowledge})=>({
 			muiTheme:undefined,
+			selectedDocx:undefined,
+			getTokens:undefined,
+			updateKnowledge:undefined,
 			minHeight:muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height,
 			selectDocx:()=>dispatch(ACTION.SELECT_DOCX()),
+			update(){
+				selectedDocx.upload({getTokens})
+					.then(newVersion=>updateKnowledge(newVersion))
+					.then(()=>dispatch(ACTION.RESET()))
+			},
 			cancel(){
 				dispatch(ACTION.RESET())
 			},
@@ -228,16 +261,8 @@ export default compose(
 			wechat_timeline:()=>dispatch(ACTION.WECHAT(knowledge,"TIMELINE")),
 		})
 	),	
-	withMutation(({knowledge}, info)=>({
-		variables:{info,id:knowledge.id},
-		mutation:graphql`
-			mutation info_update_Mutation($id:ObjectID, $info:JSON){
-				knowledge_update(_id:$id, knowledge:$info)
-			}
-		`,
-	})),
 	
-	withPlanActions(({knowledge:{title,id},actions:{add, remove}})=>({
+	withPlanActions(({knowledge:{title,id}, actions:{add, remove}})=>({
 		task(){
 			return add({content:title,knowledge:id})
 		},

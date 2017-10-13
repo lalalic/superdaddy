@@ -241,7 +241,7 @@ const router=(
 					withState("title","searchByTitle"),
 					withPagination(({title})=>({
 						variables:{
-							first:10,
+							first:1,
 							after:{title}
 						},
 						query: graphql`
