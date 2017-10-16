@@ -3,6 +3,8 @@ import {compose, branch, getContext, withProps, renderNothing,createEagerFactory
 import {connect} from "react-redux"
 import {FloatingActionButton,Avatar} from "material-ui"
 
+import {ACTION} from "main"
+
 
 export const Current=compose(
 	connect(({superdaddy:{current}})=>({id:current})),
@@ -16,7 +18,7 @@ export const Current=compose(
 			switchChild(){
 				let all=client.getAll("Child")
 				let i=all.findIndex(a=>a.id==id)
-				dispatch(ACTION.CURRENT_CHILD(all.length ? all[(i+1)%apps.length].id : null))
+				dispatch(ACTION.CURRENT_CHILD(all.length ? all[(i+1)%all.length].id : null))
 			}
 		}
 	}),

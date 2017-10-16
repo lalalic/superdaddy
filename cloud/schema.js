@@ -140,7 +140,7 @@ function currentWeek(){
 	let week=new Date()
 	week=relativeDate(week,-1*week.getDay())
 	week.setHours(0,0,0,0)
-	return week.getTime()/1000000
+	return parseInt(week.getTime()/1000)
 }
 
 const exists=(todos, content,knowledge)=>1+todos.findIndex(a=>knowledge ? a.knowledge===knowledge : a.content===content)
@@ -207,20 +207,29 @@ Cloud.resolver=Cloud.merge({
 					
 					return filtered
 				})
-				.then(docs=>({
-					nodes: _id ? docs.slice(docs.findIndex(a=>a._id==id)) : docs,
-					hasNextPage: docs.length>2*first,
-				}))
+				.then(docs=>{
+					let nodes=_id ? docs.slice(docs.findIndex(a=>a._id==_id)) : docs
+					let hasNextPage=false
+					
+					if(nodes.length>=first){
+						nodes=nodes.slice(0,first)
+						hasNextPage=true
+					}
+					return {
+						nodes,
+						hasNextPage,
+					}
+				})
 				.then(({nodes,hasNextPage})=>{
 					let last=nodes[nodes.length-1]
 					return {
 						edges:nodes.map(node=>({node})),
 						pageInfo:{
 							hasNextPage,
-							endCursor: {
+							endCursor: JSON.stringify({
 								title,categories,tags,
 								...(!!last ? {_id: last._id, createdAt:last.createdAt} : {_id, createdAt} )
-							}
+							})
 						}
 					}
 				})
@@ -299,7 +308,7 @@ Cloud.resolver=Cloud.merge({
 
 			function saveFinishedTasks(){
 				let {week,todos}=plan
-				let startDate=new Date(week*1000000)
+				let startDate=new Date(week*1000)
 				let tasks=todos.map(({content,knowledge,...others})=>{
 					return [0,1,2,3,4,5,6].map(i=>{
 						let day=others[`day${i}`]

@@ -44,7 +44,7 @@ export const TimeManage=({minHeight,goal, score, editing,week,reset,data})=>(
 											<IconDone color="white"/>
 										</IconButton>
 									}
-									title={`保存前${new Date(currentWeek).relative(new Date(week*1000000))/7}周完成情况`}
+									title={`保存前${new Date(currentWeek).relative(new Date(week*1000))/7}周完成情况`}
 								/>
 								
 								<TaskPad data={data} current={99}/>
@@ -52,7 +52,7 @@ export const TimeManage=({minHeight,goal, score, editing,week,reset,data})=>(
 						)
 					}
 				}
-			})((d=>d.relativeDate(-1*d.getDay()).toDate().getTime())(new Date())/1000000)
+			})(parseInt((d=>d.relativeDate(-1*d.getDay()).toDate().getTime())(new Date())/1000))
 		}
 	</div>
 )

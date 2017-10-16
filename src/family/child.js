@@ -125,14 +125,14 @@ export class Creator extends Component{
 	state={nameError:null}
 
 	render(){
-		const {create}=this.props
+		const {create, style={}}=this.props
 		const {nameError}=this.state
 
 		let refName, refBirthday, refGender
 
 		return (
 			<div>
-				<div className="form">
+				<div className="form" style={style}>
 					<TextFieldx ref={a=>refName=a}
 						floatingLabelText="宝宝名称"
 						errorText={nameError}

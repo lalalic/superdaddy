@@ -52,7 +52,7 @@ export class Knowledges extends Component{
 					>
 					{
 						knowledges
-							.filter(a=>title ? -1!=a.title.indexOf(title) : true)
+							//.filter(a=>title ? -1!=a.title.indexOf(title) : true)
 							.map(a=>(<Item model={a} key={a.id} toKnowledge={toKnowledge}/>))
 					}
 				</PullToRefresh>

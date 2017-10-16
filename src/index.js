@@ -20,7 +20,7 @@ import withNavigator from "components/navigator"
 
 const DOMAIN="superdaddy"
 
-const ACTION={
+export const ACTION={
 	CURRENT_CHILD: payload=>({
 		type:`@@${DOMAIN}/CURRENT_CHILD`,
 		payload,
@@ -67,6 +67,9 @@ const SuperDaddy=compose(
 			if(children && children.length>0){
 				dispatch(ACTION.CURRENT_CHILD(children[0].id))
 			}
+		},
+		onError(error,dispatch){
+			dispatch(qili.ACTION.LOGOUT)
 		}
 	}),
 )(QiliApp)
@@ -93,11 +96,22 @@ const router=(
 				connect(state=>({hasChild:!!state.superdaddy.current})),
 				branch(({hasChild})=>!hasChild,renderComponent(
 					compose(
-						getContext({router: PropTypes.object}),
-						withProps(({router})=>({
-							toChild:id=>router.push("/"),
+						getContext({
+							router: PropTypes.object
+						}),
+						withProps(({router, dispatch})=>({
+							toChild:child=>{
+								dispatch(ACTION.CURRENT_CHILD(child))
+							},
 						})),
-					)(Child.Creator)
+					)(props=>(
+						<div>
+							<center style={{height:50, color:"lightgray", margin:20}}>
+								start from creating your first baby!
+							</center>
+							
+							<Child.Creator {...props} style={{margin:"0px 100px"}}/>
+						</div>))
 				))
 			)(({children})=><div>{children}</div>)}>
 
@@ -254,14 +268,14 @@ const router=(
 					withState("title","searchByTitle"),
 					withPagination(({title})=>({
 						variables:{
-							first:1,
+							first:2,
 							after:{title}
 						},
 						query: graphql`
 							query src_knowleges_Query($first:Int,$after:JSON){
 								...list
 							}
-						`,
+						`
 					})),
 					getContext({router:PropTypes.object}),
 					mapProps(({searchByTitle,router,...others})=>({
@@ -285,7 +299,7 @@ const router=(
 					})),
 					getContext({router:PropTypes.object}),
 					withProps(({router})=>({
-						toKnowledge: id=>router.push(`/knowledge/${id}`),
+						toKnowledge: id=>router.replace(`/knowledge/${id}`),
 					}))
 				)(NewKnowledge)}/>
 
