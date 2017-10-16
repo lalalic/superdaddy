@@ -52,7 +52,7 @@ export class Child extends Component{
 							onEdit={
 								name=>update({name})
 									.then(
-										a=>this.setState({nameError:null}), 
+										a=>this.setState({nameError:null}),
 										error=>this.setState({nameError:error})
 										)
 								}/>
@@ -66,7 +66,7 @@ export class Child extends Component{
 							options={[{value:"girl",label:"女孩"},{value:"boy", label:"男孩"}]}
 							onEdit={gender=>update({gender})}
 							/>
-							
+
 						<Field primaryText="个性图标" value={icon||"Smile"}
 							type="single"
 							options={
@@ -74,7 +74,7 @@ export class Child extends Component{
 									.map(k=>{
 										let Icon=Icons[k]
 										return {
-											value:k, 
+											value:k,
 											label: (<Icon color={COLOR_DONE}/>)
 										}
 									})
@@ -170,8 +170,6 @@ export class Creator extends Component{
 			</div>
 		)
 	}
-
-	static contextTypes={router: PropTypes.object}
 }
 
 export default compose(
@@ -191,7 +189,7 @@ export default compose(
 			create:data=>mutate(data).then(({id})=>toChild(id)),
 		})),
 	)(Creator)),
-	
+
 	withFragment(graphql`
 		fragment child on Child{
 			id
@@ -200,7 +198,7 @@ export default compose(
 			birthday
 			gender
 			totalScore:score
-			
+
 			plan{
 				score
 				goal
@@ -250,7 +248,7 @@ export default compose(
 				if(newID!=id)
 					dispatch(ACTION.CURRENT_CHILD(newID))
 			},
-			
+
 			remove(){
 				let removing=prompt("请输入要删除的宝宝名称").trim()
 				if(removing && removing==name){

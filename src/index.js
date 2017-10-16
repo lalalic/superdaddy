@@ -1,6 +1,6 @@
 import React, {PropTypes} from "react"
 import {connect} from "react-redux"
-import {compose, getContext, withProps, mapProps, withState,withContext} from "recompose"
+import {compose, getContext, withProps, mapProps, withState,withContext,branch,renderComponent} from "recompose"
 import {withInit, withQuery, withPagination, withFragment} from "qili/tools/recompose"
 
 import {graphql} from "react-relay"
@@ -35,14 +35,14 @@ function reducer(state={},action){
 	case `@@${DOMAIN}/CURRENT_CHILD`:
 		return {...state, current:payload}
 	}
-	
+
 	return state
 }
 
 const SuperDaddy=compose(
 	withProps(()=>({
 		project: require("../package.json"),
-		appId:"596c7a5905d49ec80e48085a",//"5746b2c5e4bb3b3700ae1566",
+		appId:"5746b2c5e4bb3b3700ae1566",
 		reducers:{
 			[DOMAIN]:reducer
 		}
@@ -80,15 +80,27 @@ import Publish, {Publishes} from "publish"
 import Plan from "family/plan"
 
 import {
-	Creatable as Knowledges, 
+	Creatable as Knowledges,
 	REDUCER as knowledge_reducer,
 	NewKnowledge,
 	Knowledge,
 	} from "knowledge"
+import TimeManage, {ScorePad, reducer as plan_reducer, withPlanActions} from "time-manage"
 
 const router=(
 	<Router history={hashHistory}>
-		<Route path="/">
+		<Route path="/" component={compose(
+				connect(state=>({hasChild:!!state.superdaddy.current})),
+				branch(({hasChild})=>!hasChild,renderComponent(
+					compose(
+						getContext({router: PropTypes.object}),
+						withProps(({router})=>({
+							toChild:id=>router.push("/"),
+						})),
+					)(Child.Creator)
+				))
+			)(({children})=><div>{children}</div>)}>
+
 			<IndexRoute component={compose(
 				connect(state=>({
 					child:state.superdaddy.current,
@@ -140,7 +152,7 @@ const router=(
 				withContext({actions:PropTypes.object},({actions})=>({actions})),
 				withNavigator(),
 			)(ScorePad)}/>
-			
+
 			<Route path="my">
 				<IndexRoute component={compose(
 					withQuery({
@@ -162,7 +174,7 @@ const router=(
 							toCreate:()=>router.push("/child"),
 							toChild: id=>router.push(`/child/${id}`),
 						}
-						
+
 						let all=client.getAll("Child")
 						if(all){
 							props.babies=all.map(({id,name})=>({id,name}))
@@ -171,7 +183,7 @@ const router=(
 					}),
 					withNavigator(),
 				)(Account)}/>
-				
+
 				<Route path="setting" component={Setting} />
 				<Route path="profile" component={compose(
 					withQuery({
@@ -194,8 +206,8 @@ const router=(
 						birthday: me&&me.birthday ? new Date(me.birthday) : undefined
 					})),
 				)(Profile)}/>
-			</Route>			
-			
+			</Route>
+
 			<Route path="child">
 				<IndexRoute component={compose(
 					getContext({router: PropTypes.object}),
@@ -203,6 +215,7 @@ const router=(
 						toChild:id=>router.replace(`/child/${id}`),
 					})),
 				)(Child.Creator)}/>
+
 				<Route path=":id" component={compose(
 					withQuery(({params:{id}})=>({
 						variables:{id},
@@ -264,7 +277,7 @@ const router=(
 					withCurrent(),
 					withNavigator(),
 				)(Knowledges)}/>
-				
+
 				<Route path="create" component={compose(
 					connect(state=>({
 						selectedDocx:state[DOMAIN].selectedDocx,
@@ -335,7 +348,7 @@ const router=(
 					withCurrent(),
 				)(Comment)}/>
 			</Route>
-			
+
 			<Route path="publish">
 				<IndexRoute component={compose(
 					getContext({router:PropTypes.object}),
@@ -343,7 +356,7 @@ const router=(
 						toList:()=>router.push("/publish/list")
 					})),
 				)(Publish)}/>
-				
+
 				<Route path="list" component={compose(
 					connect(state=>({child: state.superdaddy.current})),
 					withQuery(({child})=>({
@@ -360,7 +373,7 @@ const router=(
 					}))
 				)(Publishes)}/>
 			</Route>
-			
+
 			<Route path="plan"  component={compose(
 				connect(state=>({child:state.superdaddy.current})),
 				withQuery(({child})=>({
@@ -381,10 +394,9 @@ const router=(
 					data: me.child.plan
 				})),
 			)(Plan)}/>
-			
+
 		</Route>
 	</Router>
 )
-import TimeManage, {ScorePad, reducer as plan_reducer, withPlanActions} from "time-manage"
 
 QiliApp.render(<SuperDaddy>{router}</SuperDaddy>)
