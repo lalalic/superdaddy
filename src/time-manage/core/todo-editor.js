@@ -21,11 +21,13 @@ export const TodoEditor=({editing, setEditing, add, refTask})=><AppBar
 		</span>
 	}
 	title={
-		<AutoComplete ref={a=>refTask=a}
+		<AutoComplete 
+			ref={a=>refTask=a}
 			dataSource={[]}
 			hintText="任务"
 			fullWidth={true}
-			onKeyDown={e=>e.keyCode==13 && add({content:refTask.state.searchText.trim()})}
+			onKeyDown={e=>e.keyCode==13 && add({content:refTask.state.searchText.trim()})
+				.then(refTask.setState({searchText:""}))}
 			/>
 	}
 />

@@ -12,6 +12,13 @@ export type info_knowledge = {|
   +id: string;
   +isMyWork: ?boolean;
   +inTask: ?boolean;
+  +hasHomework: ?any;
+  +hasPrint: ?any;
+  +sale: ?string;
+  +title: string;
+  +summary: ?string;
+  +figure: ?string;
+  +template: ?string;
 |};
 */
 
@@ -32,14 +39,14 @@ const fragment /*: ConcreteFragment*/ = {
       "kind": "ScalarField",
       "alias": null,
       "args": null,
-      "name": "id",
+      "name": "sale",
       "storageKey": null
     },
     {
       "kind": "ScalarField",
       "alias": null,
       "args": null,
-      "name": "isMyWork",
+      "name": "id",
       "storageKey": null
     },
     {
@@ -54,6 +61,55 @@ const fragment /*: ConcreteFragment*/ = {
         }
       ],
       "name": "inTask",
+      "storageKey": null
+    },
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "args": null,
+      "name": "hasHomework",
+      "storageKey": null
+    },
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "args": null,
+      "name": "hasPrint",
+      "storageKey": null
+    },
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "args": null,
+      "name": "isMyWork",
+      "storageKey": null
+    },
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "args": null,
+      "name": "title",
+      "storageKey": null
+    },
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "args": null,
+      "name": "summary",
+      "storageKey": null
+    },
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "args": null,
+      "name": "figure",
+      "storageKey": null
+    },
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "args": null,
+      "name": "template",
       "storageKey": null
     },
     {

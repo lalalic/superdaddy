@@ -25,7 +25,7 @@ import AD from 'components/ad'
 import AutoForm from "components/auto-form"
 
 import {ACTION} from "."
-import Content from "./content"
+import FragmentContent,{Content} from "./content"
 import {withPlanActions} from "time-manage"
 
 export class KnowledgeEditor extends Component{
@@ -33,7 +33,7 @@ export class KnowledgeEditor extends Component{
 
     render(){
 		const {
-			knowledge, minHeight, revising=false,
+			knowledge, knowledgeContent,minHeight, revising=false,
 			selectDocx, update, cancel, task, untask, preview, buy,
 			outputHomework, wechat_session,wechat_timeline,
 			toComment,
@@ -170,7 +170,7 @@ export class KnowledgeEditor extends Component{
         return (
             <div className="post">
 				<div className="knowledge" style={{minHeight}}>
-					<Content knowledge={knowledge}/>
+					{knowledgeContent}
                 </div>
 
 				<article>
@@ -200,6 +200,14 @@ export default compose(
 			id
 			isMyWork
 			inTask(child:$child)
+			hasHomework
+			hasPrint
+			sale
+			title
+			summary 
+			figure
+			template
+			
 			...content_knowledge
 		}
 	`),
@@ -227,10 +235,11 @@ export default compose(
 		`,
 	})),	
 	connect(
-		({qili:{user},superdaddy:{current,selectedDocx}})=>({
+		({qili:{user},superdaddy:{current,selectedDocx,}},{knowledge})=>({
 			selectedDocx,
 			revising:!!selectedDocx,
 			child:current,
+			knowledge: selectedDocx ? {...selectedDocx.knowledge,isMyWork:true} : knowledge
 		})),
 	connect(null,
 		(dispatch, {knowledge, muiTheme,selectedDocx,getTokens,updateKnowledge})=>({
@@ -238,6 +247,9 @@ export default compose(
 			selectedDocx:undefined,
 			getTokens:undefined,
 			updateKnowledge:undefined,
+			knowledgeContent:selectedDocx ? 
+				<Content knowledge={knowledge}/> : 
+				<FragmentContent knowledge={knowledge}/>,
 			minHeight:muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height,
 			selectDocx:()=>dispatch(ACTION.SELECT_DOCX()),
 			update(){

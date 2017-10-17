@@ -11,6 +11,26 @@ type Child implements Node {
   plan: Plan
 }
 
+type ChildComment implements Comment, Node {
+  id: ID!
+  content: String!
+  type: CommentType
+  author: User!
+  createdAt: Date!
+  parent: ObjectID!
+  isOwner: Boolean
+}
+
+type ChildCommentConnection {
+  edges: [ChildCommentEdge]
+  pageInfo: PageInfo
+}
+
+type ChildCommentEdge {
+  node: ChildComment
+  cursor: JSON
+}
+
 interface Comment {
   id: ID!
   content: String!
@@ -67,6 +87,10 @@ type Knowledge implements Node {
   keywords: [String]
   fields: [JSON]
   days: [JSON]
+  hasHomework: JSON
+  hasPrint: JSON
+  sale: String
+  template: String
   inTask(child: ObjectID): Boolean
   isMyWork: Boolean
   files: [File]
@@ -192,8 +216,9 @@ type Query {
   node(id: ID!): Node
   schema: String!
   me: User!
+  child_comments(parent: ObjectID, last: Int, before: JSON): ChildCommentConnection
   knowledge_comments(parent: ObjectID, last: Int, before: JSON): KnowledgeCommentConnection
-  knowledges(first: Int, after: JSON): KnowledgeConnection
+  knowledges(title: String, categories: [String], tags: [String], first: Int, after: JSON): KnowledgeConnection
   knowledge(_id: ObjectID): Knowledge
 }
 

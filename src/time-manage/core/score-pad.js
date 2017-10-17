@@ -121,11 +121,11 @@ export default compose(
 		router: PropTypes.object,
 		actions: PropTypes.object,
 	}),
-	connect((state,{client,width,height,muiTheme, actions:{planUpdate}})=>({
+	connect((state,{client,width,height,muiTheme,router, actions:{planUpdate}})=>({
 		child: state.superdaddy.current,
 		width: width||muiTheme.page.width,
 		height: height||muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height-50,
-		toComment:()=>router.push(`/comment/${state.superdaddy.current}`),
+		toComment:()=>router.push(`/child/${state.superdaddy.current}/comment`),
 		setTodoGoal(plan){
 			return planUpdate(plan)
 		}

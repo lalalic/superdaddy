@@ -14,8 +14,11 @@ import AppBar from "components/app-bar"
 import Item from "./list-item"
 
 export class Knowledges extends Component{
-	state={title:null}
-    render(){
+	state={title:""}
+	componentDidMount(){
+		this.setState({title:this.props.title})
+	}
+	render(){
         const {knowledges=[],search,minHeight,refresh, loadMore, canBack, goBack, toKnowledge}=this.props
 		const {title}=this.state
 		let iconElementLeft=null
@@ -41,6 +44,7 @@ export class Knowledges extends Component{
 					
 					title={<TextField
 						hintText="查询"
+						value={title||""}
 						onChange={(e,title)=>this.setState({title})}
 						onKeyDown={e=>e.keyCode==13 && search({title})}
 						fullWidth={true}/>
@@ -52,7 +56,6 @@ export class Knowledges extends Component{
 					>
 					{
 						knowledges
-							//.filter(a=>title ? -1!=a.title.indexOf(title) : true)
 							.map(a=>(<Item model={a} key={a.id} toKnowledge={toKnowledge}/>))
 					}
 				</PullToRefresh>
@@ -65,7 +68,7 @@ export class Knowledges extends Component{
 export default compose(
 	withFragment(graphql`
 		fragment list on Query{
-			knowledges(first:$first,after:$after) @connection(key:"list_knowledges"){
+			knowledges(title:$title,categories:$categories,tags:$tags,first:$count,after:$cursor) @connection(key:"list_knowledges"){
 				edges{
 					node{
 						id
@@ -83,23 +86,24 @@ export default compose(
 	getContext({
 		muiTheme: PropTypes.object,
 	}),
-	mapProps(({data:{knowledges:{edges},pageInfo}, relay, muiTheme:{page:{height}, footbar},...others})=>{
+	mapProps(({data:{knowledges:{edges}}, relay, muiTheme:{page:{height}, footbar},...others})=>{
 		return {
 			...others,
 			knowledges:edges.map(a=>a.node),
 			minHeight: height-footbar.height,
-			refresh(){
-				
+			refresh(ok){
+				ok()
 			},
 			loadMore(ok){
 				if(relay.hasMore() && !relay.isLoading()){
-					relay.loadMore(1, e=>{
+					relay.loadMore(10, e=>{
 						ok()
 						if(e){
 							console.error(e)
 						}
 					})
-				}
+				}else
+					ok()
 			}
 		}
 	}),

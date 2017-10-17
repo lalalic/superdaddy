@@ -31,7 +31,7 @@ export const ACTION={
 			.assemble()
 			.then(docx=>docx.save(`作业(${knowledge.title}).docx`))
 	},
-	WECHAT: ({title,summary,figure,_id},scene)=>{
+	WECHAT: ({title,summary,figure,id},scene)=>{
 		Wechat.share({
 				scene:Wechat.Scene[scene]
 				,message:{
@@ -40,7 +40,7 @@ export const ACTION={
 					,thumb: figure
 					,media:{
 						type: Wechat.Type.WEBPAGE
-						,webpageUrl: `http://static.papazai.com/${_id}.html`
+						,webpageUrl: `http://static.papazai.com/${id}.html`
 					}
 				}
 			},a=>1,e=>e)

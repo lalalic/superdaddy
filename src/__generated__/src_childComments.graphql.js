@@ -8,17 +8,25 @@
 
 /*::
 import type {ConcreteFragment} from 'relay-runtime';
-export type list = {|
-  +knowledges: ?{|
+export type src_childComments = {|
+  +comments: ?{|
     +edges: ?$ReadOnlyArray<?{|
       +node: ?{|
         +id: string;
-        +title: string;
+        +content: string;
+        +type: ?"photo" | "text";
+        +createdAt: any;
+        +author: {|
+          +id: string;
+          +name: ?string;
+          +photo: ?string;
+        |};
+        +isOwner: ?boolean;
       |};
     |}>;
     +pageInfo: ?{|
-      +hasNextPage: ?boolean;
-      +endCursor: ?any;
+      +hasPreviousPage: ?boolean;
+      +startCursor: ?any;
     |};
   |};
 |};
@@ -29,18 +37,8 @@ const fragment /*: ConcreteFragment*/ = {
   "argumentDefinitions": [
     {
       "kind": "RootArgument",
-      "name": "title",
-      "type": "String"
-    },
-    {
-      "kind": "RootArgument",
-      "name": "categories",
-      "type": "[String]"
-    },
-    {
-      "kind": "RootArgument",
-      "name": "tags",
-      "type": "[String]"
+      "name": "parent",
+      "type": "ObjectID"
     },
     {
       "kind": "RootArgument",
@@ -59,47 +57,35 @@ const fragment /*: ConcreteFragment*/ = {
       {
         "count": "count",
         "cursor": "cursor",
-        "direction": "forward",
+        "direction": "backward",
         "path": [
-          "knowledges"
+          "comments"
         ]
       }
     ]
   },
-  "name": "list",
+  "name": "src_childComments",
   "selections": [
     {
       "kind": "LinkedField",
-      "alias": "knowledges",
+      "alias": "comments",
       "args": [
         {
           "kind": "Variable",
-          "name": "categories",
-          "variableName": "categories",
-          "type": "[String]"
-        },
-        {
-          "kind": "Variable",
-          "name": "tags",
-          "variableName": "tags",
-          "type": "[String]"
-        },
-        {
-          "kind": "Variable",
-          "name": "title",
-          "variableName": "title",
-          "type": "String"
+          "name": "parent",
+          "variableName": "parent",
+          "type": "ObjectID"
         }
       ],
-      "concreteType": "KnowledgeConnection",
-      "name": "__list_knowledges_connection",
+      "concreteType": "ChildCommentConnection",
+      "name": "__child_comments_connection",
       "plural": false,
       "selections": [
         {
           "kind": "LinkedField",
           "alias": null,
           "args": null,
-          "concreteType": "KnowledgeEdge",
+          "concreteType": "ChildCommentEdge",
           "name": "edges",
           "plural": true,
           "selections": [
@@ -107,7 +93,7 @@ const fragment /*: ConcreteFragment*/ = {
               "kind": "LinkedField",
               "alias": null,
               "args": null,
-              "concreteType": "Knowledge",
+              "concreteType": "ChildComment",
               "name": "node",
               "plural": false,
               "selections": [
@@ -122,13 +108,61 @@ const fragment /*: ConcreteFragment*/ = {
                   "kind": "ScalarField",
                   "alias": null,
                   "args": null,
-                  "name": "title",
+                  "name": "content",
                   "storageKey": null
                 },
                 {
-                  "kind": "FragmentSpread",
-                  "name": "listItem",
-                  "args": null
+                  "kind": "ScalarField",
+                  "alias": null,
+                  "args": null,
+                  "name": "type",
+                  "storageKey": null
+                },
+                {
+                  "kind": "ScalarField",
+                  "alias": null,
+                  "args": null,
+                  "name": "createdAt",
+                  "storageKey": null
+                },
+                {
+                  "kind": "LinkedField",
+                  "alias": null,
+                  "args": null,
+                  "concreteType": "User",
+                  "name": "author",
+                  "plural": false,
+                  "selections": [
+                    {
+                      "kind": "ScalarField",
+                      "alias": null,
+                      "args": null,
+                      "name": "id",
+                      "storageKey": null
+                    },
+                    {
+                      "kind": "ScalarField",
+                      "alias": null,
+                      "args": null,
+                      "name": "name",
+                      "storageKey": null
+                    },
+                    {
+                      "kind": "ScalarField",
+                      "alias": null,
+                      "args": null,
+                      "name": "photo",
+                      "storageKey": null
+                    }
+                  ],
+                  "storageKey": null
+                },
+                {
+                  "kind": "ScalarField",
+                  "alias": null,
+                  "args": null,
+                  "name": "isOwner",
+                  "storageKey": null
                 },
                 {
                   "kind": "ScalarField",
@@ -162,14 +196,14 @@ const fragment /*: ConcreteFragment*/ = {
               "kind": "ScalarField",
               "alias": null,
               "args": null,
-              "name": "hasNextPage",
+              "name": "hasPreviousPage",
               "storageKey": null
             },
             {
               "kind": "ScalarField",
               "alias": null,
               "args": null,
-              "name": "endCursor",
+              "name": "startCursor",
               "storageKey": null
             }
           ],

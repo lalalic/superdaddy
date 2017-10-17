@@ -1,4 +1,6 @@
 const KnowledgeComment=Cloud.buildComment("Knowledge")
+const KnowledgePagination=Cloud.buildPagination("Knowledge")
+const ChildComment=Cloud.buildComment("Child")
 
 Cloud.typeDefs=`
 	type Child implements Node{
@@ -15,6 +17,8 @@ Cloud.typeDefs=`
 		
 		plan: Plan
 	}
+	
+	${ChildComment.typeDefs}
 	
 	type Plan implements Node{
 		id:ID!
@@ -64,10 +68,19 @@ Cloud.typeDefs=`
 		keywords: [String]
 		fields: [JSON]
 		days: [JSON]
+		hasHomework: JSON
+		hasPrint: JSON
+		sale: String
+		template: String
+		
+		
 		inTask(child:ObjectID): Boolean
 		isMyWork: Boolean
 		files: [File]
 	}
+	
+	${KnowledgePagination.typeDefs}
+	${KnowledgeComment.typeDefs}	
 	
 	type Task implements Node{
 		id:ID!
@@ -79,9 +92,6 @@ Cloud.typeDefs=`
 		id:ID!
 		author:User
 	}
-	
-	${Cloud.pagination("Knowledge","JSON").typeDefs}
-	${KnowledgeComment.typeDefs}
 	
 	type Publish implements Node{
 		id:ID!
@@ -102,7 +112,7 @@ Cloud.typeDefs=`
 	}
 	
 	extend type Query{
-		knowledges(first:Int, after:JSON):KnowledgeConnection
+		knowledges(title:String, categories:[String], tags: [String], first:Int, after:JSON):KnowledgeConnection
 		knowledge(_id:ObjectID):Knowledge
 	}
 	
@@ -146,7 +156,10 @@ function currentWeek(){
 const exists=(todos, content,knowledge)=>1+todos.findIndex(a=>knowledge ? a.knowledge===knowledge : a.content===content)
 
 const CAPS=["观察能力","自制力","专注力","记忆力"]
-Cloud.resolver=Cloud.merge({
+Cloud.resolver=Cloud.merge(
+	KnowledgeComment.resolver,
+	KnowledgePagination.resolver,
+	ChildComment.resolver,{
 	Child:{
 		birthday:({birthday,bd})=>birthday||bd,
         id: ({_id})=>`childs:${_id}`,
@@ -185,52 +198,37 @@ Cloud.resolver=Cloud.merge({
 		knowledge(_,{_id},{app}){
 			return app.get1Entity("knowledges",{_id})
 		},
-		knowledges(_,{first=10,after={}},{app}){
-			debugger
-			const {title,categories,tags,createdAt,_id}=after
-			const query={}
+		knowledges(_,{title,categories,tags,first=10,after},{app}){
+			const [createdAt,_id]=(after||":").split(":")
 			return app.findEntity("knowledges", {}, cursor=>{
-					let filtered=cursor.batchSize(first).sort([["createdAt",1]]).limit(2*first)
+					let filtered=cursor.sort([["createdAt",-1]]).limit(first+parseInt(first/2))
+					if(createdAt){
+						filtered=filtered.filter({createdAt:{$lte:new Date(parseInt(createdAt))}})
+					}
+					
 					if(title){
 						filtered=filtered.filter({title: new RegExp(`${title}.*`,"i")})
 					}
+					
 					if(categories && categories.length){
 						
 					}
 					if(tags && tags.length){
 						
 					}
-					
-					if(createdAt){
-						filtered=filtered.filter({createdAt:{$le:createdAt}})
-					}
-					
 					return filtered
 				})
 				.then(docs=>{
-					let nodes=_id ? docs.slice(docs.findIndex(a=>a._id==_id)) : docs
+					let edges=_id ? docs.slice(docs.findIndex(a=>a._id==_id)+1) : docs
 					let hasNextPage=false
 					
-					if(nodes.length>=first){
-						nodes=nodes.slice(0,first)
+					if(edges.length>=first){
+						edges=edges.slice(0,first)
 						hasNextPage=true
 					}
 					return {
-						nodes,
+						edges,
 						hasNextPage,
-					}
-				})
-				.then(({nodes,hasNextPage})=>{
-					let last=nodes[nodes.length-1]
-					return {
-						edges:nodes.map(node=>({node})),
-						pageInfo:{
-							hasNextPage,
-							endCursor: JSON.stringify({
-								title,categories,tags,
-								...(!!last ? {_id: last._id, createdAt:last.createdAt} : {_id, createdAt} )
-							})
-						}
 					}
 				})
 		},
@@ -393,7 +391,7 @@ Cloud.resolver=Cloud.merge({
 			return app.get1Entity("plans",{_id})
 				.then(plan=>{
 					let {todos=[]}=plan
-					todos.splice(i-1,1)
+					todos.splice(i,1)
 					plan.todos=todos
 					return app.patchEntity("plans",{_id},{todos})
 						.then(()=>plan)
@@ -567,6 +565,4 @@ Cloud.resolver=Cloud.merge({
 			return app.get1Entity("knowledges",{_id:knowledge})
 		}
 	}
-},
-KnowledgeComment.resolver,
-)
+})

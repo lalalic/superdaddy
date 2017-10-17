@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash bbba1c2a554d0e9afba00b7815152b5a
+ * @relayHash 456f3e4ddbd583921a1127d2103aeff9
  */
 
 /* eslint-disable */
@@ -27,9 +27,16 @@ query src_knowledge_Query(
 }
 
 fragment info_knowledge on Knowledge {
+  sale
   id
-  isMyWork
   inTask(child: $child)
+  hasHomework
+  hasPrint
+  isMyWork
+  title
+  summary
+  figure
+  template
   ...content_knowledge
 }
 
@@ -165,6 +172,27 @@ const batch /*: ConcreteBatch*/ = {
             "kind": "ScalarField",
             "alias": null,
             "args": null,
+            "name": "hasHomework",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "hasPrint",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "sale",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
             "name": "title",
             "storageKey": null
           },
@@ -172,14 +200,28 @@ const batch /*: ConcreteBatch*/ = {
             "kind": "ScalarField",
             "alias": null,
             "args": null,
-            "name": "content",
+            "name": "summary",
             "storageKey": null
           },
           {
             "kind": "ScalarField",
             "alias": null,
             "args": null,
-            "name": "summary",
+            "name": "figure",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "template",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "content",
             "storageKey": null
           },
           {
@@ -201,13 +243,6 @@ const batch /*: ConcreteBatch*/ = {
             "alias": null,
             "args": null,
             "name": "keywords",
-            "storageKey": null
-          },
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "args": null,
-            "name": "figure",
             "storageKey": null
           },
           {
@@ -240,7 +275,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query src_knowledge_Query(\n  $id: ObjectID\n  $child: ObjectID\n) {\n  knowledge(_id: $id) {\n    ...info_knowledge\n    id\n  }\n}\n\nfragment info_knowledge on Knowledge {\n  id\n  isMyWork\n  inTask(child: $child)\n  ...content_knowledge\n}\n\nfragment content_knowledge on Knowledge {\n  id\n  title\n  content\n  summary\n  createdAt\n  category\n  keywords\n  figure\n  author {\n    name\n    id\n  }\n}\n"
+  "text": "query src_knowledge_Query(\n  $id: ObjectID\n  $child: ObjectID\n) {\n  knowledge(_id: $id) {\n    ...info_knowledge\n    id\n  }\n}\n\nfragment info_knowledge on Knowledge {\n  sale\n  id\n  inTask(child: $child)\n  hasHomework\n  hasPrint\n  isMyWork\n  title\n  summary\n  figure\n  template\n  ...content_knowledge\n}\n\nfragment content_knowledge on Knowledge {\n  id\n  title\n  content\n  summary\n  createdAt\n  category\n  keywords\n  figure\n  author {\n    name\n    id\n  }\n}\n"
 };
 
 module.exports = batch;

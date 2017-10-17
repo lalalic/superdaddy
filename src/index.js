@@ -262,17 +262,57 @@ const router=(
 						toPlan:()=>router.push("/plan"),
 					})),
 				)(Child)}/>
+				
+				
+				<Route path=":id/comment" component={compose(
+					withPagination(({params:{id:parent}})=>({
+						variables:{parent},
+						query: graphql`
+							query src_childComments_Query($parent:ObjectID!, $count: Int=10, $cursor: JSON){
+								...src_childComments
+							}
+						`,
+					})),
+					withFragment({data:graphql`
+						fragment src_childComments on Query{
+							comments:child_comments(parent:$parent, last:$count, before: $cursor)@connection(key:"child_comments"){
+								edges{
+									node{
+										id
+										content
+										type
+										createdAt
+										author{
+											id
+											name
+											photo
+										}
+										isOwner
+									}
+								}
+								pageInfo{
+									hasPreviousPage
+									startCursor
+								}
+							}
+						}
+					`}),
+					withProps(({params:{id:parent}})=>({
+						parent,
+						connection:"child_comments"
+					})),
+					withCurrent(),
+				)(Comment)}/>
 			</Route>
 			<Route path="knowledge">
 				<IndexRoute component={compose(
 					withState("title","searchByTitle"),
-					withPagination(({title})=>({
+					withPagination(({title,categories,tags})=>({
 						variables:{
-							first:2,
-							after:{title}
+							title,categories,tags,
 						},
 						query: graphql`
-							query src_knowleges_Query($first:Int,$after:JSON){
+							query src_knowleges_Query($title:String,$categories:[String],$tags:[String],$count:Int,$cursor:JSON){
 								...list
 							}
 						`
@@ -281,14 +321,11 @@ const router=(
 					mapProps(({searchByTitle,router,...others})=>({
 						...others,
 						search({title}){
-							if(title){
-								searchByTitle(title)
-							}
+							searchByTitle(title)
 						},
 						goBack:()=>router.goBack(),
 						toKnowledge: id=>router.push(`/knowledge/${id}`),
 					})),
-					withCurrent(),
 					withNavigator(),
 				)(Knowledges)}/>
 

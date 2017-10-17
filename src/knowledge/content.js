@@ -9,7 +9,6 @@ import {relative} from 'components/calendar'
 import AppBar from "components/app-bar"
 
 export const Content=({
-		toKnowledgeUrl,
 		knowledge:{id, title, content, summary, createdAt, category, keywords, figure, author,}
 	})=>{
 	category=category||[]
@@ -28,7 +27,7 @@ export const Content=({
 	let notNewStuff=null
 	if(id){
 		notNewStuff=[
-			(<AppBar key="appbar" title={<Link to={toKnowledgeUrl}>{title}</Link>} />),
+			(<AppBar key="appbar" title={title} />),
 			(<p key="author">
 				{author.name} - <time>{relative(createdAt)}</time>
 			</p>)
@@ -72,7 +71,4 @@ export default compose(
 			}
 		}
 	`),
-	withProps(({knowledge})=>({
-		toKnowledgeUrl: `/knowledge/${knowledge.id}`,
-	})),
 )(Content)
