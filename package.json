@@ -72,7 +72,8 @@
     "tv.win": "cordova create tv --link-to=dist && cd tv && copy www\\tv.xml config.xml && cordova platform add android && cordova build android",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "relay": "relay-compiler --src ./src --schema ./schema.graphql"
+    "relay": "relay-compiler --src ./src --schema ./schema.graphql",
+	"persist": "node node_modules/qili-app/scripts/persisted-query.js src cloud"
   },
   "keywords": [],
   "repository": {
