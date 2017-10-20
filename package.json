@@ -1,7 +1,7 @@
 {
   "name": "SuperDaddy",
   "description": "Super Daddy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "http://app.qili2.com/superdaddy",
   "author": {
     "name": "Raymond Li",
@@ -47,7 +47,7 @@
     "cordova": "5.4.0",
     "css-loader": "^0.28.4",
     "enzyme": "^2.7.1",
-    "jest": "^19.0.2",
+    "jest": "^21.2.1",
     "jszip": "^2.5.0",
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
@@ -83,5 +83,11 @@
   "engines": {
     "node": ">= 0.4.4"
   },
-  "readme": "README.md"
+  "readme": "README.md",
+  "jest": {
+    "roots": [
+      "__tests__"
+    ],
+    "watchman": false
+  }
 }
