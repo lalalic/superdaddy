@@ -16,7 +16,7 @@
     "material-ui": "^0.16.0",
     "normalizr": "^2.2.1",
     "pull-to-refresh2": "^0.0.2",
-    "qili-app": "https://github.com/lalalic/qili-app#relay",
+    "qili-app": "https://github.com/lalalic/qili-app",
     "react": "^15.1.0",
     "react-composition": "^0.2.1",
     "react-dom": "^15.1.0",
@@ -73,7 +73,7 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "relay": "relay-compiler --src ./src --schema ./schema.graphql",
-	"persist": "node node_modules/qili-app/scripts/persisted-query.js src cloud"
+    "persist": "node node_modules/qili-app/scripts/persisted-query.js src cloud"
   },
   "keywords": [],
   "repository": {

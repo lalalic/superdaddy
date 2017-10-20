@@ -44,6 +44,7 @@ module.exports=env=>Object.assign({
 		net: "empty",
 		module: "empty"
 	},
+	plugins:[new webpack.ContextReplacementPlugin(/graphql-language-service-interface[\/\\]dist/, /\.js$/)],
 	devServer:{
 		contentBase: path.join(__dirname, "dist"),
 		compress: true,

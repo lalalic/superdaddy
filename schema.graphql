@@ -166,12 +166,6 @@ type Mutation {
   comment_create(parent: ID, content: String!, type: CommentType): Comment
 }
 
-interface Named {
-  id: ID!
-  name: String
-  photo(size: Int = 25): String
-}
-
 interface Node {
   id: ID!
 }
@@ -213,7 +207,6 @@ type Publish implements Node {
 
 type Query {
   version: String!
-  node(id: ID!): Node
   schema: String!
   me: User!
   child_comments(parent: ObjectID, last: Int, before: JSON): ChildCommentConnection
@@ -227,8 +220,8 @@ type Role implements Node {
   name: String!
   createdAt: Date!
   updatedAt: Date
-  author: Named
-  users: [Named]
+  author: User
+  users: [User]
 }
 
 type Subscription {
@@ -253,7 +246,7 @@ type Todo {
   day6: JSON
 }
 
-type User implements Node, Named {
+type User implements Node {
   id: ID!
   photo(size: Int = 25): String
   name: String
