@@ -73,7 +73,8 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "relay": "relay-compiler --src ./src --schema ./schema.graphql",
-    "persist": "node node_modules/qili-app/scripts/persisted-query.js src cloud"
+    "persist": "node node_modules/qili-app/scripts/persisted-query.js src cloud",
+	"cloud": "webpack --env=cloud"
   },
   "keywords": [],
   "repository": {
