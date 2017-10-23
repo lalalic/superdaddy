@@ -96,20 +96,17 @@ const router=(
 				connect(state=>({hasChild:!!state.superdaddy.current})),
 				branch(({hasChild})=>!hasChild,renderComponent(
 					compose(
-						getContext({
-							router: PropTypes.object
-						}),
-						withProps(({router, dispatch})=>({
+						withProps(({dispatch})=>({
 							toChild:child=>{
 								dispatch(ACTION.CURRENT_CHILD(child))
 							},
-						})),
+						}))
 					)(props=>(
 						<div>
 							<center style={{height:50, color:"lightgray", margin:20}}>
 								start from creating your first baby!
 							</center>
-							
+
 							<Child.Creator {...props} style={{margin:"0px 100px"}}/>
 						</div>))
 				))
@@ -262,8 +259,8 @@ const router=(
 						toPlan:()=>router.push("/plan"),
 					})),
 				)(Child)}/>
-				
-				
+
+
 				<Route path=":id/comment" component={compose(
 					withPagination(({params:{id:parent}})=>({
 						variables:{parent},
