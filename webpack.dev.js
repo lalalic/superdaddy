@@ -7,9 +7,7 @@ module.exports={
 		//parser: "./src/knowledge/parse.js"
 	},
 	plugins:[
-		new webpack.optimize.CommonsChunkPlugin({
-			name: 'common'
-		})
+		
 	],
 	watchOptions:{
 		

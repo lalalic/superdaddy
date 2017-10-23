@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports={
 	entry:{
-		main:"./cloud/index.js",
+		__generated:"./cloud/index.js",
 	},
 	output:{
 		filename:"[name].js",

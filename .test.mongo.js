@@ -10,11 +10,9 @@ const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OWU0NmRhOWU1YjYyYj
 const _render=Qili.render
 Qili.render=function(app){
 	_render(React.cloneElement(app, {
-		service: "http://localhost:8080/1/graphql",
+		service: "http://localhost:9080/1/graphql",
 		user:{token},
 	}))
 }
 
 File.upload=()=>Promise.resolve("images/icon.svg")
-
-

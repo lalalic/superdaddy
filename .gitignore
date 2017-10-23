@@ -34,4 +34,10 @@ cordova
 dist/index.js
 dist/allin1.html
 dist/*.map
+dist/knowledge
+dist/publish
 .DS_Store
+
+cloud/__generated.js
+tv
+
