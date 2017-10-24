@@ -60,7 +60,7 @@ export default function extract(file){
 								return Promise.resolve({url,crc32});
 							
 							let {token}=tokens[i++]
-							return File.upload(url, {crc32,key:"a.jpg"},token)
+							return File.upload(url, {crc32},token)
 								.then(remoteURL=>{
 									this.knowledge.content=this.knowledge.content.replace(url,image.url=remoteURL)
 									window.document.querySelector(`#${elId} img[src~='${url}']`).setAttribute("src",remoteURL)
@@ -73,7 +73,7 @@ export default function extract(file){
 						let {token}=tokens[i++]
 						Promise.all(done)
 							.then(images=>externalizeDocxImage(docx,images))
-							.then(externalizedDocx=>File.upload(externalizedDocx, {key:"a.docx"}, token))
+							.then(externalizedDocx=>File.upload(externalizedDocx, {}, token))
 							.then(url =>this.knowledge.template=url)
 							.then(()=>resolve(this.knowledge),reject)
 					})
