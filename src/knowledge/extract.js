@@ -64,7 +64,6 @@ export default function extract(file){
 								window.document.querySelector(`#${elId} img[src~='${url}']`).setAttribute("src",remoteURL)
 								return {url: remoteURL, crc32}
 							})
-
 					})
 
 					Promise.all(done)
