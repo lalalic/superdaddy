@@ -14,10 +14,10 @@ function splitKey(data){
 
 export default function extract(file){
     return parse(file).then(doc=>{
-        let {docx, html:content, properties, id:elId, 
+        let {docx, html:content, properties, id:elId,
 				images, steps, sale, hasPrint, hasHomework,fields}=doc
-				
-        let {name,title, keywords, category, subject, 
+
+        let {name,title, keywords, category, subject,
 				abstract,description, ...others}=properties
 
 		if(keywords)
@@ -47,37 +47,32 @@ export default function extract(file){
             getPhotos(){
                 return Array.prototype.map.call(window.document.querySelectorAll(`#${elId} img`),a=>a.src)
             },
-            upload({files=[],getTokens}){
-                return new Promise((resolve, reject)=>{
-					let count=images.filter(({crc32})=>files.find(a=>a.crc32!==crc32))
-						.length+1
-					
-					getTokens(count).then(tokens=>{
-						let i=0
-						let done=images.map(image=>{
-							const {url,crc32}=image
-							if(files.find((a)=>a.crc32==crc32))
-								return Promise.resolve({url,crc32});
-							
-							let {token}=tokens[i++]
-							return File.upload(url, {crc32,key:"a.jpg"},token)
-								.then(remoteURL=>{
-									this.knowledge.content=this.knowledge.content.replace(url,image.url=remoteURL)
-									window.document.querySelector(`#${elId} img[src~='${url}']`).setAttribute("src",remoteURL)
-									return {url: remoteURL, crc32}
-								})
-								
-						})
-						
-						
-						let {token}=tokens[i++]
-						Promise.all(done)
-							.then(images=>externalizeDocxImage(docx,images))
-							.then(externalizedDocx=>File.upload(externalizedDocx, {key:"a.docx"}, token))
-							.then(url =>this.knowledge.template=url)
-							.then(()=>resolve(this.knowledge),reject)
+            upload({files=[],getToken}){
+                return getToken().then(({token,id})=>{
+					let done=images.map(image=>{
+						const {url,crc32}=image
+						if(!crc32)
+							return Promise.resolve({url})
+						let found=files.find((a)=>a.crc32==crc32)
+						if(found){
+							return Promise.resolve({url:found.url,crc32});
+						}
+
+						return File.upload(url, {id,crc32,key:`image/${crc32}.jpg`},token)
+							.then(remoteURL=>{
+								this.knowledge.content=this.knowledge.content.replace(url,image.url=remoteURL)
+								window.document.querySelector(`#${elId} img[src~='${url}']`).setAttribute("src",remoteURL)
+								return {url: remoteURL, crc32}
+							})
+
 					})
-				})//promise
+
+					Promise.all(done)
+						.then(images=>externalizeDocxImage(docx,images))
+						.then(externalizedDocx=>File.upload(externalizedDocx, {id,key:`template.docx`}, token))
+						.then(url=>this.knowledge.template=url)
+						.then(()=>this.knowledge)
+				})
             }
         }
     })
@@ -99,15 +94,15 @@ function externalizeDocxImage(docx, images){
 		})
 		.get()
 		.filter(a=>!!a)
-		
+
 	parts.push(docx.officeDocument.rels)
-	
+
 	root=docx.officeDocument.folder
 	parts.forEach($=>{
 		$("[Type$=image]").each((i,rel)=>{
 			if(rel.attribs.TargetMode=="External")
 				return
-	
+
 			let partName=`${root}${rel.attribs.Target}`
 			let crc=docx.getPartCrc32(partName)
 			let found=images.find(({crc32})=>crc32==crc)
@@ -118,8 +113,8 @@ function externalizeDocxImage(docx, images){
 			}
 		})
 	})
-	
+
 	docx.save("test")
-	
+
 	return docx.serialize().generate({type:"nodebuffer"})
 }

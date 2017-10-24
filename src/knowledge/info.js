@@ -12,7 +12,7 @@ import IconCancel from "material-ui/svg-icons/navigation/cancel"
 import IconAddTask from "material-ui/svg-icons/action/alarm-add"
 import IconRemoveTask from "material-ui/svg-icons/action/alarm-off"
 import {
-		Icon as IconWechatSession, 
+		Icon as IconWechatSession,
 		IconTimeline as IconWechatTimeline
 	} from "qili/components/wechat"
 import IconBuy from "material-ui/svg-icons/action/add-shopping-cart"
@@ -20,6 +20,7 @@ import IconPreview from "material-ui/svg-icons/action/print"
 import IconHomework from "material-ui/svg-icons/notification/event-note"
 
 import CommandBar from "qili/components/command-bar"
+import {withGetToken} from "qili/components/file"
 
 import AD from 'components/ad'
 import AutoForm from "components/auto-form"
@@ -78,7 +79,7 @@ export class KnowledgeEditor extends Component{
 				})
 
 
-            commands.push(<CommandBar.Comment 
+            commands.push(<CommandBar.Comment
 				key="Comment"
 				label="讨论"
 				toComment={toComment}/>)
@@ -107,7 +108,7 @@ export class KnowledgeEditor extends Component{
 						onClick={buy}
 						/>)
 		}
-						
+
 		if(knowledge.hasHomework){
 			tools.push(<BottomNavigationItem
 						key="homework"
@@ -122,7 +123,7 @@ export class KnowledgeEditor extends Component{
 						}}
 						/>)
 		}
-		
+
 		if(knowledge.hasPrint){
 			tools.push(<BottomNavigationItem
 						key="preview"
@@ -140,9 +141,9 @@ export class KnowledgeEditor extends Component{
 
         const {homework, preview:want2Preview}=this.state
 		let homeworkForm=null, previewForm=null
-		
+
 		if(homework){
-			homeworkForm=(<AutoForm 
+			homeworkForm=(<AutoForm
 				title="参数设置"
 				fields={knowledge.hasHomework.fields}
 				onSubmit={props=>{
@@ -153,9 +154,9 @@ export class KnowledgeEditor extends Component{
 				/>
 			)
 		}
-		
+
 		if(want2Preview){
-			previewForm=(<AutoForm 
+			previewForm=(<AutoForm
 				title="参数设置"
 				fields={knowledge.hasPrint.fields}
 				onSubmit={props=>{
@@ -166,7 +167,7 @@ export class KnowledgeEditor extends Component{
 				/>
 			)
 		}
-    
+
         return (
             <div className="post">
 				<div className="knowledge" style={{minHeight}}>
@@ -182,9 +183,9 @@ export class KnowledgeEditor extends Component{
 						<AD object={knowledge}/>
 					</section>
 				</article>
-				
+
 				{homeworkForm}
-				
+
                 <CommandBar className="footbar" items={commands}/>
             </div>
         )
@@ -204,25 +205,14 @@ export default compose(
 			hasPrint
 			sale
 			title
-			summary 
+			summary
 			figure
 			template
-			
+
 			...content_knowledge
 		}
 	`),
-	withMutation(({},count)=>({
-		name:"getTokens",
-		promise:true,
-		variables:{count},
-		mutation:graphql`
-			mutation info_tokens_Mutation($count:Int){
-				file_tokens(count:$count){
-					token
-				}
-			}
-		`,
-	})),
+	withGetToken,
 	withMutation(({knowledge}, info)=>({
 		name:"updateKnowledge",
 		variables:{info,id:knowledge.id},
@@ -233,27 +223,27 @@ export default compose(
 				}
 			}
 		`,
-	})),	
+	})),
 	connect(
 		({qili:{user},superdaddy:{current,selectedDocx,}},{knowledge})=>({
 			selectedDocx,
 			revising:!!selectedDocx,
 			child:current,
-			knowledge: selectedDocx ? {...selectedDocx.knowledge,isMyWork:true} : knowledge
+			knowledge: selectedDocx ? {...selectedDocx.knowledge,isMyWork:true,id:knowledge.id} : knowledge
 		})),
 	connect(null,
-		(dispatch, {knowledge, muiTheme,selectedDocx,getTokens,updateKnowledge})=>({
+		(dispatch, {knowledge, muiTheme,selectedDocx,getToken,updateKnowledge})=>({
 			muiTheme:undefined,
 			selectedDocx:undefined,
 			getTokens:undefined,
 			updateKnowledge:undefined,
-			knowledgeContent:selectedDocx ? 
-				<Content knowledge={knowledge}/> : 
+			knowledgeContent:selectedDocx ?
+				<Content knowledge={knowledge}/> :
 				<FragmentContent knowledge={knowledge}/>,
 			minHeight:muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height,
 			selectDocx:()=>dispatch(ACTION.SELECT_DOCX()),
 			update(){
-				selectedDocx.upload({getTokens})
+				selectedDocx.upload({getToken:()=>getToken().then(a=>(a.id=knowledge.id,a))})
 					.then(newVersion=>updateKnowledge(newVersion))
 					.then(()=>dispatch(ACTION.RESET()))
 			},
@@ -272,8 +262,8 @@ export default compose(
 			wechat_session:()=>dispatch(ACTION.WECHAT(knowledge,"SESSION")),
 			wechat_timeline:()=>dispatch(ACTION.WECHAT(knowledge,"TIMELINE")),
 		})
-	),	
-	
+	),
+
 	withPlanActions(({knowledge:{title,id}, actions:{add, remove}})=>({
 		task(){
 			return add({content:title,knowledge:id})

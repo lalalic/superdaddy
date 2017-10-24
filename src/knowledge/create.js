@@ -6,6 +6,7 @@ import {graphql} from "react-relay"
 
 import CommandBar from "qili/components/command-bar"
 import Empty from "qili/components/empty"
+import {withGetToken} from "qili/components/file"
 
 import IconInsertFile from 'material-ui/svg-icons/action/note-add'
 import IconCreate from "material-ui/svg-icons/editor/border-color"
@@ -23,7 +24,7 @@ export class CreateKnowledge extends Component{
 
 		let form=null
 		if(knowledge.hasPrint && want2Preview){
-			form=(<AutoForm 
+			form=(<AutoForm
 					title="参数设置"
 					fields={knowledge.hasPrint.fields}
 					onSubmit={props=>{
@@ -34,7 +35,7 @@ export class CreateKnowledge extends Component{
 					/>
 				)
 		}
-		
+
 
 		return (
 			<div className="post">
@@ -67,7 +68,7 @@ export class CreateKnowledge extends Component{
 							,onSelect:cancel
 						}
 						,{
-							action:"newVersion"	
+							action:"newVersion"
 							,label:"新版本"
 							,icon:<IconCreate/>
 							,onSelect:selectDocx
@@ -91,21 +92,10 @@ export default compose(
 			}
 		`,
 	})),
-	withMutation(({},count)=>({
-		name:"getTokens",
-		promise:true,
-		variables:{count},
-		mutation:graphql`
-			mutation create_tokens_Mutation($count:Int){
-				file_tokens(count:$count){
-					token
-				}
-			}
-		`,
-	})),
-	connect(null,(dispatch,{selectedDocx, knowledge, toKnowledge, mutate, getTokens})=>({
+	withGetToken,
+	connect(null,(dispatch,{selectedDocx, knowledge, toKnowledge, mutate, getToken})=>({
 		create(){
-			selectedDocx.upload({getTokens})
+			selectedDocx.upload({getToken:()=>getToken().then(a=>(a.id=`${knowledges}:${a.id}`,a))})
 				.then(knowledge=>mutate(knowledge))
 				.then(({id})=>{
 					toKnowledge(id)
