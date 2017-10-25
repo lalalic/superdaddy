@@ -47,28 +47,29 @@ export default function extract(file){
             getPhotos(){
                 return Array.prototype.map.call(window.document.querySelectorAll(`#${elId} img`),a=>a.src)
             },
-            upload({files=[],getToken}){
+            upload({files,getToken}){
+				files=files||[]
                 return getToken().then(({token,id})=>{
 					let done=images.map(image=>{
-						const {url,crc32}=image
-						if(!crc32)
+						const {url,crc32:crc}=image
+						if(!crc)
 							return Promise.resolve({url})
-						let found=files.find((a)=>a.crc32==crc32)
+						let found=files.find((a)=>a.crc==crc)
 						if(found){
-							return Promise.resolve({url:found.url,crc32});
+							return Promise.resolve({url:found.url,crc});
 						}
 
-						return File.upload(url, {id,crc32,key:`image/${crc32}.jpg`},token)
+						return File.upload(url, {id,crc,key:`image/${crc}.jpg`},token)
 							.then(remoteURL=>{
 								this.knowledge.content=this.knowledge.content.replace(url,image.url=remoteURL)
 								window.document.querySelector(`#${elId} img[src~='${url}']`).setAttribute("src",remoteURL)
-								return {url: remoteURL, crc32}
+								return {url: remoteURL, crc}
 							})
 					})
 
 					Promise.all(done)
 						.then(images=>externalizeDocxImage(docx,images))
-						.then(externalizedDocx=>File.upload(externalizedDocx, {id,key:`template.docx`}, token))
+						.then(externalizedDocx=>File.upload(externalizedDocx, {id,key:`template.docx`}, getToken))
 						.then(url=>this.knowledge.template=url)
 						.then(()=>this.knowledge)
 				})
@@ -104,7 +105,7 @@ function externalizeDocxImage(docx, images){
 
 			let partName=`${root}${rel.attribs.Target}`
 			let crc=docx.getPartCrc32(partName)
-			let found=images.find(({crc32})=>crc32==crc)
+			let found=images.find(({crc})=>crc==crc)
 			if(found){
 				rel.attribs.TargetMode="External"
 				rel.attribs.Target=found.url

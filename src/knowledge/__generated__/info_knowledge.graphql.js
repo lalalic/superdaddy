@@ -19,6 +19,10 @@ export type info_knowledge = {|
   +summary: ?string;
   +figure: ?string;
   +template: ?string;
+  +files: ?$ReadOnlyArray<?{|
+    +crc: ?number;
+    +url: ?string;
+  |}>;
 |};
 */
 
@@ -39,7 +43,7 @@ const fragment /*: ConcreteFragment*/ = {
       "kind": "ScalarField",
       "alias": null,
       "args": null,
-      "name": "sale",
+      "name": "title",
       "storageKey": null
     },
     {
@@ -81,14 +85,14 @@ const fragment /*: ConcreteFragment*/ = {
       "kind": "ScalarField",
       "alias": null,
       "args": null,
-      "name": "isMyWork",
+      "name": "sale",
       "storageKey": null
     },
     {
       "kind": "ScalarField",
       "alias": null,
       "args": null,
-      "name": "title",
+      "name": "isMyWork",
       "storageKey": null
     },
     {
@@ -110,6 +114,31 @@ const fragment /*: ConcreteFragment*/ = {
       "alias": null,
       "args": null,
       "name": "template",
+      "storageKey": null
+    },
+    {
+      "kind": "LinkedField",
+      "alias": null,
+      "args": null,
+      "concreteType": "File",
+      "name": "files",
+      "plural": true,
+      "selections": [
+        {
+          "kind": "ScalarField",
+          "alias": null,
+          "args": null,
+          "name": "crc",
+          "storageKey": null
+        },
+        {
+          "kind": "ScalarField",
+          "alias": null,
+          "args": null,
+          "name": "url",
+          "storageKey": null
+        }
+      ],
       "storageKey": null
     },
     {

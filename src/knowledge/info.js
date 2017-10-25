@@ -208,6 +208,10 @@ export default compose(
 			summary
 			figure
 			template
+			files{
+				crc
+				url
+			}
 
 			...content_knowledge
 		}
@@ -229,21 +233,23 @@ export default compose(
 			selectedDocx,
 			revising:!!selectedDocx,
 			child:current,
+			files:knowledge.files,
 			knowledge: selectedDocx ? {...selectedDocx.knowledge,isMyWork:true,id:knowledge.id} : knowledge
 		})),
 	connect(null,
-		(dispatch, {knowledge, muiTheme,selectedDocx,getToken,updateKnowledge})=>({
+		(dispatch, {knowledge, files,  muiTheme,selectedDocx,getToken,updateKnowledge})=>({
 			muiTheme:undefined,
 			selectedDocx:undefined,
 			getTokens:undefined,
 			updateKnowledge:undefined,
+			files:undefined,
 			knowledgeContent:selectedDocx ?
 				<Content knowledge={knowledge}/> :
 				<FragmentContent knowledge={knowledge}/>,
 			minHeight:muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height,
 			selectDocx:()=>dispatch(ACTION.SELECT_DOCX()),
 			update(){
-				selectedDocx.upload({getToken:()=>getToken().then(a=>(a.id=knowledge.id,a))})
+				selectedDocx.upload({files,getToken:key=>getToken(key).then(a=>(a.id=knowledge.id,a))})
 					.then(newVersion=>updateKnowledge(newVersion))
 					.then(()=>dispatch(ACTION.RESET()))
 			},

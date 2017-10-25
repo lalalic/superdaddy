@@ -51,7 +51,7 @@ scalar Date
 type File {
   id: ID!
   url: String
-  host: ID!
+  crc: Int
 }
 
 type FileToken {

@@ -95,7 +95,7 @@ export default compose(
 	withGetToken,
 	connect(null,(dispatch,{selectedDocx, knowledge, toKnowledge, mutate, getToken})=>({
 		create(){
-			selectedDocx.upload({getToken:()=>getToken().then(a=>(a.id=`${knowledges}:${a.id}`,a))})
+			selectedDocx.upload({getToken:key=>getToken(key).then(a=>(a.id=`knowledges:${a.id}`,a))})
 				.then(knowledge=>mutate(knowledge))
 				.then(({id})=>{
 					toKnowledge(id)
