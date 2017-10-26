@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash fcbe444c9e9c80842b5e3f923b331dc5
+ * @relayHash 12d27c9fb786badee2c2d5a28e256d59
  */
 
 /* eslint-disable */
@@ -11,7 +11,10 @@
 import type {ConcreteBatch} from 'relay-runtime';
 export type account_setPhoto_MutationVariables = {|
   id: any;
-  url: string;
+  photo?: ?string;
+  name?: ?string;
+  birthday?: ?any;
+  gender?: ?"girl" | "boy";
 |};
 export type account_setPhoto_MutationResponse = {|
   +child_update: ?any;
@@ -22,9 +25,12 @@ export type account_setPhoto_MutationResponse = {|
 /*
 mutation account_setPhoto_Mutation(
   $id: ObjectID!
-  $url: String!
+  $photo: String
+  $name: String
+  $birthday: Date
+  $gender: Gender
 ) {
-  child_update(_id: $id, photo: $url)
+  child_update(_id: $id, photo: $photo, name: $name, birthday: $birthday, gender: $gender)
 }
 */
 
@@ -39,8 +45,26 @@ const batch /*: ConcreteBatch*/ = {
       },
       {
         "kind": "LocalArgument",
-        "name": "url",
-        "type": "String!",
+        "name": "photo",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "birthday",
+        "type": "Date",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "gender",
+        "type": "Gender",
         "defaultValue": null
       }
     ],
@@ -60,8 +84,26 @@ const batch /*: ConcreteBatch*/ = {
           },
           {
             "kind": "Variable",
+            "name": "birthday",
+            "variableName": "birthday",
+            "type": "Date"
+          },
+          {
+            "kind": "Variable",
+            "name": "gender",
+            "variableName": "gender",
+            "type": "Gender"
+          },
+          {
+            "kind": "Variable",
+            "name": "name",
+            "variableName": "name",
+            "type": "String"
+          },
+          {
+            "kind": "Variable",
             "name": "photo",
-            "variableName": "url",
+            "variableName": "photo",
             "type": "String"
           }
         ],
@@ -85,8 +127,26 @@ const batch /*: ConcreteBatch*/ = {
       },
       {
         "kind": "LocalArgument",
-        "name": "url",
-        "type": "String!",
+        "name": "photo",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "birthday",
+        "type": "Date",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "gender",
+        "type": "Gender",
         "defaultValue": null
       }
     ],
@@ -106,8 +166,26 @@ const batch /*: ConcreteBatch*/ = {
           },
           {
             "kind": "Variable",
+            "name": "birthday",
+            "variableName": "birthday",
+            "type": "Date"
+          },
+          {
+            "kind": "Variable",
+            "name": "gender",
+            "variableName": "gender",
+            "type": "Gender"
+          },
+          {
+            "kind": "Variable",
+            "name": "name",
+            "variableName": "name",
+            "type": "String"
+          },
+          {
+            "kind": "Variable",
             "name": "photo",
-            "variableName": "url",
+            "variableName": "photo",
             "type": "String"
           }
         ],
@@ -116,7 +194,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "mutation account_setPhoto_Mutation(\n  $id: ObjectID!\n  $url: String!\n) {\n  child_update(_id: $id, photo: $url)\n}\n"
+  "text": "mutation account_setPhoto_Mutation(\n  $id: ObjectID!\n  $photo: String\n  $name: String\n  $birthday: Date\n  $gender: Gender\n) {\n  child_update(_id: $id, photo: $photo, name: $name, birthday: $birthday, gender: $gender)\n}\n"
 };
 
 module.exports = batch;

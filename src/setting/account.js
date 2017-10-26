@@ -15,8 +15,8 @@ import Child from "family/child"
 import Photo from "qili/components/photo"
 import BaseAccount from "qili/components/account"
 
-export const Account=({id,username,photo, babies=[], toCreate, toChild, update})=>(
-    <BaseAccount {...{id,username,photo}}>
+export const Account=({id,username,photo, babies=[], toCreate, toChild, update, toSetting, toProfile})=>(
+    <BaseAccount {...{id,username,photo,toSetting,toProfile}}>
         <ListItem primaryText="我的宝贝"
             leftIcon={<IconAdd/>}
             initiallyOpen={true}
@@ -52,14 +52,17 @@ export default compose(
 			}
 		}
 	`),
-	withProps(({data})=>({...data, babies:data.children||[]})),
+	withProps(({data:{id,username,photo,children:babies}})=>({
+        id,username,photo,
+        babies:babies||[]
+    })),
 	withMutation(({},{id})=>({
 		name:"update",
 		patch4:id,
 		mutation: graphql`
-			mutation account_setPhoto_Mutation($id:ObjectID!, $url:String!){
-				child_update(_id: $id, photo:$url)
-			}
+            mutation account_setPhoto_Mutation($id:ObjectID!, $photo:String, $name:String, $birthday:Date,$gender:Gender){
+                child_update(_id:$id, photo:$photo, name:$name, birthday:$birthday,gender:$gender)
+            }
 		`,
 	})),
 )(Account)
