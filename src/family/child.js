@@ -212,7 +212,7 @@ export default compose(
 		variables:{id},
 		mutation: graphql`
 			mutation child_update_Mutation($id:ObjectID!, $photo:String, $name:String, $birthday:Date,$gender:Gender){
-				child_update(_id:$id, $photo:String, name:$name, birthday:$birthday,gender:$gender)
+				child_update(_id:$id, photo:$photo, name:$name, birthday:$birthday,gender:$gender)
 			}
 		`
 	})),

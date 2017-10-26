@@ -110,7 +110,7 @@ module.exports=others=>`
 	extend type Mutation{
 		child_remove(_id:ObjectID!): Boolean
 		child_create(name:String!, photo:String, birthday:Date,gender:Gender):Child
-		child_update(_id:ObjectID!, name:String, photo:String, birthday:Date,icon:String, gender:Gender): Date
+		child_update(_id:ObjectID!, photo:String, name:String, photo:String, birthday:Date,icon:String, gender:Gender): Date
 				
 		plan_update(_id:ObjectID, plan:JSON):Plan
 		plan_task_done(_id:ObjectID, content:String, knowledge:ObjectID, day:Int, props: JSON):Child
