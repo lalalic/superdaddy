@@ -184,6 +184,8 @@ const router=(
 						let props={
 							toCreate:()=>router.push("/child"),
 							toChild: id=>router.push(`/child/${id}`),
+							toSetting: ()=>router.push('/my/setting'),
+							toProfile: ()=>router.push('/my/profile')
 						}
 
 						let all=client.getAll("Child")

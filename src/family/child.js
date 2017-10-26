@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from "react"
 import {connect} from "react-redux"
 import {compose, setStatic, getContext, withProps} from "recompose"
-import {withMutation, withFragment,setPhoto} from "qili/tools/recompose"
+import {withMutation, withFragment} from "qili/tools/recompose"
 import {graphql} from "react-relay"
 
 import {TextField, RadioButtonGroup, RadioButton,DatePicker,Subheader} from 'material-ui'
@@ -29,9 +29,9 @@ export class Child extends Component{
 	}
 
 	render(){
-		const {name,photo,birthday,gender, totalScore=score,
+		const {id, name,photo,birthday,gender, totalScore=score,
 				plan:{icon,todo,goal,score=0},
-				update, remove, toPublish, toPlan, setPhoto,updatePlan,
+				update, remove, toPublish, toPlan, updatePlan,
 				}=this.props
 		const {nameError}=this.state
 
@@ -39,12 +39,9 @@ export class Child extends Component{
 			<div>
 				<div className="form">
 					<div className="child-photo">
-						<Photo
-							width={150}
-							height={150}
-							src={photo}
-							overwritable={true}
-							onPhoto={url=>setPhoto({photo})}/>
+						<Photo size={150} src={photo}
+							autoUpload={{id,key:"photo.jpg"}}
+							onPhoto={photo=>update({photo})}/>
 					</div>
 
 					<InfoForm>
@@ -214,8 +211,8 @@ export default compose(
 		promise:true,
 		variables:{id},
 		mutation: graphql`
-			mutation child_update_Mutation($id:ObjectID!, $name:String, $birthday:Date,$gender:Gender){
-				child_update(_id:$id, name:$name, birthday:$birthday,gender:$gender)
+			mutation child_update_Mutation($id:ObjectID!, $photo:String, $name:String, $birthday:Date,$gender:Gender){
+				child_update(_id:$id, $photo:String, name:$name, birthday:$birthday,gender:$gender)
 			}
 		`
 	})),
@@ -264,5 +261,4 @@ export default compose(
 			},
 		})
 	),
-	setPhoto(),
 )(Child)
