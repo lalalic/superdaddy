@@ -80,9 +80,8 @@ export class CreateKnowledge extends Component{
 }
 
 export default compose(
-	withMutation(({},data)=>({
+	withMutation({
 		promise:true,
-		variables:{knowledge:data},
 		mutation:graphql`
 			mutation create_knowledge_Mutation($knowledge:JSON){
 				knowledge_create(knowledge:$knowledge){
@@ -91,12 +90,17 @@ export default compose(
 				}
 			}
 		`,
-	})),
+	}),
 	withGetToken,
 	connect(null,(dispatch,{selectedDocx, knowledge, toKnowledge, mutate, getToken})=>({
 		create(){
-			selectedDocx.upload({getToken:key=>getToken(key).then(a=>(a.id=`knowledges:${a.id}`,a))})
-				.then(knowledge=>mutate(knowledge))
+			selectedDocx.upload({
+					getToken:key=>getToken(key)
+						.then(a=>{
+							return {...a,id:`knowledges:${a.id}`}
+						})
+				})
+				.then(knowledge=>mutate({knowledge}))
 				.then(({id})=>{
 					toKnowledge(id)
 					dispatch(ACTION.RESET())

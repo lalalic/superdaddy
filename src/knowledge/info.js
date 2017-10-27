@@ -234,7 +234,12 @@ export default compose(
 			revising:!!selectedDocx,
 			child:current,
 			files:knowledge.files,
-			knowledge: selectedDocx ? {...selectedDocx.knowledge,isMyWork:true,id:knowledge.id} : knowledge
+			knowledge: selectedDocx ? {
+					...selectedDocx.knowledge,
+					isMyWork:true,
+					id:knowledge.id, 
+					author:{name:""}
+				} : knowledge
 		})),
 	connect(null,
 		(dispatch, {knowledge, files,  muiTheme,selectedDocx,getToken,updateKnowledge})=>({
@@ -249,7 +254,13 @@ export default compose(
 			minHeight:muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height,
 			selectDocx:()=>dispatch(ACTION.SELECT_DOCX()),
 			update(){
-				selectedDocx.upload({files,getToken:key=>getToken(key).then(a=>(a.id=knowledge.id,a))})
+				selectedDocx.upload({
+						files,
+						getToken:key=>getToken(key)
+							.then(a=>{
+								return {...a,id:knowledge.id}
+							})
+					})
 					.then(newVersion=>updateKnowledge(newVersion))
 					.then(()=>dispatch(ACTION.RESET()))
 			},

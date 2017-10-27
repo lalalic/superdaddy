@@ -27,6 +27,7 @@ export default function extract(file){
 			category=splitKey(category)
 
         return {
+			toJSON:a=>null,
             knowledge: {
                 content,
                 title:title||name,
@@ -67,7 +68,7 @@ export default function extract(file){
 							})
 					})
 
-					Promise.all(done)
+					return Promise.all(done)
 						.then(images=>externalizeDocxImage(docx,images))
 						.then(externalizedDocx=>File.upload(externalizedDocx, {id,key:`template.docx`}, getToken))
 						.then(url=>this.knowledge.template=url)
@@ -105,7 +106,7 @@ function externalizeDocxImage(docx, images){
 
 			let partName=`${root}${rel.attribs.Target}`
 			let crc=docx.getPartCrc32(partName)
-			let found=images.find(({crc})=>crc==crc)
+			let found=images.find(a=>a.crc==crc)
 			if(found){
 				rel.attribs.TargetMode="External"
 				rel.attribs.Target=found.url
@@ -114,7 +115,6 @@ function externalizeDocxImage(docx, images){
 		})
 	})
 
-	docx.save("test")
-
-	return docx.serialize().generate({type:"nodebuffer"})
+	return docx.serialize()
+		.generate({type:"blob", mimeType:docx.constructor.mime})
 }

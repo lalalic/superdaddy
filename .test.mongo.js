@@ -12,4 +12,7 @@ Qili.render=function(app){
 	}))
 }
 
-File.upload=()=>Promise.resolve("images/icon.svg")
+const _upload=File.upload
+File.upload=function(){
+	return _upload(...arguments).catch(a=>a).then(a=>"images/icon.svg")
+}
