@@ -113,6 +113,7 @@ const router=(
 			)(({children})=><div>{children}</div>)}>
 
 			<IndexRoute component={compose(
+				withNavigator(),
 				connect(state=>({
 					child:state.superdaddy.current,
 				})),
@@ -135,10 +136,10 @@ const router=(
 				})),
 				withPlanActions(),
 				withContext({actions:PropTypes.object},({actions})=>({actions})),
-				withNavigator(),
 			)(TimeManage)}/>
 
 			<Route path="score" component={compose(
+				withNavigator(),
 				connect(state=>({
 					child:state.superdaddy.current,
 				})),
@@ -161,11 +162,12 @@ const router=(
 				})),
 				withPlanActions(),
 				withContext({actions:PropTypes.object},({actions})=>({actions})),
-				withNavigator(),
+				
 			)(ScorePad)}/>
 
 			<Route path="my">
 				<IndexRoute component={compose(
+					withNavigator(),
 					withQuery({
 						query:graphql`
 							query src_account_Query{
@@ -194,7 +196,7 @@ const router=(
 						}
 						return props
 					}),
-					withNavigator(),
+					
 				)(Account)}/>
 
 				<Route path="setting" component={Setting} />
@@ -264,6 +266,7 @@ const router=(
 
 
 				<Route path=":id/comment" component={compose(
+					withCurrent(),
 					withPagination(({params:{id:parent}})=>({
 						variables:{parent},
 						query: graphql`
@@ -300,11 +303,12 @@ const router=(
 						parent,
 						connection:"child_comments"
 					})),
-					withCurrent(),
+					
 				)(Comment)}/>
 			</Route>
 			<Route path="knowledge">
 				<IndexRoute component={compose(
+					withNavigator(),
 					withState("title","searchByTitle"),
 					withPagination(({title,categories,tags})=>({
 						variables:{
@@ -325,7 +329,7 @@ const router=(
 						goBack:()=>router.goBack(),
 						toKnowledge: id=>router.push(`/knowledge/${id}`),
 					})),
-					withNavigator(),
+					
 				)(Knowledges)}/>
 
 				<Route path="create" component={compose(
@@ -359,6 +363,7 @@ const router=(
 				)(Knowledge)}/>
 
 				<Route path=":id/comment" component={compose(
+					withCurrent(),
 					withPagination(({params:{id:parent}})=>({
 						variables:{parent},
 						query: graphql`
@@ -395,7 +400,7 @@ const router=(
 						parent,
 						connection:"knowledge_comments"
 					})),
-					withCurrent(),
+					
 				)(Comment)}/>
 			</Route>
 

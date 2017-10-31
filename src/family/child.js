@@ -17,7 +17,6 @@ import IconPlan from "material-ui/svg-icons/editor/linear-scale"
 import {InfoForm, Field} from "qili/components/info-form"
 import CommandBar from "qili/components/command-bar"
 import Photo from "qili/components/photo"
-import TextFieldx from "qili/components/text-field"
 
 import {ACTION} from "main"
 
@@ -119,20 +118,22 @@ export class Child extends Component{
 }
 
 export class Creator extends Component{
-	state={nameError:null}
+	state={nameError:null,name:""}
 
 	render(){
 		const {create, style={}}=this.props
-		const {nameError}=this.state
+		const {nameError,name}=this.state
 
-		let refName, refBirthday, refGender
+		let refBirthday, refGender
 
 		return (
 			<div>
 				<div className="form" style={style}>
-					<TextFieldx ref={a=>refName=a}
+					<TextField
 						floatingLabelText="宝宝名称"
 						errorText={nameError}
+						value={name}
+						onChange={(e,name)=>this.setState({name})}
 						fullWidth={true}/>
 
 					<DatePicker ref={a=>refBirthday=a}
@@ -156,11 +157,11 @@ export class Creator extends Component{
 						{
 							action:"Save",
 							onSelect:()=>create({
-									name: refName.getValue(),
+									name,
 									birthday: refBirthday.getDate(),
 									gender: refGender.getSelectedValue(),
 								})
-								.catch(error=>this.setState({nameError:error})),
+								.catch(nameError=>this.setState({nameError})),
 						}
 					]}
 				/>

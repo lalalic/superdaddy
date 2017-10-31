@@ -51,38 +51,19 @@ module.exports={
 			return app.get1Entity("knowledges",{_id})
 		},
 		knowledges(_,{title,categories,tags,first=10,after},{app}){
-			const [createdAt,_id]=(after||":").split(":")
-			return app.findEntity("knowledges", {}, cursor=>{
-					let filtered=cursor.sort([["createdAt",-1]]).limit(first+parseInt(first/2))
-					if(createdAt){
-						filtered=filtered.filter({createdAt:{$lte:new Date(parseInt(createdAt))}})
-					}
+			return app.nextPage("knowledges",{first,after}, cursor=>{
+				if(title){
+					cursor=cursor.filter({title: new RegExp(`${title}.*`,"i")})
+				}
+				
+				if(categories && categories.length){
 					
-					if(title){
-						filtered=filtered.filter({title: new RegExp(`${title}.*`,"i")})
-					}
+				}
+				if(tags && tags.length){
 					
-					if(categories && categories.length){
-						
-					}
-					if(tags && tags.length){
-						
-					}
-					return filtered
-				})
-				.then(docs=>{
-					let edges=_id ? docs.slice(docs.findIndex(a=>a._id==_id)+1) : docs
-					let hasNextPage=false
-					
-					if(edges.length>=first){
-						edges=edges.slice(0,first)
-						hasNextPage=true
-					}
-					return {
-						edges,
-						hasNextPage,
-					}
-				})
+				}
+				return cursor
+			})
 		},
 	},
 	

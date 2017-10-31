@@ -52,7 +52,7 @@ export const TimeManage=({minHeight,goal, score, editing,week,reset,data})=>(
 						)
 					}
 				}
-			})(parseInt((d=>d.relativeDate(-1*d.getDay()).toDate().getTime())(new Date())/1000))
+			})(parseInt((d=>d.relativeDate(-1*d.getDay()).toDate())(new Date()).getTime()/1000))
 		}
 	</div>
 )

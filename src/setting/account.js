@@ -24,10 +24,11 @@ export const Account=({id,username,photo, babies=[], toCreate, toChild, update, 
             onClick={toCreate}
             nestedItems={
                 babies.map(({id,photo,name})=>
-					<ListItem key={id} primaryText={name}
+					<ListItem key={id} 
+						primaryText={name}
 						onClick={e=>toChild(id)}
-						leftAvatar={
-							<Photo src={photo} size={40}
+						leftIcon={
+							<Photo src={photo}
 								autoUpload={{id,key:'photo.jpg'}}
 								onPhoto={photo=>update({id,photo})}
 								/>

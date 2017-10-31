@@ -1,12 +1,11 @@
 import React, {Component, PropTypes} from "react"
 import {connect} from "react-redux"
-import {compose,getContext,withProps} from "recompose"
+import {compose,getContext,withProps,withState} from "recompose"
 import {withFragment} from "qili/tools/recompose"
 
-import TextFieldx from "qili/components/text-field"
 import AppBar from "components/app-bar"
 
-import IconButton from 'material-ui/IconButton'
+import {IconButton,TextField} from 'material-ui'
 import IconComment from "material-ui/svg-icons/communication/comment"
 import IconSmile from "icons/task"
 
@@ -89,8 +88,7 @@ const Smile=({scored, ...others})=>(
 		/>
 )
 
-export const Editor=({lastScore, setTodoGoal})=>{
-	let refGoal
+export const Editor=withState("errorText","setError")(({lastScore,setError,errorText, setTodoGoal})=>{
 	const add=value=>{
 		value=value.trim()
 		if(!value)
@@ -99,20 +97,21 @@ export const Editor=({lastScore, setTodoGoal})=>{
 		try{
 			goal=parseInt(goal)
 		}catch(e){
-			refGoal.errorText=`格式错误`
+			setError(`格式错误`)
 			return
 		}
 		setTodoGoal({goal,todo:desc.join(":")})
 	}
 	return (
-		<TextFieldx ref={a=>refGoal=a}
+		<TextField
 			floatingLabelText="目标"
+			errorText={errorText}
 			hintText={`${lastScore||20}:小马宝莉书一本`}
 			onBlur={({target:{value}})=>add(value)}
 			onKeyDown={({target:{value},keyCode})=>keyCode==13 && add(value)}
 			fullWidth={true}/>
 	)
-}
+})
 
 export default compose(
 	getContext({
