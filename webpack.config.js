@@ -22,14 +22,10 @@ module.exports=env=>Object.assign({
 	devtool: 'source-map',
 	module:{
 		rules:[{
-			test: /\.js$/,
-			use: ["source-map-loader"],
-			enforce: "pre",
-			include:/(qili-app|docx4js|docx-template)/
-		  },{
 			test: /.js?$/,
 			use: ['react-hot-loader','babel-loader'],
-			exclude: /node_modules/,
+			include: a=>a.indexOf("node_modules")==-1 || 
+				/node_modules[\\\/](qili-app|docx4js|docx-template)[\\\/]src/.test(a),
 		},{
 			test:/.less?$/,
 			use: [
@@ -38,7 +34,12 @@ module.exports=env=>Object.assign({
 				'less-loader'
 			]
 		}]
-	},
+	},/*
+	resolve:{
+		alias:{
+			qili: path.resolve(__dirname, 'node_modules/qili-app/src/'),
+		}
+	},*/
 	node:{
 		fs: "empty",
 		net: "empty",

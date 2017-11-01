@@ -199,7 +199,7 @@ const router=(
 					
 				)(Account)}/>
 
-				<Route path="setting" component={Setting} />
+				<Route path="setting" component={withNavigator()(Setting)} />
 				<Route path="profile" component={compose(
 					withQuery({
 						query:graphql`

@@ -50,17 +50,34 @@ module.exports={
 		knowledge(_,{_id},{app}){
 			return app.get1Entity("knowledges",{_id})
 		},
-		knowledges(_,{title,categories,tags,first=10,after},{app}){
+		knowledges(_,{title,categories,tags,mine,favorite,tasked,tasking,first=10,after},context){
+			const {app,user}=context
 			return app.nextPage("knowledges",{first,after}, cursor=>{
 				if(title){
 					cursor=cursor.filter({title: new RegExp(`${title}.*`,"i")})
 				}
 				
 				if(categories && categories.length){
+					cursor=cursor.filter({category:{$in:categories}})
+				}else if(tags && tags.length){
+					cursor=cursor.filter({tags:{$in:tags}})
+				}else if(mine){
+					cursor=cursor.filter({author:user._id})
+				}else if(favorite){
 					
-				}
-				if(tags && tags.length){
+				}else if(tasked){
 					
+				}else if(tasking){
+					const {User,Child}=module.exports.resolver
+					return User.children(user,{},context)
+						.then(children=>children.map(child=>Child.plan(child,{},context)))
+						.then(plans=>plans.reduce((collected,plan)=>{
+							if(plan.todos){
+								plan.todos.forEach(a=>a.knowledge && collected.push(a.knowledge))
+							}
+							return collected
+						},[]))
+						.then(knowledges=>cursor.filter({_id:{$in:knowledges}}))
 				}
 				return cursor
 			})

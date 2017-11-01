@@ -12,6 +12,7 @@ import IconBack from "material-ui/svg-icons/hardware/keyboard-arrow-left"
 import AppBar from "components/app-bar"
 
 import Item from "./list-item"
+import QuickSearch from "./quick-search"
 
 export class Knowledges extends Component{
 	state={title:""}
@@ -20,7 +21,7 @@ export class Knowledges extends Component{
 	}
 	render(){
         const {knowledges=[],search,minHeight,refresh, loadMore, canBack, goBack, toKnowledge}=this.props
-		const {title}=this.state
+		const {title,conditionAnchor, ...qs}=this.state
 		let iconElementLeft=null
 		if(canBack){
 			iconElementLeft=(
@@ -37,7 +38,7 @@ export class Knowledges extends Component{
 					iconElementLeft={iconElementLeft}
 					
 					iconElementRight={
-						<IconButton onClick={e=>search({title})}>
+						<IconButton onClick={e=>search(this.state)}>
 							<IconSearch/>
 						</IconButton>
 					}
@@ -46,9 +47,32 @@ export class Knowledges extends Component{
 						hintText="查询"
 						value={title||""}
 						onChange={(e,title)=>this.setState({title})}
-						onKeyDown={e=>e.keyCode==13 && search({title})}
+						onKeyDown={e=>e.keyCode==13 && search(this.state)}
+						onFocus={e=>this.setState({conditionAnchor:e.target})}
 						fullWidth={true}/>
 					}
+					/>
+				<QuickSearch 
+					qs={qs}
+					open={!!conditionAnchor}
+					anchorEl={conditionAnchor}
+					anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+					targetOrigin={{horizontal: 'left', vertical: 'top'}}					
+					onRequestClose={condition=>{
+						this.setState({conditionAnchor:undefined,...condition}, ()=>{
+							if(condition){
+								search(this.state)
+							}
+						})
+					}}
+					
+					close={condition=>{
+						this.setState({conditionAnchor:undefined,...condition}, ()=>{
+							if(condition){
+								search(this.state)
+							}
+						})
+					}}
 					/>
 				<PullToRefresh
 					onRefresh={refresh}
