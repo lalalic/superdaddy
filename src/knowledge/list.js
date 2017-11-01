@@ -36,13 +36,13 @@ export class Knowledges extends Component{
 			<div style={{minHeight}}>
 				<AppBar
 					iconElementLeft={iconElementLeft}
-					
+
 					iconElementRight={
 						<IconButton onClick={e=>search(this.state)}>
 							<IconSearch/>
 						</IconButton>
 					}
-					
+
 					title={<TextField
 						hintText="查询"
 						value={title||""}
@@ -52,20 +52,12 @@ export class Knowledges extends Component{
 						fullWidth={true}/>
 					}
 					/>
-				<QuickSearch 
+				<QuickSearch
 					qs={qs}
 					open={!!conditionAnchor}
 					anchorEl={conditionAnchor}
 					anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-					targetOrigin={{horizontal: 'left', vertical: 'top'}}					
-					onRequestClose={condition=>{
-						this.setState({conditionAnchor:undefined,...condition}, ()=>{
-							if(condition){
-								search(this.state)
-							}
-						})
-					}}
-					
+					targetOrigin={{horizontal: 'left', vertical: 'top'}}
 					close={condition=>{
 						this.setState({conditionAnchor:undefined,...condition}, ()=>{
 							if(condition){
@@ -84,11 +76,11 @@ export class Knowledges extends Component{
 					}
 				</PullToRefresh>
 			</div>
-            
+
         )
     }
 }
-	
+
 export default compose(
 	withFragment(graphql`
 		fragment list on Query{

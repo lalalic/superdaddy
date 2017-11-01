@@ -3,92 +3,152 @@ import PropTypes from "prop-types"
 import {connect} from "react-redux"
 import {compose, getContext, withProps, withStateHandlers} from "recompose"
 
-import {Popover, Menu, MenuItem, Divider, Chip} from "material-ui"
+import {Popover, Menu, MenuItem, Divider, Chip, Subheader} from "material-ui"
 import IconArrowDropRight from 'material-ui/svg-icons/navigation-arrow-drop-right'
+import {blue300 as SELECTED, indigo900} from 'material-ui/styles/colors'
 
 const CAPS=["观察能力","自制力","专注力","记忆力"]
-const TAGS=["观察能力","自制力","专注力","记忆力"]
+const TAGS=["数学","语文","英语","二年级"]
 
-export const QuickSearch=({qs, childName, setState, toggleTheme, toggleTag, close, ...others})=>(
-	<Popover {...others}>
-		<Menu>
-			<MenuItem primaryText="我自己写的" 
-				onClick={e=>setState({mine:!qs.mine})}
-				checked={qs.mine}/>
-			<MenuItem primaryText="我的收藏" 
-				onClick={e=>setState({favorite:!qs.favorite})}
-				checked={qs.favorite}/>
-			<Divider/>
-			<MenuItem primaryText="曾经作为任务的" 
-				onClick={e=>setState({tasked:!qs.tasked})}
-				checked={qs.tasked}/>
-			<MenuItem primaryText="现在作为任务的" 
-				onClick={e=>setState({tasking:!qs.tasking})}
-				checked={qs.tasking}/>
-			<Divider/>
-			<MenuItem 
-				onClick={e=>setState({child:!qs.child})}
-				checked={qs.child}
-				primaryText={
-					<span>
-						<span>适合</span>
-						<b>{childName}</b>
-						<span>的</span>
-					</span>
-				}/>
-			<Divider/>
-			<MenuItem primaryText="主题" 
-				rightIcon={<IconArrowDropRight/>} 
-				menuItems={
-					CAPS.map(a=><MenuItem primaryText={a} key={a} 
-						onClick={e=>toggleTheme(a)}
-						checked={(qs.theme||[]).includes(a)}/>)
-				}/>
-			<MenuItem primaryText="常用标签" 
-				rightIcon={<IconArrowDropRight/>} 
-				menuItems={
-					TAGS.map(a=><MenuItem primaryText={a} key={a}
-						onClick={e=>toggleTag(a)}
-						 checked={(qs.tags||[]).includes(a)}/>)
-				}/>
-		</Menu>
+const style={
+	 chip: {
+		margin: 4,
+	  },
+	  wrapper: {
+		display: 'flex',
+		flexWrap: 'wrap',
+		margin: 10
+	  }
+}
+export const QuickSearch=({
+	mine,favorite,tasking,tasked,ph={mine,favorite,tasking,tasked},
+	categories=[],tags=[], childName,
+	toggle, toggleCategory, toggleTag, search,
+	...others})=>(
+	<Popover {...others} onRequestClose={()=>{
+			search({mine,favorite,tasking,tasked,categories,tags})
+		}}>
+		<div>
+			<Subheader>常用</Subheader>
+			<div style={style.wrapper}>
+				{
+					[{label:"自己写的",key:"mine"},
+					{label:"收藏的",key:"favorite"},
+					{label:"作为任务的",key:"tasking"},
+					{label:"曾经作为任务的",key:"tasked"}]
+						.map(({label,key})=>(
+							<Chip key={label}
+								style={style.chip}
+								backgroundColor={ph[key] ? SELECTED: undefined}
+								onClick={()=>toggle(key)}>{label}</Chip>
+						))
+				}
+			</div>
+		</div>
+		<div>
+			<Subheader>主题</Subheader>
+			<div style={style.wrapper}>
+				{CAPS.map(a=>(
+					<Chip key={a}
+						backgroundColor={categories.includes(a)? SELECTED : undefined}
+						style={style.chip}
+						onClick={()=>toggleCategory(a)}>
+						{a}
+					</Chip>
+				))}
+			</div>
+		</div>
+		<div>
+			<Subheader>标签</Subheader>
+			<div style={style.wrapper}>
+				{TAGS.map(a=>(
+					<Chip key={a}
+						backgroundColor={tags.includes(a)? SELECTED : undefined}
+						style={style.chip}
+						onClick={()=>toggleTag(a)}>
+						{a}
+					</Chip>
+				))}
+				<Chip style={style.chip} >更多...</Chip>
+			</div>
+		</div>
 	</Popover>
 )
 
 export default compose(
 	connect(({superdaddy:{current}})=>({id:current})),
 	getContext({client: PropTypes.object}),
-	withProps(({dispatch, client, id})=>{
+	withProps(({dispatch, client, id, close,qs})=>{
 		let child=client.get(id)
 		return {
-			childName: child.name
+			childName: child.name,
+			search(condition){
+				let diff=Object.keys(qs)
+					.reduce((state,k)=>{
+						let v=qs[k]
+						switch(a){
+						case "categories":
+						case "tags":{
+							let changing=condition[k]
+							if(v){
+								if(changing){
+									if(v.length==changing.length){
+										if(v.find(a=>!changing.includes(a))){
+											state[k]=changing
+										}
+									}else{
+										state[k]=changing
+									}
+								}else{
+									state[k]=null
+								}
+							}else{
+								 state[k]=changing
+							}
+							break
+						}
+						default:
+							if(!!qs[k]!==!!condition[k]){
+								state[k]=!!condition[k]
+							}
+						}
+						return state
+					},{})
+				if(Object.keys(diff).length==0)
+					diff=undefined
+				close(diff)
+			}
 		}
-	}),/*
+	}),
 	withStateHandlers(
-		({qs})=>({}),
+		({qs})=>({...qs}),
 		{
-			setState:({},{close})=>state=>{
-				close(state)
-				return state
+			toggle:(state,{})=>key=>{
+				let prev=!!state[key]
+				return {[key]:!prev}
 			},
-			toggleTag: ({},{qs:{tags=[]}})=>a=>{
-				let i=tags.findIndex(a)
+			toggleTag: ({tags})=>a=>{
+				tags=tags||[]
+				let i=tags.indexOf(a)
 				if(i==-1){
 					return {tags:[...tags,a]}
 				}else{
-					tags.splice(i,1)
-					return {tags:[...tags]}
+					let changing=[...tags]
+					changing.splice(i,1)
+					return {tags:changing}
 				}
 			},
-			toggleTheme: ({},{qs:{theme=[]}})=>a=>{
-				let i=theme.findIndex(a)
+			toggleCategory: ({categories})=>a=>{
+				categories=categories||[]
+				let i=categories.indexOf(a)
 				if(i==-1){
-					return {theme:[...theme,a]}
+					return {categories:[...categories,a]}
 				}else{
-					theme.splice(i,1)
-					return {theme:[...theme]}
+					let changing=[...categories]
+					changing.splice(i,1)
+					return {categories:changing}
 				}
 			},
 		}
-	)*/
+	),
 )(QuickSearch)

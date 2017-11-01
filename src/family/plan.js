@@ -28,67 +28,6 @@ import AppBar from "components/app-bar"
 import Baby from "family/child"
 import Knowledge from "knowledge"
 
-//{months=[{goals=[], knowledges=[]},{}]}
-
-/**
-const ACTION={
-	AUTO_PLAN:(child)=>(dispatch,getState)=>{
-		const state=getState()
-		const plan=getChildPlan(state,child)
-		const caps=getCaps(state)
-		let {goals=[], months=[]}=plan
-		
-		let month=new Date().getMonth()
-		let count=12-month
-		if(goals.length==0){
-			goals=caps.slice(0,Math.floor(count/3))
-		}
-		
-		let pending=new Array(count)
-		pending.fill(1)
-		pending.forEach((a,i)=>{
-			let {goals:currentGoals=[],knowledges=[]}=months[i+month]||{}
-			if(currentGoals.length==0)
-				currentGoals[0]=goals[i%goals.length]
-			months[i+month]={goals:currentGoals, knowledges}
-		})
-		
-		return Baby.ACTION.CHANGE(child, "plan", {...plan, months:[...months]})(dispatch,getState)
-			.then(a=>{
-				let all=pending.map((a,i)=>{
-					return new Promise((resolve, reject)=>{
-						let {goals,knowledges=[]}=months[i+month]
-						if(knowledges.length==0){
-							ACTION.SEARCH_KNOWLEDGE(child, undefined, goals, data=>{
-								months[i+month]={goals, knowledges:data}
-								resolve()
-							})(dispatch, getState)
-						}else{
-							resolve()
-						}
-					})
-				})
-				return Promise.all(all)
-			})
-			.then(a=>{
-				return Baby.ACTION.CHANGE(child, "plan", {...plan, months:[...months]})(dispatch,getState)
-			})
-	}
-}
-
-{
-    plan: {
-        year:2017,
-        goals:[],
-        months:[
-            {
-                goals:[],
-                knowledges:[]
-            }
-        ]
-    }
-}
- */
 export class Plan extends Component{
 	render(){
 		let {goals=[], months=[], caps=[],
@@ -97,7 +36,7 @@ export class Plan extends Component{
 		return (
 			<div>
                 <AppBar title={`年度目标，计划`}/>
-	
+
 				<YearGoal {...{goals,update,caps}}/>
 
 				<Divider/>
@@ -169,7 +108,7 @@ class MonthGoals extends Component{
 	render(){
 		let current=new Date().getMonth()
 		let {month}=this.state
-		let {months=[], addMonthGoal, 
+		let {months=[], addMonthGoal,
 			removeMonthGoal, addMonthTask, removeMonthTask,searchKnowledges}=this.props
 
 		let steps=new Array(12)
@@ -184,7 +123,7 @@ class MonthGoals extends Component{
                             {this.renderGoalSelector(month)}
 						</StepLabel>
 						<StepContent>
-							<MonthPlan {...months[month]} month={month} 
+							<MonthPlan {...months[month]} month={month}
 								{...{addMonthTask, removeMonthTask,searchKnowledges}}/>
 						</StepContent>
 					</Step>
@@ -286,8 +225,8 @@ const MonthPlan=compose(
                     <ListItem key={id}
                         primaryText={title}
 						leftCheckbox={
-							<Checkbox 
-								checked={true} 
+							<Checkbox
+								checked={true}
 								onCheck={()=>removeMonthTask(month,id)}/>
 						}
                         />
@@ -297,7 +236,7 @@ const MonthPlan=compose(
                     <ListItem key={id}
                         primaryText={title}
 						leftCheckbox={
-							<Checkbox 
+							<Checkbox
 								checked={false}
 								onCheck={()=>addMonthTask(month,id)}/>
 						}
@@ -306,11 +245,11 @@ const MonthPlan=compose(
             </List>
         )
 	}
-	
+
 	filter(search){
 		if(!search)
 			return []
-		
+
 		const {entities:knowledges}=this.props
 		let found=[]
 		for(let id in knowledges){
@@ -383,17 +322,17 @@ export default compose(
 			months[month]={...months[month], goals}
 			return mutate({plan:{months}})
 		},
-		
+
 		addMonthGoal(month,goal){
 			let {goals=[]}=(months[month]=months[month]||{})
 			if(goals.includes(goal))
-				return 
+				return
 			goals=[...goals,goal]
 			months=[...months]
 			months[month]={...months[month], goals}
 			return mutate({plan:{months}})
 		},
-		
+
 		removeMonthTask(month,knowledge){
 			let {knowledges=[]}=(months[month]=(months[month]||{}))
 			knowledges=knowledges.filter(a=>a!=knowledge)
@@ -401,18 +340,18 @@ export default compose(
 			months[month]={...months[month], knowledges}
 			return mutate({plan:{months}})
 		},
-		
+
 		addMonthTask(month,knowledge){
 			let {knowledges=[]}=(months[month]=months[month]||{})
 			if(knowledges.includes(knowledge))
-				return 
+				return
 			knowledges=[...knowledges,knowledge]
 			months=[...months]
 			months[month]={...months[month], knowledges}
 			return mutate({plan:{months}})
 		},
 		searchKnowledges(title, caps){
-			
+
 		}
 	})),
 )(Plan)
