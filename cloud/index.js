@@ -4,6 +4,8 @@ const ChildComment=Cloud.buildComment("Child")
 
 Cloud.persistedQuery=require("./persisted-query")
 
+Cloud.indexes=require("./db")
+
 require("./static").extend(Cloud.static)
 
 Cloud.typeDefs=require("./schema")([

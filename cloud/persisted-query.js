@@ -1,37 +1,1050 @@
-//generated from persisted-query.js, don't edit it	
+//generated from persisted-query.js, don't edit it
 module.exports={
-    "create_knowledge_Mutation": "mutation create_knowledge_Mutation(\n  $knowledge: JSON\n) {\n  knowledge_create(knowledge: $knowledge) {\n    id\n    createdAt\n  }\n}\n",
-    "info_update_Mutation": "mutation info_update_Mutation(\n  $id: ObjectID\n  $info: JSON\n) {\n  knowledge_update(_id: $id, knowledge: $info) {\n    ...content_knowledge\n    id\n  }\n}\n\nfragment content_knowledge on Knowledge {\n  id\n  title\n  content\n  summary\n  createdAt\n  category\n  keywords\n  figure\n  author {\n    name\n    id\n  }\n}\n",
-    "list_remove_Mutation": "mutation list_remove_Mutation(\n  $id: ObjectID\n) {\n  publish_remove(_id: $id)\n}\n",
-    "publish_publish_Mutation": "mutation publish_publish_Mutation(\n  $template: String\n  $startAt: Date\n  $endAt: Date\n  $child: ObjectID\n  $copies: Int = 1\n  $bookName: String\n) {\n  publish_create(template: $template, from: $startAt, to: $endAt, child: $child, copies: $copies, name: $bookName) {\n    id\n    createdAt\n  }\n}\n",
-    "account_setPhoto_Mutation": "mutation account_setPhoto_Mutation(\n  $id: ObjectID!\n  $photo: String\n  $name: String\n  $birthday: Date\n  $gender: Gender\n) {\n  child_update(_id: $id, photo: $photo, name: $name, birthday: $birthday, gender: $gender)\n}\n",
-    "timeManage_add_Mutation": "mutation timeManage_add_Mutation(\n  $child: ObjectID\n  $content: String\n  $knowledge: ObjectID\n) {\n  plan_todos_add(_id: $child, content: $content, knowledge: $knowledge) {\n    ...core\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n",
-    "timeManage_bottom_Mutation": "mutation timeManage_bottom_Mutation(\n  $child: ObjectID\n  $i: Int\n) {\n  plan_todos_bottom(_id: $child, i: $i) {\n    ...core\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n",
-    "timeManage_down_Mutation": "mutation timeManage_down_Mutation(\n  $child: ObjectID\n  $i: Int\n) {\n  plan_todos_down(_id: $child, i: $i) {\n    ...core\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n",
-    "timeManage_removeNth_Mutation": "mutation timeManage_removeNth_Mutation(\n  $child: ObjectID\n  $i: Int\n) {\n  plan_todos_removeNth(_id: $child, i: $i) {\n    ...core\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n",
-    "timeManage_remove_Mutation": "mutation timeManage_remove_Mutation(\n  $child: ObjectID\n  $content: String\n  $knowledge: ObjectID\n) {\n  plan_todos_remove(_id: $child, content: $content, knowledge: $knowledge) {\n    ...core\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n",
-    "timeManage_reset_Mutation": "mutation timeManage_reset_Mutation(\n  $child: ObjectID\n) {\n  plan_reset(_id: $child) {\n    ...core\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n",
-    "timeManage_status_Mutation": "mutation timeManage_status_Mutation(\n  $child: ObjectID\n  $plan: JSON\n) {\n  plan_update(_id: $child, plan: $plan) {\n    ...core\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n",
-    "timeManage_taskDone_Mutation": "mutation timeManage_taskDone_Mutation(\n  $child: ObjectID\n  $task: String\n  $knowledge: ObjectID\n  $day: Int\n) {\n  plan_task_done(_id: $child, content: $task, knowledge: $knowledge, day: $day) {\n    score\n    plan {\n      ...core\n      id\n    }\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n",
-    "timeManage_toggle_Mutation": "mutation timeManage_toggle_Mutation(\n  $child: ObjectID\n  $i: Int\n) {\n  plan_todos_toggle(_id: $child, i: $i) {\n    ...core\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n",
-    "timeManage_top_Mutation": "mutation timeManage_top_Mutation(\n  $child: ObjectID\n  $i: Int\n) {\n  plan_todos_top(_id: $child, i: $i) {\n    ...core\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n",
-    "timeManage_up_Mutation": "mutation timeManage_up_Mutation(\n  $child: ObjectID\n  $i: Int\n) {\n  plan_todos_up(_id: $child, i: $i) {\n    ...core\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n",
-    "child_create_Mutation": "mutation child_create_Mutation(\n  $name: String!\n  $photo: String\n  $birthday: Date\n  $gender: Gender\n) {\n  child_create(name: $name, photo: $photo, birthday: $birthday, gender: $gender) {\n    id\n    createdAt\n  }\n}\n",
-    "child_planupdate_Mutation": "mutation child_planupdate_Mutation(\n  $id: ObjectID\n  $plan: JSON\n) {\n  plan_update(_id: $id, plan: $plan) {\n    id\n    icon\n    todo\n  }\n}\n",
-    "child_remove_Mutation": "mutation child_remove_Mutation(\n  $id: ObjectID!\n) {\n  child_remove(_id: $id)\n}\n",
-    "child_update_Mutation": "mutation child_update_Mutation(\n  $id: ObjectID!\n  $photo: String\n  $name: String\n  $birthday: Date\n  $gender: Gender\n) {\n  child_update(_id: $id, photo: $photo, name: $name, birthday: $birthday, gender: $gender)\n}\n",
-    "plan_auto_Mutation": "mutation plan_auto_Mutation(\n  $child: ObjectID\n) {\n  plan_auto(_id: $child) {\n    ...plan\n    id\n  }\n}\n\nfragment plan on Plan {\n  caps\n  goals\n  months {\n    goals\n    knowledges {\n      id\n      title\n    }\n  }\n}\n",
-    "plan_update_Mutation": "mutation plan_update_Mutation(\n  $child: ObjectID\n  $plan: JSON\n) {\n  plan_update(_id: $child, plan: $plan) {\n    ...plan\n    id\n  }\n}\n\nfragment plan on Plan {\n  caps\n  goals\n  months {\n    goals\n    knowledges {\n      id\n      title\n    }\n  }\n}\n",
-    "src_account_Query": "query src_account_Query {\n  me {\n    ...account\n    id\n  }\n}\n\nfragment account on User {\n  id\n  username\n  photo\n  children {\n    id\n    photo\n    name\n  }\n}\n",
-    "src_childComments_Query": "query src_childComments_Query(\n  $parent: ObjectID!\n  $count: Int = 10\n  $cursor: JSON\n) {\n  ...src_childComments\n}\n\nfragment src_childComments on Query {\n  comments: child_comments(parent: $parent, last: $count, before: $cursor) {\n    edges {\n      node {\n        __typename\n        id\n        content\n        type\n        createdAt\n        author {\n          id\n          name\n          photo\n        }\n        isOwner\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n",
-    "src_child_Query": "query src_child_Query(\n  $id: ObjectID\n) {\n  me {\n    child(_id: $id) {\n      ...child\n      id\n    }\n    id\n  }\n}\n\nfragment child on Child {\n  id\n  name\n  photo\n  birthday\n  gender\n  totalScore: score\n  plan {\n    score\n    goal\n    todo\n    icon\n    id\n  }\n}\n",
-    "src_comment_Query": "query src_comment_Query(\n  $parent: ObjectID!\n  $count: Int = 10\n  $cursor: JSON\n) {\n  ...src_knowledgeComments\n}\n\nfragment src_knowledgeComments on Query {\n  comments: knowledge_comments(parent: $parent, last: $count, before: $cursor) {\n    edges {\n      node {\n        __typename\n        id\n        content\n        type\n        createdAt\n        author {\n          id\n          name\n          photo\n        }\n        isOwner\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n",
-    "src_knowledge_Query": "query src_knowledge_Query(\n  $id: ObjectID\n  $child: ObjectID\n) {\n  knowledge(_id: $id) {\n    ...info_knowledge\n    id\n  }\n}\n\nfragment info_knowledge on Knowledge {\n  title\n  id\n  inTask(child: $child)\n  hasHomework\n  hasPrint\n  sale\n  isMyWork\n  summary\n  figure\n  template\n  files {\n    crc\n    url\n    id\n  }\n  ...content_knowledge\n}\n\nfragment content_knowledge on Knowledge {\n  id\n  title\n  content\n  summary\n  createdAt\n  category\n  keywords\n  figure\n  author {\n    name\n    id\n  }\n}\n",
-    "src_knowleges_Query": "query src_knowleges_Query(\n  $title: String\n  $categories: [String]\n  $tags: [String]\n  $count: Int\n  $cursor: JSON\n) {\n  ...list\n}\n\nfragment list on Query {\n  knowledges(title: $title, categories: $categories, tags: $tags, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        id\n        title\n        ...listItem\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n\nfragment listItem on Knowledge {\n  id\n  title\n  summary\n  photos\n  zans\n  createdAt\n  updatedAt\n}\n",
-    "src_plan_Query": "query src_plan_Query(\n  $child: ObjectID\n) {\n  me {\n    child(_id: $child) {\n      plan {\n        ...plan\n        id\n      }\n      id\n    }\n    id\n  }\n}\n\nfragment plan on Plan {\n  caps\n  goals\n  months {\n    goals\n    knowledges {\n      id\n      title\n    }\n  }\n}\n",
-    "src_prefetch_Query": "query src_prefetch_Query {\n  me {\n    id\n    token\n    children {\n      id\n      name\n      photo\n    }\n  }\n}\n",
-    "src_profile_Query": "query src_profile_Query {\n  me {\n    id\n    username\n    birthday\n    gender\n    location\n    photo\n    signature\n  }\n}\n",
-    "src_publishes_Query": "query src_publishes_Query(\n  $child: ObjectID\n) {\n  me {\n    child(_id: $child) {\n      ...list_publishes\n      id\n    }\n    id\n  }\n}\n\nfragment list_publishes on Child {\n  publishs {\n    id\n    name\n    template\n    from\n    to\n    copies\n  }\n}\n",
-    "src_scorepad_Query": "query src_scorepad_Query(\n  $child: ObjectID\n) {\n  me {\n    child(_id: $child) {\n      plan {\n        ...scorePad\n        id\n      }\n      id\n    }\n    id\n  }\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n",
-    "src_timeManage_Query": "query src_timeManage_Query(\n  $child: ObjectID\n) {\n  me {\n    child(_id: $child) {\n      plan {\n        ...core\n        id\n      }\n      id\n    }\n    id\n  }\n}\n\nfragment core on Plan {\n  goal\n  score\n  week\n  ...scorePad\n  ...taskPad\n  ...taskPadEditor\n}\n\nfragment scorePad on Plan {\n  todo\n  goal\n  score\n}\n\nfragment taskPad on Plan {\n  todos {\n    knowledge {\n      id\n      fields\n    }\n    content\n    hidden\n    day0\n    day1\n    day2\n    day3\n    day4\n    day5\n    day6\n  }\n}\n\nfragment taskPadEditor on Plan {\n  todos {\n    content\n    hidden\n  }\n}\n"
+	"create_knowledge_Mutation":`mutation create_knowledge_Mutation(
+		  $knowledge: JSON
+		) {
+		  knowledge_create(knowledge: $knowledge) {
+		    id
+		    createdAt
+		  }
+		}
+		`,
+	"info_update_Mutation":`mutation info_update_Mutation(
+		  $id: ObjectID
+		  $info: JSON
+		) {
+		  knowledge_update(_id: $id, knowledge: $info) {
+		    ...content_knowledge
+		    id
+		  }
+		}
+		
+		fragment content_knowledge on Knowledge {
+		  id
+		  title
+		  content
+		  summary
+		  createdAt
+		  category
+		  keywords
+		  figure
+		  author {
+		    name
+		    id
+		  }
+		}
+		`,
+	"list_remove_Mutation":`mutation list_remove_Mutation(
+		  $id: ObjectID
+		) {
+		  publish_remove(_id: $id)
+		}
+		`,
+	"publish_publish_Mutation":`mutation publish_publish_Mutation(
+		  $template: String
+		  $startAt: Date
+		  $endAt: Date
+		  $child: ObjectID
+		  $copies: Int = 1
+		  $bookName: String
+		) {
+		  publish_create(template: $template, from: $startAt, to: $endAt, child: $child, copies: $copies, name: $bookName) {
+		    id
+		    createdAt
+		  }
+		}
+		`,
+	"account_setPhoto_Mutation":`mutation account_setPhoto_Mutation(
+		  $id: ObjectID!
+		  $photo: String
+		  $name: String
+		  $birthday: Date
+		  $gender: Gender
+		) {
+		  child_update(_id: $id, photo: $photo, name: $name, birthday: $birthday, gender: $gender)
+		}
+		`,
+	"timeManage_add_Mutation":`mutation timeManage_add_Mutation(
+		  $child: ObjectID
+		  $content: String
+		  $knowledge: ObjectID
+		) {
+		  plan_todos_add(_id: $child, content: $content, knowledge: $knowledge) {
+		    ...core
+		    id
+		  }
+		}
+		
+		fragment core on Plan {
+		  goal
+		  score
+		  week
+		  ...scorePad
+		  ...taskPad
+		  ...taskPadEditor
+		}
+		
+		fragment scorePad on Plan {
+		  todo
+		  goal
+		  score
+		}
+		
+		fragment taskPad on Plan {
+		  todos {
+		    knowledge {
+		      id
+		      fields
+		    }
+		    content
+		    hidden
+		    day0
+		    day1
+		    day2
+		    day3
+		    day4
+		    day5
+		    day6
+		  }
+		}
+		
+		fragment taskPadEditor on Plan {
+		  todos {
+		    content
+		    hidden
+		  }
+		}
+		`,
+	"timeManage_bottom_Mutation":`mutation timeManage_bottom_Mutation(
+		  $child: ObjectID
+		  $i: Int
+		) {
+		  plan_todos_bottom(_id: $child, i: $i) {
+		    ...core
+		    id
+		  }
+		}
+		
+		fragment core on Plan {
+		  goal
+		  score
+		  week
+		  ...scorePad
+		  ...taskPad
+		  ...taskPadEditor
+		}
+		
+		fragment scorePad on Plan {
+		  todo
+		  goal
+		  score
+		}
+		
+		fragment taskPad on Plan {
+		  todos {
+		    knowledge {
+		      id
+		      fields
+		    }
+		    content
+		    hidden
+		    day0
+		    day1
+		    day2
+		    day3
+		    day4
+		    day5
+		    day6
+		  }
+		}
+		
+		fragment taskPadEditor on Plan {
+		  todos {
+		    content
+		    hidden
+		  }
+		}
+		`,
+	"timeManage_down_Mutation":`mutation timeManage_down_Mutation(
+		  $child: ObjectID
+		  $i: Int
+		) {
+		  plan_todos_down(_id: $child, i: $i) {
+		    ...core
+		    id
+		  }
+		}
+		
+		fragment core on Plan {
+		  goal
+		  score
+		  week
+		  ...scorePad
+		  ...taskPad
+		  ...taskPadEditor
+		}
+		
+		fragment scorePad on Plan {
+		  todo
+		  goal
+		  score
+		}
+		
+		fragment taskPad on Plan {
+		  todos {
+		    knowledge {
+		      id
+		      fields
+		    }
+		    content
+		    hidden
+		    day0
+		    day1
+		    day2
+		    day3
+		    day4
+		    day5
+		    day6
+		  }
+		}
+		
+		fragment taskPadEditor on Plan {
+		  todos {
+		    content
+		    hidden
+		  }
+		}
+		`,
+	"timeManage_removeNth_Mutation":`mutation timeManage_removeNth_Mutation(
+		  $child: ObjectID
+		  $i: Int
+		) {
+		  plan_todos_removeNth(_id: $child, i: $i) {
+		    ...core
+		    id
+		  }
+		}
+		
+		fragment core on Plan {
+		  goal
+		  score
+		  week
+		  ...scorePad
+		  ...taskPad
+		  ...taskPadEditor
+		}
+		
+		fragment scorePad on Plan {
+		  todo
+		  goal
+		  score
+		}
+		
+		fragment taskPad on Plan {
+		  todos {
+		    knowledge {
+		      id
+		      fields
+		    }
+		    content
+		    hidden
+		    day0
+		    day1
+		    day2
+		    day3
+		    day4
+		    day5
+		    day6
+		  }
+		}
+		
+		fragment taskPadEditor on Plan {
+		  todos {
+		    content
+		    hidden
+		  }
+		}
+		`,
+	"timeManage_remove_Mutation":`mutation timeManage_remove_Mutation(
+		  $child: ObjectID
+		  $content: String
+		  $knowledge: ObjectID
+		) {
+		  plan_todos_remove(_id: $child, content: $content, knowledge: $knowledge) {
+		    ...core
+		    id
+		  }
+		}
+		
+		fragment core on Plan {
+		  goal
+		  score
+		  week
+		  ...scorePad
+		  ...taskPad
+		  ...taskPadEditor
+		}
+		
+		fragment scorePad on Plan {
+		  todo
+		  goal
+		  score
+		}
+		
+		fragment taskPad on Plan {
+		  todos {
+		    knowledge {
+		      id
+		      fields
+		    }
+		    content
+		    hidden
+		    day0
+		    day1
+		    day2
+		    day3
+		    day4
+		    day5
+		    day6
+		  }
+		}
+		
+		fragment taskPadEditor on Plan {
+		  todos {
+		    content
+		    hidden
+		  }
+		}
+		`,
+	"timeManage_reset_Mutation":`mutation timeManage_reset_Mutation(
+		  $child: ObjectID
+		) {
+		  plan_reset(_id: $child) {
+		    ...core
+		    id
+		  }
+		}
+		
+		fragment core on Plan {
+		  goal
+		  score
+		  week
+		  ...scorePad
+		  ...taskPad
+		  ...taskPadEditor
+		}
+		
+		fragment scorePad on Plan {
+		  todo
+		  goal
+		  score
+		}
+		
+		fragment taskPad on Plan {
+		  todos {
+		    knowledge {
+		      id
+		      fields
+		    }
+		    content
+		    hidden
+		    day0
+		    day1
+		    day2
+		    day3
+		    day4
+		    day5
+		    day6
+		  }
+		}
+		
+		fragment taskPadEditor on Plan {
+		  todos {
+		    content
+		    hidden
+		  }
+		}
+		`,
+	"timeManage_status_Mutation":`mutation timeManage_status_Mutation(
+		  $child: ObjectID
+		  $plan: JSON
+		) {
+		  plan_update(_id: $child, plan: $plan) {
+		    ...core
+		    id
+		  }
+		}
+		
+		fragment core on Plan {
+		  goal
+		  score
+		  week
+		  ...scorePad
+		  ...taskPad
+		  ...taskPadEditor
+		}
+		
+		fragment scorePad on Plan {
+		  todo
+		  goal
+		  score
+		}
+		
+		fragment taskPad on Plan {
+		  todos {
+		    knowledge {
+		      id
+		      fields
+		    }
+		    content
+		    hidden
+		    day0
+		    day1
+		    day2
+		    day3
+		    day4
+		    day5
+		    day6
+		  }
+		}
+		
+		fragment taskPadEditor on Plan {
+		  todos {
+		    content
+		    hidden
+		  }
+		}
+		`,
+	"timeManage_taskDone_Mutation":`mutation timeManage_taskDone_Mutation(
+		  $child: ObjectID
+		  $task: String
+		  $knowledge: ObjectID
+		  $day: Int
+		) {
+		  plan_task_done(_id: $child, content: $task, knowledge: $knowledge, day: $day) {
+		    score
+		    plan {
+		      ...core
+		      id
+		    }
+		    id
+		  }
+		}
+		
+		fragment core on Plan {
+		  goal
+		  score
+		  week
+		  ...scorePad
+		  ...taskPad
+		  ...taskPadEditor
+		}
+		
+		fragment scorePad on Plan {
+		  todo
+		  goal
+		  score
+		}
+		
+		fragment taskPad on Plan {
+		  todos {
+		    knowledge {
+		      id
+		      fields
+		    }
+		    content
+		    hidden
+		    day0
+		    day1
+		    day2
+		    day3
+		    day4
+		    day5
+		    day6
+		  }
+		}
+		
+		fragment taskPadEditor on Plan {
+		  todos {
+		    content
+		    hidden
+		  }
+		}
+		`,
+	"timeManage_toggle_Mutation":`mutation timeManage_toggle_Mutation(
+		  $child: ObjectID
+		  $i: Int
+		) {
+		  plan_todos_toggle(_id: $child, i: $i) {
+		    ...core
+		    id
+		  }
+		}
+		
+		fragment core on Plan {
+		  goal
+		  score
+		  week
+		  ...scorePad
+		  ...taskPad
+		  ...taskPadEditor
+		}
+		
+		fragment scorePad on Plan {
+		  todo
+		  goal
+		  score
+		}
+		
+		fragment taskPad on Plan {
+		  todos {
+		    knowledge {
+		      id
+		      fields
+		    }
+		    content
+		    hidden
+		    day0
+		    day1
+		    day2
+		    day3
+		    day4
+		    day5
+		    day6
+		  }
+		}
+		
+		fragment taskPadEditor on Plan {
+		  todos {
+		    content
+		    hidden
+		  }
+		}
+		`,
+	"timeManage_top_Mutation":`mutation timeManage_top_Mutation(
+		  $child: ObjectID
+		  $i: Int
+		) {
+		  plan_todos_top(_id: $child, i: $i) {
+		    ...core
+		    id
+		  }
+		}
+		
+		fragment core on Plan {
+		  goal
+		  score
+		  week
+		  ...scorePad
+		  ...taskPad
+		  ...taskPadEditor
+		}
+		
+		fragment scorePad on Plan {
+		  todo
+		  goal
+		  score
+		}
+		
+		fragment taskPad on Plan {
+		  todos {
+		    knowledge {
+		      id
+		      fields
+		    }
+		    content
+		    hidden
+		    day0
+		    day1
+		    day2
+		    day3
+		    day4
+		    day5
+		    day6
+		  }
+		}
+		
+		fragment taskPadEditor on Plan {
+		  todos {
+		    content
+		    hidden
+		  }
+		}
+		`,
+	"timeManage_up_Mutation":`mutation timeManage_up_Mutation(
+		  $child: ObjectID
+		  $i: Int
+		) {
+		  plan_todos_up(_id: $child, i: $i) {
+		    ...core
+		    id
+		  }
+		}
+		
+		fragment core on Plan {
+		  goal
+		  score
+		  week
+		  ...scorePad
+		  ...taskPad
+		  ...taskPadEditor
+		}
+		
+		fragment scorePad on Plan {
+		  todo
+		  goal
+		  score
+		}
+		
+		fragment taskPad on Plan {
+		  todos {
+		    knowledge {
+		      id
+		      fields
+		    }
+		    content
+		    hidden
+		    day0
+		    day1
+		    day2
+		    day3
+		    day4
+		    day5
+		    day6
+		  }
+		}
+		
+		fragment taskPadEditor on Plan {
+		  todos {
+		    content
+		    hidden
+		  }
+		}
+		`,
+	"child_create_Mutation":`mutation child_create_Mutation(
+		  $name: String!
+		  $photo: String
+		  $birthday: Date
+		  $gender: Gender
+		) {
+		  child_create(name: $name, photo: $photo, birthday: $birthday, gender: $gender) {
+		    id
+		    createdAt
+		  }
+		}
+		`,
+	"child_planupdate_Mutation":`mutation child_planupdate_Mutation(
+		  $id: ObjectID
+		  $plan: JSON
+		) {
+		  plan_update(_id: $id, plan: $plan) {
+		    id
+		    icon
+		    todo
+		  }
+		}
+		`,
+	"child_remove_Mutation":`mutation child_remove_Mutation(
+		  $id: ObjectID!
+		) {
+		  child_remove(_id: $id)
+		}
+		`,
+	"child_update_Mutation":`mutation child_update_Mutation(
+		  $id: ObjectID!
+		  $photo: String
+		  $name: String
+		  $birthday: Date
+		  $gender: Gender
+		) {
+		  child_update(_id: $id, photo: $photo, name: $name, birthday: $birthday, gender: $gender)
+		}
+		`,
+	"plan_auto_Mutation":`mutation plan_auto_Mutation(
+		  $child: ObjectID
+		) {
+		  plan_auto(_id: $child) {
+		    ...plan
+		    id
+		  }
+		}
+		
+		fragment plan on Plan {
+		  caps
+		  goals
+		  months {
+		    goals
+		    knowledges {
+		      id
+		      title
+		    }
+		  }
+		}
+		`,
+	"plan_update_Mutation":`mutation plan_update_Mutation(
+		  $child: ObjectID
+		  $plan: JSON
+		) {
+		  plan_update(_id: $child, plan: $plan) {
+		    ...plan
+		    id
+		  }
+		}
+		
+		fragment plan on Plan {
+		  caps
+		  goals
+		  months {
+		    goals
+		    knowledges {
+		      id
+		      title
+		    }
+		  }
+		}
+		`,
+	"src_account_Query":`query src_account_Query {
+		  me {
+		    ...account
+		    id
+		  }
+		}
+		
+		fragment account on User {
+		  id
+		  username
+		  photo
+		  children {
+		    id
+		    photo
+		    name
+		  }
+		}
+		`,
+	"src_childComments_Query":`query src_childComments_Query(
+		  $parent: ObjectID!
+		  $count: Int = 10
+		  $cursor: JSON
+		) {
+		  ...src_childComments
+		}
+		
+		fragment src_childComments on Query {
+		  comments: child_comments(parent: $parent, last: $count, before: $cursor) {
+		    edges {
+		      node {
+		        __typename
+		        id
+		        content
+		        type
+		        createdAt
+		        author {
+		          id
+		          name
+		          photo
+		        }
+		        isOwner
+		      }
+		      cursor
+		    }
+		    pageInfo {
+		      hasPreviousPage
+		      startCursor
+		    }
+		  }
+		}
+		`,
+	"src_child_Query":`query src_child_Query(
+		  $id: ObjectID
+		) {
+		  me {
+		    child(_id: $id) {
+		      ...child
+		      id
+		    }
+		    id
+		  }
+		}
+		
+		fragment child on Child {
+		  id
+		  name
+		  photo
+		  birthday
+		  gender
+		  totalScore: score
+		  plan {
+		    score
+		    goal
+		    todo
+		    icon
+		    id
+		  }
+		}
+		`,
+	"src_comment_Query":`query src_comment_Query(
+		  $parent: ObjectID!
+		  $count: Int = 10
+		  $cursor: JSON
+		) {
+		  ...src_knowledgeComments
+		}
+		
+		fragment src_knowledgeComments on Query {
+		  comments: knowledge_comments(parent: $parent, last: $count, before: $cursor) {
+		    edges {
+		      node {
+		        __typename
+		        id
+		        content
+		        type
+		        createdAt
+		        author {
+		          id
+		          name
+		          photo
+		        }
+		        isOwner
+		      }
+		      cursor
+		    }
+		    pageInfo {
+		      hasPreviousPage
+		      startCursor
+		    }
+		  }
+		}
+		`,
+	"src_knowledge_Query":`query src_knowledge_Query(
+		  $id: ObjectID
+		  $child: ObjectID
+		) {
+		  knowledge(_id: $id) {
+		    ...info_knowledge
+		    id
+		  }
+		}
+		
+		fragment info_knowledge on Knowledge {
+		  title
+		  id
+		  inTask(child: $child)
+		  hasHomework
+		  hasPrint
+		  sale
+		  isMyWork
+		  summary
+		  figure
+		  template
+		  files {
+		    crc
+		    url
+		    id
+		  }
+		  ...content_knowledge
+		}
+		
+		fragment content_knowledge on Knowledge {
+		  id
+		  title
+		  content
+		  summary
+		  createdAt
+		  category
+		  keywords
+		  figure
+		  author {
+		    name
+		    id
+		  }
+		}
+		`,
+	"src_knowleges_Query":`query src_knowleges_Query(
+		  $title: String
+		  $categories: [String]
+		  $tags: [String]
+		  $count: Int
+		  $cursor: JSON
+		) {
+		  ...list
+		}
+		
+		fragment list on Query {
+		  knowledges(title: $title, categories: $categories, tags: $tags, first: $count, after: $cursor) {
+		    edges {
+		      node {
+		        __typename
+		        id
+		        title
+		        ...listItem
+		      }
+		      cursor
+		    }
+		    pageInfo {
+		      hasNextPage
+		      endCursor
+		    }
+		  }
+		}
+		
+		fragment listItem on Knowledge {
+		  id
+		  title
+		  summary
+		  photos
+		  zans
+		  createdAt
+		  updatedAt
+		}
+		`,
+	"src_plan_Query":`query src_plan_Query(
+		  $child: ObjectID
+		) {
+		  me {
+		    child(_id: $child) {
+		      plan {
+		        ...plan
+		        id
+		      }
+		      id
+		    }
+		    id
+		  }
+		}
+		
+		fragment plan on Plan {
+		  caps
+		  goals
+		  months {
+		    goals
+		    knowledges {
+		      id
+		      title
+		    }
+		  }
+		}
+		`,
+	"src_prefetch_Query":`query src_prefetch_Query {
+		  me {
+		    id
+		    token
+		    children {
+		      id
+		      name
+		      photo
+		    }
+		  }
+		}
+		`,
+	"src_profile_Query":`query src_profile_Query {
+		  me {
+		    id
+		    username
+		    birthday
+		    gender
+		    location
+		    photo
+		    signature
+		  }
+		}
+		`,
+	"src_publishes_Query":`query src_publishes_Query(
+		  $child: ObjectID
+		) {
+		  me {
+		    child(_id: $child) {
+		      ...list_publishes
+		      id
+		    }
+		    id
+		  }
+		}
+		
+		fragment list_publishes on Child {
+		  publishs {
+		    id
+		    name
+		    template
+		    from
+		    to
+		    copies
+		  }
+		}
+		`,
+	"src_scorepad_Query":`query src_scorepad_Query(
+		  $child: ObjectID
+		) {
+		  me {
+		    child(_id: $child) {
+		      plan {
+		        ...scorePad
+		        id
+		      }
+		      id
+		    }
+		    id
+		  }
+		}
+		
+		fragment scorePad on Plan {
+		  todo
+		  goal
+		  score
+		}
+		`,
+	"src_timeManage_Query":`query src_timeManage_Query(
+		  $child: ObjectID
+		) {
+		  me {
+		    child(_id: $child) {
+		      plan {
+		        ...core
+		        id
+		      }
+		      id
+		    }
+		    id
+		  }
+		}
+		
+		fragment core on Plan {
+		  goal
+		  score
+		  week
+		  ...scorePad
+		  ...taskPad
+		  ...taskPadEditor
+		}
+		
+		fragment scorePad on Plan {
+		  todo
+		  goal
+		  score
+		}
+		
+		fragment taskPad on Plan {
+		  todos {
+		    knowledge {
+		      id
+		      fields
+		    }
+		    content
+		    hidden
+		    day0
+		    day1
+		    day2
+		    day3
+		    day4
+		    day5
+		    day6
+		  }
+		}
+		
+		fragment taskPadEditor on Plan {
+		  todos {
+		    content
+		    hidden
+		  }
+		}
+		`
 }

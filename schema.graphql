@@ -57,7 +57,7 @@ type File {
 type FileToken {
   token: String!
   expires: Int!
-  id: ObjectID
+  id: String
 }
 
 type FinishedTask implements Node {
@@ -127,6 +127,18 @@ type KnowledgeEdge {
   cursor: JSON
 }
 
+type Log implements Node {
+  id: ID!
+  type: String
+  operation: String
+  variables: JSON
+  status: Int
+  startedAt: Date
+  time: Int
+  report: JSON
+  author: User
+}
+
 type MonthPlan {
   goals: [String]
   knowledges: [Knowledge]
@@ -136,18 +148,17 @@ type Mutation {
   requestToken(contact: String!): Boolean
   login(contact: String!, token: String!, name: String): User
   logout: Boolean
-  user_update(photo:String,username: String, birthday: Date, gender: Gender, location: String, signature: String): Date
+  user_update(photo: String, username: String, birthday: Date, gender: Gender, location: String, signature: String): Date
   role_create(name: String): Role
   role_update(_id: ObjectID!, name: String): Date
   role_remove(_id: ObjectID!): Boolean
   role_user_add(_id: ObjectID!, users: [String!]!): Date
   role_user_remove(_id: ObjectID!, users: [String!]!): Date
-  file_link(url: String!, id: ID!, field: String!): Boolean
-  file_token: FileToken
+  file_create(_id: String!, host: ID!, bucket: String, size: Int, crc: Int, mimeType: String, imageInfo: JSON): File
   file_clean(host: ID!): Boolean
   child_remove(_id: ObjectID!): Boolean
   child_create(name: String!, photo: String, birthday: Date, gender: Gender): Child
-  child_update(_id: ObjectID!, photo: String, name: String, photo: String, birthday: Date, icon: String, gender: Gender): Date
+  child_update(_id: ObjectID!, photo: String, name: String, birthday: Date, icon: String, gender: Gender): Date
   plan_update(_id: ObjectID, plan: JSON): Plan
   plan_task_done(_id: ObjectID, content: String, knowledge: ObjectID, day: Int, props: JSON): Child
   plan_reset(_id: ObjectID): Plan
@@ -210,10 +221,11 @@ type Query {
   version: String!
   schema: String!
   me: User!
-  child_comments(parent: ObjectID, last: Int, before: JSON): ChildCommentConnection
-  knowledge_comments(parent: ObjectID, last: Int, before: JSON): KnowledgeCommentConnection
+  file_upload_token(key: String): FileToken
   knowledges(title: String, categories: [String], tags: [String], first: Int, after: JSON): KnowledgeConnection
   knowledge(_id: ObjectID): Knowledge
+  knowledge_comments(parent: ObjectID, last: Int, before: JSON): KnowledgeCommentConnection
+  child_comments(parent: ObjectID, last: Int, before: JSON): ChildCommentConnection
 }
 
 type Role implements Node {

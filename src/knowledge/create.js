@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from "react"
 import {connect} from "react-redux"
-import {compose,branch,renderComponent} from "recompose"
+import {compose,branch,renderComponent,getContext} from "recompose"
 import {withMutation} from "qili/tools/recompose"
 import {graphql} from "react-relay"
 
@@ -46,6 +46,11 @@ export class CreateKnowledge extends Component{
 				<CommandBar className="footbar"
 					items={[
 						{
+							action:"Back",
+							label:"放弃",
+							onSelect:{cancel}
+						}
+						,{
 							action:"Preview"
 							,label:"预览打印"
 							,onSelect:a=>{
@@ -61,11 +66,6 @@ export class CreateKnowledge extends Component{
 							action:"save"
 							,label:"保存"
 							,onSelect:create
-						}
-						,{
-							action:"cancel"
-							,label:"放弃"
-							,onSelect:cancel
 						}
 						,{
 							action:"newVersion"
@@ -92,7 +92,7 @@ export default compose(
 		`,
 	}),
 	withGetToken,
-	connect(null,(dispatch,{selectedDocx, knowledge, toKnowledge, mutate, getToken})=>({
+	connect(null,(dispatch,{selectedDocx, knowledge, toKnowledge, mutate, getToken,goBack})=>({
 		create(){
 			selectedDocx.upload({
 					getToken:key=>getToken(key)
@@ -106,7 +106,10 @@ export default compose(
 					dispatch(ACTION.RESET())
 				})
 		},
-		cancel:()=>dispatch(ACTION.RESET()),
+		cancel:()=>{
+			goBack()
+			dispatch(ACTION.RESET())
+		},
 		selectDocx: ()=>dispatch(ACTION.SELECT_DOCX()),
 		preview: props=>dispatch(ACTION.PREVIEW(knowledge,props))
 	})),

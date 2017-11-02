@@ -328,11 +328,13 @@ const router=(
 						},
 						goBack:()=>router.goBack(),
 						toKnowledge: id=>router.push(`/knowledge/${id}`),
+						toCreate: ()=>router.push(`/knowledge/create`),
 					})),
 					
 				)(Knowledges)}/>
 
 				<Route path="create" component={compose(
+					withNavigator(),
 					connect(state=>({
 						selectedDocx:state[DOMAIN].selectedDocx,
 						knowledge: state[DOMAIN].selectedDocx && state[DOMAIN].selectedDocx.knowledge,
@@ -340,6 +342,9 @@ const router=(
 					getContext({router:PropTypes.object}),
 					withProps(({router})=>({
 						toKnowledge: id=>router.replace(`/knowledge/${id}`),
+						goBack(){
+							router.goBack()
+						}
 					}))
 				)(NewKnowledge)}/>
 

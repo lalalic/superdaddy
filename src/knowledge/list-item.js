@@ -6,7 +6,8 @@ import {relative} from 'components/calendar'
 
 export class Item extends Component{
     render(){
-        const {model:{photos=[]}}=this.props
+        let {model:{photos=[]}}=this.props
+		photos=photos||[]
         switch(photos.length){
         case 0:
             return this._0photo()

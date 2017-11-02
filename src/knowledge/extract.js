@@ -27,7 +27,7 @@ export default function extract(file){
 			category=splitKey(category)
 
         return {
-			toJSON:a=>null,
+			toJSON:a=>undefined,
             knowledge: {
                 content,
                 title:title||name,

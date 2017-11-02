@@ -58,16 +58,22 @@ module.exports={
 				}
 				
 				if(categories && categories.length){
-					cursor=cursor.filter({category:{$in:categories}})
-				}else if(tags && tags.length){
-					cursor=cursor.filter({tags:{$in:tags}})
-				}else if(mine){
+					cursor=cursor.filter({category:{$all:categories}})
+				}
+				
+				if(tags && tags.length){
+					cursor=cursor.filter({tags:{$all:tags}})
+				}
+				
+				if(mine){
 					cursor=cursor.filter({author:user._id})
-				}else if(favorite){
+				}
+				
+				if(favorite){
 					
-				}else if(tasked){
-					
-				}else if(tasking){
+				}
+				
+				if(tasking){
 					const {User,Child}=module.exports.resolver
 					return User.children(user,{},context)
 						.then(children=>children.map(child=>Child.plan(child,{},context)))
@@ -78,7 +84,9 @@ module.exports={
 							return collected
 						},[]))
 						.then(knowledges=>cursor.filter({_id:{$in:knowledges}}))
-				}
+				}else if(tasked){
+					
+				} 
 				return cursor
 			})
 		},
@@ -97,24 +105,29 @@ module.exports={
 			return app.patchEntity("users", {_id,author:user._id}, {...$set, author:user._id})
 		},
 		
-		knowledge_create(_, {knowledge:{photos=[], ...knowledge}}, {app,user}){
-			return app.createEntity("knowledges", {...knowledge, photos, author:user._id})
-				.then(knowledge=>{
-					if(photos.length){
-						Cloud.file_link(`knowledges:${knowledge._id}`,photos)
+		knowledge_create(_, {knowledge:{title, ...knowledge}}, {app,user}){
+			if(!title)
+				throw new Error("必须有题目")
+			return app.get1Entity("knowledges",{title,author:user._id})
+				.then(a=>{
+					if(a){
+						throw new Error(`已经存在了`)
 					}
-					return knowledge
 				})
+				.then(()=>app.createEntity("knowledges", {...knowledge,title, author:user._id}))
 		},
 		
-		knowledge_update(_, {_id, newPhotos, knowledge}, {app,user}){
-			return app.patchEntity("knowledges", {_id}, {...knowledge,author:user._id})
-				.then(updatedAt=>{
-					if(newPhotos){
-						Cloud.file_link(`knowledges:${_id}`,newPhotos)
-					}
-				})
-				.then(()=>app.get1Entity("knowledges", {_id}))
+		knowledge_update(_, {_id, knowledge:{title,...knowledge}}, {app,user}){
+			if(title!=undefined && !title)
+				throw new Error("必须有题目")
+			return Promise.resolve(title ? app.get1Entity("knowledges",{title,author:user._id})
+					.then(a=>{
+						if(a && a._id!==_id){
+							throw new Error(`已经存在了`)
+						}
+					}) : undefined)
+					.then(()=>app.patchEntity("knowledges", {_id}, {...knowledge,title,author:user._id}))
+					.then(()=>app.get1Entity("knowledges", {_id}))
 		},
 		
 		publish_create(_, doc, {app,user}){
@@ -394,6 +407,20 @@ module.exports={
 		
 		author({author},{},{app,user}){
 			return app.getDataLoader("users").load(author)
+		},
+		
+		summary({content,summary}){
+			if(summary)
+				return summary
+			let i0=content.indexOf("<p>")
+			if(i0!=-1){
+				i0+=3
+				let i1=content.indexOf("</p>",i0)
+				summary=content.substring(i0,i1)
+				if(summary.length>256)
+					return summary.substring(0,250)+'...'
+				return summary
+			}
 		}
 	},
 	
