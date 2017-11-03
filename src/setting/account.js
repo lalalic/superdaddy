@@ -1,4 +1,6 @@
-import React, {Component, PropTypes} from "react"
+import React, {Component} from "react"
+import PropTypes from "prop-types"
+
 import {compose, getContext, withProps} from "recompose"
 import {withMutation, withFragment} from "qili/tools/recompose"
 import {graphql} from "react-relay"

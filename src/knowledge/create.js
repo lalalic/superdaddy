@@ -1,4 +1,6 @@
-import React, {Component, PropTypes} from "react"
+import React, {Component} from "react"
+import PropTypes from "prop-types"
+
 import {connect} from "react-redux"
 import {compose,branch,renderComponent,getContext} from "recompose"
 import {withMutation} from "qili/tools/recompose"

@@ -1,4 +1,6 @@
-import React, {PropTypes} from "react"
+import React from "react"
+import PropTypes from "prop-types"
+
 import {connect} from "react-redux"
 import {compose, getContext, withProps, mapProps, withState,withContext,branch,renderComponent} from "recompose"
 import {withInit, withQuery, withPagination, withFragment} from "qili/tools/recompose"

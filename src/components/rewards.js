@@ -1,4 +1,6 @@
-import React, {Component, PropTypes} from "react"
+import React, {Component} from "react"
+import PropTypes from "prop-types"
+
 import {UI} from "qili-app"
 import ReactDOM from "react-dom"
 import {TextField, IconButton, Avatar} from 'material-ui'

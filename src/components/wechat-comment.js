@@ -1,4 +1,6 @@
-import React, {Component, PropTypes} from "react"
+import React, {Component} from "react"
+import PropTypes from "prop-types"
+
 import Comment, {ACTION} from "qili/components/comment"
 
 import AppBar from "components/app-bar"
