@@ -44,6 +44,26 @@ const fragment /*: ConcreteFragment*/ = {
     },
     {
       "kind": "RootArgument",
+      "name": "mine",
+      "type": "Boolean"
+    },
+    {
+      "kind": "RootArgument",
+      "name": "favorite",
+      "type": "Boolean"
+    },
+    {
+      "kind": "RootArgument",
+      "name": "tasked",
+      "type": "Boolean"
+    },
+    {
+      "kind": "RootArgument",
+      "name": "tasking",
+      "type": "Boolean"
+    },
+    {
+      "kind": "RootArgument",
       "name": "count",
       "type": "Int"
     },
@@ -80,9 +100,33 @@ const fragment /*: ConcreteFragment*/ = {
         },
         {
           "kind": "Variable",
+          "name": "favorite",
+          "variableName": "favorite",
+          "type": "Boolean"
+        },
+        {
+          "kind": "Variable",
+          "name": "mine",
+          "variableName": "mine",
+          "type": "Boolean"
+        },
+        {
+          "kind": "Variable",
           "name": "tags",
           "variableName": "tags",
           "type": "[String]"
+        },
+        {
+          "kind": "Variable",
+          "name": "tasked",
+          "variableName": "tasked",
+          "type": "Boolean"
+        },
+        {
+          "kind": "Variable",
+          "name": "tasking",
+          "variableName": "tasking",
+          "type": "Boolean"
         },
         {
           "kind": "Variable",

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash f77a1ff69b38ebe01005b80f2d8eacda
+ * @relayHash bcf2e23cc8645d04e5acb5b06373f324
  */
 
 /* eslint-disable */
@@ -18,6 +18,10 @@ query src_knowleges_Query(
   $title: String
   $categories: [String]
   $tags: [String]
+  $mine: Boolean
+  $favorite: Boolean
+  $tasked: Boolean
+  $tasking: Boolean
   $count: Int
   $cursor: JSON
 ) {
@@ -25,7 +29,7 @@ query src_knowleges_Query(
 }
 
 fragment list on Query {
-  knowledges(title: $title, categories: $categories, tags: $tags, first: $count, after: $cursor) {
+  knowledges(title: $title, categories: $categories, tags: $tags, mine: $mine, favorite: $favorite, tasked: $tasked, tasking: $tasking, first: $count, after: $cursor) {
     edges {
       node {
         __typename
@@ -72,6 +76,30 @@ const batch /*: ConcreteBatch*/ = {
         "kind": "LocalArgument",
         "name": "tags",
         "type": "[String]",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "mine",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "favorite",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "tasked",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "tasking",
+        "type": "Boolean",
         "defaultValue": null
       },
       {
@@ -125,6 +153,30 @@ const batch /*: ConcreteBatch*/ = {
       },
       {
         "kind": "LocalArgument",
+        "name": "mine",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "favorite",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "tasked",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "tasking",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
         "name": "count",
         "type": "Int",
         "defaultValue": null
@@ -158,15 +210,39 @@ const batch /*: ConcreteBatch*/ = {
           },
           {
             "kind": "Variable",
+            "name": "favorite",
+            "variableName": "favorite",
+            "type": "Boolean"
+          },
+          {
+            "kind": "Variable",
             "name": "first",
             "variableName": "count",
             "type": "Int"
           },
           {
             "kind": "Variable",
+            "name": "mine",
+            "variableName": "mine",
+            "type": "Boolean"
+          },
+          {
+            "kind": "Variable",
             "name": "tags",
             "variableName": "tags",
             "type": "[String]"
+          },
+          {
+            "kind": "Variable",
+            "name": "tasked",
+            "variableName": "tasked",
+            "type": "Boolean"
+          },
+          {
+            "kind": "Variable",
+            "name": "tasking",
+            "variableName": "tasking",
+            "type": "Boolean"
           },
           {
             "kind": "Variable",
@@ -310,15 +386,39 @@ const batch /*: ConcreteBatch*/ = {
           },
           {
             "kind": "Variable",
+            "name": "favorite",
+            "variableName": "favorite",
+            "type": "Boolean"
+          },
+          {
+            "kind": "Variable",
             "name": "first",
             "variableName": "count",
             "type": "Int"
           },
           {
             "kind": "Variable",
+            "name": "mine",
+            "variableName": "mine",
+            "type": "Boolean"
+          },
+          {
+            "kind": "Variable",
             "name": "tags",
             "variableName": "tags",
             "type": "[String]"
+          },
+          {
+            "kind": "Variable",
+            "name": "tasked",
+            "variableName": "tasked",
+            "type": "Boolean"
+          },
+          {
+            "kind": "Variable",
+            "name": "tasking",
+            "variableName": "tasking",
+            "type": "Boolean"
           },
           {
             "kind": "Variable",
@@ -333,12 +433,16 @@ const batch /*: ConcreteBatch*/ = {
         "filters": [
           "title",
           "categories",
-          "tags"
+          "tags",
+          "mine",
+          "favorite",
+          "tasked",
+          "tasking"
         ]
       }
     ]
   },
-  "text": "query src_knowleges_Query(\n  $title: String\n  $categories: [String]\n  $tags: [String]\n  $count: Int\n  $cursor: JSON\n) {\n  ...list\n}\n\nfragment list on Query {\n  knowledges(title: $title, categories: $categories, tags: $tags, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        id\n        title\n        ...listItem\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n\nfragment listItem on Knowledge {\n  id\n  title\n  summary\n  photos\n  zans\n  createdAt\n  updatedAt\n}\n"
+  "text": "query src_knowleges_Query(\n  $title: String\n  $categories: [String]\n  $tags: [String]\n  $mine: Boolean\n  $favorite: Boolean\n  $tasked: Boolean\n  $tasking: Boolean\n  $count: Int\n  $cursor: JSON\n) {\n  ...list\n}\n\nfragment list on Query {\n  knowledges(title: $title, categories: $categories, tags: $tags, mine: $mine, favorite: $favorite, tasked: $tasked, tasking: $tasking, first: $count, after: $cursor) {\n    edges {\n      node {\n        __typename\n        id\n        title\n        ...listItem\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n\nfragment listItem on Knowledge {\n  id\n  title\n  summary\n  photos\n  zans\n  createdAt\n  updatedAt\n}\n"
 };
 
 module.exports = batch;

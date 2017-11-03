@@ -9,7 +9,12 @@ import {blue300 as SELECTED, indigo900} from 'material-ui/styles/colors'
 
 const CAPS=["观察能力","自制力","专注力","记忆力"]
 const TAGS=["数学","语文","英语","二年级"]
-
+const CONDS=[
+	{label:"自己写的",key:"mine"},
+	{label:"收藏的",key:"favorite"},
+	{label:"作为任务的",key:"tasking"},
+	{label:"曾经作为任务的",key:"tasked"}
+]
 const style={
 	 chip: {
 		margin: 4,
@@ -32,16 +37,12 @@ export const QuickSearch=({
 			<Subheader>常用</Subheader>
 			<div style={style.wrapper}>
 				{
-					[{label:"自己写的",key:"mine"},
-					{label:"收藏的",key:"favorite"},
-					{label:"作为任务的",key:"tasking"},
-					{label:"曾经作为任务的",key:"tasked"}]
-						.map(({label,key})=>(
-							<Chip key={label}
-								style={style.chip}
-								backgroundColor={ph[key] ? SELECTED: undefined}
-								onClick={()=>toggle(key)}>{label}</Chip>
-						))
+					CONDS.map(({label,key})=>(
+						<Chip key={label}
+							style={style.chip}
+							backgroundColor={ph[key] ? SELECTED: undefined}
+							onClick={()=>toggle(key)}>{label}</Chip>
+					))
 				}
 			</div>
 		</div>
@@ -75,6 +76,12 @@ export const QuickSearch=({
 	</Popover>
 )
 
+export const toText=({categories,tags,...qs})=>{
+	let conds=[...categories, ...tags]
+	CONDS.forEach(({key,label})=>qs[key] && conds.push(label))
+	return conds.join(",")
+}
+
 export default compose(
 	connect(({superdaddy:{current}})=>({id:current})),
 	getContext({client: PropTypes.object}),
@@ -82,42 +89,6 @@ export default compose(
 		let child=client.get(id)
 		return {
 			childName: child.name,
-			search(condition){
-				let diff=Object.keys(qs)
-					.reduce((state,k)=>{
-						let v=qs[k]
-						switch(a){
-						case "categories":
-						case "tags":{
-							let changing=condition[k]
-							if(v){
-								if(changing){
-									if(v.length==changing.length){
-										if(v.find(a=>!changing.includes(a))){
-											state[k]=changing
-										}
-									}else{
-										state[k]=changing
-									}
-								}else{
-									state[k]=null
-								}
-							}else{
-								 state[k]=changing
-							}
-							break
-						}
-						default:
-							if(!!qs[k]!==!!condition[k]){
-								state[k]=!!condition[k]
-							}
-						}
-						return state
-					},{})
-				if(Object.keys(diff).length==0)
-					diff=undefined
-				close(diff)
-			}
 		}
 	}),
 	withStateHandlers(
@@ -128,7 +99,6 @@ export default compose(
 				return {[key]:!prev}
 			},
 			toggleTag: ({tags})=>a=>{
-				tags=tags||[]
 				let i=tags.indexOf(a)
 				if(i==-1){
 					return {tags:[...tags,a]}
@@ -139,7 +109,6 @@ export default compose(
 				}
 			},
 			toggleCategory: ({categories})=>a=>{
-				categories=categories||[]
 				let i=categories.indexOf(a)
 				if(i==-1){
 					return {categories:[...categories,a]}

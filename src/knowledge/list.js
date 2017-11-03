@@ -14,16 +14,14 @@ import IconBack from "material-ui/svg-icons/hardware/keyboard-arrow-left"
 import AppBar from "components/app-bar"
 
 import Item from "./list-item"
-import QuickSearch from "./quick-search"
+import QuickSearch,{toText} from "./quick-search"
 
 export class Knowledges extends Component{
-	state={title:""}
-	componentDidMount(){
-		this.setState({title:this.props.title})
-	}
+	state={title:this.props.title}
+
 	render(){
-        const {knowledges=[],search,minHeight,refresh, loadMore, canBack, goBack, toKnowledge}=this.props
-		const {title,conditionAnchor, ...qs}=this.state
+        const {knowledges=[],search,qs,minHeight,refresh, loadMore, canBack, goBack, toKnowledge}=this.props
+		const {conditionAnchor, title}=this.state
 		let iconElementLeft=null
 		if(canBack){
 			iconElementLeft=(
@@ -40,32 +38,30 @@ export class Knowledges extends Component{
 					iconElementLeft={iconElementLeft}
 
 					iconElementRight={
-						<IconButton onClick={e=>search(this.state)}>
+						<IconButton onClick={e=>search({title})}>
 							<IconSearch/>
 						</IconButton>
 					}
 
 					title={<TextField
-						hintText="查询"
+						hintText={`查询:${toText(qs)}`}
 						value={title||""}
 						onChange={(e,title)=>this.setState({title})}
-						onKeyDown={e=>e.keyCode==13 && search(this.state)}
+						onKeyDown={e=>e.keyCode==13 && search({title})}
 						onFocus={e=>this.setState({conditionAnchor:e.target})}
 						fullWidth={true}/>
 					}
 					/>
 				<QuickSearch
 					qs={qs}
+					style={{opacity:0.9}}
 					open={!!conditionAnchor}
 					anchorEl={conditionAnchor}
 					anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
 					targetOrigin={{horizontal: 'left', vertical: 'top'}}
-					close={condition=>{
-						this.setState({conditionAnchor:undefined,...condition}, ()=>{
-							if(condition){
-								search(this.state)
-							}
-						})
+					search={condition=>{
+						this.setState({conditionAnchor:undefined})
+						search(condition)
 					}}
 					/>
 				<PullToRefresh
@@ -86,7 +82,9 @@ export class Knowledges extends Component{
 export default compose(
 	withFragment(graphql`
 		fragment list on Query{
-			knowledges(title:$title,categories:$categories,tags:$tags,first:$count,after:$cursor) @connection(key:"list_knowledges"){
+			knowledges(title:$title,categories:$categories,tags:$tags,
+				mine:$mine, favorite:$favorite, tasked: $tasked, tasking:$tasking,
+				first:$count,after:$cursor) @connection(key:"list_knowledges"){
 				edges{
 					node{
 						id

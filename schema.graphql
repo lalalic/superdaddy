@@ -222,7 +222,7 @@ type Query {
   schema: String!
   me: User!
   file_upload_token(key: String): FileToken
-  knowledges(title: String, categories: [String], tags: [String], first: Int, after: JSON): KnowledgeConnection
+  knowledges(title: String, categories: [String], tags: [String], mine: Boolean, favorite: Boolean, tasked: Boolean, tasking: Boolean, first: Int, after: JSON): KnowledgeConnection
   knowledge(_id: ObjectID): Knowledge
   knowledge_comments(parent: ObjectID, last: Int, before: JSON): KnowledgeCommentConnection
   child_comments(parent: ObjectID, last: Int, before: JSON): ChildCommentConnection

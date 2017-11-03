@@ -103,7 +103,9 @@ module.exports=others=>`
 	}
 	
 	extend type Query{
-		knowledges(title:String, categories:[String], tags: [String], first:Int, after:JSON):KnowledgeConnection
+		knowledges(title:String, categories:[String], tags: [String], 
+			mine: Boolean, favorite: Boolean, tasked:Boolean, tasking:Boolean,
+			first:Int, after:JSON):KnowledgeConnection
 		knowledge(_id:ObjectID):Knowledge
 	}
 	

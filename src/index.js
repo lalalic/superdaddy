@@ -2,7 +2,8 @@ import React from "react"
 import PropTypes from "prop-types"
 
 import {connect} from "react-redux"
-import {compose, getContext, withProps, mapProps, withState,withContext,branch,renderComponent} from "recompose"
+import {compose, getContext, withProps, mapProps, 
+	withStateHandlers,withContext,branch,renderComponent} from "recompose"
 import {withInit, withQuery, withPagination, withFragment} from "qili/tools/recompose"
 
 import {graphql} from "react-relay"
@@ -26,16 +27,32 @@ export const ACTION={
 	CURRENT_CHILD: payload=>({
 		type:`@@${DOMAIN}/CURRENT_CHILD`,
 		payload,
+	}),
+	QUERY: payload=>({
+		type:`@@${DOMAIN}/QUERY`,
+		payload,
 	})
 }
 
-function reducer(state={},action){
+function reducer(state={
+		qs:{
+			title:"",
+			mine:false,
+			favorite:false,
+			tasked:false,
+			tasking:false,
+			categories:[],
+			tags:[]
+		}
+	},action){
 	const {type,payload}=action
 	state=knowledge_reducer(state,action)
 	state=plan_reducer(state,action)
 	switch(type){
 	case `@@${DOMAIN}/CURRENT_CHILD`:
 		return {...state, current:payload}
+	case `@@${DOMAIN}/QUERY`:
+		return {...state, qs:{...state.qs,...payload}}
 	}
 
 	return state
@@ -311,23 +328,24 @@ const router=(
 			<Route path="knowledge">
 				<IndexRoute component={compose(
 					withNavigator(),
-					withState("title","searchByTitle"),
-					withPagination(({title,categories,tags})=>({
-						variables:{
-							title,categories,tags,
-						},
+					connect(state=>({qs:state[DOMAIN].qs}),(dispatch)=>({
+						search:cond=>dispatch(ACTION.QUERY(cond))
+					})),
+					withPagination(({qs})=>({
+						variables:qs,
 						query: graphql`
-							query src_knowleges_Query($title:String,$categories:[String],$tags:[String],$count:Int,$cursor:JSON){
+							query src_knowleges_Query($title:String,$categories:[String],$tags:[String],
+								$mine:Boolean, $favorite:Boolean, $tasked:Boolean, $tasking:Boolean,
+								$count:Int,$cursor:JSON){
 								...list
 							}
 						`
 					})),
 					getContext({router:PropTypes.object}),
-					mapProps(({searchByTitle,router,...others})=>({
+					mapProps(({router,qs:{title, ...qs},...others})=>({
 						...others,
-						search({title}){
-							searchByTitle(title)
-						},
+						title,
+						qs,
 						goBack:()=>router.goBack(),
 						toKnowledge: id=>router.push(`/knowledge/${id}`),
 						toCreate: ()=>router.push(`/knowledge/create`),

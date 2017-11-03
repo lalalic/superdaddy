@@ -74,7 +74,7 @@ module.exports={
 				}
 				
 				if(tasking){
-					const {User,Child}=module.exports.resolver
+					const {User,Child}=module.exports
 					return User.children(user,{},context)
 						.then(children=>children.map(child=>Child.plan(child,{},context)))
 						.then(plans=>plans.reduce((collected,plan)=>{
