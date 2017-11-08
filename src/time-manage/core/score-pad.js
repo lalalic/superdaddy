@@ -45,12 +45,46 @@ export const ScorePad=({
 		<div>
 			<AppBar {...{title,iconElementRight}}/>
 			{action}
-			<div>
-				{smiles}
-			</div>
+			<Fun smiles={smiles} interval={2000}/>
 		</div>
 	)
 }
+
+class Fun extends Component{
+	state={x:this.random(),catched:0}
+	random(){
+		let max=this.props.smiles.length
+		let min=0
+		return parseInt(Math.random() * (max - min) + min);
+	}
+	
+	componentDidMount(){
+		const {interval=1000}=this.props
+		this.timer=setInterval(()=>this.setState({x:this.random()}),interval)
+	}
+	
+	componentWillUnmount(){
+		clearInterval(this.timer)
+	}
+	
+	render(){
+		const {smiles}=this.props
+		const {x,catched}=this.state
+		return (
+			<div>
+				<div className="sticky bottom right _2"
+					style={{fontSize:"xx-large",color:"orange"}}>
+					{catched}
+				</div>
+				{smiles.map((a,i)=>x==i ? React.cloneElement(a,{
+					className:`${a.props.className} pulse`,
+					onClick:()=>this.setState(({catched})=>({catched:catched+1}))
+				}) : a)}
+			</div>
+		)
+	}
+}
+
 
 export function layout(width,height,score,totalPerScreen){
 	if(totalPerScreen==score){
