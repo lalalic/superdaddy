@@ -1,5 +1,8 @@
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
 var webpack = require("webpack");
+var noVisualization = process.env.NODE_ENV === 'production' || process.argv.slice(-1)[0] == '-p'
 
 function envwebpack(env){
 	try{
@@ -17,6 +20,7 @@ module.exports=env=>Object.assign({
 	},
 	output:{
 		filename:"[name].js",
+		chunkFilename:"[name]-[chunkhash].js",
 		path:path.resolve(__dirname, 'dist')
 	},
 	devtool: 'source-map',
@@ -45,7 +49,24 @@ module.exports=env=>Object.assign({
 		net: "empty",
 		module: "empty"
 	},
-	plugins:[new webpack.ContextReplacementPlugin(/graphql-language-service-interface[\/\\]dist/, /\.js$/)],
+	plugins:[
+		new webpack.ContextReplacementPlugin(/graphql-language-service-interface[\/\\]dist/, /\.js$/),
+		/*
+		!noVisualization ? new BundleAnalyzerPlugin({analyzerMode: 'static' }) : null,
+		
+		new webpack.optimize.CommonsChunkPlugin({
+		  name: 'common',
+		  minChunks: ({context, resource }) => /node_modules/.test(resource),
+		}),
+		new webpack.optimize.CommonsChunkPlugin({
+			names: ['docx-template'],
+			minChunks: ({context, resource }) => /(docx4js|docx-template|jszip|escodegen)/.test(resource),
+		}),
+		new webpack.optimize.CommonsChunkPlugin('manifest'),
+		new HtmlWebpackPlugin({
+			title:"超级奶爸",
+		})*/
+	].filter(p=>!!p),
 	devServer:{
 		contentBase: path.join(__dirname, "dist"),
 		compress: true,

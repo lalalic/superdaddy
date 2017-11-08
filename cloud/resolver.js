@@ -216,10 +216,9 @@ module.exports={
 					applyPlan=Promise.resolve()
 				}
 				
-				return applyPlan.then(()=>{
-					plan.todos=todos
-					return app.patchEntity("plans",{_id},{todos})
-				}).then(()=>plan)
+				return applyPlan
+					.then(()=>app.patchEntity("plans",{_id},{todos,week}))
+					.then(()=>({...plan,todos,week}))
 			}
 			
 			saveFinishedTasks()
