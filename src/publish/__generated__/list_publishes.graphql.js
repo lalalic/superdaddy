@@ -9,13 +9,14 @@
 /*::
 import type {ConcreteFragment} from 'relay-runtime';
 export type list_publishes = {|
-  +publishs: ?$ReadOnlyArray<?{|
+  +publishes: ?$ReadOnlyArray<?{|
     +id: string;
     +name: ?string;
     +template: ?string;
     +from: ?any;
     +to: ?any;
     +copies: ?number;
+    +status: ?number;
   |}>;
 |};
 */
@@ -32,7 +33,7 @@ const fragment /*: ConcreteFragment*/ = {
       "alias": null,
       "args": null,
       "concreteType": "Publish",
-      "name": "publishs",
+      "name": "publishes",
       "plural": true,
       "selections": [
         {
@@ -75,6 +76,13 @@ const fragment /*: ConcreteFragment*/ = {
           "alias": null,
           "args": null,
           "name": "copies",
+          "storageKey": null
+        },
+        {
+          "kind": "ScalarField",
+          "alias": null,
+          "args": null,
+          "name": "status",
           "storageKey": null
         }
       ],

@@ -22,11 +22,11 @@ export const Current=compose(
 			}
 		}
 	}),
-)(({name,photo,switchChild})=>(
+)(({name,photo,switchChild,switchable=true})=>(
 	<FloatingActionButton 
 		mini={true}
 		style={{fontSize:"xx-small"}}
-		onClick={switchChild}>
+		onClick={switchable ? switchChild : undefined}>
 		{photo ? (<Avatar src={photo}/>) : name}
 	</FloatingActionButton>
 ))

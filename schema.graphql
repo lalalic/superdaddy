@@ -7,7 +7,7 @@ type Child implements Node {
   gender: Gender
   author: User
   score: Int
-  publishs: [Publish]
+  publishes: [Publish]
   plan: Plan
 }
 
@@ -174,8 +174,10 @@ type Mutation {
   knowledge_create(knowledge: JSON): Knowledge
   knowledge_update(_id: ObjectID, knowledge: JSON): Knowledge
   publish_create(template: String, child: ObjectID, from: Date, to: Date, name: String, copies: Int): Publish
+  publish_update(_id: ObjectID, template: String, child: ObjectID, from: Date, to: Date, name: String, copies: Int): Date
+  publish_done(_id: ObjectID): Date
   publish_remove(_id: ObjectID): Boolean
-  comment_create(parent: ID, content: String!, type: CommentType): Comment
+  comment_create(parent: ID, content: String!, type: CommentType, _id: ObjectID): Comment
 }
 
 interface Node {
@@ -215,6 +217,8 @@ type Publish implements Node {
   from: Date
   to: Date
   createdAt: Date
+  updatedAt: Date
+  status: Int
 }
 
 type Query {

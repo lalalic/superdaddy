@@ -1,65 +1,65 @@
 import React, {Component} from "react"
-import {compose, withProps} from "recompose"
+import {compose, mapProps,branch, renderComponent} from "recompose"
 import {withFragment, withMutation} from "qili/tools/recompose"
 
-import {FlatButton} from "material-ui"
+import {FlatButton, List, ListItem, Toggle} from "material-ui"
 import CommandBar from "qili/components/command-bar"
+import Empty from "qili/components/empty"
 
 import AppBar from "components/app-bar"
 
 import IconEdit from "material-ui/svg-icons/image/edit"
+import IconArrowRight from "material-ui/svg-icons/hardware/keyboard-arrow-right"
+import IconCreate from "material-ui/svg-icons/editor/border-color"
 
-export class List extends Component{
-	state={editing:0}
+import Create from "."
+
+export class Publishes extends Component{
 	render(){
-		const {data=[]}=this.props
-		const {editing}=this.state
+		const {publishes=[], toInfo,toCreate}=this.props
+		let content=<Empty/>
+		if(publishes.length){
+			content=publishes.map(({id,name,status, done=status==0})=><ListItem 
+				key={id} 
+				primaryText={name}
+				rightIcon={!done ? <IconArrowRight onClick={()=>toInfo(id)}/> : <span/>}
+				/>)
+			
+			content=<List>{content}</List>
+		}
+		
 		return (
 			<div>
-				<AppBar title={"出版列表"} 
-					iconElementRight={
-						<FlatButton label="编辑" 
-							icon={<IconEdit/>}
-							onClick={e=>this.setState({editing:1})}
-						/>
-					}
-				/>
-				<div>
-				{
-					data.map(({id,name})=>{
-						return <div>{name}</div>
-					})
-				}
-				</div>
+				<AppBar title={"出版列表"}/>
+				
+				{content}
 				
 				<CommandBar className="footbar"
-                    items={["Back","取消订单"]}/>
+                    items={["Back", {
+						action:"Create",
+						label:"创建",
+						onSelect:toCreate,
+						icon: <IconCreate/>
+					}]}/>
 			</div>
 		)
 	}
 }
 
 export default compose(
-	withFragment(graphql`
+	withFragment({child:graphql`
 		fragment list_publishes on Child{
-			publishs{
+			publishes{
 				id
 				name
 				template
 				from
 				to
 				copies
+				status
 			}
 		} 
-	`),
-	withProps((publishs)=>({
-		data:publishs.publishs
-	})),
-	withMutation(({})=>({
-		mutation: graphql`
-			mutation list_remove_Mutation($id:ObjectID){
-				publish_remove(_id:$id)
-			}
-		`,
-	}))
-)(List)
+	`}),
+	mapProps(({child:{publishes},toInfo,toCreate})=>({publishes:publishes||[],toInfo,toCreate})),
+	branch(({publishes})=> publishes && publishes.length==0, renderComponent(({toInfo})=><Create toInfo={toInfo}/>)),
+)(Publishes)

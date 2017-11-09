@@ -13,7 +13,7 @@ module.exports={
 		birthday:({birthday,bd})=>birthday||bd,
         id: ({_id})=>`childs:${_id}`,
 		score: ({score})=>score||0,
-		publishs(child, {}, {app}){
+		publishes(child, {}, {app}){
 			return app.findEntity("publishs", {child:child._id})
 		},
 		plan({_id},{},{app}){
@@ -131,11 +131,19 @@ module.exports={
 		},
 		
 		publish_create(_, doc, {app,user}){
-			return app.createEntity("publishs", {...doc, author:user._id})
+			return app.createEntity("publishs", {...doc, author:user._id,status:1})
+		},
+		
+		publish_update(_, {_id,...patch}, {app,user}){
+			return app.patchEntity("publishs",{author:user._id,_id}, {...patch})
+		},
+		
+		publish_done(_,{_id},{app,user}){
+			return app.patchEntity("publishs",{author:user._id,_id}, {status:0})
 		},
 		
 		publish_remove(_, {_id}, {app,user}){
-			return app.remove1Entity("publishs",{_id, author: user._id})
+			return app.remove1Entity("publishs",{_id, author: user._id, status:{$ne:0}})
 		},
 		
 		async plan_update(_,{_id, plan},{app,user}){
@@ -327,6 +335,7 @@ module.exports={
 				})
 		},
 		plan_auto(_,{_id},{app,user}){
+			debugger
 			return app.get1Entity("plans",{_id})
 				.then(plan=>{
 					let {goals=[], months=[]}=plan

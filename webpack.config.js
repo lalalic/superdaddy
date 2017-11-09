@@ -20,7 +20,7 @@ module.exports=env=>Object.assign({
 	},
 	output:{
 		filename:"[name].js",
-		chunkFilename:"[name]-[chunkhash].js",
+		chunkFilename:"[name].js",
 		path:path.resolve(__dirname, 'dist')
 	},
 	devtool: 'source-map',
@@ -51,8 +51,9 @@ module.exports=env=>Object.assign({
 	},
 	plugins:[
 		new webpack.ContextReplacementPlugin(/graphql-language-service-interface[\/\\]dist/, /\.js$/),
-		/*
+	/*	
 		!noVisualization ? new BundleAnalyzerPlugin({analyzerMode: 'static' }) : null,
+		
 		
 		new webpack.optimize.CommonsChunkPlugin({
 		  name: 'common',

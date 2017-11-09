@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 3daae5de740cabd5d024df39ec0f6816
+ * @relayHash 7ffe574c1c9bbad3d5b041d8bf22df76
  */
 
 /* eslint-disable */
@@ -9,20 +9,20 @@
 
 /*::
 import type {ConcreteBatch} from 'relay-runtime';
-export type list_remove_MutationVariables = {|
+export type publish_done_MutationVariables = {|
   id?: ?any;
 |};
-export type list_remove_MutationResponse = {|
-  +publish_remove: ?boolean;
+export type publish_done_MutationResponse = {|
+  +publish_done: ?any;
 |};
 */
 
 
 /*
-mutation list_remove_Mutation(
+mutation publish_done_Mutation(
   $id: ObjectID
 ) {
-  publish_remove(_id: $id)
+  publish_done(_id: $id)
 }
 */
 
@@ -38,7 +38,7 @@ const batch /*: ConcreteBatch*/ = {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "list_remove_Mutation",
+    "name": "publish_done_Mutation",
     "selections": [
       {
         "kind": "ScalarField",
@@ -51,7 +51,7 @@ const batch /*: ConcreteBatch*/ = {
             "type": "ObjectID"
           }
         ],
-        "name": "publish_remove",
+        "name": "publish_done",
         "storageKey": null
       }
     ],
@@ -60,7 +60,7 @@ const batch /*: ConcreteBatch*/ = {
   "id": null,
   "kind": "Batch",
   "metadata": {},
-  "name": "list_remove_Mutation",
+  "name": "publish_done_Mutation",
   "query": {
     "argumentDefinitions": [
       {
@@ -71,7 +71,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ],
     "kind": "Root",
-    "name": "list_remove_Mutation",
+    "name": "publish_done_Mutation",
     "operation": "mutation",
     "selections": [
       {
@@ -85,12 +85,12 @@ const batch /*: ConcreteBatch*/ = {
             "type": "ObjectID"
           }
         ],
-        "name": "publish_remove",
+        "name": "publish_done",
         "storageKey": null
       }
     ]
   },
-  "text": "mutation list_remove_Mutation(\n  $id: ObjectID\n) {\n  publish_remove(_id: $id)\n}\n"
+  "text": "mutation publish_done_Mutation(\n  $id: ObjectID\n) {\n  publish_done(_id: $id)\n}\n"
 };
 
 module.exports = batch;

@@ -9,7 +9,7 @@ module.exports=others=>`
 		author: User
 		score: Int
 		
-		publishs: [Publish]
+		publishes: [Publish]
 		
 		plan: Plan
 	}
@@ -94,6 +94,8 @@ module.exports=others=>`
 		from: Date
 		to: Date
 		createdAt: Date
+		updatedAt: Date
+		status: Int
 	}
 	
 	extend type User{
@@ -131,6 +133,8 @@ module.exports=others=>`
 		knowledge_update(_id:ObjectID, knowledge:JSON):Knowledge
 
 		publish_create(template:String, child:ObjectID, from: Date, to: Date, name: String, copies: Int):Publish
+		publish_update(_id:ObjectID, template:String, child:ObjectID, from: Date, to: Date, name: String, copies: Int): Date
+		publish_done(_id:ObjectID):Date
 		publish_remove(_id:ObjectID):Boolean
 	}
 	

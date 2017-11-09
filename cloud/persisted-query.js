@@ -34,24 +34,47 @@ module.exports={
 		  }
 		}
 		`,
-	"list_remove_Mutation":`mutation list_remove_Mutation(
+	"publish_create_Mutation":`mutation publish_create_Mutation(
+		  $template: String
+		  $from: Date
+		  $to: Date
+		  $child: ObjectID
+		  $copies: Int = 1
+		  $name: String
+		) {
+		  publish_create(template: $template, from: $from, to: $to, child: $child, copies: $copies, name: $name) {
+		    id
+		    name
+		    template
+		    from
+		    to
+		    copies
+		    status
+		  }
+		}
+		`,
+	"publish_done_Mutation":`mutation publish_done_Mutation(
+		  $id: ObjectID
+		) {
+		  publish_done(_id: $id)
+		}
+		`,
+	"publish_remove_Mutation":`mutation publish_remove_Mutation(
 		  $id: ObjectID
 		) {
 		  publish_remove(_id: $id)
 		}
 		`,
-	"publish_publish_Mutation":`mutation publish_publish_Mutation(
+	"publish_update_Mutation":`mutation publish_update_Mutation(
+		  $id: ObjectID
 		  $template: String
-		  $startAt: Date
-		  $endAt: Date
+		  $from: Date
+		  $to: Date
 		  $child: ObjectID
 		  $copies: Int = 1
-		  $bookName: String
+		  $name: String
 		) {
-		  publish_create(template: $template, from: $startAt, to: $endAt, child: $child, copies: $copies, name: $bookName) {
-		    id
-		    createdAt
-		  }
+		  publish_update(_id: $id, template: $template, from: $from, to: $to, child: $child, copies: $copies, name: $name)
 		}
 		`,
 	"account_setPhoto_Mutation":`mutation account_setPhoto_Mutation(
@@ -863,6 +886,10 @@ module.exports={
 		  $title: String
 		  $categories: [String]
 		  $tags: [String]
+		  $mine: Boolean
+		  $favorite: Boolean
+		  $tasked: Boolean
+		  $tasking: Boolean
 		  $count: Int
 		  $cursor: JSON
 		) {
@@ -870,7 +897,7 @@ module.exports={
 		}
 		
 		fragment list on Query {
-		  knowledges(title: $title, categories: $categories, tags: $tags, first: $count, after: $cursor) {
+		  knowledges(title: $title, categories: $categories, tags: $tags, mine: $mine, favorite: $favorite, tasked: $tasked, tasking: $tasking, first: $count, after: $cursor) {
 		    edges {
 		      node {
 		        __typename
@@ -961,13 +988,14 @@ module.exports={
 		}
 		
 		fragment list_publishes on Child {
-		  publishs {
+		  publishes {
 		    id
 		    name
 		    template
 		    from
 		    to
 		    copies
+		    status
 		  }
 		}
 		`,

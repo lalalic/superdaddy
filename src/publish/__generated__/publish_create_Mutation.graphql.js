@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 810b88abaf192bd3ce0a55a30bb7cea2
+ * @relayHash edeb39dea7b5732733daab71150d992c
  */
 
 /* eslint-disable */
@@ -9,35 +9,45 @@
 
 /*::
 import type {ConcreteBatch} from 'relay-runtime';
-export type publish_publish_MutationVariables = {|
+export type publish_create_MutationVariables = {|
   template?: ?string;
-  startAt?: ?any;
-  endAt?: ?any;
+  from?: ?any;
+  to?: ?any;
   child?: ?any;
   copies?: ?number;
-  bookName?: ?string;
+  name?: ?string;
 |};
-export type publish_publish_MutationResponse = {|
+export type publish_create_MutationResponse = {|
   +publish_create: ?{|
     +id: string;
-    +createdAt: ?any;
+    +name: ?string;
+    +template: ?string;
+    +from: ?any;
+    +to: ?any;
+    +copies: ?number;
+    +status: ?number;
   |};
 |};
 */
 
 
 /*
-mutation publish_publish_Mutation(
+mutation publish_create_Mutation(
   $template: String
-  $startAt: Date
-  $endAt: Date
+  $from: Date
+  $to: Date
   $child: ObjectID
   $copies: Int = 1
-  $bookName: String
+  $name: String
 ) {
-  publish_create(template: $template, from: $startAt, to: $endAt, child: $child, copies: $copies, name: $bookName) {
+  publish_create(template: $template, from: $from, to: $to, child: $child, copies: $copies, name: $name) {
     id
-    createdAt
+    name
+    template
+    from
+    to
+    copies
+    status
   }
 }
 */
@@ -53,13 +63,13 @@ const batch /*: ConcreteBatch*/ = {
       },
       {
         "kind": "LocalArgument",
-        "name": "startAt",
+        "name": "from",
         "type": "Date",
         "defaultValue": null
       },
       {
         "kind": "LocalArgument",
-        "name": "endAt",
+        "name": "to",
         "type": "Date",
         "defaultValue": null
       },
@@ -77,14 +87,14 @@ const batch /*: ConcreteBatch*/ = {
       },
       {
         "kind": "LocalArgument",
-        "name": "bookName",
+        "name": "name",
         "type": "String",
         "defaultValue": null
       }
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "publish_publish_Mutation",
+    "name": "publish_create_Mutation",
     "selections": [
       {
         "kind": "LinkedField",
@@ -105,13 +115,13 @@ const batch /*: ConcreteBatch*/ = {
           {
             "kind": "Variable",
             "name": "from",
-            "variableName": "startAt",
+            "variableName": "from",
             "type": "Date"
           },
           {
             "kind": "Variable",
             "name": "name",
-            "variableName": "bookName",
+            "variableName": "name",
             "type": "String"
           },
           {
@@ -123,7 +133,7 @@ const batch /*: ConcreteBatch*/ = {
           {
             "kind": "Variable",
             "name": "to",
-            "variableName": "endAt",
+            "variableName": "to",
             "type": "Date"
           }
         ],
@@ -142,7 +152,42 @@ const batch /*: ConcreteBatch*/ = {
             "kind": "ScalarField",
             "alias": null,
             "args": null,
-            "name": "createdAt",
+            "name": "name",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "template",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "from",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "to",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "copies",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "status",
             "storageKey": null
           }
         ],
@@ -154,7 +199,7 @@ const batch /*: ConcreteBatch*/ = {
   "id": null,
   "kind": "Batch",
   "metadata": {},
-  "name": "publish_publish_Mutation",
+  "name": "publish_create_Mutation",
   "query": {
     "argumentDefinitions": [
       {
@@ -165,13 +210,13 @@ const batch /*: ConcreteBatch*/ = {
       },
       {
         "kind": "LocalArgument",
-        "name": "startAt",
+        "name": "from",
         "type": "Date",
         "defaultValue": null
       },
       {
         "kind": "LocalArgument",
-        "name": "endAt",
+        "name": "to",
         "type": "Date",
         "defaultValue": null
       },
@@ -189,13 +234,13 @@ const batch /*: ConcreteBatch*/ = {
       },
       {
         "kind": "LocalArgument",
-        "name": "bookName",
+        "name": "name",
         "type": "String",
         "defaultValue": null
       }
     ],
     "kind": "Root",
-    "name": "publish_publish_Mutation",
+    "name": "publish_create_Mutation",
     "operation": "mutation",
     "selections": [
       {
@@ -217,13 +262,13 @@ const batch /*: ConcreteBatch*/ = {
           {
             "kind": "Variable",
             "name": "from",
-            "variableName": "startAt",
+            "variableName": "from",
             "type": "Date"
           },
           {
             "kind": "Variable",
             "name": "name",
-            "variableName": "bookName",
+            "variableName": "name",
             "type": "String"
           },
           {
@@ -235,7 +280,7 @@ const batch /*: ConcreteBatch*/ = {
           {
             "kind": "Variable",
             "name": "to",
-            "variableName": "endAt",
+            "variableName": "to",
             "type": "Date"
           }
         ],
@@ -254,7 +299,42 @@ const batch /*: ConcreteBatch*/ = {
             "kind": "ScalarField",
             "alias": null,
             "args": null,
-            "name": "createdAt",
+            "name": "name",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "template",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "from",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "to",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "copies",
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "status",
             "storageKey": null
           }
         ],
@@ -262,7 +342,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "mutation publish_publish_Mutation(\n  $template: String\n  $startAt: Date\n  $endAt: Date\n  $child: ObjectID\n  $copies: Int = 1\n  $bookName: String\n) {\n  publish_create(template: $template, from: $startAt, to: $endAt, child: $child, copies: $copies, name: $bookName) {\n    id\n    createdAt\n  }\n}\n"
+  "text": "mutation publish_create_Mutation(\n  $template: String\n  $from: Date\n  $to: Date\n  $child: ObjectID\n  $copies: Int = 1\n  $name: String\n) {\n  publish_create(template: $template, from: $from, to: $to, child: $child, copies: $copies, name: $name) {\n    id\n    name\n    template\n    from\n    to\n    copies\n    status\n  }\n}\n"
 };
 
 module.exports = batch;

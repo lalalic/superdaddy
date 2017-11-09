@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 5908967841f969cb1be1b00e5fd8291f
+ * @relayHash 20a94f774386ef94992db0968f4e9bfd
  */
 
 /* eslint-disable */
@@ -31,13 +31,14 @@ query src_publishes_Query(
 }
 
 fragment list_publishes on Child {
-  publishs {
+  publishes {
     id
     name
     template
     from
     to
     copies
+    status
   }
 }
 */
@@ -138,7 +139,7 @@ const batch /*: ConcreteBatch*/ = {
                 "alias": null,
                 "args": null,
                 "concreteType": "Publish",
-                "name": "publishs",
+                "name": "publishes",
                 "plural": true,
                 "selections": [
                   {
@@ -182,6 +183,13 @@ const batch /*: ConcreteBatch*/ = {
                     "args": null,
                     "name": "copies",
                     "storageKey": null
+                  },
+                  {
+                    "kind": "ScalarField",
+                    "alias": null,
+                    "args": null,
+                    "name": "status",
+                    "storageKey": null
                   }
                 ],
                 "storageKey": null
@@ -208,7 +216,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query src_publishes_Query(\n  $child: ObjectID\n) {\n  me {\n    child(_id: $child) {\n      ...list_publishes\n      id\n    }\n    id\n  }\n}\n\nfragment list_publishes on Child {\n  publishs {\n    id\n    name\n    template\n    from\n    to\n    copies\n  }\n}\n"
+  "text": "query src_publishes_Query(\n  $child: ObjectID\n) {\n  me {\n    child(_id: $child) {\n      ...list_publishes\n      id\n    }\n    id\n  }\n}\n\nfragment list_publishes on Child {\n  publishes {\n    id\n    name\n    template\n    from\n    to\n    copies\n    status\n  }\n}\n"
 };
 
 module.exports = batch;

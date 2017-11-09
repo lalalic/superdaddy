@@ -308,11 +308,11 @@ export default compose(
 			}
 		`,
 	})),
-	mapProps(({mutate, autoPlan,data:{goals:g,months:m,caps:c}, months=[...m],goals=[...g], caps=[...c],...others})=>({
+	mapProps(({mutate, autoPlan,data:{goals,months,caps},...others})=>({
 		...others,
-		caps,
-		goals,
-		months,
+		caps:caps||[],
+		goals:goals||[],
+		months:months||[],
 		autoPlan,
 		update(data){
 			return mutate({plan:data})

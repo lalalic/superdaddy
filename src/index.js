@@ -430,14 +430,24 @@ const router=(
 			</Route>
 
 			<Route path="publish">
-				<IndexRoute component={compose(
+				<Route path="create" component={compose(
 					getContext({router:PropTypes.object}),
-					withProps(({router})=>({
-						toList:()=>router.push("/publish/list")
+					mapProps(({router})=>({
+						toInfo:id=>router.replace(`/publish/${id}`)
+					}))
+				)(Publish)}/>
+				
+				<Route path=":id" component={compose(
+					getContext({router:PropTypes.object}),
+					mapProps(({params:{id}, router,})=>({
+						id,
+						toList: ()=>router.replace(`/publish`)
 					})),
+					
 				)(Publish)}/>
 
-				<Route path="list" component={compose(
+				<IndexRoute component={compose(
+					getContext({router:PropTypes.object}),
 					connect(state=>({child: state.superdaddy.current})),
 					withQuery(({child})=>({
 						variables:{child},
@@ -450,8 +460,15 @@ const router=(
 								}
 							}
 						`,
-					}))
+					})),
+					withProps(({router, data:{me:{child}}})=>({
+						child,
+						toInfo:id=>router.push(`/publish/${id}`),
+						toCreate: ()=>router.push('/publish/create')
+					})),
 				)(Publishes)}/>
+				
+				
 			</Route>
 
 			<Route path="plan"  component={compose(
