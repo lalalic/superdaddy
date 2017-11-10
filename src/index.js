@@ -263,12 +263,11 @@ const router=(
 							}
 						`,
 					})),
-					connect(({superdaddy:{current}})=>({current})),
 					getContext({
 						client:PropTypes.object,
 						router:PropTypes.object,
 					}),
-					withProps(({me,client,current,dispatch, router,params:{id}})=>({
+					withProps(({me,client,dispatch, router,params:{id}})=>({
 						id,
 						data:me.child,
 						switchChild(){
@@ -276,7 +275,6 @@ const router=(
 							dispatch(ACTION.CURRENT_CHILD(all.length ? all[0].id : null))
 						},
 						client:undefined,
-						current:undefined,
 						toMy: ()=>router.replace("/my"),
 						toPublish:()=>router.push("/publish"),
 						toPlan:()=>router.push("/plan"),
@@ -431,19 +429,48 @@ const router=(
 
 			<Route path="publish">
 				<Route path="create" component={compose(
-					getContext({router:PropTypes.object}),
-					mapProps(({router})=>({
-						toInfo:id=>router.replace(`/publish/${id}`)
-					}))
+					getContext({
+						router:PropTypes.object,
+						client:PropTypes.object,
+					}),
+					withProps(({router})=>({
+						toInfo:id=>router.replace(`/publish/${id}`),
+						info:null,
+					})),
+					connect((state,{client,router})=>({
+						child: client.get(state.superdaddy.current)
+					})),
 				)(Publish)}/>
 				
 				<Route path=":id" component={compose(
-					getContext({router:PropTypes.object}),
-					mapProps(({params:{id}, router,})=>({
+					getContext({
+						router:PropTypes.object,
+						client:PropTypes.object,
+					}),								
+					withProps(({params:{id}, router})=>({
 						id,
-						toList: ()=>router.replace(`/publish`)
+						toList: replace=>router[replace ? "replace" : "push"](`/publish`)
 					})),
-					
+					connect((state,{client})=>({
+						child: client.get(state.superdaddy.current)
+					})),
+					withQuery(({id,child})=>({
+						variables:{id,child:child.id},
+						query:graphql`
+							query src_publish_Query($child:ObjectID, $id:ObjectID){
+								me{
+									child(_id:$child){
+										publish(_id:$id){
+											...publish_info
+										}
+									}
+								}
+							}
+						`,
+					})),
+					withProps(({data})=>({
+						info:data.me.child.publish
+					}))
 				)(Publish)}/>
 
 				<IndexRoute component={compose(
@@ -459,12 +486,12 @@ const router=(
 									}
 								}
 							}
-						`,
+						`
 					})),
 					withProps(({router, data:{me:{child}}})=>({
 						child,
 						toInfo:id=>router.push(`/publish/${id}`),
-						toCreate: ()=>router.push('/publish/create')
+						toCreate: replace=>router[replace ? 'replace' : 'publish']('/publish/create')
 					})),
 				)(Publishes)}/>
 				

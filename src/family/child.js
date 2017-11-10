@@ -25,8 +25,8 @@ import {ACTION} from "main"
 export class Child extends Component{
 	state={nameError:null}
 
-	componentWillReceiveProps(next){
-		next.syncCurrent(next.id)
+	componentDidMount(){
+		this.props.syncCurrent()
 	}
 
 	render(){
@@ -242,11 +242,11 @@ export default compose(
 			}
 		`,
 	})),
-	connect(null,
-		(dispatch,{id, name, doRemove,showMessage,switchChild, toMy})=>({
-			syncCurrent(newID){
-				if(newID!=id)
-					dispatch(ACTION.CURRENT_CHILD(newID))
+	connect(state=>({current:state.superdaddy.current}),
+		(dispatch,{id, current, name, doRemove,showMessage,switchChild, toMy})=>({
+			syncCurrent(){
+				if(current!=id)
+					dispatch(ACTION.CURRENT_CHILD(id))
 			},
 
 			remove(){

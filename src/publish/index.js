@@ -1,9 +1,9 @@
 import React, {Component} from "react"
 import PropTypes from "prop-types"
 
-import {compose, getContext,withProps} from "recompose"
+import {compose, getContext,withProps,setPropTypes} from "recompose"
 import {connect} from "react-redux"
-import {withMutation} from "qili/tools/recompose"
+import {withMutation,withFragment} from "qili/tools/recompose"
 
 import pick from "lodash.pick"
 
@@ -30,11 +30,11 @@ export class Publisher extends Component{
 		name: `我的${new Date().getFullYear()-1}`,
 		from:(d=>{d.setFullYear(d.getFullYear()-1);return d})(new Date()),
 		to: new Date(),
-		...this.props.info
+		...pick(this.props.info,["template","copies","name","from","to"])
 	}
 
     render(){
-		const {id, child, preview, published, create,update,remove, toInfo,toList}=this.props
+		const {id, info, child, preview, published, create,update,remove, toInfo,toList}=this.props
 		const {template, copies, name, from, to}=this.state
 		const actions=["Back",
 			{
@@ -45,26 +45,36 @@ export class Publisher extends Component{
 			}
 		]
 		
-		if(id){
-			actions.push({
-				action:"Save",
-				label:"保存",
-				onSelect:e=>update({...this.state})
-			})
+		if(id){	
+			const changed=["template","copies","name","from","to"].reduce((collected,k)=>{
+				if(info[k]!=this.state[k])
+					collected[k]=this.state[k]
+				return collected
+			},{})
+			const isChanged=Object.keys(changed).length>0
 			
 			actions.push({
 				action:"Remove",
 				label:"删除",
-				onSelect:()=>remove().then(toList),
+				onSelect:()=>remove().then(()=>toList(true)),
 				icon:<IconRemove/>
 			})
 			
-			actions.push({
-				action:"Publish",
-				label:"出版",
-				onSelect:()=>published().then(toList),
-				icon:<IconPublish/>
-			})
+			if(isChanged){
+				actions.push({
+					action:"Save",
+					label:"保存",
+					primary:true,
+					onSelect:e=>update(changed)
+				})
+			}else{
+				actions.push({
+					action:"Publish",
+					label:"出版",
+					onSelect:()=>published().then(toList),
+					icon:<IconPublish/>
+				})
+			}			
 		}else{
 			actions.push({
 				action:"Save",
@@ -75,7 +85,7 @@ export class Publisher extends Component{
 		
         return(
             <div>
-				<AppBar title={`出版${child.name}的成长历程,留下永久的回忆`} switchable={!!!id}/>
+				<AppBar title={id ? name : `出版${child.name}的成长历程,留下永久的回忆`} switchable={!!!id}/>
 				<center>
 					<TextField
 						floatingLabelText="书名"
@@ -100,7 +110,7 @@ export class Publisher extends Component{
 					<TextField
 						floatingLabelText="打印多少本"
 						value={copies}
-						onChange={(e,copies)=>this.setState({copies})}
+						onChange={(e,copies)=>this.setState({copies:parseInt(copies)})}
 						type="number"/>
 				</center>
 				<GridList style={{padding:10}} padding={10}>
@@ -127,28 +137,28 @@ export class Publisher extends Component{
 }
 
 export default compose(
-	getContext({
-		client: PropTypes.object,
+	setPropTypes({
+		child:PropTypes.object.isRequired,
 	}),
-	
-	withProps(({client,id})=>{
-		let info=id ? pick(client.get(id),"template,copies,name,from,to".split(",")) : {}
-		if(info.from)
-			info.from=new Date(info.from)
-		if(info.to)
-			info.to=new Date(info.to)
-		return {info}
+	withFragment({
+		info:graphql`
+			fragment publish_info on Publish{
+				template
+				copies
+				name
+				from
+				to
+			}
+		`
 	}),
-	
-	connect((state,{client})=>({
-		child: client.get(state.superdaddy.current)
-	}),(dispatch,{child})=>({
+	withProps(({child,info})=>({
 		preview: info=>()=>{
 			info.child=child
 			return new Assembler(info)
 			.assemble()
 			.then(docx=>docx.save(`${child.name}.docx`))
-		}
+		},
+		info: info&&(({from,to})=>({...info, from:new Date(from), to:new Date(to)}))(info)
 	})),
 	
 	withMutation(({child})=>({

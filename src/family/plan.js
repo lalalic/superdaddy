@@ -308,52 +308,55 @@ export default compose(
 			}
 		`,
 	})),
-	mapProps(({mutate, autoPlan,data:{goals,months,caps},...others})=>({
-		...others,
-		caps:caps||[],
-		goals:goals||[],
-		months:months||[],
-		autoPlan,
-		update(data){
-			return mutate({plan:data})
-		},
-		removeMonthGoal(month,goal){
-			let {goals=[]}=(months[month]=months[month]||{})
-			goals=goals.filter(a=>a!=goal)
-			months=[...months]
-			months[month]={...months[month], goals}
-			return mutate({plan:{months}})
-		},
+	mapProps(({mutate, autoPlan,data:{goals,months,caps},...others})=>{
+		caps=[...caps]
+		goals=[...goals]
+		months=[...months]
+		return {
+			...others,
+			goals,months,caps,
+			autoPlan,
+			update(data){
+				return mutate({plan:data})
+			},
+			removeMonthGoal(month,goal){
+				let {goals=[]}=(months[month]=months[month]||{})
+				goals=goals.filter(a=>a!=goal)
+				months=[...months]
+				months[month]={...months[month], goals}
+				return mutate({plan:{months}})
+			},
 
-		addMonthGoal(month,goal){
-			let {goals=[]}=(months[month]=months[month]||{})
-			if(goals.includes(goal))
-				return
-			goals=[...goals,goal]
-			months=[...months]
-			months[month]={...months[month], goals}
-			return mutate({plan:{months}})
-		},
+			addMonthGoal(month,goal){
+				let {goals=[]}=(months[month]=months[month]||{})
+				if(goals.includes(goal))
+					return
+				goals=[...goals,goal]
+				months=[...months]
+				months[month]={...months[month], goals}
+				return mutate({plan:{months}})
+			},
 
-		removeMonthTask(month,knowledge){
-			let {knowledges=[]}=(months[month]=(months[month]||{}))
-			knowledges=knowledges.filter(a=>a!=knowledge)
-			months=[...months]
-			months[month]={...months[month], knowledges}
-			return mutate({plan:{months}})
-		},
+			removeMonthTask(month,knowledge){
+				let {knowledges=[]}=(months[month]=(months[month]||{}))
+				knowledges=knowledges.filter(a=>a!=knowledge)
+				months=[...months]
+				months[month]={...months[month], knowledges}
+				return mutate({plan:{months}})
+			},
 
-		addMonthTask(month,knowledge){
-			let {knowledges=[]}=(months[month]=months[month]||{})
-			if(knowledges.includes(knowledge))
-				return
-			knowledges=[...knowledges,knowledge]
-			months=[...months]
-			months[month]={...months[month], knowledges}
-			return mutate({plan:{months}})
-		},
-		searchKnowledges(title, caps){
+			addMonthTask(month,knowledge){
+				let {knowledges=[]}=(months[month]=months[month]||{})
+				if(knowledges.includes(knowledge))
+					return
+				knowledges=[...knowledges,knowledge]
+				months=[...months]
+				months[month]={...months[month], knowledges}
+				return mutate({plan:{months}})
+			},
+			searchKnowledges(title, caps){
 
+			}
 		}
-	})),
+	}),
 )(Plan)

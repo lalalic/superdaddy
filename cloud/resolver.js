@@ -16,6 +16,9 @@ module.exports={
 		publishes(child, {}, {app}){
 			return app.findEntity("publishs", {child:child._id})
 		},
+		publish(child,{_id},{app,user}){
+			return app.get1Entity("publishs",{child:child._id, _id:_id})
+		},
 		plan({_id},{},{app}){
 			return app.getDataLoader("plans")
 				.load(_id)

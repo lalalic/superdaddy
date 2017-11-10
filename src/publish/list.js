@@ -61,5 +61,15 @@ export default compose(
 		} 
 	`}),
 	mapProps(({child:{publishes},toInfo,toCreate})=>({publishes:publishes||[],toInfo,toCreate})),
-	branch(({publishes})=> publishes && publishes.length==0, renderComponent(({toInfo})=><Create toInfo={toInfo}/>)),
+	branch(
+		({publishes})=> publishes && publishes.length==0, 
+		renderComponent(class extends Component{
+			componentWillMount(){
+				this.props.toCreate(true)
+			}
+			render(){
+				return null
+			}
+		})
+	),
 )(Publishes)

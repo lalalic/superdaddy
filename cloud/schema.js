@@ -10,6 +10,7 @@ module.exports=others=>`
 		score: Int
 		
 		publishes: [Publish]
+		publish(_id:ObjectID):Publish
 		
 		plan: Plan
 	}

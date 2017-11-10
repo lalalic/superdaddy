@@ -8,6 +8,7 @@ type Child implements Node {
   author: User
   score: Int
   publishes: [Publish]
+  publish(_id:ObjectID):Publish
   plan: Plan
 }
 

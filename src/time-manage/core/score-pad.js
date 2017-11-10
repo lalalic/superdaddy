@@ -72,10 +72,12 @@ class Fun extends Component{
 		const {x,catched}=this.state
 		return (
 			<div>
-				<div className="sticky bottom right _2"
-					style={{fontSize:"xx-large",color:"orange"}}>
-					{catched}
-				</div>
+				{smiles.length>0 ? 
+					(<div className="sticky bottom right _2"
+						style={{fontSize:"xx-large",color:"orange"}}>
+						{catched}
+					</div>) : null
+				}
 				{smiles.map((a,i)=>x==i ? React.cloneElement(a,{
 					className:`${a.props.className} pulse`,
 					onClick:()=>this.setState(({catched})=>({catched:catched+1}))

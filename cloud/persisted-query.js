@@ -999,6 +999,30 @@ module.exports={
 		  }
 		}
 		`,
+	"src_publish_Query":`query src_publish_Query(
+		  $child: ObjectID
+		  $id: ObjectID
+		) {
+		  me {
+		    child(_id: $child) {
+		      publish(_id: $id) {
+		        ...publish_info
+		        id
+		      }
+		      id
+		    }
+		    id
+		  }
+		}
+		
+		fragment publish_info on Publish {
+		  template
+		  copies
+		  name
+		  from
+		  to
+		}
+		`,
 	"src_scorepad_Query":`query src_scorepad_Query(
 		  $child: ObjectID
 		) {
