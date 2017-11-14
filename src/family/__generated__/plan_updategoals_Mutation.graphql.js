@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 8bc4b0ed330b8000e9182850fbb0a909
+ * @relayHash 344793a79db6fe0dee69a1094601c01e
  */
 
 /* eslint-disable */
@@ -9,36 +9,36 @@
 
 /*::
 import type {ConcreteBatch} from 'relay-runtime';
-export type plan_update_MutationVariables = {|
+export type plan_updategoals_MutationVariables = {|
   child?: ?any;
-  plan?: ?any;
+  goals?: ?$ReadOnlyArray<?string>;
 |};
-export type plan_update_MutationResponse = {|
-  +plan_update: ?{| |};
+export type plan_updategoals_MutationResponse = {|
+  +plan_update_goals: ?{|
+    +goals: ?$ReadOnlyArray<?string>;
+    +pendingKnowledges: ?$ReadOnlyArray<?{|
+      +id: string;
+      +category: ?$ReadOnlyArray<?string>;
+      +title: string;
+    |}>;
+  |};
 |};
 */
 
 
 /*
-mutation plan_update_Mutation(
+mutation plan_updategoals_Mutation(
   $child: ObjectID
-  $plan: JSON
+  $goals: [String]
 ) {
-  plan_update(_id: $child, plan: $plan) {
-    ...plan
-    id
-  }
-}
-
-fragment plan on Plan {
-  caps
-  goals
-  months {
+  plan_update_goals(_id: $child, goals: $goals) {
     goals
-    knowledges {
+    pendingKnowledges {
       id
+      category
       title
     }
+    id
   }
 }
 */
@@ -54,14 +54,14 @@ const batch /*: ConcreteBatch*/ = {
       },
       {
         "kind": "LocalArgument",
-        "name": "plan",
-        "type": "JSON",
+        "name": "goals",
+        "type": "[String]",
         "defaultValue": null
       }
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "plan_update_Mutation",
+    "name": "plan_updategoals_Mutation",
     "selections": [
       {
         "kind": "LinkedField",
@@ -75,19 +75,53 @@ const batch /*: ConcreteBatch*/ = {
           },
           {
             "kind": "Variable",
-            "name": "plan",
-            "variableName": "plan",
-            "type": "JSON"
+            "name": "goals",
+            "variableName": "goals",
+            "type": "[String]"
           }
         ],
         "concreteType": "Plan",
-        "name": "plan_update",
+        "name": "plan_update_goals",
         "plural": false,
         "selections": [
           {
-            "kind": "FragmentSpread",
-            "name": "plan",
-            "args": null
+            "kind": "ScalarField",
+            "alias": null,
+            "args": null,
+            "name": "goals",
+            "storageKey": null
+          },
+          {
+            "kind": "LinkedField",
+            "alias": null,
+            "args": null,
+            "concreteType": "Knowledge",
+            "name": "pendingKnowledges",
+            "plural": true,
+            "selections": [
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "args": null,
+                "name": "id",
+                "storageKey": null
+              },
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "args": null,
+                "name": "category",
+                "storageKey": null
+              },
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "args": null,
+                "name": "title",
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -98,7 +132,7 @@ const batch /*: ConcreteBatch*/ = {
   "id": null,
   "kind": "Batch",
   "metadata": {},
-  "name": "plan_update_Mutation",
+  "name": "plan_updategoals_Mutation",
   "query": {
     "argumentDefinitions": [
       {
@@ -109,13 +143,13 @@ const batch /*: ConcreteBatch*/ = {
       },
       {
         "kind": "LocalArgument",
-        "name": "plan",
-        "type": "JSON",
+        "name": "goals",
+        "type": "[String]",
         "defaultValue": null
       }
     ],
     "kind": "Root",
-    "name": "plan_update_Mutation",
+    "name": "plan_updategoals_Mutation",
     "operation": "mutation",
     "selections": [
       {
@@ -130,22 +164,15 @@ const batch /*: ConcreteBatch*/ = {
           },
           {
             "kind": "Variable",
-            "name": "plan",
-            "variableName": "plan",
-            "type": "JSON"
+            "name": "goals",
+            "variableName": "goals",
+            "type": "[String]"
           }
         ],
         "concreteType": "Plan",
-        "name": "plan_update",
+        "name": "plan_update_goals",
         "plural": false,
         "selections": [
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "args": null,
-            "name": "caps",
-            "storageKey": null
-          },
           {
             "kind": "ScalarField",
             "alias": null,
@@ -157,40 +184,29 @@ const batch /*: ConcreteBatch*/ = {
             "kind": "LinkedField",
             "alias": null,
             "args": null,
-            "concreteType": "MonthPlan",
-            "name": "months",
+            "concreteType": "Knowledge",
+            "name": "pendingKnowledges",
             "plural": true,
             "selections": [
               {
                 "kind": "ScalarField",
                 "alias": null,
                 "args": null,
-                "name": "goals",
+                "name": "id",
                 "storageKey": null
               },
               {
-                "kind": "LinkedField",
+                "kind": "ScalarField",
                 "alias": null,
                 "args": null,
-                "concreteType": "Knowledge",
-                "name": "knowledges",
-                "plural": true,
-                "selections": [
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "args": null,
-                    "name": "id",
-                    "storageKey": null
-                  },
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "args": null,
-                    "name": "title",
-                    "storageKey": null
-                  }
-                ],
+                "name": "category",
+                "storageKey": null
+              },
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "args": null,
+                "name": "title",
                 "storageKey": null
               }
             ],
@@ -208,7 +224,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "mutation plan_update_Mutation(\n  $child: ObjectID\n  $plan: JSON\n) {\n  plan_update(_id: $child, plan: $plan) {\n    ...plan\n    id\n  }\n}\n\nfragment plan on Plan {\n  caps\n  goals\n  months {\n    goals\n    knowledges {\n      id\n      title\n    }\n  }\n}\n"
+  "text": "mutation plan_updategoals_Mutation(\n  $child: ObjectID\n  $goals: [String]\n) {\n  plan_update_goals(_id: $child, goals: $goals) {\n    goals\n    pendingKnowledges {\n      id\n      category\n      title\n    }\n    id\n  }\n}\n"
 };
 
 module.exports = batch;

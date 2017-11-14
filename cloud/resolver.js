@@ -35,6 +35,11 @@ module.exports={
 		id: ({_id})=>`plans:${_id}`,
 
 		caps: ()=>CAPS,
+		
+		pendingKnowledges({goals},{},ctx){
+			return  module.exports.Query.knowledges(null,{categories:goals},ctx)
+				.then(({edges})=>edges) 
+		}
 	},
 	
 	User:{
@@ -148,15 +153,74 @@ module.exports={
 		publish_remove(_, {_id}, {app,user}){
 			return app.remove1Entity("publishs",{_id, author: user._id, status:{$ne:0}})
 		},
-		
-		async plan_update(_,{_id, plan},{app,user}){
-			let conn = await app.collection("plans")
-			try{
-				let {modifiedCount,upsertedId}=await conn.updateOne({_id},{$set:plan},{upsert:true})
-				return await conn.findOne({_id})
-			}finally{
-				conn.close()
-			}
+		plan_update(_,{_id, plan},{app,user}){
+			return app.patchEntity("plans",{_id},{...plan})
+				.then(()=>app.get1Entity("plans",{_id}))
+		},
+		plan_update_goals(_,{_id, goals},{app,user}){
+			return app.patchEntity("plans",{_id},{goals})
+				.then(()=>app.get1Entity("plans",{_id}))
+		},
+
+		plan_monthgoal_add(_,{_id,month,goal},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then(plan=>{
+					let months=plan.months||[]
+					let {goals=[]}=(months[month]=months[month]||{})
+					if(goals.includes(goal))
+						return plan
+					goals=[...goals,goal]
+					months=[...months]
+					months[month]={...months[month], goals}
+					plan.months=months
+					app.patchEntity("plans",{_id},{months})
+					return plan
+				})
+		},
+		plan_monthgoal_remove(_,{_id,month,goal},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then(plan=>{
+					let months=plan.months||[]
+					let {goals=[]}=(months[month]=months[month]||{})
+					if(!goals.includes(goal))
+						return plan
+					goals=goals.filter(a=>a!=goal)
+					months=[...months]
+					months[month]={...months[month], goals}
+					plan.months=months
+					app.patchEntity("plans",{_id},{months})
+					return plan
+				})
+		},
+		plan_monthtask_remove(_,{_id,month,knowledge},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then(plan=>{
+					let months=plan.months||[]
+					let {knowledges=[]}=(months[month]=(months[month]||{}))
+					if(!knowledges.includes(knowledge))
+						return plan
+					knowledges=knowledges.filter(a=>a!=knowledge)
+					months=[...months]
+					months[month]={...months[month], knowledges}
+					plan.months=months
+					app.patchEntity("plans",{_id},{months})
+					return plan
+				})
+		},
+		plan_monthtask_add(_,{_id,month,knowledge},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then(plan=>{
+					let months=plan.months||[]
+					let {knowledges=[]}=(months[month]=months[month]||{})
+					if(knowledges.includes(knowledge))
+						return plan
+					knowledges=[...knowledges,knowledge]
+					months=[...months]
+					months[month]={...months[month], knowledges}
+					plan.months=months
+					app.patchEntity("plans",{_id},{months})
+					return plan
+				})
 		},	
 
 		async plan_task_done(_,{_id,content,knowledge,props,day},{app,user}){
@@ -345,7 +409,7 @@ module.exports={
 					let month=new Date().getMonth()
 					let count=12-month
 					if(goals.length==0){
-						goals=CAPS.slice(0,Math.floor(count/3))
+						goals=CAPS.slice(0,Math.floor(count/3)||1)
 					}
 					
 					let pending=new Array(count)
@@ -361,7 +425,7 @@ module.exports={
 						return new Promise((resolve, reject)=>{
 							let {goals,knowledges=[]}=months[i+month]
 							if(knowledges.length==0){
-								app.findEntity("knowledges",{categories:{$in:goals}}, (cursor)=>cursor.limit(3))
+								app.findEntity("knowledges",{categories:{$all:goals}}, (cursor)=>cursor.limit(3))
 									.then(array=>{
 										months[i+month].knowledges=array.map(({_id})=>_id)
 										resolve()
@@ -385,7 +449,7 @@ module.exports={
 								.then(knowledges=>{
 									if(knowledges)
 										plan.todos=knowledges.map(({_id,title})=>({knowledge:_id,content:title}))
-									return app.updateEntity("plan",{_id},{
+									return app.updateEntity("plans",{_id},{
 										months:plan.months,
 										goals:plan.goals, 
 										todos:plan.todos,
@@ -450,8 +514,8 @@ module.exports={
 	},
 	
 	MonthPlan:{
-		knowledges({knowledges=[]},{},{app,user}){
-			return Promise.all(knowledges.map(_id=>app.getDataLoader("knowledges").load(knowledge)))
+		knowledges({knowledges},{},{app,user}){
+			return Promise.all((knowledges||[]).filter(a=>a).map(_id=>app.getDataLoader("knowledges").load(_id)))
 		}
 	},
 	Todo: {

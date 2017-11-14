@@ -28,6 +28,8 @@ module.exports=others=>`
 		caps:[String]
 		goals:[String]
 		months:[MonthPlan]
+		
+		pendingKnowledges: [Knowledge]
 	}
 	
 	type Todo{
@@ -116,8 +118,13 @@ module.exports=others=>`
 		child_remove(_id:ObjectID!): Boolean
 		child_create(name:String!, photo:String, birthday:Date,gender:Gender):Child
 		child_update(_id:ObjectID!, photo:String, name:String, photo:String, birthday:Date,icon:String, gender:Gender): Date
-				
-		plan_update(_id:ObjectID, plan:JSON):Plan
+			
+		plan_update(_id:ObjectID, plan:JSON):Plan		
+		plan_update_goals(_id:ObjectID, goals:[String]):Plan
+		plan_monthgoal_remove(_id:ObjectID,month:Int,goal:String):Plan
+		plan_monthgoal_add(_id:ObjectID,month:Int,goal:String):Plan
+		plan_monthtask_remove(_id:ObjectID,month:Int,knowledge:ObjectID):Plan
+		plan_monthtask_add(_id:ObjectID,month:Int,knowledge:ObjectID):Plan
 		plan_task_done(_id:ObjectID, content:String, knowledge:ObjectID, day:Int, props: JSON):Child
 		plan_reset(_id:ObjectID):Plan
 		plan_todos_add(_id:ObjectID, content:String, knowledge:ObjectID):Plan

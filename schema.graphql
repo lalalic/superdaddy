@@ -8,7 +8,7 @@ type Child implements Node {
   author: User
   score: Int
   publishes: [Publish]
-  publish(_id:ObjectID):Publish
+  publish(_id: ObjectID): Publish
   plan: Plan
 }
 
@@ -161,6 +161,11 @@ type Mutation {
   child_create(name: String!, photo: String, birthday: Date, gender: Gender): Child
   child_update(_id: ObjectID!, photo: String, name: String, birthday: Date, icon: String, gender: Gender): Date
   plan_update(_id: ObjectID, plan: JSON): Plan
+  plan_update_goals(_id: ObjectID, goals: [String]): Plan
+  plan_monthgoal_remove(_id: ObjectID, month: Int, goal: String): Plan
+  plan_monthgoal_add(_id: ObjectID, month: Int, goal: String): Plan
+  plan_monthtask_remove(_id: ObjectID, month: Int, knowledge: ObjectID): Plan
+  plan_monthtask_add(_id: ObjectID, month: Int, knowledge: ObjectID): Plan
   plan_task_done(_id: ObjectID, content: String, knowledge: ObjectID, day: Int, props: JSON): Child
   plan_reset(_id: ObjectID): Plan
   plan_todos_add(_id: ObjectID, content: String, knowledge: ObjectID): Plan
@@ -206,6 +211,7 @@ type Plan implements Node {
   caps: [String]
   goals: [String]
   months: [MonthPlan]
+  pendingKnowledges: [Knowledge]
 }
 
 type Publish implements Node {

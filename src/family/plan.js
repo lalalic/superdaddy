@@ -32,18 +32,18 @@ import Knowledge from "knowledge"
 
 export class Plan extends Component{
 	render(){
-		let {goals=[], months=[], caps=[],
-			autoPlan,update,searchKnowledges,
+		let {goals=[], months=[], caps=[],pendingKnowledges,
+			autoPlan,setGoals,searchKnowledges,
 			addMonthGoal,removeMonthGoal,addMonthTask,removeMonthTask}=this.props
 		return (
 			<div>
                 <AppBar title={`年度目标，计划`}/>
 
-				<YearGoal {...{goals,update,caps}}/>
+				<YearGoal {...{goals,setGoals,caps}}/>
 
 				<Divider/>
 
-				<MonthGoals {...{searchKnowledges,addMonthGoal,removeMonthGoal,addMonthTask,removeMonthTask,goals,months}}/>
+				<MonthGoals {...{pendingKnowledges,searchKnowledges,addMonthGoal,removeMonthGoal,addMonthTask,removeMonthTask,goals,months}}/>
 
 				<CommandBar className="footbar"
 					items={[
@@ -92,14 +92,14 @@ class YearGoal extends Component{
 	}
 
 	toggle(cap){
-		let {goals=[],update}=this.props
+		let {goals=[],setGoals}=this.props
 		if(goals.includes(cap)){
 			goals=goals.filter(a=>a!=cap)
 		}else{
 			goals=[...goals,cap]
 		}
 
-		update({goals})
+		setGoals({goals})
 	}
 }
 
@@ -110,7 +110,7 @@ class MonthGoals extends Component{
 	render(){
 		let current=new Date().getMonth()
 		let {month}=this.state
-		let {months=[], addMonthGoal,
+		let {months=[], addMonthGoal,pendingKnowledges,
 			removeMonthGoal, addMonthTask, removeMonthTask,searchKnowledges}=this.props
 
 		let steps=new Array(12)
@@ -126,7 +126,7 @@ class MonthGoals extends Component{
 						</StepLabel>
 						<StepContent>
 							<MonthPlan {...months[month]} month={month}
-								{...{addMonthTask, removeMonthTask,searchKnowledges}}/>
+								{...{pendingKnowledges,addMonthTask, removeMonthTask,searchKnowledges}}/>
 						</StepContent>
 					</Step>
 				)
@@ -156,11 +156,11 @@ class MonthGoals extends Component{
         let {goals=[]}=months[m]||{}
         return (
             <span style={{display:"flex", flexWrap:"wrap",zoom:0.8}}>
-                {goals.map(a=>
+                {(goals||[]).map(a=>
                     <Chip key={a}
                         children={a}
                         backgroundColor="transparent"
-                        onRequestDelete={e=>removeMonthGoal(m,a)}/>
+                        onRequestDelete={e=>removeMonthGoal({month:m,goal:a})}/>
                 )}
             </span>
         )
@@ -168,9 +168,9 @@ class MonthGoals extends Component{
 
     renderGoalSelector(m){
         let {search}=this.state
-        let {goals=[],months=[], addMonthGoal}=this.props
-        let {goals:used=[]}=months[m]||{}
-        let unused=goals.filter(a=>!used.includes(a))
+        let {goals,months=[], addMonthGoal}=this.props
+        let {goals:used}=months[m]||{}
+        let unused=(goals||[]).filter(a=>!(used||[]).includes(a))
         if(unused.length==0)
             return null
 
@@ -185,7 +185,7 @@ class MonthGoals extends Component{
             underlineShow={false}
             onNewRequest={(text,i)=>{
                 if(i!=-1){
-                    addMonthGoal(m,unused[i])
+                    addMonthGoal({month:m,goal:unused[i]})
                     this.setState({search:""})
                 }else{
 
@@ -196,21 +196,23 @@ class MonthGoals extends Component{
     }
 }
 
-const MonthPlan=compose(
-	getContext({client:PropTypes.object}),
-	mapProps(({client,...others})=>({
-		knowledges:client.getAll("Knowledge"),
-		...others,
-	})),
-)(class extends Component{
+class MonthPlan extends Component{
     state={
-        search:""
+        search:"",
+		pending:this.myPendingKnowledges()
     }
+	
+	myPendingKnowledges(){
+		const {goals, pendingKnowledges}=this.props
+		return (pendingKnowledges||[]).filter(({category})=>{
+			return (goals||[]).reduce((b,a)=>b&&(category||[]).includes(a),true)
+		})
+	}
+	
 	render(){
-        const {search}=this.state
-		let searched=this.filter(search)
-		const {knowledges=[], month, removeMonthTask, addMonthTask}=this.props
-		searched=searched.filter(({id})=>!knowledges.find(a=>a==id))
+        const {search,pending}=this.state
+		const {month, knowledges,removeMonthTask, addMonthTask}=this.props
+		let searched=(pending||[]).filter(({id})=>!(knowledges||[]).find(a=>a.id==id)).slice(0,5)
         return (
             <List>
                 <Subheader>
@@ -218,29 +220,28 @@ const MonthPlan=compose(
                         <AutoComplete
                             hintText="查询教程..."
 							textFieldStyle={{fontSize:"smaller"}}
+							filter={(searchText,key)=>!searchText || key.indexOf(searchText) !== -1}
                             searchText={search}
-                            onNewRequest={title=>this.searchKnowledge(title)}
-                            dataSource={[]}/>
+							openOnFocus={true}
+							onUpdateInput={title=>this.setState({search:title})}
+                            onNewRequest={(title,i)=>{
+								if(i==-1){
+									this.searchKnowledge(title)
+								}else{
+									addMonthTask({month, knowledge:searched[i].id})
+								}
+							}}
+							dataSourceConfig={{text:"title",value:"id"}}
+                            dataSource={searched}/>
                     </center>
                 </Subheader>
-                {knowledges.map(({id,title})=>
+                {(knowledges||[]).map(({id,title})=>
                     <ListItem key={id}
                         primaryText={title}
 						leftCheckbox={
 							<Checkbox
 								checked={true}
-								onCheck={()=>removeMonthTask(month,id)}/>
-						}
-                        />
-                )}
-
-                {searched.map(({id, title})=>
-                    <ListItem key={id}
-                        primaryText={title}
-						leftCheckbox={
-							<Checkbox
-								checked={false}
-								onCheck={()=>addMonthTask(month,id)}/>
+								onCheck={()=>removeMonthTask({month,knowledge:id})}/>
 						}
                         />
                 )}
@@ -248,30 +249,15 @@ const MonthPlan=compose(
         )
 	}
 
-	filter(search){
-		if(!search)
-			return []
-
-		const {entities:knowledges}=this.props
-		let found=[]
-		for(let id in knowledges){
-			let knowledge=knowledges[id]
-			if(knowledge.title.indexOf(search)!=-1){
-				found.push(knowledge)
-			}
-			if(found.length==5)
-				break
-		}
-		return  found
-	}
-
     searchKnowledge(search){
-		this.setState({search})
-		if(search){
-			this.props.searchKnowledges(search,goals)
-		}
+		this.setState({search},()=>{
+			const {searchKnowledges,goals}=this.props
+			const {search}=this.state
+			searchKnowledges(search,goals)
+				.then(pending=>this.setState({pending}))
+		})
     }
-})
+}
 
 export default compose(
 	withFragment(graphql`
@@ -285,14 +271,93 @@ export default compose(
 					title
 				}
 			}
+			pendingKnowledges{
+				id
+				category
+				title
+			}
 		}
 	`),
 	withMutation(({child})=>({
+		name:"removeMonthGoal",
 		variables:{child},
 		mutation: graphql`
-			mutation plan_update_Mutation($child:ObjectID, $plan:JSON){
-				plan_update(_id: $child, plan:$plan){
-					 ...plan
+			mutation plan_removeMonthGoal_Mutation($child:ObjectID, $month:Int, $goal:String){
+				plan_monthgoal_remove(_id: $child, goal:$goal, month:$month){
+					 months{
+						goals
+						knowledges{
+							id
+							title
+						}
+					}
+				}
+			}
+		`,
+	})),
+	withMutation(({child})=>({
+		name:"addMonthGoal",
+		variables:{child},
+		mutation: graphql`
+			mutation plan_addMonthGoal_Mutation($child:ObjectID, $month:Int, $goal:String){
+				plan_monthgoal_add(_id: $child, goal:$goal, month:$month){
+					 months{
+						goals
+						knowledges{
+							id
+							title
+						}
+					}
+				}
+			}
+		`,
+	})),
+	withMutation(({child})=>({
+		name:"removeMonthTask",
+		variables:{child},
+		mutation: graphql`
+			mutation plan_removeMonthTask_Mutation($child:ObjectID, $month:Int, $knowledge:ObjectID){
+				plan_monthtask_remove(_id: $child, knowledge:$knowledge, month:$month){
+					 months{
+						goals
+						knowledges{
+							id
+							title
+						}
+					}
+				}
+			}
+		`,
+	})),
+	withMutation(({child})=>({
+		name:"addMonthTask",
+		variables:{child},
+		mutation: graphql`
+			mutation plan_addMonthTask_Mutation($child:ObjectID, $month:Int, $knowledge:ObjectID){
+				plan_monthtask_add(_id: $child, knowledge:$knowledge, month:$month){
+					 months{
+						goals
+						knowledges{
+							id
+							title
+						}
+					}
+				}
+			}
+		`,
+	})),
+	withMutation(({child})=>({
+		name:"setGoals",
+		variables:{child},
+		mutation: graphql`
+			mutation plan_updategoals_Mutation($child:ObjectID, $goals:[String]){
+				plan_update_goals(_id: $child, goals:$goals){
+					 goals
+					 pendingKnowledges{
+						id
+						category
+						title
+					}
 				}
 			}
 		`,
@@ -308,54 +373,32 @@ export default compose(
 			}
 		`,
 	})),
-	mapProps(({mutate, autoPlan,data:{goals,months,caps},...others})=>{
-		caps=[...caps]
-		goals=[...goals]
-		months=[...months]
+	getContext({client:PropTypes.object}),
+	mapProps(({data:{goals,months,caps,pendingKnowledges},client,child,...others})=>{
+		caps=[...(caps||[])]
+		goals=[...(goals||[])]
+		months=[...(months||[])]
 		return {
 			...others,
 			goals,months,caps,
-			autoPlan,
-			update(data){
-				return mutate({plan:data})
-			},
-			removeMonthGoal(month,goal){
-				let {goals=[]}=(months[month]=months[month]||{})
-				goals=goals.filter(a=>a!=goal)
-				months=[...months]
-				months[month]={...months[month], goals}
-				return mutate({plan:{months}})
-			},
-
-			addMonthGoal(month,goal){
-				let {goals=[]}=(months[month]=months[month]||{})
-				if(goals.includes(goal))
-					return
-				goals=[...goals,goal]
-				months=[...months]
-				months[month]={...months[month], goals}
-				return mutate({plan:{months}})
-			},
-
-			removeMonthTask(month,knowledge){
-				let {knowledges=[]}=(months[month]=(months[month]||{}))
-				knowledges=knowledges.filter(a=>a!=knowledge)
-				months=[...months]
-				months[month]={...months[month], knowledges}
-				return mutate({plan:{months}})
-			},
-
-			addMonthTask(month,knowledge){
-				let {knowledges=[]}=(months[month]=months[month]||{})
-				if(knowledges.includes(knowledge))
-					return
-				knowledges=[...knowledges,knowledge]
-				months=[...months]
-				months[month]={...months[month], knowledges}
-				return mutate({plan:{months}})
-			},
+			pendingKnowledges,
 			searchKnowledges(title, caps){
-
+				return client.runQL({
+					query:graphql`
+						query plan_knowledge_Query($title:String, $caps:[String],$first:Int=5){
+							knowledges(title:$title, categories:$caps,first:$first){
+								edges{
+									node{
+										id
+										title
+									}
+								}
+							}
+						}
+					`,
+					id:"plan_knowledge_Query",
+					variables:{child,title,caps}
+				}).then(({data:{knowledges}})=>({knowledges:knowledges.edges.map(a=>a.node)}))
 			}
 		}
 	}),

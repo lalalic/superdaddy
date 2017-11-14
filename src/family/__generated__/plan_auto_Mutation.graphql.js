@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 819792484cfe6b641e5a4d1602616917
+ * @relayHash 0bfa85a85c301bf317c821ca42a8eeb4
  */
 
 /* eslint-disable */
@@ -37,6 +37,11 @@ fragment plan on Plan {
       id
       title
     }
+  }
+  pendingKnowledges {
+    id
+    category
+    title
   }
 }
 */
@@ -171,6 +176,38 @@ const batch /*: ConcreteBatch*/ = {
             "storageKey": null
           },
           {
+            "kind": "LinkedField",
+            "alias": null,
+            "args": null,
+            "concreteType": "Knowledge",
+            "name": "pendingKnowledges",
+            "plural": true,
+            "selections": [
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "args": null,
+                "name": "id",
+                "storageKey": null
+              },
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "args": null,
+                "name": "category",
+                "storageKey": null
+              },
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "args": null,
+                "name": "title",
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
+          {
             "kind": "ScalarField",
             "alias": null,
             "args": null,
@@ -182,7 +219,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "mutation plan_auto_Mutation(\n  $child: ObjectID\n) {\n  plan_auto(_id: $child) {\n    ...plan\n    id\n  }\n}\n\nfragment plan on Plan {\n  caps\n  goals\n  months {\n    goals\n    knowledges {\n      id\n      title\n    }\n  }\n}\n"
+  "text": "mutation plan_auto_Mutation(\n  $child: ObjectID\n) {\n  plan_auto(_id: $child) {\n    ...plan\n    id\n  }\n}\n\nfragment plan on Plan {\n  caps\n  goals\n  months {\n    goals\n    knowledges {\n      id\n      title\n    }\n  }\n  pendingKnowledges {\n    id\n    category\n    title\n  }\n}\n"
 };
 
 module.exports = batch;

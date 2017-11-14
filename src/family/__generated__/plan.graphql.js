@@ -18,6 +18,11 @@ export type plan = {|
       +title: string;
     |}>;
   |}>;
+  +pendingKnowledges: ?$ReadOnlyArray<?{|
+    +id: string;
+    +category: ?$ReadOnlyArray<?string>;
+    +title: string;
+  |}>;
 |};
 */
 
@@ -80,6 +85,38 @@ const fragment /*: ConcreteFragment*/ = {
               "storageKey": null
             }
           ],
+          "storageKey": null
+        }
+      ],
+      "storageKey": null
+    },
+    {
+      "kind": "LinkedField",
+      "alias": null,
+      "args": null,
+      "concreteType": "Knowledge",
+      "name": "pendingKnowledges",
+      "plural": true,
+      "selections": [
+        {
+          "kind": "ScalarField",
+          "alias": null,
+          "args": null,
+          "name": "id",
+          "storageKey": null
+        },
+        {
+          "kind": "ScalarField",
+          "alias": null,
+          "args": null,
+          "name": "category",
+          "storageKey": null
+        },
+        {
+          "kind": "ScalarField",
+          "alias": null,
+          "args": null,
+          "name": "title",
           "storageKey": null
         }
       ],

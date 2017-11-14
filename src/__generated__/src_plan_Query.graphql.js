@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 62a7396d274b2b59864dccaafa50b277
+ * @relayHash 4300c15928b6f5f6a9206a6c511bbbd6
  */
 
 /* eslint-disable */
@@ -44,6 +44,11 @@ fragment plan on Plan {
       id
       title
     }
+  }
+  pendingKnowledges {
+    id
+    category
+    title
   }
 }
 */
@@ -216,6 +221,38 @@ const batch /*: ConcreteBatch*/ = {
                     "storageKey": null
                   },
                   {
+                    "kind": "LinkedField",
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Knowledge",
+                    "name": "pendingKnowledges",
+                    "plural": true,
+                    "selections": [
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "args": null,
+                        "name": "id",
+                        "storageKey": null
+                      },
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "args": null,
+                        "name": "category",
+                        "storageKey": null
+                      },
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "args": null,
+                        "name": "title",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
                     "kind": "ScalarField",
                     "alias": null,
                     "args": null,
@@ -247,7 +284,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query src_plan_Query(\n  $child: ObjectID\n) {\n  me {\n    child(_id: $child) {\n      plan {\n        ...plan\n        id\n      }\n      id\n    }\n    id\n  }\n}\n\nfragment plan on Plan {\n  caps\n  goals\n  months {\n    goals\n    knowledges {\n      id\n      title\n    }\n  }\n}\n"
+  "text": "query src_plan_Query(\n  $child: ObjectID\n) {\n  me {\n    child(_id: $child) {\n      plan {\n        ...plan\n        id\n      }\n      id\n    }\n    id\n  }\n}\n\nfragment plan on Plan {\n  caps\n  goals\n  months {\n    goals\n    knowledges {\n      id\n      title\n    }\n  }\n  pendingKnowledges {\n    id\n    category\n    title\n  }\n}\n"
 };
 
 module.exports = batch;
