@@ -11,10 +11,10 @@ import {relative} from 'components/calendar'
 import AppBar from "components/app-bar"
 
 export const Content=({
-		knowledge:{id, title, content, summary, createdAt, category, keywords, figure, author,}
+		knowledge:{id, title, content, summary, createdAt, category, tags, figure, author,}
 	})=>{
 	category=category||[]
-	keywords=keywords||[]	
+	tags=tags||[]	
 	content=<div dangerouslySetInnerHTML={{__html:content}}/>
 
 	if(summary && open!==null){
@@ -47,7 +47,7 @@ export const Content=({
 			<header  style={{backgroundColor:"transparent"}}>
 				{notNewStuff}
 				<p>
-					{[...category,...keywords].join(", ")}
+					{[...category,...tags].join(", ")}
 				</p>
 			</header>
 			<section>
@@ -66,7 +66,7 @@ export default compose(
 			summary
 			createdAt
 			category
-			keywords 
+			tags 
 			figure
 			author{
 				name

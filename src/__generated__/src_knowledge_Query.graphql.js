@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 9db9c0ace8d61d2f09eacc759926d173
+ * @relayHash 1d42f101d393d41e7b4576df304018e6
  */
 
 /* eslint-disable */
@@ -52,7 +52,7 @@ fragment content_knowledge on Knowledge {
   summary
   createdAt
   category
-  keywords
+  tags
   figure
   author {
     name
@@ -279,7 +279,7 @@ const batch /*: ConcreteBatch*/ = {
             "kind": "ScalarField",
             "alias": null,
             "args": null,
-            "name": "keywords",
+            "name": "tags",
             "storageKey": null
           },
           {
@@ -312,7 +312,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query src_knowledge_Query(\n  $id: ObjectID\n  $child: ObjectID\n) {\n  knowledge(_id: $id) {\n    ...info_knowledge\n    id\n  }\n}\n\nfragment info_knowledge on Knowledge {\n  title\n  id\n  inTask(child: $child)\n  hasHomework\n  hasPrint\n  sale\n  isMyWork\n  summary\n  figure\n  template\n  files {\n    crc\n    url\n    id\n  }\n  ...content_knowledge\n}\n\nfragment content_knowledge on Knowledge {\n  id\n  title\n  content\n  summary\n  createdAt\n  category\n  keywords\n  figure\n  author {\n    name\n    id\n  }\n}\n"
+  "text": "query src_knowledge_Query(\n  $id: ObjectID\n  $child: ObjectID\n) {\n  knowledge(_id: $id) {\n    ...info_knowledge\n    id\n  }\n}\n\nfragment info_knowledge on Knowledge {\n  title\n  id\n  inTask(child: $child)\n  hasHomework\n  hasPrint\n  sale\n  isMyWork\n  summary\n  figure\n  template\n  files {\n    crc\n    url\n    id\n  }\n  ...content_knowledge\n}\n\nfragment content_knowledge on Knowledge {\n  id\n  title\n  content\n  summary\n  createdAt\n  category\n  tags\n  figure\n  author {\n    name\n    id\n  }\n}\n"
 };
 
 module.exports = batch;

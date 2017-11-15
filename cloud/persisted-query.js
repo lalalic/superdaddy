@@ -26,7 +26,7 @@ module.exports={
 		  summary
 		  createdAt
 		  category
-		  keywords
+		  tags
 		  figure
 		  author {
 		    name
@@ -955,7 +955,7 @@ module.exports={
 		  summary
 		  createdAt
 		  category
-		  keywords
+		  tags
 		  figure
 		  author {
 		    name

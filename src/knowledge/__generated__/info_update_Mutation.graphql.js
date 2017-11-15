@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash bc606804edcf6f423ce8c5954a736226
+ * @relayHash 70185c66595c625b93f6f4488f0f8a06
  */
 
 /* eslint-disable */
@@ -37,7 +37,7 @@ fragment content_knowledge on Knowledge {
   summary
   createdAt
   category
-  keywords
+  tags
   figure
   author {
     name
@@ -188,7 +188,7 @@ const batch /*: ConcreteBatch*/ = {
             "kind": "ScalarField",
             "alias": null,
             "args": null,
-            "name": "keywords",
+            "name": "tags",
             "storageKey": null
           },
           {
@@ -228,7 +228,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "mutation info_update_Mutation(\n  $id: ObjectID\n  $info: JSON\n) {\n  knowledge_update(_id: $id, knowledge: $info) {\n    ...content_knowledge\n    id\n  }\n}\n\nfragment content_knowledge on Knowledge {\n  id\n  title\n  content\n  summary\n  createdAt\n  category\n  keywords\n  figure\n  author {\n    name\n    id\n  }\n}\n"
+  "text": "mutation info_update_Mutation(\n  $id: ObjectID\n  $info: JSON\n) {\n  knowledge_update(_id: $id, knowledge: $info) {\n    ...content_knowledge\n    id\n  }\n}\n\nfragment content_knowledge on Knowledge {\n  id\n  title\n  content\n  summary\n  createdAt\n  category\n  tags\n  figure\n  author {\n    name\n    id\n  }\n}\n"
 };
 
 module.exports = batch;
