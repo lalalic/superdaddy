@@ -24,7 +24,12 @@ module.exports={
 				.load(_id)
 				.then(plan=>{
 					if(!plan){
-						return app.createEntity("plans",{_id,week:currentWeek(),score:0,goal:0,todos:[]})
+						return app.createEntity("plans",{
+							_id,week:currentWeek(),score:0,goal:0,
+							todos:[],
+							goals:[],
+							months:new Array(12).fill(1).map(a=>({goals:[],knowledges:[]})),
+						})
 					}
 					return plan
 				})
@@ -165,14 +170,11 @@ module.exports={
 		plan_monthgoal_add(_,{_id,month,goal},{app,user}){
 			return app.get1Entity("plans",{_id})
 				.then(plan=>{
-					let months=plan.months||[]
-					let {goals=[]}=(months[month]=months[month]||{})
+					let months=plan.months
+					let {goals}=months[month]
 					if(goals.includes(goal))
 						return plan
-					goals=[...goals,goal]
-					months=[...months]
-					months[month]={...months[month], goals}
-					plan.months=months
+					goals.push(goal)
 					app.patchEntity("plans",{_id},{months})
 					return plan
 				})
@@ -180,14 +182,11 @@ module.exports={
 		plan_monthgoal_remove(_,{_id,month,goal},{app,user}){
 			return app.get1Entity("plans",{_id})
 				.then(plan=>{
-					let months=plan.months||[]
-					let {goals=[]}=(months[month]=months[month]||{})
+					let months=plan.months
+					let {goals}=months[month]
 					if(!goals.includes(goal))
 						return plan
-					goals=goals.filter(a=>a!=goal)
-					months=[...months]
-					months[month]={...months[month], goals}
-					plan.months=months
+					goals.splice(goals.indexOf(goal),1)
 					app.patchEntity("plans",{_id},{months})
 					return plan
 				})
@@ -195,14 +194,11 @@ module.exports={
 		plan_monthtask_remove(_,{_id,month,knowledge},{app,user}){
 			return app.get1Entity("plans",{_id})
 				.then(plan=>{
-					let months=plan.months||[]
-					let {knowledges=[]}=(months[month]=(months[month]||{}))
+					let months=plan.months
+					let {knowledges}=months[month]
 					if(!knowledges.includes(knowledge))
 						return plan
-					knowledges=knowledges.filter(a=>a!=knowledge)
-					months=[...months]
-					months[month]={...months[month], knowledges}
-					plan.months=months
+					knowledges.splice(knowledges.indexOf(knowledge),1)
 					app.patchEntity("plans",{_id},{months})
 					return plan
 				})
@@ -210,14 +206,11 @@ module.exports={
 		plan_monthtask_add(_,{_id,month,knowledge},{app,user}){
 			return app.get1Entity("plans",{_id})
 				.then(plan=>{
-					let months=plan.months||[]
-					let {knowledges=[]}=(months[month]=months[month]||{})
+					let months=plan.months
+					let {knowledges}=months[month]
 					if(knowledges.includes(knowledge))
 						return plan
-					knowledges=[...knowledges,knowledge]
-					months=[...months]
-					months[month]={...months[month], knowledges}
-					plan.months=months
+					knowledges.push(knowledge)
 					app.patchEntity("plans",{_id},{months})
 					return plan
 				})
@@ -478,6 +471,9 @@ module.exports={
 				})
 		},
 		
+		category:({category})=>category||[],
+		tags:({tags})=>tags||[],
+		
 		isMyWork:({author},{},{app,user})=>author==user._id,
 		
 		author({author},{},{app,user}){
@@ -515,8 +511,10 @@ module.exports={
 	
 	MonthPlan:{
 		knowledges({knowledges},{},{app,user}){
-			return Promise.all((knowledges||[]).filter(a=>a).map(_id=>app.getDataLoader("knowledges").load(_id)))
-		}
+			return Promise.all((knowledges).filter(a=>a).map(_id=>app.getDataLoader("knowledges").load(_id)))
+				.then(a=>a.filter(b=>b))
+		},
+		goals:({goals})=>goals||[],
 	},
 	Todo: {
 		knowledge({knowledge},{},{app,user}){

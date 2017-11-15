@@ -62,7 +62,7 @@ module.exports=others=>`
 		photos: [String]
 		zans: Int
 		category: [String]
-		keywords: [String]
+		tags: [String]
 		fields: [JSON]
 		days: [JSON]
 		hasHomework: JSON

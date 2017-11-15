@@ -32,7 +32,7 @@ import Knowledge from "knowledge"
 
 export class Plan extends Component{
 	render(){
-		let {goals=[], months=[], caps=[],pendingKnowledges,
+		let {goals, months, caps,pendingKnowledges,
 			autoPlan,setGoals,searchKnowledges,
 			addMonthGoal,removeMonthGoal,addMonthTask,removeMonthTask}=this.props
 		return (
@@ -92,7 +92,7 @@ class YearGoal extends Component{
 	}
 
 	toggle(cap){
-		let {goals=[],setGoals}=this.props
+		let {goals,setGoals}=this.props
 		if(goals.includes(cap)){
 			goals=goals.filter(a=>a!=cap)
 		}else{
@@ -110,12 +110,10 @@ class MonthGoals extends Component{
 	render(){
 		let current=new Date().getMonth()
 		let {month}=this.state
-		let {months=[], addMonthGoal,pendingKnowledges,
+		let {months, addMonthGoal,pendingKnowledges,
 			removeMonthGoal, addMonthTask, removeMonthTask,searchKnowledges}=this.props
 
-		let steps=new Array(12)
-		steps.fill(1)
-		steps=steps.map((a,i)=>{
+		let steps=new Array(12).fill(1).map((a,i)=>{
 			if(i==month){
 				return (
 					<Step key={i}>
@@ -152,11 +150,11 @@ class MonthGoals extends Component{
 	}
 
     renderMonthGoals(m){
-		let {months=[], removeMonthGoal}=this.props
-        let {goals=[]}=months[m]||{}
+		let {months, removeMonthGoal}=this.props
+        let {goals}=months[m]
         return (
             <span style={{display:"flex", flexWrap:"wrap",zoom:0.8}}>
-                {(goals||[]).map(a=>
+                {goals.map(a=>
                     <Chip key={a}
                         children={a}
                         backgroundColor="transparent"
@@ -168,9 +166,9 @@ class MonthGoals extends Component{
 
     renderGoalSelector(m){
         let {search}=this.state
-        let {goals,months=[], addMonthGoal}=this.props
-        let {goals:used}=months[m]||{}
-        let unused=(goals||[]).filter(a=>!(used||[]).includes(a))
+        let {goals,months, addMonthGoal}=this.props
+        let {goals:used}=months[m]
+        let unused=goals.filter(a=>!used.includes(a))
         if(unused.length==0)
             return null
 
@@ -204,15 +202,15 @@ class MonthPlan extends Component{
 	
 	myPendingKnowledges(){
 		const {goals, pendingKnowledges}=this.props
-		return (pendingKnowledges||[]).filter(({category})=>{
-			return (goals||[]).reduce((b,a)=>b&&(category||[]).includes(a),true)
+		return pendingKnowledges.filter(({category})=>{
+			return goals.reduce((b,a)=>b&&category.includes(a),true)
 		})
 	}
 	
 	render(){
         const {search,pending}=this.state
 		const {month, knowledges,removeMonthTask, addMonthTask}=this.props
-		let searched=(pending||[]).filter(({id})=>!(knowledges||[]).find(a=>a.id==id)).slice(0,5)
+		let searched=pending.filter(({id})=>!knowledges.find(a=>a.id==id)).slice(0,5)
         return (
             <List>
                 <Subheader>
@@ -235,7 +233,7 @@ class MonthPlan extends Component{
                             dataSource={searched}/>
                     </center>
                 </Subheader>
-                {(knowledges||[]).map(({id,title})=>
+                {knowledges.map(({id,title})=>
                     <ListItem key={id}
                         primaryText={title}
 						leftCheckbox={
@@ -375,9 +373,6 @@ export default compose(
 	})),
 	getContext({client:PropTypes.object}),
 	mapProps(({data:{goals,months,caps,pendingKnowledges},client,child,...others})=>{
-		caps=[...(caps||[])]
-		goals=[...(goals||[])]
-		months=[...(months||[])]
 		return {
 			...others,
 			goals,months,caps,
