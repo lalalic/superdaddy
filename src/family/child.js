@@ -94,12 +94,12 @@ export class Child extends Component{
 				<CommandBar className="footbar"
 					items={[
 						"Back"
-						,{
+						/*,{
 							action:"publish",
 							label:"出版",
 							icon:<IconPublish/>,
 							onSelect:toPublish
-						}
+						}*/
 						,{
 							action:"plan",
 							label:"年度计划",

@@ -1,29 +1,16 @@
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var path = require('path');
-var webpack = require("webpack");
-var noVisualization = process.env.NODE_ENV === 'production' || process.argv.slice(-1)[0] == '-p'
-
-function envwebpack(env){
-	try{
-		return require(`./webpack.${env}.js`)
-	}catch(e){
-		return {}
-	}
-}
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const path = require('path')
+const {ContextReplacementPlugin} = require("webpack")
 
 module.exports=env=>Object.assign({
 	entry:{
-		index:["babel-polyfill","./style/index.less","./src/index.js"],
-		//tv: ["babel-polyfill","./src/tv/index.js"],
-		//parser: "./src/knowledge/parse.js"
+		index:["babel-polyfill","./style/index.less","./src/index.js"]
 	},
 	output:{
 		filename:"[name].js",
-		chunkFilename:"[name].js",
 		path:path.resolve(__dirname, 'dist')
 	},
-	devtool: 'source-map',
+	devtool:false,
 	module:{
 		rules:[{
 			test: /.js?$/,
@@ -38,45 +25,26 @@ module.exports=env=>Object.assign({
 				'less-loader'
 			]
 		}]
-	},/*
-	resolve:{
-		alias:{
-			qili: path.resolve(__dirname, 'node_modules/qili-app/src/'),
-		}
-	},*/
+	},
 	node:{
 		fs: "empty",
 		net: "empty",
 		module: "empty"
 	},
 	plugins:[
-		new webpack.ContextReplacementPlugin(/graphql-language-service-interface[\/\\]dist/, /\.js$/),
-	/*	
-		!noVisualization ? new BundleAnalyzerPlugin({analyzerMode: 'static' }) : null,
-		
-		
-		new webpack.optimize.CommonsChunkPlugin({
-		  name: 'common',
-		  minChunks: ({context, resource }) => /node_modules/.test(resource),
-		}),
-		new webpack.optimize.CommonsChunkPlugin({
-			names: ['docx-template'],
-			minChunks: ({context, resource }) => /(docx4js|docx-template|jszip|escodegen)/.test(resource),
-		}),
-		new webpack.optimize.CommonsChunkPlugin('manifest'),
+		new ContextReplacementPlugin(/graphql-language-service-interface[\/\\]dist/, /\.js$/),
 		new HtmlWebpackPlugin({
-			title:"超级奶爸",
-		})*/
-	].filter(p=>!!p),
-	devServer:{
-		contentBase: path.join(__dirname, "dist"),
-		compress: true,
-		port: 9081,
-		overlay: {
-			errors: true
-		},
-		stats:{
-			warnings: false
-		}
-	}
-}, envwebpack(env))
+			template: './dist/index.tmpl',
+			title:"爸爸在",
+			favicon: "./dist/favicon.ico",
+			inject:true,
+		}),
+		new HtmlWebpackPlugin({
+			template: './dist/index.tmpl',
+			title:"爸爸在",
+			favicon: "./dist/favicon.ico",
+			extra: `<script type="text/javascript" src="cordova.js"></script>`,
+			filename:"cordova.html",
+		}),
+	]
+}, env ? require(`./webpack.${env}.js`) : {})

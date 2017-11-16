@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="lalalic.superdaddy.tv" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>超级奶爸</name>
+    <name>爸爸在</name>
     <description>
         陪娃娃快乐成长
     </description>
     <author email="lalalic@139.com">
         lalalic
     </author>
-    <content src="tv.html" />
+    <content src="corda.html" />
     <plugin name="cordova-plugin-whitelist" spec="1.2.2" />
     <plugin name="cordova-plugin-file" spec="4.2.0" />
     <plugin name="cordova-sqlite-storage" spec="1.4.6" />
