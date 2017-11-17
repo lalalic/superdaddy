@@ -1,6 +1,8 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
 const {ContextReplacementPlugin} = require("webpack")
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
+const HtmlWebpackHarddiskPlugin=require('html-webpack-harddisk-plugin')
 
 module.exports=env=>Object.assign({
 	entry:{
@@ -37,14 +39,19 @@ module.exports=env=>Object.assign({
 			template: './dist/index.tmpl',
 			title:"爸爸在",
 			favicon: "./dist/favicon.ico",
-			inject:true,
+			inlineSource: '.(js|css)$'
 		}),
+		
 		new HtmlWebpackPlugin({
 			template: './dist/index.tmpl',
 			title:"爸爸在",
 			favicon: "./dist/favicon.ico",
 			extra: `<script type="text/javascript" src="cordova.js"></script>`,
 			filename:"cordova.html",
+			alwaysWriteToDisk: true,
 		}),
+		
+		new HtmlWebpackInlineSourcePlugin(),
+		new HtmlWebpackHarddiskPlugin(),
 	]
 }, env ? require(`./webpack.${env}.js`) : {})

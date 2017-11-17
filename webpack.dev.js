@@ -10,7 +10,7 @@ module.exports={
 	devServer:{
 		contentBase: path.join(__dirname, "dist"),
 		compress: true,
-		host: "192.168.43.17",
+		host: "0.0.0.0",
 		port: 9081,
 		disableHostCheck: true,
 		overlay: {
@@ -18,6 +18,9 @@ module.exports={
 		},
 		stats:{
 			warnings: false
+		},
+		setup(app){
+			app.get("/app.apk.version",(req, res)=>res.json(require("./package.json").version))
 		}
 	}
 }

@@ -3,12 +3,14 @@ import Qili from "qili"
 import project from "./package.json"
 import File from "qili/components/file"
 
-project.homepage="http://localhost:9081"
+const host=window.location.hostname
+
+project.homepage=`http://${host}:9081`
 
 const _render=Qili.render
 Qili.render=function(app){
 	_render(React.cloneElement(app, {
-		service: "http://localhost:9080/1/graphql",
+		service: `http://${host}:9080/1/graphql`,
 		isDev:false
 	}))
 }
