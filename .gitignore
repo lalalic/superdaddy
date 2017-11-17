@@ -37,6 +37,7 @@ dist/*.map
 dist/knowledge
 dist/publish
 .DS_Store
+dist/cordova.html
 
 cloud/__generated.js
 tv

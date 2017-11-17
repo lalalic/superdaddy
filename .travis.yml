@@ -11,7 +11,7 @@ addons:
 
 before_install:
  - echo "install nodejs"
- - nvm install 6
+ - nvm install 8
  - npm install yarn -g
  - node --version
  - npm --version
@@ -38,7 +38,7 @@ after_success:
  - rm dist/tv.xml
  - rm dist/cordova.html
 
- - npm run build.debug
+# - yarn run build.debug
  - node -p "require('./package.json').version" > dist/app.apk.version
  - mv dist $APP_NAME
  - tar cvfz $APP_NAME.tgz $APP_NAME

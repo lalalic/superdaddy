@@ -1,26 +1,41 @@
-const webpack=require("webpack")
-const path = require('path')
-const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackHarddiskPlugin=require('html-webpack-harddisk-plugin')
+const thisIP=require("ip").address()
 
-module.exports={
-	entry:{
-		index:["babel-polyfill","./style/index.less","./.test.mongo.js", "./src/index.js"]
-	},
-	devtool: 'source-map',
-	devServer:{
-		contentBase: path.join(__dirname, "dist"),
-		compress: true,
-		host: "0.0.0.0",
-		port: 9081,
-		disableHostCheck: true,
-		overlay: {
-			errors: true
+module.exports=(base,HTML,port)=>{
+	const index=[...base.entry.index]
+	index.splice(base.entry.index.length-1,0,"./.test.mongo.js")
+	return {
+		...base,
+		entry:{
+			index
 		},
-		stats:{
-			warnings: false
+		devtool: 'source-map',
+		devServer:{
+			contentBase: path.join(__dirname, "dist"),
+			compress: true,
+			port,
+			host:"0.0.0.0",
+			setup(app){
+				app.get("/app.apk.version",(req, res)=>res.json(require("./package.json").version))
+			}
 		},
-		setup(app){
-			app.get("/app.apk.version",(req, res)=>res.json(require("./package.json").version))
-		}
+		plugins:[
+			...base.plugins.slice(0,-1),//don't inline js
+			new HtmlWebpackPlugin({
+				...HTML,
+				inject:false,
+				extra: `
+					<script type="text/javascript" src="cordova.js"></script>
+					<script type="text/javascript">window.host="${thisIP}"</script>
+					<script type="text/javascript" src="http://${thisIP}:${port}/index.js"></script>
+				`,
+				filename:"cordova.html",
+				alwaysWriteToDisk: true,
+			}),
+			
+			new HtmlWebpackHarddiskPlugin(),
+		]
 	}
 }

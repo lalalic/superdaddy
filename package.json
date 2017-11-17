@@ -53,6 +53,7 @@
     "enzyme": "^2.7.1",
     "html-webpack-harddisk-plugin": "^0.1.0",
     "html-webpack-inline-source-plugin": "^0.0.9",
+    "ip": "^1.1.5",
     "jest": "^21.2.1",
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
