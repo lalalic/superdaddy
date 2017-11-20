@@ -23,8 +23,8 @@ install:
 
 script:
 # - yarn test
- - yarn run build.$BUILD_MODE
- - yarn run cordova
+ - yarn build.$BUILD_MODE
+ - yarn cordova -- --storePassword=$STORE_PWD --password=$STORE_PWD
 # - yarn run tv
 
 after_success:
@@ -33,7 +33,7 @@ after_success:
 
 # - mv tv/platforms/android/build/outputs/apk/android-debug.apk ./tv.apk
 # - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./tv.apk "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$APP_NAME"
- 
+
  - rm dist/config.xml
  - rm dist/tv.xml
  - rm dist/cordova.html

@@ -44,7 +44,7 @@ export class Knowledges extends Component{
 					}
 
 					title={<TextField
-						hintText={`查询:${toText(qs)}`}
+						hintText={`查询 ${toText(qs)}`}
 						value={title||""}
 						onChange={(e,title)=>this.setState({title})}
 						onKeyDown={e=>e.keyCode==13 && search({title})}
