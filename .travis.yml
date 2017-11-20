@@ -22,23 +22,18 @@ install:
  - yarn upgrade docx-template docx4js qili-app --latest
 
 script:
-# - yarn test
  - yarn build.$BUILD_MODE
  - yarn cordova -- --storePassword=$STORE_PWD --password=$STORE_PWD
-# - yarn run tv
 
 after_success:
- - mv cordova/platforms/android/build/outputs/apk/android-debug.apk ./app.apk
+ - mv cordova/platforms/android/build/outputs/apk/android-release.apk ./app.apk
  - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./app.apk "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$APP_NAME"
-
-# - mv tv/platforms/android/build/outputs/apk/android-debug.apk ./tv.apk
-# - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./tv.apk "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$APP_NAME"
 
  - rm dist/config.xml
  - rm dist/tv.xml
  - rm dist/cordova.html
+ - rm dist/index.js
 
-# - yarn run build.debug
  - node -p "require('./package.json').version" > dist/app.apk.version
  - mv dist $APP_NAME
  - tar cvfz $APP_NAME.tgz $APP_NAME
