@@ -35,30 +35,30 @@ module.exports={
 				})
 		}
 	},
-	
+
 	Plan:{
 		id: ({_id})=>`plans:${_id}`,
 
 		caps: ()=>CAPS,
-		
+
 		pendingKnowledges({goals},{},ctx){
 			return  module.exports.Query.knowledges(null,{categories:goals},ctx)
-				.then(({edges})=>edges) 
+				.then(({edges})=>edges)
 		}
 	},
-	
+
 	User:{
 		child(child, {_id}, {app,user}){
 			return app.getDataLoader("users")
 				.load(_id)
 				.then(a=>a.author==user._id ? a : null)
 		},
-		
+
 		children(me, {}, {app,user}){
 			return app.findEntity("users", {author:user._id})
 		}
 	},
-	
+
 	Query:{
 		knowledge(_,{_id},{app}){
 			return app.get1Entity("knowledges",{_id})
@@ -69,23 +69,23 @@ module.exports={
 				if(title){
 					cursor=cursor.filter({title: new RegExp(`${title}.*`,"i")})
 				}
-				
+
 				if(categories && categories.length){
 					cursor=cursor.filter({category:{$all:categories}})
 				}
-				
+
 				if(tags && tags.length){
 					cursor=cursor.filter({tags:{$all:tags}})
 				}
-				
+
 				if(mine){
 					cursor=cursor.filter({author:user._id})
 				}
-				
+
 				if(favorite){
-					
+
 				}
-				
+
 				if(tasking){
 					const {User,Child}=module.exports
 					return User.children(user,{},context)
@@ -98,13 +98,13 @@ module.exports={
 						},[]))
 						.then(knowledges=>cursor.filter({_id:{$in:knowledges}}))
 				}else if(tasked){
-					
-				} 
+
+				}
 				return cursor
 			})
 		},
 	},
-	
+
 	Mutation:{
 		child_remove(_,{_id},{app,user}){
 			return app.remove1Entity("users",  {_id, author:user._id})
@@ -117,7 +117,7 @@ module.exports={
 				throw new Error("name can't be empty")
 			return app.patchEntity("users", {_id,author:user._id}, {...$set, author:user._id})
 		},
-		
+
 		knowledge_create(_, {knowledge:{title, ...knowledge}}, {app,user}){
 			if(!title)
 				throw new Error("必须有题目")
@@ -129,7 +129,7 @@ module.exports={
 				})
 				.then(()=>app.createEntity("knowledges", {...knowledge,title, author:user._id}))
 		},
-		
+
 		knowledge_update(_, {_id, knowledge:{title,...knowledge}}, {app,user}){
 			if(title!=undefined && !title)
 				throw new Error("必须有题目")
@@ -142,19 +142,19 @@ module.exports={
 					.then(()=>app.patchEntity("knowledges", {_id}, {...knowledge,title,author:user._id}))
 					.then(()=>app.get1Entity("knowledges", {_id}))
 		},
-		
+
 		publish_create(_, doc, {app,user}){
 			return app.createEntity("publishs", {...doc, author:user._id,status:1})
 		},
-		
+
 		publish_update(_, {_id,...patch}, {app,user}){
 			return app.patchEntity("publishs",{author:user._id,_id}, {...patch})
 		},
-		
+
 		publish_done(_,{_id},{app,user}){
 			return app.patchEntity("publishs",{author:user._id,_id}, {status:0})
 		},
-		
+
 		publish_remove(_, {_id}, {app,user}){
 			return app.remove1Entity("publishs",{_id, author: user._id, status:{$ne:0}})
 		},
@@ -214,7 +214,7 @@ module.exports={
 					app.patchEntity("plans",{_id},{months})
 					return plan
 				})
-		},	
+		},
 
 		async plan_task_done(_,{_id,content,knowledge,props,day},{app,user}){
 			let score=1
@@ -229,9 +229,9 @@ module.exports={
 			task[`day${day}`]=props||true
 			let planScore=app.updateEntity("plans",{_id},{$inc:{score:1},$set:{todos:plan.todos}})
 			return Promise.all([childScore,planScore])
-				.then(()=>app.getDataLoader("users").clear(_id).loade(_id))
+				.then(()=>app.getDataLoader("users").clear(_id).load(_id))
 		},
-		
+
 		async plan_reset(_,{_id},{app,user}){
 			let plan=await app.getDataLoader("plans").load(_id)
 
@@ -261,12 +261,12 @@ module.exports={
 							.catch(()=>conn.close())
 						)
 			}
-			
+
 			function reset4CurrentWeek(){
 				let {todos, months}=plan
 				let week=currentWeek()
 				todos=todos.map(({day0,day1,day2,day3,day4,day5,day6,...others})=>others)
-				
+
 				let applyPlan=null
 				if(months){
 					let {knowledges=[]}=(months[new Date().getMonth()]||{})
@@ -276,24 +276,24 @@ module.exports={
 								return app.getDataLoader("knowledges")
 									.load(a)
 									.then(({title})=>todos.push({knowledge:a, content:title}))
-								
+
 							}
 						}).filter(a=>!!a)
 					)
 				}else{
 					applyPlan=Promise.resolve()
 				}
-				
+
 				return applyPlan
 					.then(()=>app.patchEntity("plans",{_id},{todos,week}))
 					.then(()=>({...plan,todos,week}))
 			}
-			
+
 			saveFinishedTasks()
-			
+
 			return reset4CurrentWeek()
 		},
-		
+
 		plan_todos_add(_,{_id, content, knowledge},{app,user}){
 			return app.getDataLoader("plans")
 				.load(_id)
@@ -404,7 +404,7 @@ module.exports={
 					if(goals.length==0){
 						goals=CAPS.slice(0,Math.floor(count/3)||1)
 					}
-					
+
 					let pending=new Array(count)
 					pending.fill(1)
 					pending.forEach((a,i)=>{
@@ -413,7 +413,7 @@ module.exports={
 							currentGoals[0]=goals[i%goals.length]
 						months[i+month]={goals:currentGoals, knowledges}
 					})
-					
+
 					let all=pending.map((a,i)=>{
 						return new Promise((resolve, reject)=>{
 							let {goals,knowledges=[]}=months[i+month]
@@ -432,7 +432,7 @@ module.exports={
 						.then(()=>{
 							plan.months=[...months]
 							plan.goals=[...goals]
-							
+
 							let all=[]
 							if(!plan.todos || plan.todos.length==0){
 								months[month].knowledges
@@ -444,7 +444,7 @@ module.exports={
 										plan.todos=knowledges.map(({_id,title})=>({knowledge:_id,content:title}))
 									return app.updateEntity("plans",{_id},{
 										months:plan.months,
-										goals:plan.goals, 
+										goals:plan.goals,
 										todos:plan.todos,
 									})
 								})
@@ -453,14 +453,14 @@ module.exports={
 				})
 		},
 	},
-	
+
 	Knowledge: {
 		id: ({_id})=>`knowledges:${_id}`,
-		
+
 		files({_id},{},{app,user}){
 			return app.findEntity("files",{host:`knowledges:${_id}`})
 		},
-		
+
 		inTask({_id},{child},{app,user}){
 			return app.getDataLoader("plans")
 				.load(child)
@@ -470,16 +470,16 @@ module.exports={
 					return !!plan.todos.find(({knowledge})=>knowledge==_id)
 				})
 		},
-		
+
 		category:({category})=>category||[],
 		tags:({tags})=>tags||[],
-		
+
 		isMyWork:({author},{},{app,user})=>author==user._id,
-		
+
 		author({author},{},{app,user}){
 			return app.getDataLoader("users").load(author)
 		},
-		
+
 		summary({content,summary}){
 			if(summary)
 				return summary
@@ -494,21 +494,21 @@ module.exports={
 			}
 		}
 	},
-	
+
 	Publish: {
 		id: ({_id})=>`publishs:${_id}`,
-		
+
 		author({author}, {}, {app,user}){
 			return app.getDataLoader("users").load(author)
 		},
-		
+
 		child({child}, {}, {app,user}){
 			return app.getDataLoader("users")
 				.load(child)
 				.then(child=>child.author==user._id ? child : null)
 		},
 	},
-	
+
 	MonthPlan:{
 		knowledges({knowledges},{},{app,user}){
 			return Promise.all((knowledges).filter(a=>a).map(_id=>app.getDataLoader("knowledges").load(_id)))
