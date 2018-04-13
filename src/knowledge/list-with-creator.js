@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import PropTypes from "prop-types"
 
-import {compose} from "recompose"
+import {compose, getContext, branch, renderComponent} from "recompose"
 import {connect} from "react-redux"
 
 import FloatingAdd from "components/floating-add"
@@ -16,6 +16,11 @@ export const Creatable=({selectDocx, ...props})=>(
 )
 
 export default compose(
+	getContext({
+		is:PropTypes.object
+	}),
+	branch(({is})=>!is.app, renderComponent(Knowledges)),
+	
 	connect(null,(dispatch,{toCreate})=>({
 		selectDocx: ()=>dispatch(ACTION.SELECT_DOCX()).then(toCreate)
 	}))
