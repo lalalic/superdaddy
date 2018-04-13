@@ -1,13 +1,14 @@
 {
   "name": "SuperDaddy",
   "description": "Super Daddy",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "homepage": "http://app.qili2.com/superdaddy",
   "author": {
     "name": "Raymond Li",
     "email": "lalalic@139.com"
   },
   "dependencies": {
+    "aliyun-vod-upload": "^1.0.3",
     "babel-polyfill": "^6.23.0",
     "cheerio": "^0.22.0",
     "docx-template": "^2.2.3",
