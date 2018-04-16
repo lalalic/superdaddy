@@ -45,6 +45,7 @@ export class Knowledges extends Component{
 
 					title={<TextField
 						hintText={`${toText(qs)}`}
+						namee="search"
 						value={title||""}
 						onChange={(e,title)=>this.setState({title})}
 						onKeyDown={e=>e.keyCode==13 && search({title})}

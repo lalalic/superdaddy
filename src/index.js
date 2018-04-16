@@ -64,7 +64,8 @@ const SuperDaddy=compose(
 		appId:"5746b2c5e4bb3b3700ae1566",
 		reducers:{
 			[DOMAIN]:reducer
-		}
+		},
+		notifyOffline:false
 	})),
 	withInit({
 		query:graphql`
@@ -119,13 +120,10 @@ const router=(
 							toChild:child=>{
 								dispatch(ACTION.CURRENT_CHILD(child))
 							},
+							name:`宝宝`,
 						}))
 					)(props=>(
 						<div>
-							<center style={{height:50, color:"lightgray", margin:20}}>
-								start from creating your first baby!
-							</center>
-
 							<Child.Creator {...props} style={{margin:"0px 100px"}}/>
 						</div>))
 				))
@@ -246,7 +244,7 @@ const router=(
 				<IndexRoute component={compose(
 					getContext({router: PropTypes.object}),
 					withProps(({router})=>({
-						toChild:id=>router.replace(`/child/${id}`),
+						toChild:id=>router.replace(`/child/${id}`)
 					})),
 				)(Child.Creator)}/>
 
@@ -266,13 +264,14 @@ const router=(
 					getContext({
 						client:PropTypes.object,
 						router:PropTypes.object,
+						store: PropTypes.object
 					}),
-					withProps(({me,client,dispatch, router,params:{id}})=>({
+					withProps(({me,client,store, router,params:{id}})=>({
 						id,
 						data:me.child,
 						switchChild(){
 							let all=client.getAll("Child")
-							dispatch(ACTION.CURRENT_CHILD(all.length ? all[0].id : null))
+							store.dispatch(ACTION.CURRENT_CHILD(all.length ? all[0].id : null))
 						},
 						client:undefined,
 						toMy: ()=>router.replace("/my"),

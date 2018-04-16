@@ -36,9 +36,6 @@
     "wechat4u": "^0.6.8"
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^3.2.6",
-    "@storybook/addon-links": "^3.2.6",
-    "@storybook/react": "^3.2.8",
     "babel-cli": "^6.18.0",
     "babel-loader": "^7.1.1",
     "babel-plugin-add-module-exports": "^0.1.2",
@@ -75,7 +72,7 @@
     "build.debug": "webpack",
     "test": "jest __tests__",
     "dev": "webpack-dev-server --env=dev",
-    "cordova": "cordova create cordova --link-to=dist && cd cordova && cp www/phone.xml config.xml && cordova platform add android && cordova build android  --release -- --keystore=../lalalic.keystore --alias=lalalic",
+    "cordova": "cordova create cordova --link-to=dist && cd cordova && copy www\\phone.xml config.xml && cordova platform add android && cordova build android",
     "tv": "cordova create tv --link-to=dist && cd tv && cp www/tv.xml config.xml && cordova platform add android && cordova build android",
     "tv.win": "cordova create tv --link-to=dist && cd tv && copy www\\tv.xml config.xml && cordova platform add android && cordova build android",
     "storybook": "start-storybook -p 6006",

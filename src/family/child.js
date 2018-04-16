@@ -120,7 +120,7 @@ export class Child extends Component{
 }
 
 export class Creator extends Component{
-	state={nameError:null,name:""}
+	state={nameError:null,name:this.props.name}
 
 	render(){
 		const {create, style={}}=this.props
@@ -241,6 +241,7 @@ export default compose(
 				child_remove(_id:$id)
 			}
 		`,
+		delete4:id
 	})),
 	connect(state=>({current:state.superdaddy.current}),
 		(dispatch,{id, current, name, doRemove,showMessage,switchChild, toMy})=>({

@@ -23,22 +23,6 @@ module.exports=(base,HTML,port)=>{
 			setup(app){
 				app.get("/app.apk.version",(req, res)=>res.json(require("./package.json").version))
 			}
-		},
-		plugins:[
-			...base.plugins.slice(0,-1),//don't inline js
-			new HtmlWebpackPlugin({
-				...HTML,
-				inject:false,
-				extra: `
-					<script type="text/javascript" src="cordova.js"></script>
-					<script type="text/javascript">window.host="${thisIP}"</script>
-					<script type="text/javascript" src="http://${thisIP}:${port}/index.js"></script>
-				`,
-				filename:"cordova.html",
-				alwaysWriteToDisk: true,
-			}),
-
-			new HtmlWebpackHarddiskPlugin(),
-		]
+		}
 	}
 }
