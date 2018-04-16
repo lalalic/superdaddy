@@ -72,7 +72,7 @@
     "build.debug": "webpack",
     "test": "jest __tests__",
     "dev": "webpack-dev-server --env=dev",
-    "cordova": "cordova create cordova --link-to=dist && cd cordova && copy www\\phone.xml config.xml && cordova platform add android && cordova build android",
+    "cordova": "cordova create cordova --link-to=dist && cd cordova && cp www/phone.xml config.xml && cordova platform add android && cordova build android --release -- --keystore=../lalalic.keystore --alias=lalalic",
     "tv": "cordova create tv --link-to=dist && cd tv && cp www/tv.xml config.xml && cordova platform add android && cordova build android",
     "tv.win": "cordova create tv --link-to=dist && cd tv && copy www\\tv.xml config.xml && cordova platform add android && cordova build android",
     "storybook": "start-storybook -p 6006",
