@@ -12,11 +12,9 @@ const HTML={
 
 module.exports=env=>{
 	const base={
-		entry:{
-			index:["babel-polyfill","./style/index.less","./src/index.js"]
-		},
+		entry:["babel-polyfill","./src/index.js"],
 		output:{
-			filename:"[name].js",
+			filename:"index.js",
 			path:path.resolve(__dirname, 'dist')
 		},
 		devtool:false,
@@ -33,6 +31,12 @@ module.exports=env=>{
 					{ loader: 'css-loader', options: { importLoaders: 1 } },
 					'less-loader'
 				]
+			},{
+				test:/.graphql?$/,
+				use: 'text-loader'
+			},{
+				test:path.resolve("./cloud","index.js"),
+				use: "imports-loader?Cloud=qili-app/makeOfflineSchema"//path relative to test
 			}]
 		},
 		node:{

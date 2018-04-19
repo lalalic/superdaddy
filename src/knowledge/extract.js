@@ -1,4 +1,4 @@
-import File from "qili/components/file"
+import {File} from "qili"
 import parse from "./parse"
 
 const reg=/[-,，\s+]/

@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import PropTypes from "prop-types"
 
 import {compose, getContext} from "recompose"
-import {withMutation, withFragment} from "qili/tools/recompose"
+import {withMutation, withFragment,wechat,CommandBar, File} from "qili"
 import {connect} from "react-redux"
 
 import {Link} from "react-router"
@@ -13,16 +13,11 @@ import IconCreate from "material-ui/svg-icons/editor/border-color"
 import IconCancel from "material-ui/svg-icons/navigation/cancel"
 import IconAddTask from "material-ui/svg-icons/action/alarm-add"
 import IconRemoveTask from "material-ui/svg-icons/action/alarm-off"
-import {
-		Icon as IconWechatSession,
-		IconTimeline as IconWechatTimeline
-	} from "qili/components/wechat"
+
 import IconBuy from "material-ui/svg-icons/action/add-shopping-cart"
 import IconPreview from "material-ui/svg-icons/action/print"
 import IconHomework from "material-ui/svg-icons/notification/event-note"
 
-import CommandBar from "qili/components/command-bar"
-import {withGetToken} from "qili/components/file"
 
 import AD from 'components/ad'
 import AutoForm from "components/auto-form"
@@ -91,13 +86,13 @@ export class KnowledgeEditor extends Component{
 			<BottomNavigationItem
 			key="wechat.session"
 			label="微信好友"
-			icon={<IconWechatSession/>}
+			icon={<wechat.Icon/>}
 			onClick={wechat_session}
 			/>,
 			<BottomNavigationItem
 			key="wechat.timeline"
 			label="微信朋友圈"
-			icon={<IconWechatTimeline/>}
+			icon={<wechat.IconTimeline/>}
 			onClick={wechat_timeline}
 			/>
 		]
@@ -218,7 +213,7 @@ export default compose(
 			...content_knowledge
 		}
 	`),
-	withGetToken,
+	File.withGetToken,
 	withMutation(({knowledge}, info)=>({
 		name:"updateKnowledge",
 		variables:{info,id:knowledge.id},

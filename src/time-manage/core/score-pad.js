@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 
 import {connect} from "react-redux"
 import {compose,getContext,withProps,withState} from "recompose"
-import {withFragment} from "qili/tools/recompose"
+import {withFragment} from "qili"
 
 import AppBar from "components/app-bar"
 

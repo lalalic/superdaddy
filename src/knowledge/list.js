@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import PropTypes from "prop-types"
 
 import {compose, mapProps, getContext} from "recompose"
-import {withFragment} from "qili/tools/recompose"
+import {withFragment} from "qili"
 
 import {IconButton, TextField} from 'material-ui'
 
@@ -45,7 +45,7 @@ export class Knowledges extends Component{
 
 					title={<TextField
 						hintText={`${toText(qs)}`}
-						namee="search"
+						name="search"
 						value={title||""}
 						onChange={(e,title)=>this.setState({title})}
 						onKeyDown={e=>e.keyCode==13 && search({title})}

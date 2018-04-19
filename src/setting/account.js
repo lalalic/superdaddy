@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import PropTypes from "prop-types"
 
 import {compose, getContext, withProps} from "recompose"
-import {withMutation, withFragment} from "qili/tools/recompose"
+import {withMutation, withFragment, Photo, Account as BaseAccount} from "qili"
 import {graphql} from "react-relay"
 import {ListItem} from "material-ui"
 
@@ -14,8 +14,6 @@ import IconPublish from "material-ui/svg-icons/image/camera-roll"
 import IconChild from "material-ui/svg-icons/places/child-care"
 
 import Child from "family/child"
-import Photo from "qili/components/photo"
-import BaseAccount from "qili/components/account"
 
 export const Account=({id,username,photo, babies=[], toCreate, toChild, update, toSetting, toProfile})=>(
     <BaseAccount {...{id,username,photo,toSetting,toProfile}}>

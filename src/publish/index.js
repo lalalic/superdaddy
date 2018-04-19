@@ -3,7 +3,6 @@ import PropTypes from "prop-types"
 
 import {compose, getContext,withProps,setPropTypes} from "recompose"
 import {connect} from "react-redux"
-import {withMutation,withFragment} from "qili/tools/recompose"
 
 import pick from "lodash.pick"
 
@@ -17,7 +16,7 @@ import IconRemove from "material-ui/svg-icons/action/alarm-off"
 
 
 import AppBar from "components/app-bar"
-import CommandBar from "qili/components/command-bar"
+import {CommandBar,withMutation,withFragment} from "qili"
 
 import Assembler from "./assemble"
 

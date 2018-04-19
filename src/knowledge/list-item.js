@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import PropTypes from "prop-types"
 
 import {compose, getContext, withProps} from "recompose"
-import {withFragment} from "qili/tools/recompose"
+import {withFragment} from "qili"
 
 import {relative} from 'components/calendar'
 

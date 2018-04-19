@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 
 import {connect} from "react-redux"
 import {compose,getContext,mapProps} from "recompose"
-import {withFragment,withMutation} from "qili/tools/recompose"
+import {withFragment,withMutation, CommandBar} from "qili"
 import {graphql} from "react-relay"
 
 import {
@@ -23,8 +23,6 @@ import IconAutoPlan from "material-ui/svg-icons/editor/linear-scale"
 import {List, ListItem} from 'material-ui/List'
 import Subheader from 'material-ui/Subheader'
 import Checkbox from 'material-ui/Checkbox'
-
-import CommandBar from "qili/components/command-bar"
 
 import AppBar from "components/app-bar"
 import Baby from "family/child"

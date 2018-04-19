@@ -3,8 +3,7 @@ import PropTypes from "prop-types"
 
 import {createEagerFactory} from "recompose"
 
-import CheckUpdate from "qili/components/check-update"
-import CommandBar from "qili/components/command-bar"
+import {CheckUpdate,CommandBar} from "qili"
 
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconAccount from 'material-ui/svg-icons/action/account-box'

@@ -1,7 +1,7 @@
 {
   "name": "SuperDaddy",
   "description": "Super Daddy",
-  "version": "1.0.4",
+  "version": "1.2.0",
   "homepage": "http://app.qili2.com/superdaddy",
   "author": {
     "name": "Raymond Li",
@@ -19,7 +19,7 @@
     "normalizr": "^2.2.1",
     "prop-types": "^15.6.0",
     "pull-to-refresh2": "^0.0.2",
-    "qili-app": "https://github.com/lalalic/qili-app",
+    "qili-app": "^1.2.1",
     "react": "^15.1.0",
     "react-composition": "^0.2.1",
     "react-dom": "^15.1.0",

@@ -1,17 +1,17 @@
+import "./style/index.less"
 import React from "react"
 import PropTypes from "prop-types"
 
 import {connect} from "react-redux"
 import {compose, getContext, withProps, mapProps, 
 	withStateHandlers,withContext,branch,renderComponent} from "recompose"
-import {withInit, withQuery, withPagination, withFragment} from "qili/tools/recompose"
+import {withInit, withQuery, withPagination, withFragment,
+	CheckUpdate, CommandBar, Setting, Profile, Comment} from "qili"
 
 import {graphql} from "react-relay"
 import {Router, Route, IndexRoute, Direct, IndexRedirect, hashHistory} from "react-router"
 
 import QiliApp, * as qili from "qili-app"
-import CheckUpdate from "qili/components/check-update"
-import CommandBar from "qili/components/command-bar"
 
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconAccount from 'material-ui/svg-icons/action/account-box'
@@ -65,7 +65,9 @@ const SuperDaddy=compose(
 		reducers:{
 			[DOMAIN]:reducer
 		},
-		notifyOffline:false
+		notifyOffline:false,
+		service:`http://localhost:9080/1/graphql`,
+		isDev:false
 	})),
 	withInit({
 		query:graphql`
@@ -96,9 +98,6 @@ const SuperDaddy=compose(
 
 import Child from "family/child"
 import Account from "setting/account"
-import Setting from "qili/ui/setting"
-import Comment from "qili/components/comment"
-import Profile from "qili/ui/user-profile"
 import Publish, {Publishes} from "publish"
 import Plan from "family/plan"
 

@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 
 import {connect} from "react-redux"
 import {compose, setStatic, getContext, withProps} from "recompose"
-import {withMutation, withFragment} from "qili/tools/recompose"
+import {withMutation, withFragment,InfoForm, CommandBar, Photo} from "qili"
 import {graphql} from "react-relay"
 
 import {TextField, RadioButtonGroup, RadioButton,DatePicker,Subheader} from 'material-ui'
@@ -15,10 +15,6 @@ import {yellow500 as COLOR_DONE} from "material-ui/styles/colors"
 import IconRemove from "material-ui/svg-icons/content/remove-circle"
 import IconPublish from "material-ui/svg-icons/action/card-giftcard"
 import IconPlan from "material-ui/svg-icons/editor/linear-scale"
-
-import {InfoForm, Field} from "qili/components/info-form"
-import CommandBar from "qili/components/command-bar"
-import Photo from "qili/components/photo"
 
 import {ACTION} from "main"
 
@@ -46,7 +42,7 @@ export class Child extends Component{
 					</div>
 
 					<InfoForm>
-						<Field primaryText="宝宝名" value={name}
+						<InfoForm.Field primaryText="宝宝名" value={name}
 							onEdit={
 								name=>update({name})
 									.then(
@@ -55,17 +51,17 @@ export class Child extends Component{
 										)
 								}/>
 
-						<Field primaryText="生日" value={birthday}
+						<InfoForm.Field primaryText="生日" value={birthday}
 							type="date"
 							onEdit={birthday=>update({birthday})}/>
 
-						<Field primaryText="性别" value={gender||"girl"}
+						<InfoForm.Field primaryText="性别" value={gender||"girl"}
 							type="single"
 							options={[{value:"girl",label:"女孩"},{value:"boy", label:"男孩"}]}
 							onEdit={gender=>update({gender})}
 							/>
 
-						<Field primaryText="个性图标" value={icon||"Smile"}
+						<InfoForm.Field primaryText="个性图标" value={icon||"Smile"}
 							type="single"
 							options={
 								Object.keys(Icons)
@@ -82,9 +78,9 @@ export class Child extends Component{
 
 						<Subheader>当前任务</Subheader>
 
-						<Field primaryText="成绩" value={`${score}/${goal}${totalScore==score ? "" : `/${totalScore}`}`}/>
+						<InfoForm.Field primaryText="成绩" value={`${score}/${goal}${totalScore==score ? "" : `/${totalScore}`}`}/>
 
-						<Field primaryText="目标" value={todo}
+						<InfoForm.Field primaryText="目标" value={todo}
 							type="input"
 							onEdit={goal ? todo=>updatePlan({todo}) : null}
 							/>

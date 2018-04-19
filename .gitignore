@@ -42,3 +42,4 @@ dist/cordova.html
 cloud/__generated.js
 tv
 
+.npmrc

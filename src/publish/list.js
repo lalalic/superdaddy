@@ -1,10 +1,8 @@
 import React, {Component} from "react"
 import {compose, mapProps,branch, renderComponent} from "recompose"
-import {withFragment, withMutation} from "qili/tools/recompose"
+import {withFragment, withMutation, CommandBar, Empty} from "qili"
 
 import {FlatButton, List, ListItem, Toggle} from "material-ui"
-import CommandBar from "qili/components/command-bar"
-import Empty from "qili/components/empty"
 
 import AppBar from "components/app-bar"
 

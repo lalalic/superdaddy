@@ -3,12 +3,8 @@ import PropTypes from "prop-types"
 
 import {connect} from "react-redux"
 import {compose,branch,renderComponent,getContext} from "recompose"
-import {withMutation} from "qili/tools/recompose"
+import {withMutation, CommandBar, Empty, File} from "qili"
 import {graphql} from "react-relay"
-
-import CommandBar from "qili/components/command-bar"
-import Empty from "qili/components/empty"
-import {withGetToken} from "qili/components/file"
 
 import IconInsertFile from 'material-ui/svg-icons/action/note-add'
 import IconCreate from "material-ui/svg-icons/editor/border-color"
@@ -93,7 +89,7 @@ export default compose(
 			}
 		`,
 	}),
-	withGetToken,
+	File.withGetToken,
 	connect(null,(dispatch,{selectedDocx, knowledge, toKnowledge, mutate, getToken,goBack})=>({
 		create(){
 			selectedDocx.upload({
