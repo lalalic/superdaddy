@@ -11,7 +11,6 @@ project.homepage=`http://localhost:9082`
 
 const _render=QiliApp.render
 QiliApp.render=function(app){
-	debugger
 	_render(React.cloneElement(app, {
 		service:`http://localhost:9080/1/graphql`,
 		isDev:false

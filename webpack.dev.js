@@ -6,7 +6,9 @@ const thisIP=require("ip").address()
 module.exports=(base,HTML,port)=>{
 	return {
 		...base,
-		entry:["babel-polyfill","./style/index.less","./.test.mongo.js","./src/index.js"],
+		entry:{
+			index: ["babel-polyfill","./.test.mongo.js","./src/index.js"],
+		},
 		devtool: 'source-map',
 		devServer:{
 			contentBase: path.join(__dirname, "dist"),

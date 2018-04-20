@@ -8,7 +8,7 @@
       "babel-plugin-transform-object-rest-spread",
       "babel-plugin-transform-class-properties",
 	  "babel-plugin-relay",
-	  "syntax-dynamic-import",
+	  "babel-plugin-syntax-dynamic-import",
 	  ["module-resolver",{
 			"root": ["."],
 			"alias":{
@@ -21,7 +21,7 @@
 				"components":"./src/components",
 				"icons": "./src/icons",
 				"family": "./src/family",
-				"qili":"qili-app/index.js",
+				"qili":"qili-app",
 			}
 		}]
     ]

@@ -5,17 +5,20 @@ const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin
 const HtmlWebpackHarddiskPlugin=require('html-webpack-harddisk-plugin')
 
 const HTML={
-	template:'./node_modules/qili-app/dist/index.tmpl',
+	template:'./node_modules/qili-app/index.tmpl',
 	title:"爸爸在",
 	favicon: "./dist/favicon.ico",
 }
 
 module.exports=env=>{
 	const base={
-		entry:["babel-polyfill","./src/index.js"],
+		entry:{
+			index:["babel-polyfill","./src/index.js"]
+		},
 		output:{
-			filename:"index.js",
-			path:path.resolve(__dirname, 'dist')
+			filename:"[name].js",
+			path:path.resolve(__dirname, 'dist'),
+			chunkFilename: '[name].js'
 		},
 		devtool:false,
 		module:{
@@ -28,8 +31,8 @@ module.exports=env=>{
 				test:/.less?$/,
 				use: [
 					'style-loader',
-					{ loader: 'css-loader', options: { importLoaders: 1 } },
-					'less-loader'
+					'css-loader',
+					'less-loader',
 				]
 			},{
 				test:/.graphql?$/,
@@ -50,7 +53,7 @@ module.exports=env=>{
 			new ContextReplacementPlugin(/source-map[\/\\]lib/, /\.js$/),
 			new HtmlWebpackPlugin({
 				...HTML,
-				inlineSource: '.(js|css)$'
+				inlineSource: 'index.js$'
 			}),
 			
 			new HtmlWebpackPlugin({

@@ -13,7 +13,8 @@ function splitKey(data){
 }
 
 export default function extract(file){
-    return parse(file).then(doc=>{
+    return import(/* webpackChunkName: "parser" */ "./parse").then(parse=>
+	parse(file).then(doc=>{
         let {docx, html:content, properties, id:elId,
 				images, steps, sale, hasPrint, hasHomework,fields}=doc
 
@@ -77,6 +78,7 @@ export default function extract(file){
             }
         }
     })
+	)
 }
 
 

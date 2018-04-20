@@ -1,4 +1,4 @@
-import "./style/index.less"
+import "../style/index.less"
 import React from "react"
 import PropTypes from "prop-types"
 
@@ -6,12 +6,11 @@ import {connect} from "react-redux"
 import {compose, getContext, withProps, mapProps, 
 	withStateHandlers,withContext,branch,renderComponent} from "recompose"
 import {withInit, withQuery, withPagination, withFragment,
-	CheckUpdate, CommandBar, Setting, Profile, Comment} from "qili"
+	CheckUpdate, CommandBar, Setting, Profile, Comment,
+	QiliApp, ACTION as qiliACTION} from "qili"
 
 import {graphql} from "react-relay"
 import {Router, Route, IndexRoute, Direct, IndexRedirect, hashHistory} from "react-router"
-
-import QiliApp, * as qili from "qili-app"
 
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconAccount from 'material-ui/svg-icons/action/account-box'
@@ -66,8 +65,6 @@ const SuperDaddy=compose(
 			[DOMAIN]:reducer
 		},
 		notifyOffline:false,
-		service:`http://localhost:9080/1/graphql`,
-		isDev:false
 	})),
 	withInit({
 		query:graphql`
@@ -85,13 +82,13 @@ const SuperDaddy=compose(
 		`,
 		onSuccess(response,dispatch){
 			const {me:{children, token, id}}=response
-			dispatch(qili.ACTION.CURRENT_USER({id,token}))
+			dispatch(qiliACTION.CURRENT_USER({id,token}))
 			if(children && children.length>0){
 				dispatch(ACTION.CURRENT_CHILD(children[0].id))
 			}
 		},
 		onError(error,dispatch){
-			dispatch(qili.ACTION.LOGOUT)
+			dispatch(qiliACTION.LOGOUT)
 		}
 	}),
 )(QiliApp)
