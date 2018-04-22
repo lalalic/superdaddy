@@ -25,9 +25,10 @@ module.exports=env=>{
 		module:{
 			rules:[{
 				test: /.js?$/,
-				use: ['react-hot-loader','babel-loader'],
-				include: a=>a.indexOf("node_modules")==-1 ||
-					/node_modules[\\\/](qili-app|docx4js|docx-template)[\\\/]src/.test(a),
+				use: 'babel-loader',
+				include: [
+					 path.resolve(__dirname, "src"),
+				],
 			},{
 				test:/.less?$/,
 				use: [

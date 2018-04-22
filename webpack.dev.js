@@ -18,6 +18,15 @@ module.exports=(base,HTML,port)=>{
 			setup(app){
 				app.get("/app.apk.version",(req, res)=>res.json(require("./package.json").version))
 			}
+		},
+		module:{
+			...base.module,
+			rules:base.module.rules.map((a,i)=>{
+				if(i==0){
+					a.include.push(path.resolve(__dirname, ".test.mongo.js"))
+				}
+				return a
+			})
 		}
 	}
 }
