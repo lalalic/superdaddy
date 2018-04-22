@@ -13,7 +13,8 @@ const HTML={
 module.exports=env=>{
 	const base={
 		entry:{
-			index:["babel-polyfill","./src/index.js"]
+			index:["babel-polyfill","./src/index.js"],
+			//test: "./src/test.js"
 		},
 		output:{
 			filename:"[name].js",
@@ -25,7 +26,7 @@ module.exports=env=>{
 			rules:[{
 				test: /.js?$/,
 				use: ['react-hot-loader','babel-loader'],
-				include: a=>a.indexOf("node_modules")==-1 || 
+				include: a=>a.indexOf("node_modules")==-1 ||
 					/node_modules[\\\/](qili-app|docx4js|docx-template)[\\\/]src/.test(a),
 			},{
 				test:/.less?$/,
@@ -55,20 +56,21 @@ module.exports=env=>{
 				...HTML,
 				inlineSource: 'index.js$'
 			}),
-			
+
 			new HtmlWebpackPlugin({
 				...HTML,
 				extra:'<script type="text/javascript" src="cordova.js"></script>',
 				filename:"cordova.html",
 			}),
-			
+
 			new HtmlWebpackInlineSourcePlugin(),
+
 		]
 	}
-	
+
 	if(env){
 		return require(`./webpack.${env}.js`)(base,HTML,9082)
 	}
-	
+
 	return base
 }

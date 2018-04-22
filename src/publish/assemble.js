@@ -1,5 +1,3 @@
-import {DocxTemplate} from "docx-template"
-
 export default class Assembler{
     constructor({template, ...data}){
         this.data=data
@@ -14,12 +12,14 @@ export default class Assembler{
     }
 
     load(){
-		if(typeof(this.template)=="string"){
-			return fetch(this.template)
-				.then(data=>data.blob())
-				.then(docx=>DocxTemplate.parse(docx))
-		}else{
-			return DocxTemplate.parse(this.template)
-		}
+        return import(/* webpackChunkName: "docx-template" */"docx-template").then(DocxTemplate=>{
+            if(typeof(this.template)=="string"){
+    			return fetch(this.template)
+    				.then(data=>data.blob())
+    				.then(docx=>DocxTemplate.parse(docx))
+    		}else{
+    			return DocxTemplate.parse(this.template)
+    		}
+        })	
     }
 }

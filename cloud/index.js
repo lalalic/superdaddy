@@ -21,3 +21,4 @@ Cloud.typeDefs=require("./schema")([
 	ChildComment.typeDefs
 ])
 
+module.exports=Cloud
