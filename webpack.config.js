@@ -52,7 +52,7 @@ module.exports=env=>{
 			new UglifyJsPlugin(),
 			new DefinePlugin({
 				'process.env.NODE_ENV': JSON.stringify('production')
-			})
+			}),
 			new ContextReplacementPlugin(/graphql-language-service-interface[\/\\]dist/, /\.js$/),
 			new ContextReplacementPlugin(/transformation[\/\\]file/, /\.js$/),
 			new ContextReplacementPlugin(/source-map[\/\\]lib/, /\.js$/),
