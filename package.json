@@ -69,8 +69,7 @@
     "webpack-dev-server": "^2.6.1"
   },
   "scripts": {
-    "build": "webpack --define process.env.NODE_ENV=\"production\"",
-    "webpack": "webpack",
+    "build": "webpack",
     "test": "jest __tests__",
     "dev": "webpack-dev-server --env=dev",
     "cordova": "cordova create cordova --link-to=dist && cd cordova && cp www/phone.xml config.xml && cordova platform add android && cordova build android --release -- --keystore=../lalalic.keystore --alias=lalalic",
