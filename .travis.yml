@@ -19,10 +19,13 @@ before_install:
 
 install:
  - yarn install
- - yarn upgrade docx-template docx4js qili-app --latest
 
 script:
- - yarn build.$BUILD_MODE
+ - yarn relay
+ - yarn build
+ - rm dist/index.js
+ - rm dist/tv.xml
+ - mv dist/index.html .
  - yarn cordova -- --storePassword=$STORE_PWD --password=$STORE_PWD
 
 after_success:
@@ -30,9 +33,8 @@ after_success:
  - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./app.apk "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$APP_NAME"
 
  - rm dist/config.xml
- - rm dist/tv.xml
  - rm dist/cordova.html
- - rm dist/index.js
+ - mv index.html dist
 
  - node -p "require('./package.json').version" > dist/app.apk.version
  - mv dist $APP_NAME

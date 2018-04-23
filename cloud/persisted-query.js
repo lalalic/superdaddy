@@ -1,168 +1,5 @@
 //generated from persisted-query.js, don't edit it
 module.exports={
-	"child_create_Mutation":`mutation child_create_Mutation(
-		  $name: String!
-		  $photo: String
-		  $birthday: Date
-		  $gender: Gender
-		) {
-		  child_create(name: $name, photo: $photo, birthday: $birthday, gender: $gender) {
-		    id
-		    createdAt
-		  }
-		}
-		`,
-	"child_planupdate_Mutation":`mutation child_planupdate_Mutation(
-		  $id: ObjectID
-		  $plan: JSON
-		) {
-		  plan_update(_id: $id, plan: $plan) {
-		    id
-		    icon
-		    todo
-		  }
-		}
-		`,
-	"child_remove_Mutation":`mutation child_remove_Mutation(
-		  $id: ObjectID!
-		) {
-		  child_remove(_id: $id)
-		}
-		`,
-	"child_update_Mutation":`mutation child_update_Mutation(
-		  $id: ObjectID!
-		  $photo: String
-		  $name: String
-		  $birthday: Date
-		  $gender: Gender
-		) {
-		  child_update(_id: $id, photo: $photo, name: $name, birthday: $birthday, gender: $gender)
-		}
-		`,
-	"plan_addMonthGoal_Mutation":`mutation plan_addMonthGoal_Mutation(
-		  $child: ObjectID
-		  $month: Int
-		  $goal: String
-		) {
-		  plan_monthgoal_add(_id: $child, goal: $goal, month: $month) {
-		    months {
-		      goals
-		      knowledges {
-		        id
-		        title
-		      }
-		    }
-		    id
-		  }
-		}
-		`,
-	"plan_addMonthTask_Mutation":`mutation plan_addMonthTask_Mutation(
-		  $child: ObjectID
-		  $month: Int
-		  $knowledge: ObjectID
-		) {
-		  plan_monthtask_add(_id: $child, knowledge: $knowledge, month: $month) {
-		    months {
-		      goals
-		      knowledges {
-		        id
-		        title
-		      }
-		    }
-		    id
-		  }
-		}
-		`,
-	"plan_auto_Mutation":`mutation plan_auto_Mutation(
-		  $child: ObjectID
-		) {
-		  plan_auto(_id: $child) {
-		    ...plan
-		    id
-		  }
-		}
-		
-		fragment plan on Plan {
-		  caps
-		  goals
-		  months {
-		    goals
-		    knowledges {
-		      id
-		      title
-		    }
-		  }
-		  pendingKnowledges {
-		    id
-		    category
-		    title
-		  }
-		}
-		`,
-	"plan_knowledge_Query":`query plan_knowledge_Query(
-		  $title: String
-		  $caps: [String]
-		  $first: Int = 5
-		) {
-		  knowledges(title: $title, categories: $caps, first: $first) {
-		    edges {
-		      node {
-		        id
-		        title
-		      }
-		    }
-		  }
-		}
-		`,
-	"plan_removeMonthGoal_Mutation":`mutation plan_removeMonthGoal_Mutation(
-		  $child: ObjectID
-		  $month: Int
-		  $goal: String
-		) {
-		  plan_monthgoal_remove(_id: $child, goal: $goal, month: $month) {
-		    months {
-		      goals
-		      knowledges {
-		        id
-		        title
-		      }
-		    }
-		    id
-		  }
-		}
-		`,
-	"plan_removeMonthTask_Mutation":`mutation plan_removeMonthTask_Mutation(
-		  $child: ObjectID
-		  $month: Int
-		  $knowledge: ObjectID
-		) {
-		  plan_monthtask_remove(_id: $child, knowledge: $knowledge, month: $month) {
-		    months {
-		      goals
-		      knowledges {
-		        id
-		        title
-		      }
-		    }
-		    id
-		  }
-		}
-		`,
-	"plan_updategoals_Mutation":`mutation plan_updategoals_Mutation(
-		  $child: ObjectID
-		  $goals: [String]
-		) {
-		  plan_update_goals(_id: $child, goals: $goals) {
-		    goals
-		    pendingKnowledges {
-		      id
-		      category
-		      title
-		    }
-		    id
-		  }
-		}
-		`,
 	"create_knowledge_Mutation":`mutation create_knowledge_Mutation(
 		  $knowledge: JSON
 		) {
@@ -807,6 +644,169 @@ module.exports={
 		  }
 		}
 		`,
+	"child_create_Mutation":`mutation child_create_Mutation(
+		  $name: String!
+		  $photo: String
+		  $birthday: Date
+		  $gender: Gender
+		) {
+		  child_create(name: $name, photo: $photo, birthday: $birthday, gender: $gender) {
+		    id
+		    createdAt
+		  }
+		}
+		`,
+	"child_planupdate_Mutation":`mutation child_planupdate_Mutation(
+		  $id: ObjectID
+		  $plan: JSON
+		) {
+		  plan_update(_id: $id, plan: $plan) {
+		    id
+		    icon
+		    todo
+		  }
+		}
+		`,
+	"child_remove_Mutation":`mutation child_remove_Mutation(
+		  $id: ObjectID!
+		) {
+		  child_remove(_id: $id)
+		}
+		`,
+	"child_update_Mutation":`mutation child_update_Mutation(
+		  $id: ObjectID!
+		  $photo: String
+		  $name: String
+		  $birthday: Date
+		  $gender: Gender
+		) {
+		  child_update(_id: $id, photo: $photo, name: $name, birthday: $birthday, gender: $gender)
+		}
+		`,
+	"plan_addMonthGoal_Mutation":`mutation plan_addMonthGoal_Mutation(
+		  $child: ObjectID
+		  $month: Int
+		  $goal: String
+		) {
+		  plan_monthgoal_add(_id: $child, goal: $goal, month: $month) {
+		    months {
+		      goals
+		      knowledges {
+		        id
+		        title
+		      }
+		    }
+		    id
+		  }
+		}
+		`,
+	"plan_addMonthTask_Mutation":`mutation plan_addMonthTask_Mutation(
+		  $child: ObjectID
+		  $month: Int
+		  $knowledge: ObjectID
+		) {
+		  plan_monthtask_add(_id: $child, knowledge: $knowledge, month: $month) {
+		    months {
+		      goals
+		      knowledges {
+		        id
+		        title
+		      }
+		    }
+		    id
+		  }
+		}
+		`,
+	"plan_auto_Mutation":`mutation plan_auto_Mutation(
+		  $child: ObjectID
+		) {
+		  plan_auto(_id: $child) {
+		    ...plan
+		    id
+		  }
+		}
+		
+		fragment plan on Plan {
+		  caps
+		  goals
+		  months {
+		    goals
+		    knowledges {
+		      id
+		      title
+		    }
+		  }
+		  pendingKnowledges {
+		    id
+		    category
+		    title
+		  }
+		}
+		`,
+	"plan_knowledge_Query":`query plan_knowledge_Query(
+		  $title: String
+		  $caps: [String]
+		  $first: Int = 5
+		) {
+		  knowledges(title: $title, categories: $caps, first: $first) {
+		    edges {
+		      node {
+		        id
+		        title
+		      }
+		    }
+		  }
+		}
+		`,
+	"plan_removeMonthGoal_Mutation":`mutation plan_removeMonthGoal_Mutation(
+		  $child: ObjectID
+		  $month: Int
+		  $goal: String
+		) {
+		  plan_monthgoal_remove(_id: $child, goal: $goal, month: $month) {
+		    months {
+		      goals
+		      knowledges {
+		        id
+		        title
+		      }
+		    }
+		    id
+		  }
+		}
+		`,
+	"plan_removeMonthTask_Mutation":`mutation plan_removeMonthTask_Mutation(
+		  $child: ObjectID
+		  $month: Int
+		  $knowledge: ObjectID
+		) {
+		  plan_monthtask_remove(_id: $child, knowledge: $knowledge, month: $month) {
+		    months {
+		      goals
+		      knowledges {
+		        id
+		        title
+		      }
+		    }
+		    id
+		  }
+		}
+		`,
+	"plan_updategoals_Mutation":`mutation plan_updategoals_Mutation(
+		  $child: ObjectID
+		  $goals: [String]
+		) {
+		  plan_update_goals(_id: $child, goals: $goals) {
+		    goals
+		    pendingKnowledges {
+		      id
+		      category
+		      title
+		    }
+		    id
+		  }
+		}
+		`,
 	"src_account_Query":`query src_account_Query {
 		  me {
 		    ...account
@@ -1061,30 +1061,6 @@ module.exports={
 		  }
 		}
 		`,
-	"src_publish_Query":`query src_publish_Query(
-		  $child: ObjectID
-		  $id: ObjectID
-		) {
-		  me {
-		    child(_id: $child) {
-		      publish(_id: $id) {
-		        ...publish_info
-		        id
-		      }
-		      id
-		    }
-		    id
-		  }
-		}
-		
-		fragment publish_info on Publish {
-		  template
-		  copies
-		  name
-		  from
-		  to
-		}
-		`,
 	"src_publishes_Query":`query src_publishes_Query(
 		  $child: ObjectID
 		) {
@@ -1107,6 +1083,30 @@ module.exports={
 		    copies
 		    status
 		  }
+		}
+		`,
+	"src_publish_Query":`query src_publish_Query(
+		  $child: ObjectID
+		  $id: ObjectID
+		) {
+		  me {
+		    child(_id: $child) {
+		      publish(_id: $id) {
+		        ...publish_info
+		        id
+		      }
+		      id
+		    }
+		    id
+		  }
+		}
+		
+		fragment publish_info on Publish {
+		  template
+		  copies
+		  name
+		  from
+		  to
 		}
 		`,
 	"src_scorepad_Query":`query src_scorepad_Query(

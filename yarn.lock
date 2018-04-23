@@ -2102,10 +2102,6 @@ class-utils@^0.3.5:
     lazy-cache "^2.0.2"
     static-extend "^0.1.1"
 
-classnames@^2.2.5:
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
-
 clean-css@4.1.x:
   version "4.1.9"
   resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.1.9.tgz#35cee8ae7687a49b98034f70de00c4edd3826301"
@@ -2170,17 +2166,6 @@ coa@~1.0.1:
 code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
-
-codemirror-graphql@^0.6.11:
-  version "0.6.11"
-  resolved "https://registry.yarnpkg.com/codemirror-graphql/-/codemirror-graphql-0.6.11.tgz#795efa3933523815a5245eefe8d6831d3c4ad026"
-  dependencies:
-    graphql-language-service-interface "0.0.19"
-    graphql-language-service-parser "0.0.15"
-
-codemirror@^5.18.2, codemirror@^5.26.0:
-  version "5.31.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.31.0.tgz#ecf3d057eb74174147066bfc7c5f37b4c4e07df2"
 
 collection-visit@^1.0.0:
   version "1.0.0"
@@ -2612,14 +2597,6 @@ create-hmac@^1.1.0, create-hmac@^1.1.2:
   dependencies:
     create-hash "^1.1.0"
     inherits "^2.0.1"
-
-create-react-class@^15.5.1:
-  version "15.6.2"
-  resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.2.tgz#cf1ed15f12aad7f14ef5f2dfe05e6c42f91ef02a"
-  dependencies:
-    fbjs "^0.8.9"
-    loose-envify "^1.3.1"
-    object-assign "^4.1.1"
 
 create-react-class@^15.6.0:
   version "15.6.3"
@@ -3092,7 +3069,7 @@ dom-converter@~0.1:
   dependencies:
     utila "~0.3"
 
-dom-helpers@^3.2.0:
+dom-helpers@^3.2.0, dom-helpers@^3.2.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-3.3.1.tgz#fc1a4e15ffdf60ddde03a480a9c0fece821dd4a6"
 
@@ -4141,49 +4118,6 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.3, graceful-fs@^4.1.4,
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
 
-graphiql@^0.11.10:
-  version "0.11.10"
-  resolved "http://registry.npm.taobao.org/graphiql/download/graphiql-0.11.10.tgz#6d24261b5ccd04bafcea4b8168ee2ff89bb22248"
-  dependencies:
-    codemirror "^5.26.0"
-    codemirror-graphql "^0.6.11"
-    marked "0.3.6"
-
-graphql-language-service-config@0.0.17:
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-config/-/graphql-language-service-config-0.0.17.tgz#36b5a9906c0bf0d356d31b7583058f9b85d1793e"
-  dependencies:
-    graphql-language-service-types "0.0.21"
-
-graphql-language-service-interface@0.0.19:
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-0.0.19.tgz#c58fa7bd95d2f30e33e04937a1a2c00a9740926e"
-  dependencies:
-    graphql "^0.10.1"
-    graphql-language-service-config "0.0.17"
-    graphql-language-service-parser "0.0.15"
-    graphql-language-service-types "0.0.21"
-    graphql-language-service-utils "0.0.17"
-
-graphql-language-service-parser@0.0.15:
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-parser/-/graphql-language-service-parser-0.0.15.tgz#fd64afd8873624fa3c4a5831a08de9ccd6cc5182"
-  dependencies:
-    graphql-language-service-types "0.0.21"
-
-graphql-language-service-types@0.0.21:
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-types/-/graphql-language-service-types-0.0.21.tgz#b9453366fc8985765034bf34056fe93603a24b82"
-  dependencies:
-    graphql "^0.10.1"
-
-graphql-language-service-utils@0.0.17:
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-utils/-/graphql-language-service-utils-0.0.17.tgz#a8b91eca80c6aa5a0d461a0bbb63317986f9b989"
-  dependencies:
-    graphql "^0.10.1"
-    graphql-language-service-types "0.0.21"
-
 graphql-tools@^2.18.0:
   version "2.23.1"
   resolved "http://registry.npm.taobao.org/graphql-tools/download/graphql-tools-2.23.1.tgz#23f43000e2b9dc5a89920fe846fc5f71a320efdb"
@@ -4197,12 +4131,6 @@ graphql-tools@^2.18.0:
 graphql-type-json@^0.1.4:
   version "0.1.4"
   resolved "http://registry.npm.taobao.org/graphql-type-json/download/graphql-type-json-0.1.4.tgz#89f13f5d32ce08c9a76c79fdf9c1968384d81a4e"
-
-graphql@^0.10.1:
-  version "0.10.5"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.10.5.tgz#c9be17ca2bdfdbd134077ffd9bbaa48b8becd298"
-  dependencies:
-    iterall "^1.1.0"
 
 graphql@^0.11.0:
   version "0.11.7"
@@ -5143,7 +5071,7 @@ istanbul-reports@^1.1.2:
   dependencies:
     handlebars "^4.0.3"
 
-iterall@1.1.2, iterall@^1.1.0:
+iterall@1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.1.2.tgz#413332b3cdb46f8f5ede57d6cd8e3ca8a9df8816"
 
@@ -5761,10 +5689,6 @@ lodash.camelcase@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
 
-lodash.debounce@^4.0.8:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
-
 lodash.defaults@^4.0.1:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/lodash.defaults/-/lodash.defaults-4.2.0.tgz#d09178716ffea4dde9e5fb7b37f6f0802274580c"
@@ -5798,10 +5722,6 @@ lodash.isarguments@^3.0.0:
 lodash.isarray@^3.0.0:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/lodash.isarray/-/lodash.isarray-3.0.4.tgz#79e4eb88c36a8122af86f844aa9bcd851b5fbb55"
-
-lodash.isequal@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
 
 lodash.keys@^3.0.0:
   version "3.1.2"
@@ -5970,19 +5890,24 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-marked@0.3.6:
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.6.tgz#b2c6c618fccece4ef86c4fc6cb8a7cbf5aeda8d7"
-
 matchmedia@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/matchmedia/-/matchmedia-0.1.2.tgz#cfd47f2bf68fbc7f5ea1bd3a3cf1715ecba3c1bd"
   dependencies:
     css-mediaquery "^0.1.2"
 
-material-auto-rotating-carousel@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/material-auto-rotating-carousel/-/material-auto-rotating-carousel-1.1.0.tgz#23c76c52cfc61639a429495f80c1fd71ccc6e70a"
+material-auto-rotating-carousel@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/material-auto-rotating-carousel/-/material-auto-rotating-carousel-1.7.0.tgz#3cdea21dc01226573c234422b55ae2da5aaa1d2c"
+  dependencies:
+    material-ui-dots "^1.2.0"
+    prop-types "^15.5.8"
+
+material-ui-dots@^1.2.0:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/material-ui-dots/-/material-ui-dots-1.2.1.tgz#2d5d86de60e469259982339c0035c08f8f6af90d"
+  dependencies:
+    prop-types "^15.5.10"
 
 material-ui@^0.16.0, material-ui@^0.19.0:
   version "0.19.4"
@@ -7499,30 +7424,27 @@ q@^1.1.2, q@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.4.1.tgz#55705bcd93c5f3673530c2c2cbc0c2b3addc286e"
 
-qili-app@^1.2.7:
-  version "1.2.7"
-  resolved "http://registry.npm.taobao.org/qili-app/download/qili-app-1.2.7.tgz#7e2ec9706b1a57d520d8e8df76e2c23b5f408ac5"
+qili-app@^1.2.8:
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/qili-app/-/qili-app-1.2.8.tgz#0fdc580eacc39e4e6fc4c5f0e239388873299c9a"
   dependencies:
     babel-polyfill "^6.26.0"
-    graphiql "^0.11.10"
     graphql "^0.11.0"
     graphql-tools "^2.18.0"
     graphql-type-json "^0.1.4"
     is-valid-email "^0.0.2"
     lodash.merge "^4.6.0"
-    material-auto-rotating-carousel "1.1.0"
+    material-auto-rotating-carousel "^1.7.0"
     material-ui "^0.16.0"
     prop-types "^15.6.0"
     pull-to-refresh2 "^0.0.2"
-    react "^15.1.0"
-    react-codemirror "^1.0.0"
-    react-dom "^15.1.0"
-    react-motion "^0.5.1"
+    react "^15.6.0"
+    react-dom "^15.6.0"
     react-redux "^4.4.5"
     react-relay "^1.3.0"
     react-responsive "^1.2.5"
     react-router "^2.4.1"
-    react-swipeable-views "^0.7.7"
+    react-swipeable-views "^0.12.13"
     react-tap-event-plugin "^2.0.0"
     recompose "^0.25.0"
     redux "^3.6.0"
@@ -7643,7 +7565,7 @@ rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-"react-addons-shallow-compare@^0.14.0 || ^15.0.0", react-addons-shallow-compare@^15.4.1, react-addons-shallow-compare@^15.4.2:
+react-addons-shallow-compare@^15.4.1, react-addons-shallow-compare@^15.4.2:
   version "15.4.2"
   resolved "https://registry.yarnpkg.com/react-addons-shallow-compare/-/react-addons-shallow-compare-15.4.2.tgz#027ffd9720e3a1e0b328dcd8fc62e214a0d174a5"
   dependencies:
@@ -7653,17 +7575,6 @@ rc@^1.1.7:
 react-clone-referenced-element@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-clone-referenced-element/-/react-clone-referenced-element-1.0.1.tgz#2bba8c69404c5e4a944398600bcc4c941f860682"
-
-react-codemirror@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/react-codemirror/-/react-codemirror-1.0.0.tgz#91467b53b1f5d80d916a2fd0b4c7adb85a9001ba"
-  dependencies:
-    classnames "^2.2.5"
-    codemirror "^5.18.2"
-    create-react-class "^15.5.1"
-    lodash.debounce "^4.0.8"
-    lodash.isequal "^4.5.0"
-    prop-types "^15.5.4"
 
 react-composition@^0.2.1:
   version "0.2.1"
@@ -7677,7 +7588,7 @@ react-deep-force-update@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-deep-force-update/-/react-deep-force-update-1.0.1.tgz#f911b5be1d2a6fe387507dd6e9a767aa2924b4c7"
 
-react-dom@^0.14.8, react-dom@^15.1.0, react-dom@^15.6.0, react-dom@^15.6.1:
+react-dom@^0.14.8, react-dom@^15.6.0, react-dom@^15.6.1:
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.6.2.tgz#41cfadf693b757faf2708443a1d1fd5a02bef730"
   dependencies:
@@ -7723,14 +7634,6 @@ react-motion@^0.4.5:
   resolved "https://registry.yarnpkg.com/react-motion/-/react-motion-0.4.7.tgz#f77331ec7920bdb0d0cfc37eb6ffa10571bf42c7"
   dependencies:
     performance-now "^0.2.0"
-    raf "^3.1.0"
-
-react-motion@^0.5.1:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/react-motion/-/react-motion-0.5.2.tgz#0dd3a69e411316567927917c6626551ba0607316"
-  dependencies:
-    performance-now "^0.2.0"
-    prop-types "^15.5.8"
     raf "^3.1.0"
 
 react-native@^0.39.1:
@@ -7854,14 +7757,33 @@ react-router@^2.4.1:
     loose-envify "^1.2.0"
     warning "^3.0.0"
 
-react-swipeable-views@^0.7.7:
-  version "0.7.11"
-  resolved "https://registry.yarnpkg.com/react-swipeable-views/-/react-swipeable-views-0.7.11.tgz#e2db996954e2fa3872b980048e7f2632876dd71d"
+react-swipeable-views-core@^0.12.11:
+  version "0.12.11"
+  resolved "https://registry.yarnpkg.com/react-swipeable-views-core/-/react-swipeable-views-core-0.12.11.tgz#3cf2b4daffbb36f9d69bd19bf5b2d5370b6b2c1b"
   dependencies:
-    babel-runtime "^6.11.6"
+    babel-runtime "^6.23.0"
+    warning "^3.0.0"
+
+react-swipeable-views-utils@^0.12.13:
+  version "0.12.13"
+  resolved "https://registry.yarnpkg.com/react-swipeable-views-utils/-/react-swipeable-views-utils-0.12.13.tgz#fe102524180bf568f746e844c8d74b9cd3e7e0b8"
+  dependencies:
+    babel-runtime "^6.23.0"
+    fbjs "^0.8.4"
     keycode "^2.1.7"
-    react-addons-shallow-compare "^0.14.0 || ^15.0.0"
-    react-event-listener "^0.4.0"
+    prop-types "^15.6.0"
+    react-event-listener "^0.5.1"
+    react-swipeable-views-core "^0.12.11"
+
+react-swipeable-views@^0.12.13:
+  version "0.12.13"
+  resolved "https://registry.yarnpkg.com/react-swipeable-views/-/react-swipeable-views-0.12.13.tgz#247442dbe14922efe5ad6fe0297599c817600bf9"
+  dependencies:
+    babel-runtime "^6.23.0"
+    dom-helpers "^3.2.1"
+    prop-types "^15.5.4"
+    react-swipeable-views-core "^0.12.11"
+    react-swipeable-views-utils "^0.12.13"
     warning "^3.0.0"
 
 react-swipeable-views@^0.8.0:

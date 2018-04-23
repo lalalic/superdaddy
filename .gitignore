@@ -27,19 +27,10 @@ node_modules
 # Users Environment Variables
 .lock-wscript
 
-cordova
-
-~*
-
-dist/index.js
-dist/allin1.html
-dist/*.map
-dist/knowledge
-dist/publish
+dist/*.js
+dist/*.html
 .DS_Store
-dist/cordova.html
 
 cloud/__generated.js
-tv
 
-.npmrc
+__generated__

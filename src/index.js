@@ -1,4 +1,4 @@
-import "../style/index.less"
+import "./style/index.less"
 import React from "react"
 import PropTypes from "prop-types"
 

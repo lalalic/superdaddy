@@ -21,12 +21,15 @@ module.exports=(base,HTML,port)=>{
 		},
 		module:{
 			...base.module,
-			rules:base.module.rules.map((a,i)=>{
-				if(i==0){
-					a.include.push(path.resolve(__dirname, ".test.mongo.js"))
-				}
-				return a
-			})
+			rules:[
+				{
+					test: /.js?$/,
+					use: 'react-hot-loader',
+					exclude: /node_modules/,
+					include:/src/
+				},
+				...base.module.rules
+			]
 		}
 	}
 }

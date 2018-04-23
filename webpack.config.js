@@ -3,6 +3,7 @@ const path = require('path')
 const {ContextReplacementPlugin} = require("webpack")
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
 const HtmlWebpackHarddiskPlugin=require('html-webpack-harddisk-plugin')
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
 
 const HTML={
 	template:'./node_modules/qili-app/index.tmpl',
@@ -14,7 +15,6 @@ module.exports=env=>{
 	const base={
 		entry:{
 			index:["babel-polyfill","./src/index.js"],
-			//test: "./src/test.js"
 		},
 		output:{
 			filename:"[name].js",
@@ -26,9 +26,8 @@ module.exports=env=>{
 			rules:[{
 				test: /.js?$/,
 				use: 'babel-loader',
-				include: [
-					 path.resolve(__dirname, "src"),
-				],
+				exclude: /node_modules/,
+				include: /src/,
 			},{
 				test:/.less?$/,
 				use: [
@@ -53,6 +52,7 @@ module.exports=env=>{
 			new ContextReplacementPlugin(/graphql-language-service-interface[\/\\]dist/, /\.js$/),
 			new ContextReplacementPlugin(/transformation[\/\\]file/, /\.js$/),
 			new ContextReplacementPlugin(/source-map[\/\\]lib/, /\.js$/),
+			new UglifyJsPlugin(),
 			new HtmlWebpackPlugin({
 				...HTML,
 				inlineSource: 'index.js$'
@@ -61,6 +61,7 @@ module.exports=env=>{
 			new HtmlWebpackPlugin({
 				...HTML,
 				extra:'<script type="text/javascript" src="cordova.js"></script>',
+				inlineSource: 'index.js$',
 				filename:"cordova.html",
 			}),
 
