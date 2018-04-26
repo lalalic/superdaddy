@@ -1,6 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
-const {ContextReplacementPlugin} = require("webpack")
+const {ContextReplacementPlugin, DefinePlugin} = require("webpack")
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
 const HtmlWebpackHarddiskPlugin=require('html-webpack-harddisk-plugin')
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
@@ -49,10 +49,13 @@ module.exports=env=>{
 			module: "empty"
 		},
 		plugins:[
+			new UglifyJsPlugin(),
+			new DefinePlugin({
+				'process.env.NODE_ENV': JSON.stringify('production')
+			}),
 			new ContextReplacementPlugin(/graphql-language-service-interface[\/\\]dist/, /\.js$/),
 			new ContextReplacementPlugin(/transformation[\/\\]file/, /\.js$/),
 			new ContextReplacementPlugin(/source-map[\/\\]lib/, /\.js$/),
-			new UglifyJsPlugin(),
 			new HtmlWebpackPlugin({
 				...HTML,
 				inlineSource: 'index.js$'
