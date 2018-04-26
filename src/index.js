@@ -19,6 +19,7 @@ import IconReward from "material-ui/svg-icons/places/child-care"
 
 import withCurrent from "components/current-child"
 import withNavigator from "components/navigator"
+import project from "../package.json"
 
 const DOMAIN="superdaddy"
 
@@ -59,8 +60,8 @@ function reducer(state={
 
 const SuperDaddy=compose(
 	withProps(()=>({
-		project: require("../package.json"),
-		appId:"5746b2c5e4bb3b3700ae1566",
+		project,
+		appId:project.config.appId,
 		reducers:{
 			[DOMAIN]:reducer
 		},

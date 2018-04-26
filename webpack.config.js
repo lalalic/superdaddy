@@ -74,7 +74,7 @@ module.exports=env=>{
 	}
 
 	if(env){
-		return require(`./webpack.${env}.js`)(base,HTML,9082)
+		return require(`./webpack.${env}.js`)(base,HTML)
 	}
 
 	return base

@@ -75,7 +75,7 @@
     "tv": "cordova create tv --link-to=dist && cd tv && cp www/tv.xml config.xml && cordova platform add android && cordova build android",
     "tv.win": "cordova create tv --link-to=dist && cd tv && copy www\\tv.xml config.xml && cordova platform add android && cordova build android",
     "relay": "relay-compiler --src ./src --schema ./schema.graphql",
-    "persist": "qili-persist src cloud",
+    "persist": "qili persist src cloud",
     "cloud": "browserify cloud/index.js -o cloud/__generated.js --node",
     "rollup": "rollup"
   },
@@ -93,5 +93,10 @@
       "__tests__"
     ],
     "watchman": false
+  },
+  "config": {
+    "devPort": 9082,
+    "appId": "5746b2c5e4bb3b3700ae1566",
+    "service": "http://localhost:9080/1/graphql"
   }
 }

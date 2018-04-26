@@ -2,11 +2,11 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const {ContextReplacementPlugin} = require("webpack")
 
-module.exports=(base,HTML,port)=>{
+module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 	return {
 		...base,
 		entry:{
-			index: ["babel-polyfill","./.test.mongo.js","./src/index.js"],
+			index: ["babel-polyfill","./.test.js","./src/index.js"],
 		},
 		devtool: 'source-map',
 		devServer:{
