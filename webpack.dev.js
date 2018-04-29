@@ -14,7 +14,7 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 			port,
 			host:"0.0.0.0",
 			disableHostCheck:true,
-			setup(app){
+			before(app){
 				app.get("/app.apk.version",(req, res)=>res.json(require("./package.json").version))
 			}
 		},
@@ -22,7 +22,7 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 			new ContextReplacementPlugin(/graphql-language-service-interface[\/\\]dist/, /\.js$/),
 			new ContextReplacementPlugin(/transformation[\/\\]file/, /\.js$/),
 			new ContextReplacementPlugin(/source-map[\/\\]lib/, /\.js$/),
-			
+
 			new HtmlWebpackPlugin({
 				...HTML
 			}),

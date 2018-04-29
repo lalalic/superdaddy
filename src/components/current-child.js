@@ -1,5 +1,6 @@
-import React,{PropTypes} from "react"
-import {compose, branch, getContext, withProps, renderNothing,createEagerFactory} from "recompose"
+import React, {createFactory} from "react"
+import PropTypes from "prop-types"
+import {compose, branch, getContext, withProps, renderNothing} from "recompose"
 import {connect} from "react-redux"
 import {FloatingActionButton,Avatar} from "material-ui"
 
@@ -23,7 +24,7 @@ export const Current=compose(
 		}
 	}),
 )(({name,photo,switchChild,switchable=true})=>(
-	<FloatingActionButton 
+	<FloatingActionButton
 		mini={true}
 		style={{fontSize:"xx-small"}}
 		onClick={switchable ? switchChild : undefined}>
@@ -32,7 +33,7 @@ export const Current=compose(
 ))
 
 export const withCurrent=()=>BaseComponent=>{
-	const factory=createEagerFactory(BaseComponent)
+	const factory=createFactory(BaseComponent)
 	const WithCurrent=props=>(
 		<div>
 			<div className="sticky top right">
@@ -45,4 +46,3 @@ export const withCurrent=()=>BaseComponent=>{
 }
 
 export default withCurrent
-

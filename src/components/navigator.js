@@ -1,7 +1,5 @@
-import React from "react"
+import React,{createFactory} from "react"
 import PropTypes from "prop-types"
-
-import {createEagerFactory} from "recompose"
 
 import {CheckUpdate,CommandBar} from "qili"
 
@@ -33,7 +31,7 @@ export const Navigator=()=>(
 
 
 export const withNavigator=()=>BaseComponent=>{
-	const factory=createEagerFactory(BaseComponent)
+	const factory=createFactory(BaseComponent)
 	const WithNavigator=props=>(<div>{factory(props)}<Navigator/></div>)
 	return WithNavigator
 }
