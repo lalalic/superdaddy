@@ -268,7 +268,6 @@ export const routes=(
 				)(Knowledges)}/>
 
 				<Route path="create" component={compose(
-					withNavigator(),
 					connect(state=>({
 						selectedDocx:state[DOMAIN].selectedDocx,
 						knowledge: state[DOMAIN].selectedDocx && state[DOMAIN].selectedDocx.knowledge,

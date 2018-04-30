@@ -19,8 +19,8 @@ export default compose(
 	getContext({
 		is:PropTypes.object
 	}),
-	branch(({is})=>!is.app, renderComponent(Knowledges)),
-	
+	branch(({is})=>is.app, renderComponent(Knowledges)),
+
 	connect(null,(dispatch,{toCreate})=>({
 		selectDocx: ()=>dispatch(ACTION.SELECT_DOCX()).then(toCreate)
 	}))

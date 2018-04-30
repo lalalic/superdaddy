@@ -12,7 +12,7 @@ export default class Assembler{
     }
 
     load(){
-        return import(/* webpackChunkName: "docx-template" */"docx-template").then(DocxTemplate=>{
+        return import(/* webpackChunkName: "docx-template" */"docx-template").then(({DocxTemplate})=>{
             if(typeof(this.template)=="string"){
     			return fetch(this.template)
     				.then(data=>data.blob())
@@ -20,6 +20,6 @@ export default class Assembler{
     		}else{
     			return DocxTemplate.parse(this.template)
     		}
-        })	
+        })
     }
 }

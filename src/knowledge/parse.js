@@ -1,4 +1,3 @@
-import {DocxTemplate} from "docx-template"
 import React from "react"
 import cheer from "cheerio"
 import ReactDOM from "react-dom/server"
@@ -9,7 +8,7 @@ const ARRAY=/^([a-z]+)(\d+)$/i
 export default function parse(file){
 	let properties={},  sale, hasPrint, hasHomework
 	let fields=[]
-	return import(/* webpackChunkName: "docx-template" */"docx-template").then(DocxTemplate=>{
+	return import(/* webpackChunkName: "docx-template" */"docx-template").then(({DocxTemplate})=>{
 		function identify(node, officeDocument){
 			let model=DocxTemplate.identify(...arguments)
 			if(!model)
