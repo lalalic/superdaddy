@@ -5,7 +5,7 @@ import {graphql} from "react-relay"
 import {Link} from "react-router"
 
 import {compose, withProps} from "recompose"
-import {withFragment} from "qili"
+import {withFragment} from "qili-app"
 
 import {relative} from 'components/calendar'
 import AppBar from "components/app-bar"

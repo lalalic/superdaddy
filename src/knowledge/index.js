@@ -1,4 +1,4 @@
-import {File as file} from "qili"
+import {File as file} from "qili-app"
 import extract from './extract'
 import Assembler from "publish/assemble"
 

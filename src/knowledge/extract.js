@@ -1,4 +1,4 @@
-import {File} from "qili"
+import {File} from "qili-app"
 
 const reg=/[-,，\s+]/
 function splitKey(data){

@@ -1,9 +1,9 @@
-import React, {Component} from "react"
+import React, {Component,Fragment} from "react"
 import PropTypes from "prop-types"
 
 import {connect} from "react-redux"
 import {compose,getContext,mapProps} from "recompose"
-import {withFragment,withMutation, CommandBar} from "qili"
+import {withFragment,withMutation, CommandBar} from "qili-app"
 import {graphql} from "react-relay"
 
 import {
@@ -34,16 +34,20 @@ export class Plan extends Component{
 			autoPlan,setGoals,searchKnowledges,
 			addMonthGoal,removeMonthGoal,addMonthTask,removeMonthTask}=this.props
 		return (
-			<div>
-                <AppBar title={`年度目标，计划`}/>
+			<Fragment>
+                <div style={{flex:1}}>
+                    <AppBar title={`年度目标，计划`}/>
+                </div>
 
-				<YearGoal {...{goals,setGoals,caps}}/>
+                <div style={{flex:"1 100%", overflowY:"scroll"}}>
+                    <YearGoal {...{goals,setGoals,caps}}/>
 
-				<Divider/>
+    				<Divider/>
 
-				<MonthGoals {...{pendingKnowledges,searchKnowledges,addMonthGoal,removeMonthGoal,addMonthTask,removeMonthTask,goals,months}}/>
+    				<MonthGoals {...{pendingKnowledges,searchKnowledges,addMonthGoal,removeMonthGoal,addMonthTask,removeMonthTask,goals,months}}/>
+                </div>
 
-				<CommandBar className="footbar"
+                <CommandBar style={{flex:1}}
 					items={[
 						"Back"
 						,{
@@ -54,7 +58,7 @@ export class Plan extends Component{
 						}
 						]}
 					/>
-			</div>
+			</Fragment>
 		)
 	}
 }
@@ -197,14 +201,14 @@ class MonthPlan extends Component{
         search:"",
 		pending:this.myPendingKnowledges()
     }
-	
+
 	myPendingKnowledges(){
 		const {goals, pendingKnowledges}=this.props
 		return pendingKnowledges.filter(({category})=>{
 			return goals.reduce((b,a)=>b&&category.includes(a),true)
 		})
 	}
-	
+
 	render(){
         const {search,pending}=this.state
 		const {month, knowledges,removeMonthTask, addMonthTask}=this.props

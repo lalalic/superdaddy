@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import PropTypes from "prop-types"
 
 import {compose, getContext,withProps} from "recompose"
-import {withFragment} from "qili"
+import {withFragment} from "qili-app"
 
 import {List,ListItem, Subheader,Divider,Tab, IconButton} from "material-ui"
 import MediaQuery from "react-responsive"

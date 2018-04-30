@@ -1,9 +1,9 @@
-import React, {Component} from "react"
+import React, {Component,Fragment} from "react"
 import PropTypes from "prop-types"
 
 import {connect} from "react-redux"
 import {compose,getContext,withProps,withState} from "recompose"
-import {withFragment} from "qili"
+import {withFragment} from "qili-app"
 
 import AppBar from "components/app-bar"
 
@@ -19,7 +19,7 @@ import {
 } from "material-ui/styles/colors"
 
 export const ScorePad=({
-	todo, goal,score,totalPerScreen=goal, 
+	todo, goal,score,totalPerScreen=goal,
 	width=0, height=0,
 	toComment,setTodoGoal
 	})=>{
@@ -40,13 +40,13 @@ export const ScorePad=({
 			<IconComment/>
 		</IconButton>
 	)
-	
+
 	return (
-		<div>
+		<Fragment>
 			<AppBar {...{title,iconElementRight}}/>
 			{action}
 			<Fun smiles={smiles} interval={2000}/>
-		</div>
+		</Fragment>
 	)
 }
 
@@ -57,22 +57,22 @@ class Fun extends Component{
 		let min=0
 		return parseInt(Math.random() * (max - min) + min);
 	}
-	
+
 	componentDidMount(){
 		const {interval=1000}=this.props
 		this.timer=setInterval(()=>this.setState({x:this.random()}),interval)
 	}
-	
+
 	componentWillUnmount(){
 		clearInterval(this.timer)
 	}
-	
+
 	render(){
 		const {smiles}=this.props
 		const {x,catched}=this.state
 		return (
 			<div>
-				{smiles.length>0 ? 
+				{smiles.length>0 ?
 					(<div className="sticky bottom right _2"
 						style={{fontSize:"xx-large",color:"orange"}}>
 						{catched}

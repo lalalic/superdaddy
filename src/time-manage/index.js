@@ -1,6 +1,6 @@
 import {connect} from "react-redux"
 import {compose, mapProps} from "recompose"
-import {withMutation} from "qili"
+import {withMutation} from "qili-app"
 import TimeManage from "./core"
 
 export * from "./core"

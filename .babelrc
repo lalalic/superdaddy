@@ -12,7 +12,6 @@
 	  ["module-resolver",{
 			"root": ["."],
 			"alias":{
-				"main":"./src/index.js",
 				"knowledge":"./src/knowledge",
 				"publish":"./src/publish",
 				"time-manage":"./src/time-manage",
@@ -20,8 +19,7 @@
 				"tv":"./tv",
 				"components":"./src/components",
 				"icons": "./src/icons",
-				"family": "./src/family",
-				"qili":"qili-app",
+				"family": "./src/family"
 			}
 		}]
     ]

@@ -1,13 +1,14 @@
-import React, {createFactory} from "react"
+import React, {createFactory,Fragment} from "react"
 import PropTypes from "prop-types"
-import {compose, branch, getContext, withProps, renderNothing} from "recompose"
+import {compose, branch, getContext, withProps, renderNothing, setDisplayName} from "recompose"
 import {connect} from "react-redux"
 import {FloatingActionButton,Avatar} from "material-ui"
 
-import {ACTION} from "main"
+import {ACTION} from "../state"
 
 
 export const Current=compose(
+	setDisplayName("CurrentChild"),
 	connect(({superdaddy:{current}})=>({id:current})),
 	branch(({id})=>!id, renderNothing),
 	getContext({client: PropTypes.object}),
@@ -35,12 +36,12 @@ export const Current=compose(
 export const withCurrent=()=>BaseComponent=>{
 	const factory=createFactory(BaseComponent)
 	const WithCurrent=props=>(
-		<div>
-			<div className="sticky top right">
+		<Fragment>
+			<span className="sticky top right">
 				<Current/>
-			</div>
+			</span>
 			{factory(props)}
-		</div>
+		</Fragment>
 	)
 	return WithCurrent
 }

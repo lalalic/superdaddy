@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import PropTypes from "prop-types"
 
 import {compose, getContext, withProps} from "recompose"
-import {withMutation, withFragment, Photo, Account as BaseAccount} from "qili"
+import {withMutation, withFragment, Photo, Account as BaseAccount} from "qili-app"
 import {graphql} from "react-relay"
 import {ListItem} from "material-ui"
 

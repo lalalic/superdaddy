@@ -1,9 +1,9 @@
-import React, {Component} from "react"
+import React, {Component,Fragment} from "react"
 import PropTypes from "prop-types"
 
 import {connect} from "react-redux"
 import {compose,branch,renderComponent,getContext} from "recompose"
-import {withMutation, CommandBar, Empty, File} from "qili"
+import {withMutation, CommandBar, Empty, File} from "qili-app"
 import {graphql} from "react-relay"
 
 import IconInsertFile from 'material-ui/svg-icons/action/note-add'
@@ -36,12 +36,12 @@ export class CreateKnowledge extends Component{
 
 
 		return (
-			<div className="post">
-				<div className="knowledge">
+			<Fragment>
+				<div style={{flex:"1 100%", overflowY:"scroll"}}>
 					<Content knowledge={knowledge||null}/>
 					{form}
 				</div>
-				<CommandBar className="footbar"
+				<CommandBar style={{flex:1}}
 					items={[
 						{
 							action:"Back",
@@ -72,7 +72,7 @@ export class CreateKnowledge extends Component{
 							,onSelect:selectDocx
 						}
 					]}/>
-			</div>
+			</Fragment>
 		)
 	}
 }

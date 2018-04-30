@@ -1,9 +1,9 @@
-import React, {Component} from "react"
+import React, {Component,Fragment} from "react"
 import PropTypes from "prop-types"
 
 import {connect} from "react-redux"
 import {compose, setStatic, getContext, withProps} from "recompose"
-import {withMutation, withFragment,InfoForm, CommandBar, Photo} from "qili"
+import {withMutation, withFragment,InfoForm, CommandBar, Photo} from "qili-app"
 import {graphql} from "react-relay"
 
 import {TextField, RadioButtonGroup, RadioButton,DatePicker,Subheader} from 'material-ui'
@@ -16,7 +16,7 @@ import IconRemove from "material-ui/svg-icons/content/remove-circle"
 import IconPublish from "material-ui/svg-icons/action/card-giftcard"
 import IconPlan from "material-ui/svg-icons/editor/linear-scale"
 
-import {ACTION} from "main"
+import {ACTION} from "../state"
 
 export class Child extends Component{
 	state={nameError:null}
@@ -33,8 +33,8 @@ export class Child extends Component{
 		const {nameError}=this.state
 
 		return (
-			<div>
-				<div className="form">
+			<Fragment>
+				<div className="form" style={{flex:"1 100%"}}>
 					<div className="child-photo">
 						<Photo size={150} src={photo}
 							autoUpload={{id,key:"photo.jpg"}}
@@ -87,7 +87,7 @@ export class Child extends Component{
 					</InfoForm>
 				</div>
 
-				<CommandBar className="footbar"
+				<CommandBar style={{flex:1}}
 					items={[
 						"Back"
 						/*,{
@@ -110,7 +110,7 @@ export class Child extends Component{
 						}
 						]}
 					/>
-			</div>
+			</Fragment>
 		)
 	}
 }
@@ -125,8 +125,8 @@ export class Creator extends Component{
 		let refBirthday, refGender
 
 		return (
-			<div>
-				<div className="form" style={style}>
+			<Fragment>
+				<div style={{padding:10,...style, flex:"1 100%"}}>
 					<TextField
 						floatingLabelText="宝宝名称"
 						errorText={nameError}
@@ -149,7 +149,7 @@ export class Creator extends Component{
 					</RadioButtonGroup>
 				</div>
 
-				<CommandBar className="footbar"
+				<CommandBar style={{flex:1}}
 					items={[
 						"Back",
 						{
@@ -163,7 +163,7 @@ export class Creator extends Component{
 						}
 					]}
 				/>
-			</div>
+			</Fragment>
 		)
 	}
 }

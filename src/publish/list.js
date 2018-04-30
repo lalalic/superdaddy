@@ -1,6 +1,6 @@
-import React, {Component} from "react"
+import React, {Component,Fragment} from "react"
 import {compose, mapProps,branch, renderComponent} from "recompose"
-import {withFragment, withMutation, CommandBar, Empty} from "qili"
+import {withFragment, withMutation, CommandBar, Empty} from "qili-app"
 
 import {FlatButton, List, ListItem, Toggle} from "material-ui"
 
@@ -17,29 +17,33 @@ export class Publishes extends Component{
 		const {publishes=[], toInfo,toCreate}=this.props
 		let content=<Empty/>
 		if(publishes.length){
-			content=publishes.map(({id,name,status, done=status==0})=><ListItem 
-				key={id} 
+			content=publishes.map(({id,name,status, done=status==0})=><ListItem
+				key={id}
 				primaryText={name}
 				rightIcon={!done ? <IconArrowRight onClick={()=>toInfo(id)}/> : <span/>}
 				/>)
-			
+
 			content=<List>{content}</List>
 		}
-		
+
 		return (
-			<div>
-				<AppBar title={"出版列表"}/>
+			<Fragment>
+				<div style={{flex:1}}>
+					<AppBar title={"出版列表"}/>
+				</div>
+
+				<div style={{flex:"1 100%", overflowY:"scroll"}}>
+					{content}
+				</div>
 				
-				{content}
-				
-				<CommandBar className="footbar"
+				<CommandBar style={{flex:1}}
                     items={["Back", {
 						action:"Create",
 						label:"创建",
 						onSelect:toCreate,
 						icon: <IconCreate/>
 					}]}/>
-			</div>
+			</Fragment>
 		)
 	}
 }
@@ -56,11 +60,11 @@ export default compose(
 				copies
 				status
 			}
-		} 
+		}
 	`}),
 	mapProps(({child:{publishes},toInfo,toCreate})=>({publishes:publishes||[],toInfo,toCreate})),
 	branch(
-		({publishes})=> publishes && publishes.length==0, 
+		({publishes})=> publishes && publishes.length==0,
 		renderComponent(class extends Component{
 			componentWillMount(){
 				this.props.toCreate(true)

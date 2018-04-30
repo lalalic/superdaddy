@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import PropTypes from "prop-types"
 
 import {compose, getContext, mapProps, withProps} from "recompose"
-import {withFragment} from "qili"
+import {withFragment} from "qili-app"
 
 import MediaQuery from "react-responsive"
 import {List,ListItem, Subheader,Divider,Tab, FlatButton,IconButton} from "material-ui"
@@ -83,21 +83,22 @@ const TaskPadWide=(({todos=[],current,days})=>(
 	</List>
 ))
 
-const TaskPadMobile=({todos=[],current,days,minHeight})=>(
+const TaskPadMobile=({todos=[],current,days})=>(
 	<SwipeableTabs index={current%7}
-		tabs={days.map((day,i)=><Tab key={i} label={day} value={i}/>)}>
+		tabs={days.map((day,i)=><Tab key={i} label={day} value={i}/>)}
+		>
 		{
 			days.map((day,i)=>(
-				<List key={i} style={{minHeight}}>
+				<List key={i}>
 					{
 						todos.map(({toKnowledge, days=[], content:task,dones=[],fields, props})=>(
 							<ListItem key={task}
 								primaryText={<TaskTitle {...{toKnowledge,task}}/>}
-								leftCheckbox={<TodoStatus 
-												todo={task} 
-												done={-1!=dones.indexOf(i)} 
-												day={i} 
-												current={current} 
+								leftCheckbox={<TodoStatus
+												todo={task}
+												done={-1!=dones.indexOf(i)}
+												day={i}
+												current={current}
 												fields={fieldsWithValue(i, fields, props)}/>}
 								initiallyOpen={true}
 								nestedItems={knowledgeTasks({days,dones,current})}
@@ -130,12 +131,12 @@ const TodoStatus=compose(
 			}else{
 				icon=<IconSmile color={COLOR_DONE} {...others}/>
 			}
-			
+
 			if(info){
 				return (
 					<span>
-						<AutoForm 
-							fields={fields} 
+						<AutoForm
+							fields={fields}
 							title="信息"
 							onCancel={e=>this.setState({info:false})}
 							onSubmit={props=>{
@@ -149,13 +150,13 @@ const TodoStatus=compose(
 			}else{
 				return icon
 			}
-			
+
 		}else if(day>current)
 			return (<IconSmile color={COLOR_DISABLED} {...others}/>)
 		else
-			return (<IconSmile color={COLOR_ENABLED} 
-						hoverColor={COLOR_HOVER} 
-						onClick={e=>taskDone({task:todo,day})}  
+			return (<IconSmile color={COLOR_ENABLED}
+						hoverColor={COLOR_HOVER}
+						onClick={e=>taskDone({task:todo,day})}
 						{...others}/>)
 	}
 })
@@ -189,7 +190,6 @@ export const TaskPad=(props=>(
 export default compose(
 	getContext({
 		router:PropTypes.object,
-		muiTheme: PropTypes.object,
 	}),
 	withFragment(graphql`
 		fragment taskPad on Plan{
@@ -215,14 +215,13 @@ export default compose(
 		const toKnowledge=id=>router.push(`/knowledge/${id}`)
 		return {
 			...others,
-			minHeight:(muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height)*3/4,
 			current,
 			days: DAYS(current),
 			todos: (data.todos||[]).map(a=>{
 				if(a.hidden)
 					return null
 				let todo={...a}
-				
+
 				if(a.knowledge){
 					todo.fields=a.knowledge.fields
 					todo.toKnowledge=()=>toKnowledge(a.knowledge.id)
@@ -240,5 +239,5 @@ export default compose(
 				return todo
 			}).filter(a=>!!a)
 		}
-	}),	
+	}),
 )(TaskPad)

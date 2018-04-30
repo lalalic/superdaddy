@@ -1,7 +1,7 @@
-import React, {Component} from "react"
+import React, {Component, Fragment} from "react"
 import PropTypes from "prop-types"
 
-import {Comment} from "qili"
+import {Comment} from "qili-app"
 
 import AppBar from "components/app-bar"
 import {FlatButton, Avatar} from "material-ui"
@@ -11,7 +11,7 @@ import Wechat from "wechat4u"
 export class WechatComment extends Component{
 	state={connected:false}
 	constructor(){
-		super() 
+		super()
 		this.bot=new Wechat()
 		this.bot.on("uuid",uuid=>this.setState({uuid}))
 		this.bot.on("user-avatar", avatar=>this.setState({avatar}))
@@ -36,15 +36,15 @@ export class WechatComment extends Component{
 				label=<FlatButton label="连接微信" onClick={e=>this.bot.start()}/>
 		}
 		return (
-			<div>
+			<Fragment>
 				{code}
-				<AppBar iconElementRight={label} 
+				<AppBar iconElementRight={label}
 					title={<span>{err||title}</span>} />
 				<Comment {...this.props}/>
-			</div>
+			</Fragment>
 		)
 	}
-	
+
 	static contextTypes={
 		muiTheme:PropTypes.object
 	}

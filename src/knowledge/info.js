@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import PropTypes from "prop-types"
 
 import {compose, getContext} from "recompose"
-import {withMutation, withFragment,wechat,CommandBar, File} from "qili"
+import {withMutation, withFragment,wechat,CommandBar, File} from "qili-app"
 import {connect} from "react-redux"
 
 import {Link} from "react-router"
@@ -31,7 +31,7 @@ export class KnowledgeEditor extends Component{
 
     render(){
 		const {
-			knowledge, knowledgeContent,minHeight, revising=false,
+			knowledge, knowledgeContent, revising=false,
 			selectDocx, update, cancel, task, untask, preview, buy,
 			outputHomework, wechat_session,wechat_timeline,
 			toComment,
@@ -166,33 +166,32 @@ export class KnowledgeEditor extends Component{
 		}
 
         return (
-            <div className="post">
-				<div className="knowledge" style={{minHeight}}>
-					{knowledgeContent}
-                </div>
+            <Fragment>
+				<div style={{flex:"1 100%"}}>
+					<div className="knowledge">
+						{knowledgeContent}
+	                </div>
 
-				<article>
-					<section>
-						<BottomNavigation>
-						{tools}
-						</BottomNavigation>
+					<article>
+						<section>
+							<BottomNavigation>
+							{tools}
+							</BottomNavigation>
 
-						<AD object={knowledge}/>
-					</section>
-				</article>
+							<AD object={knowledge}/>
+						</section>
+					</article>
 
-				{homeworkForm}
+					{homeworkForm}
+				</div>
 
-                <CommandBar className="footbar" items={commands}/>
-            </div>
+                <CommandBar style={{flex:1}} items={commands}/>
+            </Fragment>
         )
     }
 }
 
 export default compose(
-	getContext({
-    	muiTheme:PropTypes.object,
-    }),
 	withFragment(graphql`
 		fragment info_knowledge on Knowledge{
 			id
@@ -234,13 +233,12 @@ export default compose(
 			knowledge: selectedDocx ? {
 					...selectedDocx.knowledge,
 					isMyWork:true,
-					id:knowledge.id, 
+					id:knowledge.id,
 					author:{name:""}
 				} : knowledge
 		})),
 	connect(null,
-		(dispatch, {knowledge, files,  muiTheme,selectedDocx,getToken,updateKnowledge})=>({
-			muiTheme:undefined,
+		(dispatch, {knowledge, files,selectedDocx,getToken,updateKnowledge})=>({
 			selectedDocx:undefined,
 			getTokens:undefined,
 			updateKnowledge:undefined,
@@ -248,7 +246,6 @@ export default compose(
 			knowledgeContent:selectedDocx ?
 				<Content knowledge={knowledge}/> :
 				<FragmentContent knowledge={knowledge}/>,
-			minHeight:muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height,
 			selectDocx:()=>dispatch(ACTION.SELECT_DOCX()),
 			update(){
 				selectedDocx.upload({
