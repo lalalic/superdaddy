@@ -12,7 +12,7 @@ type Child implements Node {
   plan: Plan
 }
 
-type ChildComment implements Comment, Node {
+type ChildComment implements Comment & Node {
   id: ID!
   content: String!
   type: CommentType
@@ -71,7 +71,9 @@ enum Gender {
   boy
 }
 
-# The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
 scalar JSON
 
 type Knowledge implements Node {
@@ -98,7 +100,7 @@ type Knowledge implements Node {
   files: [File]
 }
 
-type KnowledgeComment implements Comment, Node {
+type KnowledgeComment implements Comment & Node {
   id: ID!
   content: String!
   type: CommentType
@@ -190,7 +192,7 @@ interface Node {
   id: ID!
 }
 
-# mongodb ID
+"""mongodb ID"""
 scalar ObjectID
 
 type PageInfo {
