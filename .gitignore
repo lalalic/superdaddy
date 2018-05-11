@@ -32,5 +32,6 @@ dist/*.html
 .DS_Store
 
 cloud/__generated.js
+cloud/persisted-query.js
 
 __generated__

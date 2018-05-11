@@ -151,7 +151,7 @@ type Mutation {
   requestToken(contact: String!): Boolean
   login(contact: String!, token: String!, name: String): User
   logout: Boolean
-  user_update(photo: String, username: String, birthday: Date, gender: Gender, location: String, signature: String): Date
+  user_update(photo: URL, username: String, birthday: Date, gender: Gender, location: String, signature: String): Date
   role_create(name: String): Role
   role_update(_id: ObjectID!, name: String): Date
   role_remove(_id: ObjectID!): Boolean
@@ -234,7 +234,7 @@ type Query {
   version: String!
   schema: String!
   me: User!
-  file_upload_token(key: String): FileToken
+  file_upload_token(host: ID, path: String, justToken: Boolean): FileToken
   knowledges(title: String, categories: [String], tags: [String], mine: Boolean, favorite: Boolean, tasked: Boolean, tasking: Boolean, first: Int, after: JSON): KnowledgeConnection
   knowledge(_id: ObjectID): Knowledge
   knowledge_comments(parent: ObjectID, last: Int, before: JSON): KnowledgeCommentConnection
@@ -272,9 +272,11 @@ type Todo {
   day6: JSON
 }
 
+scalar URL
+
 type User implements Node {
   id: ID!
-  photo(size: Int = 25): String
+  photo(size: Int = 25): URL
   name: String
   email: String
   phone: String

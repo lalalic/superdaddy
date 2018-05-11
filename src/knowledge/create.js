@@ -89,20 +89,16 @@ export default compose(
 			}
 		`,
 	}),
-	File.withGetToken,
-	connect(null,(dispatch,{selectedDocx, knowledge, toKnowledge, mutate, getToken,goBack})=>({
+	File.withGetBatchUpload,
+	connect(null,(dispatch,{selectedDocx, knowledge, toKnowledge, mutate, getBatchUpload,goBack})=>({
 		create(){
-			selectedDocx.upload({
-					getToken:key=>getToken(key)
-						.then(a=>{
-							return {...a,id:`knowledges:${a.id}`}
-						})
-				})
-				.then(knowledge=>mutate({knowledge}))
-				.then(({id})=>{
-					toKnowledge(id)
-					dispatch(ACTION.RESET())
-				})
+				return getBatchUpload()
+					.then(({_id,upload})=>selectedDocx.upload(`knowledges:${_id}`,upload))
+					.then(knowledge=>mutate({knowledge}))
+					.then(({id})=>{
+						toKnowledge(id)
+						dispatch(ACTION.RESET())
+					})
 		},
 		cancel:()=>{
 			goBack()

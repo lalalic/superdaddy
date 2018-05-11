@@ -212,7 +212,7 @@ export default compose(
 			...content_knowledge
 		}
 	`),
-	File.withGetToken,
+	File.withGetBatchUpload,
 	withMutation(({knowledge}, info)=>({
 		name:"updateKnowledge",
 		variables:{info,id:knowledge.id},
@@ -238,7 +238,7 @@ export default compose(
 				} : knowledge
 		})),
 	connect(null,
-		(dispatch, {knowledge, files,selectedDocx,getToken,updateKnowledge})=>({
+		(dispatch, {knowledge, files,selectedDocx,getBatchUpload,updateKnowledge})=>({
 			selectedDocx:undefined,
 			getTokens:undefined,
 			updateKnowledge:undefined,
@@ -248,13 +248,8 @@ export default compose(
 				<FragmentContent knowledge={knowledge}/>,
 			selectDocx:()=>dispatch(ACTION.SELECT_DOCX()),
 			update(){
-				selectedDocx.upload({
-						files,
-						getToken:key=>getToken(key)
-							.then(a=>{
-								return {...a,id:knowledge.id}
-							})
-					})
+				getBatchUpload()
+					.then(({upload})=>selectedDocx.upload(knowledge.id,upload,files))
 					.then(newVersion=>updateKnowledge(newVersion))
 					.then(()=>dispatch(ACTION.RESET()))
 			},

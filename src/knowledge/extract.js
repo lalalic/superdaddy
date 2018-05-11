@@ -1,4 +1,3 @@
-import {File} from "qili-app"
 import parse from "./parse"
 
 const reg=/[-,，\s+]/
@@ -48,32 +47,30 @@ export default function extract(file){
             getPhotos(){
                 return Array.prototype.map.call(window.document.querySelectorAll(`#${elId} img`),a=>a.src)
             },
-            upload({files,getToken}){
+            upload(id,upload,files){
 				files=files||[]
-                return getToken().then(({token,id})=>{
-					let done=images.map(image=>{
-						const {url,crc32:crc}=image
-						if(!crc)
-							return Promise.resolve({url})
-						let found=files.find((a)=>a.crc==crc)
-						if(found){
-							return Promise.resolve({url:found.url,crc});
-						}
+				let done=images.map(image=>{
+					const {url,crc32:crc}=image
+					if(!crc)
+						return Promise.resolve({url})
+					let found=files.find((a)=>a.crc==crc)
+					if(found){
+						return Promise.resolve({url:found.url,crc});
+					}
 
-						return File.upload(url, {id,crc,key:`image/${crc}.jpg`},token)
-							.then(remoteURL=>{
-								this.knowledge.content=this.knowledge.content.replace(url,image.url=remoteURL)
-								window.document.querySelector(`#${elId} img[src~='${url}']`).setAttribute("src",remoteURL)
-								return {url: remoteURL, crc}
-							})
-					})
-
-					return Promise.all(done)
-						.then(images=>externalizeDocxImage(docx,images))
-						.then(externalizedDocx=>File.upload(externalizedDocx, {id,key:`template.docx`}, getToken))
-						.then(url=>this.knowledge.template=url)
-						.then(()=>this.knowledge)
+					return upload(url, id,`image/${crc}.jpg`,{crc})
+						.then(remoteURL=>{
+							this.knowledge.content=this.knowledge.content.replace(url,image.url=remoteURL)
+							window.document.querySelector(`#${elId} img[src~='${url}']`).setAttribute("src",remoteURL)
+							return {url: remoteURL, crc}
+						})
 				})
+
+				return Promise.all(done)
+					.then(images=>externalizeDocxImage(docx,images))
+					.then(externalizedDocx=>upload(externalizedDocx, id,`template.docx`))
+					.then(url=>this.knowledge.template=url)
+					.then(()=>this.knowledge)
             }
         }
     })
