@@ -47,7 +47,7 @@ export default function extract(file){
             getPhotos(){
                 return Array.prototype.map.call(window.document.querySelectorAll(`#${elId} img`),a=>a.src)
             },
-            upload(id,upload,files){
+            upload(id,upload,files,token){
 				files=files||[]
 				let done=images.map(image=>{
 					const {url,crc32:crc}=image
@@ -58,7 +58,7 @@ export default function extract(file){
 						return Promise.resolve({url:found.url,crc});
 					}
 
-					return upload(url, id,`image/${crc}.jpg`,{crc})
+					return upload(url, id,`image/${crc}.jpg`,{crc},token)
 						.then(remoteURL=>{
 							this.knowledge.content=this.knowledge.content.replace(url,image.url=remoteURL)
 							window.document.querySelector(`#${elId} img[src~='${url}']`).setAttribute("src",remoteURL)
