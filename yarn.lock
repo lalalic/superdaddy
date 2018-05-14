@@ -6847,7 +6847,7 @@ q@^1.1.2, q@^1.4.1:
 
 qili-app@^1.2.7:
   version "1.2.13"
-  resolved "https://registry.yarnpkg.com/qili-app/-/qili-app-1.2.13.tgz#afb204ddb05d7fb3fd0d0739f6daf5d9b8b37bea"
+  resolved "https://registry.yarnpkg.com/qili-app/-/qili-app-1.2.22.tgz#5772688296a2be300ca3e83b3532329c01147822"
   dependencies:
     babel-polyfill "^6.26.0"
     graphql "^0.12.0"
