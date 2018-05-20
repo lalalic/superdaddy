@@ -7,7 +7,7 @@ import {Router, Route, IndexRoute, Direct, IndexRedirect, hashHistory} from "rea
 import {compose, getContext, withProps, mapProps,
 	withStateHandlers,withContext,branch,renderComponent} from "recompose"
 import {withInit, withQuery, withPagination, withFragment,
-	CheckUpdate, CommandBar, Setting, Profile, Comment,
+	CheckUpdate, CommandBar, Account, Comment,
 	QiliApp, ACTION as qiliACTION} from "qili-app"
 
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
@@ -21,7 +21,7 @@ import project from "../package.json"
 import {DOMAIN, reducer, ACTION} from "./state"
 
 import Child from "family/child"
-import Account from "setting/account"
+import My from "setting/account"
 import Publish, {Publishes} from "publish"
 import Plan from "family/plan"
 import {Creatable as Knowledges,NewKnowledge,Knowledge} from "knowledge"
@@ -99,63 +99,39 @@ export const routes=(
 
 			)(ScorePad)}/>
 
-			<Route path="my">
-				<IndexRoute component={compose(
+			{Account.routes({
+				account:compose(
 					withNavigator(),
 					withQuery({
 						query:graphql`
 							query superdaddy_account_Query{
-								me{
-									...account
+								user:me{
+									...account_user
 								}
 							}
 						`
 					}),
-					withProps(({me})=>({data:me})),
 					getContext({
-						client:PropTypes.object,
 						router: PropTypes.object,
 					}),
-					withProps(({client,router})=>{
+					withProps(({router})=>{
 						let props={
 							toCreate:()=>router.push("/child"),
 							toChild: id=>router.push(`/child/${id}`),
 							toSetting: ()=>router.push('/my/setting'),
 							toProfile: ()=>router.push('/my/profile')
 						}
-
-						let all=client.getAll("Child")
-						if(all){
-							props.babies=all.map(({id,name})=>({id,name}))
-						}
 						return props
-					}),
-
-				)(Account)}/>
-
-				<Route path="setting" component={withNavigator()(Setting)} />
-				<Route path="profile" component={compose(
-					withQuery({
-						query:graphql`
-							query superdaddy_profile_Query{
-								me{
-									id
-									username
-									birthday
-									gender
-									location
-									photo
-									signature
-								}
-							}
-							`,
-					}),
-					withProps(({me})=>({
-						...me,
-						birthday: me&&me.birthday ? new Date(me.birthday) : undefined
-					})),
-				)(Profile)}/>
-			</Route>
+					})
+				)(My),
+				profileQL:graphql`
+					query superdaddy_profile_Query{
+						user:me{
+							...qili_profile_user
+						}
+					}
+				`
+			})}
 
 			<Route path="child">
 				<IndexRoute component={compose(
@@ -213,16 +189,7 @@ export const routes=(
 							comments:child_comments(parent:$parent, last:$count, before: $cursor)@connection(key:"child_comments"){
 								edges{
 									node{
-										id
-										content
-										type
-										createdAt
-										author{
-											id
-											name
-											photo
-										}
-										isOwner
+										...qili_comment
 									}
 								}
 								pageInfo{
@@ -315,16 +282,7 @@ export const routes=(
 							comments:knowledge_comments(parent:$parent, last:$count, before: $cursor)@connection(key:"knowledge_comments"){
 								edges{
 									node{
-										id
-										content
-										type
-										createdAt
-										author{
-											id
-											name
-											photo
-										}
-										isOwner
+										...qili_comment
 									}
 								}
 								pageInfo{

@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import PropTypes from "prop-types"
 
 import {compose, getContext, withProps} from "recompose"
-import {withMutation, withFragment, Photo, Account as BaseAccount} from "qili-app"
+import {withMutation, withFragment, Photo, Account} from "qili-app"
 import {graphql} from "react-relay"
 import {ListItem} from "material-ui"
 
@@ -15,16 +15,36 @@ import IconChild from "material-ui/svg-icons/places/child-care"
 
 import Child from "family/child"
 
-export const Account=({id,username,photo, babies=[], toCreate, toChild, update, toSetting, toProfile})=>(
-    <BaseAccount {...{id,username,photo,toSetting,toProfile}}>
+export default compose(
+	withFragment(graphql`
+		fragment account_user on User{
+			...qili_account_user
+			children{
+				id
+				photo
+				name
+			}
+		}
+	`),
+	withMutation(({},{id})=>({
+		name:"update",
+		patch4:id,
+		mutation: graphql`
+            mutation account_setPhoto_Mutation($id:ObjectID!, $photo:String, $name:String, $birthday:Date,$gender:Gender){
+                child_update(_id:$id, photo:$photo, name:$name, birthday:$birthday,gender:$gender)
+            }
+		`,
+	})),
+)(({user, toCreate, toChild, update, ...others})=>(
+    <Account user={user} update={update} {...others}>
         <ListItem primaryText="我的宝贝"
             leftIcon={<IconAdd/>}
             initiallyOpen={true}
             autoGenerateNestedIndicator={false}
             onClick={toCreate}
             nestedItems={
-                babies.map(({id,photo,name})=>
-					<ListItem key={id} 
+                user.children.map(({id,photo,name})=>
+					<ListItem key={id}
 						primaryText={name}
 						onClick={e=>toChild(id)}
 						leftIcon={
@@ -37,33 +57,5 @@ export const Account=({id,username,photo, babies=[], toCreate, toChild, update, 
                 )
             }
         />
-    </BaseAccount>
-)
-
-export default compose(
-	withFragment(graphql`
-		fragment account on User{
-			id
-			username
-			photo
-			children{
-				id
-				photo
-				name
-			}
-		}
-	`),
-	withProps(({data:{id,username,photo,children:babies}})=>({
-        id,username,photo,
-        babies:babies||[]
-    })),
-	withMutation(({},{id})=>({
-		name:"update",
-		patch4:id,
-		mutation: graphql`
-            mutation account_setPhoto_Mutation($id:ObjectID!, $photo:String, $name:String, $birthday:Date,$gender:Gender){
-                child_update(_id:$id, photo:$photo, name:$name, birthday:$birthday,gender:$gender)
-            }
-		`,
-	})),
-)(Account)
+    </Account>
+))
