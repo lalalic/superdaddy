@@ -1,4 +1,5 @@
 @import (reference,less) "~qili-app/index.less";
+
 .calendar{
     text-align: center;
     >:first-child{
@@ -93,7 +94,7 @@ figure{
 	}
 
 	.goal{
-		.grid;
+		#app.grid;
 
 		line-height:@rowHeight;
 		width: @goalWidth+@iconWidth+20px;
@@ -142,7 +143,7 @@ figure{
 	}
 
 	.reward{
-		.grid;
+		#app.grid;
 		line-height:@rowHeight;
 		>*{
 			vertical-align:middle;
@@ -173,7 +174,7 @@ figure{
 		top:@stickyOffset;
 		left:@goalWidth - @faceWidth/2;
 		@media screen and (min-width:@maxWidth){
-			.sticky(left, @goalWidth - @faceWidth/2)
+			#app.sticky(left, @goalWidth - @faceWidth/2)
 		}
 
 		width: 300px;
@@ -223,4 +224,3 @@ figure{
   animation-name: pulse;
   animation-duration: 1s;
 }
-
