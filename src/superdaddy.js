@@ -399,6 +399,7 @@ export const routes=(
 export const SuperDaddy=compose(
 	withProps(()=>({
 		project,
+		service:"https://api.papazai.com/1/graphql",
 		appId:project.config.appId,
 		reducers:{
 			[DOMAIN]:reducer
