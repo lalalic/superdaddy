@@ -37,7 +37,7 @@ export class Child extends Component{
 				<div className="form" style={{flex:"1 100%"}}>
 					<div className="child-photo">
 						<Photo size={150} src={photo}
-							autoUpload={{id,key:"photo.jpg"}}
+							autoUpload={{path:"photo.jpg"}}
 							onPhoto={photo=>update({photo})}/>
 					</div>
 
