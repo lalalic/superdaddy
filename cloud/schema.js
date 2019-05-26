@@ -68,7 +68,7 @@ module.exports=others=>`
 		hasHomework: JSON
 		hasPrint: JSON
 		sale: String
-		template: String
+		template: URL
 		
 		
 		inTask(child:ObjectID): Boolean

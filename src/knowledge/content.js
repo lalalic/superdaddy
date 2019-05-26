@@ -17,9 +17,9 @@ export const Content=({
 	tags=tags||[]	
 	content=<div dangerouslySetInnerHTML={{__html:content}}/>
 
-	if(summary && open!==null){
+	if(summary){
 		content=(
-			<details open={open}>
+			<details open="open">
 				<summary>{summary}</summary>
 				{content}
 			</details>

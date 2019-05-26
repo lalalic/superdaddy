@@ -9,6 +9,7 @@ import {IconButton, TextField} from 'material-ui'
 import PullToRefresh from "pull-to-refresh2"
 
 import IconSearch from "material-ui/svg-icons/action/search"
+import IconDownload from "material-ui/svg-icons/file/cloud-download"
 import IconBack from "material-ui/svg-icons/hardware/keyboard-arrow-left"
 
 import AppBar from "components/app-bar"
@@ -18,6 +19,14 @@ import QuickSearch,{toText} from "./quick-search"
 
 export class Knowledges extends Component{
 	state={title:this.props.title}
+	downloadTemplate(){
+		const link=document.createElement("a")
+		link.href="/knowledge/template.docx"
+		link.download="knowledge-template.docx"
+		document.body.appendChild(link)
+		link.click()
+		document.body.removeChild(link)
+	}
 
 	render(){
         const {knowledges=[],search,qs,minHeight,refresh, loadMore, canBack, goBack, toKnowledge}=this.props
@@ -38,9 +47,14 @@ export class Knowledges extends Component{
 					iconElementLeft={iconElementLeft}
 
 					iconElementRight={
-						<IconButton onClick={e=>search({title})}>
-							<IconSearch/>
-						</IconButton>
+						<span>
+							<IconButton onClick={e=>search({title})}>
+								<IconSearch/>
+							</IconButton>
+							<IconButton onClick={e=>this.downloadTemplate()} title="download template">
+								<IconDownload/>
+							</IconButton>
+						</span>
 					}
 
 					title={<TextField

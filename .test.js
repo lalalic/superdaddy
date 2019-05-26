@@ -4,7 +4,7 @@ import {QiliApp, File} from "qili-app"
 
 const _upload=File.upload
 File.upload=function(){
-	return _upload(...arguments).catch(a=>a).then(a=>"images/icon.svg")
+	return _upload(...arguments).catch(a=>a).then(a=>"dist/knowledge/math.docx")
 }
 
 project.homepage=`http://localhost:9082`
