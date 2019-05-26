@@ -17,7 +17,7 @@ import IconRemoveTask from "material-ui/svg-icons/action/alarm-off"
 import IconBuy from "material-ui/svg-icons/action/add-shopping-cart"
 import IconPreview from "material-ui/svg-icons/action/print"
 import IconHomework from "material-ui/svg-icons/notification/event-note"
-
+import IconDownload from "material-ui/svg-icons/file/cloud-download"
 
 import AD from 'components/ad'
 import AutoForm from "components/auto-form"
@@ -28,6 +28,15 @@ import {withPlanActions} from "time-manage"
 
 export class KnowledgeEditor extends Component{
 	state={homework:false}
+
+	download(url,title){
+		const link=document.createElement("a")
+		link.href=url
+		link.download=title+".docx"
+		document.body.appendChild(link)
+		link.click()
+		document.body.removeChild(link)
+	}
 
     render(){
 		const {
@@ -134,6 +143,17 @@ export class KnowledgeEditor extends Component{
 							}
 						}}
 						/>)
+		}
+
+		if(knowledge.isMyWork){
+			tools.push(
+				<BottomNavigationItem
+						key="download"
+						label="下载"
+						icon={<IconDownload color="black"/>}
+						onClick={()=>this.download(knowledge.template, knowledge.title)}
+						/>
+			)
 		}
 
         const {homework, preview:want2Preview}=this.state

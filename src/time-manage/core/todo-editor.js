@@ -10,8 +10,10 @@ import AppBar from "components/app-bar"
 import IconAdd from "material-ui/svg-icons/av/playlist-add"
 import IconEdit from "material-ui/svg-icons/editor/mode-edit"
 import IconDone from "material-ui/svg-icons/file/cloud-done"
+import IconPrint from "material-ui/svg-icons/action/print"
 
-export const TodoEditor=({editing, setEditing, add, refTask})=><AppBar 
+
+export const TodoEditor=({editing, setEditing, add, refTask, printWeekTask})=><AppBar 
 	iconElementRight={
 		<span>
 			<IconButton onClick={e=>add({content:refTask.state.searchText.trim()})}>
@@ -20,6 +22,11 @@ export const TodoEditor=({editing, setEditing, add, refTask})=><AppBar
 			<IconButton onClick={e=>setEditing(editing ? 0 : 1)}>
 				{editing?<IconDone color="white"/> : <IconEdit color="white"/>}
 			</IconButton>
+			{printWeekTask && !editing &&
+			<IconButton onClick={printWeekTask}>
+				<IconPrint color="white"/>
+			</IconButton>
+			}
 		</span>
 	}
 	title={

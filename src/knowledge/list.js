@@ -52,7 +52,7 @@ export class Knowledges extends Component{
 								<IconSearch/>
 							</IconButton>
 							<IconButton onClick={e=>this.downloadTemplate()} title="download template">
-								<IconDownload/>
+								<IconDownload color="white"/>
 							</IconButton>
 						</span>
 					}

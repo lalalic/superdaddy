@@ -30,7 +30,7 @@ export const TimeManage=({minHeight,goal, score, editing,week,reset,data})=>(
 						if(!accomplished){
 							return (
 								<div>
-									<TodoEditor/>
+									<TodoEditor printWeekTask={alert}/>
 									{editing ? <TaskPadEditor data={data}/> : <TaskPad data={data} current={new Date().getDay()}/>}
 								</div>
 							)

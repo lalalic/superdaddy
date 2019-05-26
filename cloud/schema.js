@@ -100,6 +100,14 @@ module.exports=others=>`
 		updatedAt: Date
 		status: Int
 	}
+
+	type award implements Node{
+		id: ID!
+		author: User
+		name: String!
+		score: Int
+		url: URL
+	}
 	
 	extend type User{
 		children: [Child]
@@ -144,6 +152,10 @@ module.exports=others=>`
 		publish_update(_id:ObjectID, template:String, child:ObjectID, from: Date, to: Date, name: String, copies: Int): Date
 		publish_done(_id:ObjectID):Date
 		publish_remove(_id:ObjectID):Boolean
+
+		award_create(name:String, score:Int, url: URL):Award
+		award_update(name:String, score:Int, url: URL):Date
+		award_remove(_id:ObjectID):Boolean
 	}
 	
 	${others.join("\r\n")}

@@ -118,7 +118,7 @@ module.exports={
 			return app.patchEntity("users", {_id,author:user._id}, {...$set, author:user._id})
 		},
 
-		knowledge_create(_, {knowledge:{title, ...knowledge}}, {app,user}){
+		knowledge_create(_, {knowledge:{title, template,...knowledge}}, {app,user}){
 			if(!title)
 				throw new Error("必须有题目")
 			return app.get1Entity("knowledges",{title,author:user._id})
@@ -130,7 +130,7 @@ module.exports={
 				.then(()=>app.createEntity("knowledges", {...knowledge,title, author:user._id}))
 		},
 
-		knowledge_update(_, {_id, knowledge:{title,...knowledge}}, {app,user}){
+		knowledge_update(_, {_id, knowledge:{title,template,...knowledge}}, {app,user}){
 			if(title!=undefined && !title)
 				throw new Error("必须有题目")
 			return Promise.resolve(title ? app.get1Entity("knowledges",{title,author:user._id})
@@ -492,6 +492,9 @@ module.exports={
 					return summary.substring(0,250)+'...'
 				return summary
 			}
+		},
+		template({_id}){
+			return `knowledges/${_id}/template.docx`
 		}
 	},
 
