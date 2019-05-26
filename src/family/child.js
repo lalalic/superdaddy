@@ -173,7 +173,7 @@ export default compose(
 		withMutation({
 			promise: true,
 			mutation: graphql`
-				mutation child_create_Mutation($name:String!, $photo:String, $birthday:Date,$gender:Gender){
+				mutation child_create_Mutation($name:String!, $photo:URL, $birthday:Date,$gender:Gender){
 					child_create(name:$name, photo:$photo, birthday:$birthday,gender:$gender){
 						id
 						createdAt
@@ -210,7 +210,7 @@ export default compose(
 		promise:true,
 		variables:{id},
 		mutation: graphql`
-			mutation child_update_Mutation($id:ObjectID!, $photo:String, $name:String, $birthday:Date,$gender:Gender){
+			mutation child_update_Mutation($id:ObjectID!, $photo:URL, $name:String, $birthday:Date,$gender:Gender){
 				child_update(_id:$id, photo:$photo, name:$name, birthday:$birthday,gender:$gender)
 			}
 		`

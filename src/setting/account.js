@@ -30,7 +30,7 @@ export default compose(
 		name:"update",
 		patch4:id,
 		mutation: graphql`
-            mutation account_setPhoto_Mutation($id:ObjectID!, $photo:String, $name:String, $birthday:Date,$gender:Gender){
+            mutation account_setPhoto_Mutation($id:ObjectID!, $photo:URL, $name:String, $birthday:Date,$gender:Gender){
                 child_update(_id:$id, photo:$photo, name:$name, birthday:$birthday,gender:$gender)
             }
 		`,
