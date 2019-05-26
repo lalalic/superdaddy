@@ -4,7 +4,7 @@ module.exports=others=>`
 		name:String!
 		birthday:Date
 		createdAt: Date
-		photo(size: Int = 25): String
+		photo(size: Int = 25): URL
 		gender: Gender
 		author: User
 		score: Int
@@ -59,7 +59,7 @@ module.exports=others=>`
 		updatedAt:Date
 		summary: String
 		figure: String
-		photos: [String]
+		photos: [URL]
 		zans: Int
 		category: [String]
 		tags: [String]
@@ -116,8 +116,8 @@ module.exports=others=>`
 	
 	extend type Mutation{
 		child_remove(_id:ObjectID!): Boolean
-		child_create(name:String!, photo:String, birthday:Date,gender:Gender):Child
-		child_update(_id:ObjectID!, photo:String, name:String, photo:String, birthday:Date,icon:String, gender:Gender): Date
+		child_create(name:String!, photo:URL, birthday:Date,gender:Gender):Child
+		child_update(_id:ObjectID!, photo:URL, name:String, birthday:Date,icon:String, gender:Gender): Date
 			
 		plan_update(_id:ObjectID, plan:JSON):Plan		
 		plan_update_goals(_id:ObjectID, goals:[String]):Plan
