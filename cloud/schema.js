@@ -101,7 +101,7 @@ module.exports=others=>`
 		status: Int
 	}
 
-	type award implements Node{
+	type Award implements Node{
 		id: ID!
 		author: User
 		name: String!

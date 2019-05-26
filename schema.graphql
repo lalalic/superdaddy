@@ -1,3 +1,11 @@
+type Award implements Node {
+  id: ID!
+  author: User
+  name: String!
+  score: Int
+  url: URL
+}
+
 type Child implements Node {
   id: ID!
   name: String!
@@ -185,6 +193,9 @@ type Mutation {
   publish_update(_id: ObjectID, template: String, child: ObjectID, from: Date, to: Date, name: String, copies: Int): Date
   publish_done(_id: ObjectID): Date
   publish_remove(_id: ObjectID): Boolean
+  award_create(name: String, score: Int, url: URL): Award
+  award_update(name: String, score: Int, url: URL): Date
+  award_remove(_id: ObjectID): Boolean
   comment_create(parent: ID, content: String!, type: CommentType, _id: ObjectID): Comment
 }
 
