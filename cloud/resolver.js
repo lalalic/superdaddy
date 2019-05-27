@@ -162,7 +162,7 @@ module.exports={
 		publish_remove(_, {_id}, {app,user}){
 			return app.remove1Entity("publishs",{_id, author: user._id, status:{$ne:0}})
 		},
-		plan_update(_,{_id, {score, ...plan}},{app,user}){
+		plan_update(_,{_id, plan:{score, ...plan}},{app,user}){
 			return app.patchEntity("plans",{_id},{...plan})
 				.then(()=>app.get1Entity("plans",{_id}))
 		},
