@@ -1,11 +1,3 @@
-type Award implements Node {
-  id: ID!
-  author: User
-  name: String!
-  score: Int
-  url: URL
-}
-
 type Child implements Node {
   id: ID!
   name: String!
@@ -77,6 +69,16 @@ type FinishedTask implements Node {
 enum Gender {
   girl
   boy
+}
+
+type Good implements Node {
+  id: ID!
+  author: User
+  name: String!
+  score: Int
+  url: URL
+  createdAt: Date
+  updatedAt: Date
 }
 
 """
@@ -193,9 +195,9 @@ type Mutation {
   publish_update(_id: ObjectID, template: String, child: ObjectID, from: Date, to: Date, name: String, copies: Int): Date
   publish_done(_id: ObjectID): Date
   publish_remove(_id: ObjectID): Boolean
-  award_create(name: String, score: Int, url: URL): Award
-  award_update(name: String, score: Int, url: URL): Date
-  award_remove(_id: ObjectID): Boolean
+  good_create(name: String, score: Int, url: URL): User
+  good_update(_id: ObjectID, name: String, score: Int, url: URL): Good
+  good_remove(ids: [ObjectID!]): User
   comment_create(parent: ID, content: String!, type: CommentType, _id: ObjectID): Comment
 }
 
@@ -303,4 +305,5 @@ type User implements Node {
   children: [Child]
   child(_id: ObjectID): Child
   works: [Knowledge]
+  goods: [Good]
 }

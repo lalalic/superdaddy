@@ -35,7 +35,7 @@ export default compose(
             }
 		`,
 	})),
-)(({user, toCreate, toChild, update, ...others})=>(
+)(({user, toCreate, toChild, toGoals, update, ...others})=>(
     <Account user={user} update={update} {...others}>
         <ListItem primaryText="我的宝贝"
             leftIcon={<IconAdd/>}
@@ -57,5 +57,9 @@ export default compose(
                 )
             }
         />
+		<ListItem primaryText="我的奖品..."
+			leftIcon={<span/>}
+			onClick={toGoals}
+			/>
     </Account>
 ))

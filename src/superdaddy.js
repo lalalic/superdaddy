@@ -26,6 +26,7 @@ import Publish, {Publishes} from "publish"
 import Plan from "family/plan"
 import {Creatable as Knowledges,NewKnowledge,Knowledge} from "knowledge"
 import TimeManage, {ScorePad, withPlanActions} from "time-manage"
+import Goods from "./good"
 
 export const routes=(
 	<Router history={hashHistory}>
@@ -99,6 +100,21 @@ export const routes=(
 
 			)(ScorePad)}/>
 
+			<Route path="my/goods" component={compose(
+				withQuery(()=>({
+					query: graphql`
+						query superdaddy_good_Query{
+							me{
+								goods{
+									...good
+								}
+							}
+						}
+					`
+				})),
+				withProps(({me})=>({data:me.goods})),
+			)(Goods)}/>
+
 			{Account.routes({
 				account:compose(
 					withNavigator(),
@@ -119,7 +135,8 @@ export const routes=(
 							toCreate:()=>router.push("/child"),
 							toChild: id=>router.push(`/child/${id}`),
 							toSetting: ()=>router.push('/my/setting'),
-							toProfile: ()=>router.push('/my/profile')
+							toProfile: ()=>router.push('/my/profile'),
+							toGoals: ()=>router.push('/my/goods'),
 						}
 						return props
 					})
@@ -416,6 +433,9 @@ export const SuperDaddy=compose(
 						id
 						name
 						photo
+					}
+					goods{
+						...good
 					}
 				}
 			}

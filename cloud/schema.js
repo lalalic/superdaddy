@@ -8,13 +8,13 @@ module.exports=others=>`
 		gender: Gender
 		author: User
 		score: Int
-		
+
 		publishes: [Publish]
 		publish(_id:ObjectID):Publish
-		
+
 		plan: Plan
 	}
-	
+
 	type Plan implements Node{
 		id:ID!
 		icon: String
@@ -22,16 +22,16 @@ module.exports=others=>`
 		score: Int
 		todo: String
 		week: Int
-		
+
 		todos: [Todo]
-		
+
 		caps:[String]
 		goals:[String]
 		months:[MonthPlan]
-		
+
 		pendingKnowledges: [Knowledge]
 	}
-	
+
 	type Todo{
 		knowledge: Knowledge
 		content: String
@@ -44,12 +44,12 @@ module.exports=others=>`
 		day5: JSON
 		day6: JSON
 	}
-	
+
 	type MonthPlan{
 		goals:[String]
 		knowledges:[Knowledge]
 	}
-	
+
 	type Knowledge implements Node{
 		id:ID!
 		author:User
@@ -69,24 +69,24 @@ module.exports=others=>`
 		hasPrint: JSON
 		sale: String
 		template: URL
-		
-		
+
+
 		inTask(child:ObjectID): Boolean
 		isMyWork: Boolean
 		files: [File]
 	}
-	
+
 	type Task implements Node{
 		id:ID!
 		author:User
-		
+
 	}
-	
+
 	type FinishedTask implements Node{
 		id:ID!
 		author:User
 	}
-	
+
 	type Publish implements Node{
 		id:ID!
 		author: User
@@ -101,33 +101,36 @@ module.exports=others=>`
 		status: Int
 	}
 
-	type Award implements Node{
+	type Good implements Node{
 		id: ID!
 		author: User
 		name: String!
 		score: Int
 		url: URL
+		createdAt:Date
+		updatedAt:Date
 	}
-	
+
 	extend type User{
 		children: [Child]
 		child(_id:ObjectID): Child
 		works: [Knowledge]
+		goods: [Good]
 	}
-	
+
 	extend type Query{
-		knowledges(title:String, categories:[String], tags: [String], 
+		knowledges(title:String, categories:[String], tags: [String],
 			mine: Boolean, favorite: Boolean, tasked:Boolean, tasking:Boolean,
 			first:Int, after:JSON):KnowledgeConnection
 		knowledge(_id:ObjectID):Knowledge
 	}
-	
+
 	extend type Mutation{
 		child_remove(_id:ObjectID!): Boolean
 		child_create(name:String!, photo:URL, birthday:Date,gender:Gender):Child
 		child_update(_id:ObjectID!, photo:URL, name:String, birthday:Date,icon:String, gender:Gender): Date
-			
-		plan_update(_id:ObjectID, plan:JSON):Plan		
+
+		plan_update(_id:ObjectID, plan:JSON):Plan
 		plan_update_goals(_id:ObjectID, goals:[String]):Plan
 		plan_monthgoal_remove(_id:ObjectID,month:Int,goal:String):Plan
 		plan_monthgoal_add(_id:ObjectID,month:Int,goal:String):Plan
@@ -144,7 +147,7 @@ module.exports=others=>`
 		plan_todos_bottom(_id:ObjectID,i:Int):Plan
 		plan_todos_toggle(_id:ObjectID,i:Int):Plan
 		plan_auto(_id:ObjectID):Plan
-		
+
 		knowledge_create(knowledge:JSON):Knowledge
 		knowledge_update(_id:ObjectID, knowledge:JSON):Knowledge
 
@@ -153,10 +156,10 @@ module.exports=others=>`
 		publish_done(_id:ObjectID):Date
 		publish_remove(_id:ObjectID):Boolean
 
-		award_create(name:String, score:Int, url: URL):Award
-		award_update(name:String, score:Int, url: URL):Date
-		award_remove(_id:ObjectID):Boolean
+		good_create(name:String, score:Int, url: URL):User
+		good_update(_id:ObjectID, name:String, score:Int, url: URL):Good
+		good_remove(ids:[ObjectID!]):User
 	}
-	
+
 	${others.join("\r\n")}
 `

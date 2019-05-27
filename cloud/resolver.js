@@ -56,6 +56,10 @@ module.exports={
 
 		children(me, {}, {app,user}){
 			return app.findEntity("users", {author:user._id})
+		},
+
+		goods(me,{},{app,user}){
+			return app.findEntity("goods",{author:user._id})
 		}
 	},
 
@@ -158,7 +162,7 @@ module.exports={
 		publish_remove(_, {_id}, {app,user}){
 			return app.remove1Entity("publishs",{_id, author: user._id, status:{$ne:0}})
 		},
-		plan_update(_,{_id, plan},{app,user}){
+		plan_update(_,{_id, {score, ...plan}},{app,user}){
 			return app.patchEntity("plans",{_id},{...plan})
 				.then(()=>app.get1Entity("plans",{_id}))
 		},
@@ -452,6 +456,35 @@ module.exports={
 						.then(()=>plan)
 				})
 		},
+
+		good_create(_,{name,url,...$set},{app,user}){
+			return app.get1Entity("goods",{author:user._id,name})
+				.then(existing=>{
+					if(existing){
+						throw new Error(`good[${name}] already exists`)
+					}else{
+						return app.createEntity("goods",{name,url,...$set,author:user._id})
+							.then(()=>user)
+					}
+				})
+		},
+
+		good_update(_,{_id,name,url,...$set},{app,user}){
+			return app.get1Entity("goods",{author:user._id,name})
+				.then(existing=>{
+					if(existing && _id!=existing._id){
+						throw new Error(`good[${name}] already exists`)
+					}else{
+						return app.patchEntity("goods",{_id,author:user._id},{name,url,...$set})
+							.then(()=>app.get1Entity("goods",{_id}))
+					}
+				})
+		},
+
+		good_remove(_,{ids=[]},{app,user}){
+			return Promise.all(ids.map(_id=>app.remove1Entity("goods", {author:user._id,_id})))
+				.then(()=>user)
+		}
 	},
 
 	Knowledge: {
@@ -524,5 +557,8 @@ module.exports={
 			if(knowledge)
 				return app.getDataLoader("knowledges").load(knowledge)
 		}
-	}
+	},
+	Good: {
+		id: ({_id})=>`goods:${_id}`,
+	},
 }

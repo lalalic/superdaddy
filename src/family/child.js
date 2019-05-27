@@ -10,6 +10,8 @@ import {TextField, RadioButtonGroup, RadioButton,DatePicker,Subheader} from 'mat
 
 import {Icons} from "icons/task"
 
+import Goods from "components/goods"
+
 import {yellow500 as COLOR_DONE} from "material-ui/styles/colors"
 
 import IconRemove from "material-ui/svg-icons/content/remove-circle"
@@ -31,7 +33,7 @@ export class Child extends Component{
 				update, remove, toPublish, toPlan, updatePlan,
 				}=this.props
 		const {nameError}=this.state
-
+		var newTodo, newGoal
 		return (
 			<Fragment>
 				<div className="form" style={{flex:"1 100%"}}>
@@ -78,12 +80,39 @@ export class Child extends Component{
 
 						<Subheader>当前任务</Subheader>
 
-						<InfoForm.Field primaryText="成绩" value={`${score}/${goal}${totalScore==score ? "" : `/${totalScore}`}`}/>
-
-						<InfoForm.Field primaryText="目标" value={todo}
-							type="input"
-							onEdit={goal ? todo=>updatePlan({todo}) : null}
+						<InfoForm.Field primaryText="成绩"
+							value={`${score}${totalScore==score ? "" : `/${totalScore}`}`}
 							/>
+
+						<InfoForm.Field primaryText="目标" value={goal}
+							type="input"
+							onEdit={goal=>updatePlan({goal})}
+							/>
+
+						<InfoForm.Field primaryText="奖励" value={todo}
+							onEdit={()=>{
+								const plan={}
+								if(newTodo)
+									plan.todo=newTodo
+								if(newGoal)
+									plan.goal=newGoal
+
+								updatePlan(plan)
+							}}
+							>
+							<Goods hintText={todo}
+								onChange={(value,index)=>{
+									if(index!=-1){
+										let [goal, ...desc]=value.split(":")
+										newGoal=parseInt(goal)
+										newTodo=desc.join(":")
+									}else{
+										newTodo=value
+									}
+								}}
+								openOnFocus={true}
+								fullWidth={true} />
+						</InfoForm.Field>
 					</InfoForm>
 				</div>
 

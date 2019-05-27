@@ -6,6 +6,7 @@ import {compose,getContext,withProps,withState} from "recompose"
 import {withFragment} from "qili-app"
 
 import AppBar from "components/app-bar"
+import Goods from "components/goods"
 
 import {IconButton,TextField} from 'material-ui'
 import IconComment from "material-ui/svg-icons/communication/comment"
@@ -33,7 +34,7 @@ export const ScorePad=({
 		title=`[${todo}]已完成,开始下一个目标吧`
 		action=(<Editor lastScore={score} setTodoGoal={setTodoGoal}/>)
 	}else{
-		title=todo;
+		title=`${todo}(${score}/${goal})`;
 	}
 	let iconElementRight=(
 		<IconButton onClick={toComment}>
@@ -141,12 +142,11 @@ export const Editor=withState("errorText","setError")(({lastScore,setError,error
 		setTodoGoal({goal,todo:desc.join(":")})
 	}
 	return (
-		<TextField
-			floatingLabelText="目标"
+		<Goods onChange={add}
+			openOnFocus={true}
 			errorText={errorText}
+			floatingLabelText="目标"
 			hintText={`${lastScore||20}:小马宝莉书一本`}
-			onBlur={({target:{value}})=>add(value)}
-			onKeyDown={({target:{value},keyCode})=>keyCode==13 && add(value)}
 			fullWidth={true}/>
 	)
 })
