@@ -35,3 +35,4 @@ cloud/__generated.js
 cloud/persisted-query.js
 
 __generated__
+dist/knowledge/~$*.docx
