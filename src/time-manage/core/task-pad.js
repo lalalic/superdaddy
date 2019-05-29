@@ -1,4 +1,4 @@
-import React, {Component} from "react"
+import React, {Component,Fragment} from "react"
 import PropTypes from "prop-types"
 
 import {compose, getContext, mapProps, withProps} from "recompose"
@@ -14,6 +14,8 @@ import {
 	,lightBlue100 as COLOR_ENABLED
 	,grey300 as COLOR_DISABLED
 } from "material-ui/styles/colors"
+
+import PrintPad from "./print"
 
 import SwipeableTabs from "components/swipe-tabs"
 import AutoForm from "components/auto-form"
@@ -121,8 +123,8 @@ const TodoStatus=compose(
 	state={info:false}
 	render(){
 		const {todo,done, day, current, fields=[], taskDone, ...others}=this.props
-		if(done){
-			const {info}=this.state
+		const {info}=this.state
+		if(done){	
 			if(!info && fields.length)
 				others.onClick=e=>this.setState({info:true})
 			let icon=null
@@ -150,14 +152,38 @@ const TodoStatus=compose(
 			}else{
 				return icon
 			}
-
 		}else if(day>current)
 			return (<IconSmile color={COLOR_DISABLED} {...others}/>)
-		else
-			return (<IconSmile color={COLOR_ENABLED}
+		else{
+			const icon=(<IconSmile color={COLOR_ENABLED}
 						hoverColor={COLOR_HOVER}
-						onClick={e=>taskDone({task:todo,day})}
+						onClick={e=>{
+							if(fields.length){
+								this.setState({info:true})
+							}else{
+								taskDone({task:todo,day})
+							}
+						}}
 						{...others}/>)
+			if(info && fields.length){
+				return (
+					<span>
+						<AutoForm
+							fields={fields}
+							title="信息"
+							onCancel={e=>this.setState({info:false})}
+							onSubmit={props=>{
+								this.setState({info:false})
+								taskDone({task:todo,day,props})
+							}}
+							/>
+						{icon}
+					</span>
+				)
+			}else{
+				return icon
+			}
+		}
 	}
 })
 
@@ -179,13 +205,16 @@ function knowledgeTasks({days=[], current, dones=[]}){
 		primaryText={d}/>)
 }
 
-export const TaskPad=(props=>(
-	<MediaQuery maxWidth={960}>
-	{
-		match=>match ? <TaskPadMobile {...props}/> : <TaskPadWide {...props}/>
-	}
-	</MediaQuery>
-))
+export const TaskPad=({refPrint, ...props})=>(
+	<Fragment>
+		<MediaQuery maxWidth={960}>
+			{match=>match ? <TaskPadMobile {...props}/> : <TaskPadWide {...props}/>}
+		</MediaQuery>
+		<div style={{display:"none"}}>
+			<PrintPad ref={refPrint} todos={props.todos}/>
+		</div>
+	</Fragment>
+)
 
 export default compose(
 	getContext({
@@ -196,7 +225,10 @@ export default compose(
 			todos{
 				knowledge{
 					id
+					summary
 					fields
+					template
+					is4Classroom
 				}
 				content
 				hidden
@@ -223,7 +255,7 @@ export default compose(
 				let todo={...a}
 
 				if(a.knowledge){
-					todo.fields=a.knowledge.fields
+					todo.fields=a.fields||a.knowledge.fields
 					todo.toKnowledge=()=>toKnowledge(a.knowledge.id)
 				}
 				let {dones, props}=[0,1,2,3,4,5,6].reduce((state,i)=>{

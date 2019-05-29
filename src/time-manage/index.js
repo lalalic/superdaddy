@@ -39,8 +39,8 @@ export const withPlanActions=props=>compose(
 		name:"taskDone",
 		variables:{child},
 		mutation: graphql`
-			mutation timeManage_taskDone_Mutation($child:ObjectID, $task:String, $knowledge:ObjectID, $day:Int){
-				plan_task_done(_id:$child, content:$task, knowledge:$knowledge, day:$day ){
+			mutation timeManage_taskDone_Mutation($child:ObjectID, $task:String, $knowledge:ObjectID, $day:Int, $props:JSON){
+				plan_task_done(_id:$child, content:$task, knowledge:$knowledge, day:$day, props:$props ){
 					score
 					plan{
 						...core
@@ -75,8 +75,8 @@ export const withPlanActions=props=>compose(
 			name:"add",
 			variables:{child},
 			mutation: graphql`
-				mutation timeManage_add_Mutation($child:ObjectID, $content:String, $knowledge:ObjectID){
-					plan_todos_add(_id:$child, content:$content, knowledge:$knowledge){
+				mutation timeManage_add_Mutation($child:ObjectID, $content:String, $knowledge:ObjectID, $fields:JSON){
+					plan_todos_add(_id:$child, content:$content, knowledge:$knowledge, fields:$fields){
 						...core
 					}
 				}

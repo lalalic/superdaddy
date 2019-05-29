@@ -45,5 +45,4 @@ export const withCurrent=()=>BaseComponent=>{
 	)
 	return WithCurrent
 }
-
 export default withCurrent

@@ -207,3 +207,10 @@ function tidy(html){
 	})
 	return raw.html()
 }
+
+
+export function toHtml(docx){
+	const doc=docx.render(createElement)
+	const html=ReactDOM.renderToStaticMarkup(doc)
+	return tidy(html)
+}

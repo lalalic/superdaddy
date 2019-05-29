@@ -73,6 +73,7 @@ module.exports=others=>`
 
 		inTask(child:ObjectID): Boolean
 		isMyWork: Boolean
+		is4Classroom: Boolean
 		files: [File]
 	}
 
@@ -123,6 +124,7 @@ module.exports=others=>`
 			mine: Boolean, favorite: Boolean, tasked:Boolean, tasking:Boolean,
 			first:Int, after:JSON):KnowledgeConnection
 		knowledge(_id:ObjectID):Knowledge
+		plan(_id:ObjectID):Plan
 	}
 
 	extend type Mutation{
@@ -138,7 +140,7 @@ module.exports=others=>`
 		plan_monthtask_add(_id:ObjectID,month:Int,knowledge:ObjectID):Plan
 		plan_task_done(_id:ObjectID, content:String, knowledge:ObjectID, day:Int, props: JSON):Child
 		plan_reset(_id:ObjectID):Plan
-		plan_todos_add(_id:ObjectID, content:String, knowledge:ObjectID):Plan
+		plan_todos_add(_id:ObjectID, content:String, knowledge:ObjectID, fields:JSON):Plan
 		plan_todos_remove(_id:ObjectID,content:String, knowledge:ObjectID):Plan
 		plan_todos_removeNth(_id:ObjectID,i:Int):Plan
 		plan_todos_up(_id:ObjectID,i:Int):Plan

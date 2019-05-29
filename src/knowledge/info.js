@@ -81,7 +81,13 @@ export class KnowledgeEditor extends Component{
 					action:"Add Task"
 					,label:"添加课程"
 					,icon: <IconAddTask/>
-					,onSelect:task
+					,onSelect:()=>{
+						if(knowledge.hasHomework.fields){
+							this.setState({homework:task})
+						}else{
+							task()
+						}
+					}
 				})
 
 
@@ -165,7 +171,11 @@ export class KnowledgeEditor extends Component{
 				fields={knowledge.hasHomework.fields}
 				onSubmit={props=>{
 					this.setState({homework:false})
-					outputHomework(knowledge, props)
+					if(typeof(homework)=="function"){
+						homework(props)
+					}else{
+						outputHomework(knowledge, props)
+					}
 				}}
 				onCancel={()=>this.setState({homework:false})}
 				/>
@@ -291,8 +301,8 @@ export default compose(
 	),
 
 	withPlanActions(({knowledge:{title,id}, actions:{add, remove}})=>({
-		task(){
-			return add({content:title,knowledge:id})
+		task(fields){
+			return add({content:title,knowledge:id, fields})
 		},
 		untask(){
 			return remove({knowledge:id})

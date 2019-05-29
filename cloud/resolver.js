@@ -107,6 +107,9 @@ module.exports={
 				return cursor
 			})
 		},
+		plan(_,{_id},{app}){
+			return app.get1Entity("plans",{_id})
+		}
 	},
 
 	Mutation:{
@@ -298,14 +301,14 @@ module.exports={
 			return reset4CurrentWeek()
 		},
 
-		plan_todos_add(_,{_id, content, knowledge},{app,user}){
+		plan_todos_add(_,{_id, content, knowledge, fields},{app,user}){
 			return app.getDataLoader("plans")
 				.load(_id)
 				.then(plan=>{
 					let {todos=[]}=plan
 					if(exists(todos,content,knowledge))
 						return plan
-					todos=[...todos,{content,knowledge:knowledge||undefined}]
+					todos=[...todos,{content,knowledge:knowledge||undefined,fields}]
 					plan.todos=todos
 					return app.patchEntity("plans",{_id},{todos})
 						.then(()=>plan)
@@ -511,6 +514,10 @@ module.exports={
 
 		author({author},{},{app,user}){
 			return app.getDataLoader("users").load(author)
+		},
+
+		is4Classroom({tags=[]}){
+			return !!(tags && ["classroom","课堂纪律"].find(a=>tags.includes(a)))
 		},
 
 		summary({content,summary}){
