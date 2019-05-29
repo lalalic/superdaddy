@@ -1,12 +1,13 @@
 import React from "react"
 import cheer from "cheerio"
 import ReactDOM from "react-dom/server"
+import {compile, test} from "./code"
 
 let uuid=0
 
 const ARRAY=/^([a-z]+)(\d+)$/i
 export default function parse(file){
-	let properties={},  sale, hasPrint, hasHomework
+	let properties={},  sale, hasPrint, hasHomework,code
 	let fields=[]
 	return import(/* webpackChunkName: "docx-template" */"docx-template").then(({DocxTemplate})=>{
 		function identify(node, officeDocument){
@@ -43,6 +44,11 @@ export default function parse(file){
 				if(!model)
 					return model
 				switch(model.type){
+				case "object":{
+					const {data, embded}=model
+					code=data
+					break
+				}
 				case "property":
 					properties[model.name.toLowerCase()]=model.value
 				break
@@ -137,6 +143,7 @@ export default function parse(file){
 					days,
 					images,
 					sale,
+					code,
 					hasPrint,
 					hasHomework,
 					id,
@@ -213,4 +220,12 @@ export function toHtml(docx){
 	const doc=docx.render(createElement)
 	const html=ReactDOM.renderToStaticMarkup(doc)
 	return tidy(html)
+}
+
+export function plugin(code){
+	const module=Object.assign({
+		homework(){
+			
+		}
+	},compile(code))
 }

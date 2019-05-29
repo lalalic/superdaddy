@@ -225,10 +225,12 @@ export default compose(
 			todos{
 				knowledge{
 					id
-					summary
 					fields
+					
+					summary
 					template
 					is4Classroom
+					code
 				}
 				content
 				hidden

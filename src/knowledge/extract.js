@@ -14,7 +14,7 @@ function splitKey(data){
 export default function extract(file){
     return parse(file).then(doc=>{
         let {docx, html:content, properties, id:elId,
-				images, steps, sale, hasPrint, hasHomework,fields}=doc
+				images, steps, sale, hasPrint, hasHomework,code,fields}=doc
 
         let {name,title, keywords, category, subject,
 				abstract,description, ...others}=properties
@@ -38,6 +38,7 @@ export default function extract(file){
 				hasPrint,
 				hasHomework,
 				fields,
+				code,
 				template:file
             },
             revoke(){

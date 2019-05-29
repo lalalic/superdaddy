@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import {compose, getContext, withProps} from "recompose"
 import {connect} from "react-redux"
 import Assembler from "publish/assemble";
-import {toHtml} from "knowledge/parse"
+import {toHtml, plugin} from "knowledge/parse"
 
 export default compose(
     connect(({superdaddy:{current}})=>({id:current})),
@@ -17,7 +17,7 @@ export default compose(
 )(class Print extends PureComponent{
     state={show:false}
     render(){
-        const {child:{name}, todos,days='日,一,二,三,四,五,六'.split(",")}=this.props
+        const {child, todos,days='日,一,二,三,四,五,六'.split(",")}=this.props
         const tasks=todos.map(({days=[], content:task, dones=[], fields, props},i)=>(
 			<tr key={i}>
                 <td>{task}</td>
@@ -27,14 +27,14 @@ export default compose(
         
         const knowledges=todos.filter(a=>!!a.knowledge)
         const classrooms=knowledges.filter(a=>a.knowledge.is4Classroom)
-        const homeworks=knowledges.filter(a=>!!a.knowledge.hasHomework)
+        const homeworks=knowledges.filter(a=>!!a.knowledge.hasHomework || !!a.knowledge.code)
         
         const now=new Date(), today=`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()+1}`
 
         return (
             <div>
                 <div style={{position:"relative",top:-20}}>
-                    <span style={{float:'left'}}>{name}</span>
+                    <span style={{float:'left'}}>{child.name}</span>
                     <span style={{float:'right'}}>生成日期：{today}</span>
                 </div>
                 <table>
@@ -56,7 +56,7 @@ export default compose(
                 {classrooms.length>0 && <center style={{marginTop:40, marginBottom:10}}>课堂纪律:每课一省</center>}
                 {classrooms.map(({knowledge:{summary}, content},key)=><Classroom {...{key,content,summary}}/>)}
 
-                {homeworks.map(({knowledge,fields, props}, key)=><Homework {...{knowledge, fields:props||fields, key}}/>)}
+                {homeworks.map(({knowledge,fields, props}, key)=><Homework {...{knowledge,child, fields:props||fields, key}}/>)}
             </div>
         )
     }
@@ -82,16 +82,27 @@ const Classroom=({summary,content})=>(
 class Homework extends PureComponent{
     state={}
     componentDidMount(){
-        const {knowledge,fields}=this.props
-        new Assembler(knowledge.template, fields)
-            .assemble()
-            .then(docx=>toHtml(docx))
-            .then(homework=>this.setState({homework}))
-            .finally(()=>this.setState({generated:true}))
+        const {knowledge:{template,code,hasHomework},fields,child}=this.props
+        const data={...fields,child}
+        const homeworks=[]
+        const done=()=>this.setState({generated:true,homework:homeworks.filter(a=>!!a).join("")})
+        if(code){
+            homeworks.push(plugin(code).homework(data))
+        }
+
+        if(hasHomework){
+            new Assembler(knowledge.template, data)
+                .assemble()
+                .then(docx=>toHtml(docx))
+                .then(homework=>homeworks.push(homework))
+                .finally(done)
+        }else{
+            done()
+        }
     }
 
     render(){
-        const {homework, generated}=this.state
+        const {homeworks, generated}=this.state
         if(!generated)
             return null
         if(!homework)
