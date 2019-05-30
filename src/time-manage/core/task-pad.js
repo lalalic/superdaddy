@@ -202,12 +202,10 @@ function knowledgeTasks({days=[], current, dones=[]}){
 		primaryText={d}/>)
 }
 
-export const TaskPad=({ ...props})=>(
-	<Fragment>
-		<MediaQuery maxWidth={960}>
-			{match=>match ? <TaskPadMobile {...props}/> : <TaskPadWide {...props}/>}
-		</MediaQuery>
-	</Fragment>
+export const TaskPad=props=>(
+	<MediaQuery maxWidth={960}>
+		{match=>match ? <TaskPadMobile {...props}/> : <TaskPadWide {...props}/>}
+	</MediaQuery>
 )
 
 export default compose(
