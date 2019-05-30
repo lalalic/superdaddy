@@ -188,7 +188,8 @@ export const withPlanActions=props=>compose(
 		`,
 	})),
 	
-	mapProps(({dispatch, taskDone,planUpdate,reset,add,remove,removeNth,up,down,top,bottom,toggle,...others})=>{
+	mapProps(({dispatch, taskDone,planUpdate,reset,add,remove,removeNth,up,down,top,bottom,toggle, me,...others})=>{
+		others.child=me.child.name
 		let actions={
 			setEditing(payload){
 				dispatch({type:"child/plan/edit",payload})

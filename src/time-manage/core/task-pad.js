@@ -1,12 +1,11 @@
 import React, {Component,Fragment} from "react"
 import PropTypes from "prop-types"
 
-import {compose, getContext, mapProps, withProps} from "recompose"
+import {compose, getContext, mapProps} from "recompose"
 import {withFragment} from "qili-app"
 
 import MediaQuery from "react-responsive"
-import {List,ListItem, Subheader,Divider,Tab, FlatButton,IconButton} from "material-ui"
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
+import {List,ListItem,Divider,Tab} from "material-ui"
 
 import {
 	yellow500 as COLOR_DONE
@@ -14,8 +13,6 @@ import {
 	,lightBlue100 as COLOR_ENABLED
 	,grey300 as COLOR_DISABLED
 } from "material-ui/styles/colors"
-
-import PrintPad from "./print"
 
 import SwipeableTabs from "components/swipe-tabs"
 import AutoForm from "components/auto-form"
@@ -205,14 +202,11 @@ function knowledgeTasks({days=[], current, dones=[]}){
 		primaryText={d}/>)
 }
 
-export const TaskPad=({refPrint, ...props})=>(
+export const TaskPad=({ ...props})=>(
 	<Fragment>
 		<MediaQuery maxWidth={960}>
 			{match=>match ? <TaskPadMobile {...props}/> : <TaskPadWide {...props}/>}
 		</MediaQuery>
-		<div style={{display:"none"}}>
-			<PrintPad ref={refPrint} todos={props.todos}/>
-		</div>
 	</Fragment>
 )
 
@@ -245,7 +239,7 @@ export default compose(
 		}
 	`),
 
-	mapProps(({router,muiTheme, data,current=new Date().getDay(),...others})=>{
+	mapProps(({router,muiTheme, data,current=new Date().getDay(), ...others})=>{
 		const toKnowledge=id=>router.push(`/knowledge/${id}`)
 		return {
 			...others,

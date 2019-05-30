@@ -2,18 +2,13 @@ import React ,{Fragment}from "react"
 import PropTypes from "prop-types"
 import {connect} from "react-redux"
 import {graphql} from "react-relay"
-import {Router, Route, IndexRoute, Direct, IndexRedirect, hashHistory} from "react-router"
+import {Router, Route, IndexRoute, hashHistory} from "react-router"
 
 import {compose, getContext, withProps, mapProps,
-	withStateHandlers,withContext,branch,renderComponent} from "recompose"
+	withContext,branch,renderComponent} from "recompose"
 import {withInit, withQuery, withPagination, withFragment,
-	CheckUpdate, CommandBar, Account, Comment,
+	Account, Comment,
 	QiliApp, ACTION as qiliACTION} from "qili-app"
-
-import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
-import IconAccount from 'material-ui/svg-icons/action/account-box'
-import IconTask from "material-ui/svg-icons/editor/format-list-numbered"
-import IconReward from "material-ui/svg-icons/places/child-care"
 
 import withCurrent from "components/current-child"
 import withNavigator from "components/navigator"
@@ -58,6 +53,7 @@ export const routes=(
 						query superdaddy_timeManage_Query($child:ObjectID){
 							me{
 								child(_id:$child){
+									name
 									plan{
 										...core
 									}
@@ -66,6 +62,7 @@ export const routes=(
 						}
 					`,
 				})),
+
 				withProps(({me})=>({
 					data: me.child.plan,
 				})),
@@ -93,7 +90,7 @@ export const routes=(
 					`,
 				})),
 				withProps(({me})=>({
-					data: me.child.plan
+					data: me.child.plan,
 				})),
 				withPlanActions(),
 				withContext({actions:PropTypes.object},({actions})=>({actions})),

@@ -17,7 +17,9 @@ import TodoEditor from "./todo-editor"
 
 export {default as ScorePad} from "./score-pad"
 
-export const TimeManage=({minHeight,goal, score, editing,week,reset,data})=>(
+export {default as PrintPad} from "./print"
+
+export const TimeManage=({minHeight,goal, score, editing,week,reset,data, child})=>(
 	<div style={{minHeight}}>
 		{
 			(currentWeek=>{
@@ -29,8 +31,8 @@ export const TimeManage=({minHeight,goal, score, editing,week,reset,data})=>(
 						let accomplished=goal<=score
 						if(!accomplished){
 							return (
-								<TodoEditor>
-									{editing ? <TaskPadEditor data={data}/> : <TaskPad data={data} current={new Date().getDay()}/>}
+								<TodoEditor {...{data,child}}>
+									{editing ? <TaskPadEditor/> : <TaskPad current={new Date().getDay()}/>}
 								</TodoEditor>
 							)
 						}else{
@@ -76,11 +78,13 @@ export default compose(
 			...scorePad
 			...taskPad
 			...taskPadEditor
+			...printPad
 		}
 	`),
-	withProps(({data:{goal,score,week}})=>({
+	withProps(({data:{goal,score,week}, child})=>({
 		goal,
 		score,
 		week,
+		child
 	})),
 )(TimeManage)

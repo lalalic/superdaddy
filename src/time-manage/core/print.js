@@ -1,21 +1,67 @@
 import React, {PureComponent,Fragment} from "react"
 import PropTypes from "prop-types"
-import {compose, getContext, withProps} from "recompose"
-import {connect} from "react-redux"
+import {withFragment} from "qili-app"
+
+import {compose, mapProps} from "recompose"
 import Assembler from "publish/assemble";
 import {toHtml, plugin} from "knowledge/parse"
 
 export default compose(
-    connect(({superdaddy:{current}})=>({id:current})),
-	getContext({client: PropTypes.object}),
-	withProps(({client, id, ...props})=>{
+    withFragment(graphql`
+		fragment printPad on Plan{
+			todos{
+				knowledge{
+					id
+					fields
+					
+					summary
+					template
+					is4Classroom
+					code
+				}
+				content
+				hidden
+				day0
+				day1
+				day2
+				day3
+				day4
+				day5
+				day6
+			}
+		}
+    `),
+    mapProps(({data, child, onReady=a=>a})=>{
 		return {
-			child:client.get(id),
-			...props
+            child,
+            onReady,
+			todos: (data.todos||[]).map(a=>{
+				if(a.hidden)
+					return null
+				let todo={...a}
+
+				if(a.knowledge){
+					todo.fields=a.fields||a.knowledge.fields
+				}
+				let {dones, props}=[0,1,2,3,4,5,6].reduce((state,i)=>{
+					const {dones,props}=state
+					let prop=props[`${i}`]=a[`day${i}`]
+					if(prop){
+						dones.push(i)
+					}
+					return state
+				}, {dones:[], props:{}})
+				todo.dones=dones
+				todo.props=props
+				return todo
+			}).filter(a=>!!a)
 		}
 	}),
 )(class Print extends PureComponent{
     state={show:false}
+    componentDidMount(){
+        this.props.onReady()
+    }
     render(){
         const {child, todos,days='日,一,二,三,四,五,六'.split(",")}=this.props
         const tasks=todos.map(({days=[], content:task, dones=[], fields, props},i)=>(
@@ -33,8 +79,14 @@ export default compose(
 
         return (
             <div>
+                <style>{`
+                    body{margin:48px}
+                    table{width:100%;border-collapse:collapse;page-break-inside: avoid;}
+                    td{border:1px solid gray;}
+                    thead{text-align:center;background:lightgray}
+                `}</style>
                 <div style={{position:"relative",top:-20}}>
-                    <span style={{float:'left'}}>{child.name}</span>
+                    <span style={{float:'left'}}>{child}</span>
                     <span style={{float:'right'}}>生成日期：{today}</span>
                 </div>
                 <table>

@@ -5,58 +5,75 @@ import {connect} from "react-redux"
 import {compose, getContext} from "recompose"
 
 import {IconButton, AutoComplete} from "material-ui"
-import ReactPrint from "react-to-print"
 
 import AppBar from "components/app-bar"
+import PrintTrigger from "components/print-trigger"
 
 import IconAdd from "material-ui/svg-icons/av/playlist-add"
 import IconEdit from "material-ui/svg-icons/editor/mode-edit"
 import IconDone from "material-ui/svg-icons/file/cloud-done"
-import IconPrint from "material-ui/svg-icons/action/print"
+import { PrintPad } from "."
+import ReactPrint from "react-to-print"
 
 
-export const TodoEditor=({editing, setEditing, add, refTask, children, refPrint=React.createRef()})=>(
-	<Fragment>
-		<AppBar 
-			iconElementRight={
-				<span>
-					<IconButton onClick={e=>add({content:refTask.state.searchText.trim()})}>
-						<IconAdd color="white"/>
-					</IconButton>
-					<IconButton onClick={e=>setEditing(editing ? 0 : 1)}>
-						{editing?<IconDone color="white"/> : <IconEdit color="white"/>}
-					</IconButton>
-					{!editing &&
-					<ReactPrint
-						trigger={()=><IconButton><IconPrint color="white"/></IconButton>}
-						content={()=>refPrint.current}
-						pageStyle={`
-							body{margin:48px}
-							table{width:100%;border-collapse:collapse;page-break-inside: avoid;}
-							td{border:1px solid gray;}
-							thead{text-align:center;background:lightgray}
-						`}
-						/>
+export class TodoEditor extends Component{
+	constructor(){
+		super(...arguments)
+		this.state={}
+		this.printArea=React.createRef()
+	}
+	render(){
+		const {print}=this.state
+		const {editing, setEditing, add, children, data, child}=this.props
+		var refTask
+		return (
+			<Fragment>
+				<AppBar 
+					iconElementRight={
+						<span>
+							<IconButton onClick={e=>add({content:refTask.state.searchText.trim()})}>
+								<IconAdd color="white"/>
+							</IconButton>
+							<IconButton onClick={e=>setEditing(editing ? 0 : 1)}>
+								{editing?<IconDone color="white"/> : <IconEdit color="white"/>}
+							</IconButton>
+							
+							{!editing &&
+							<ReactPrint 
+								trigger={()=>(<PrintTrigger onNativeClick={()=>this.setState({print:1})} printReady={print==2}/>)} 
+								content={()=>this.printArea.current}
+								onAfterPrint={()=>this.setState({print:false})}
+								/>
+							}
+						</span>
 					}
-				</span>
-			}
-			title={
-				<AutoComplete 
-					ref={a=>refTask=a}
-					dataSource={[]}
-					hintText="任务"
-					fullWidth={true}
-					onKeyDown={e=>e.keyCode==13 && add({content:refTask.state.searchText.trim()})
-						.then(refTask.setState({searchText:""}))}
-					/>
-			}
-		/>
-		{React.cloneElement(children,{refPrint})}
-	</Fragment>
-)
+					title={
+						<AutoComplete 
+							ref={a=>refTask=a}
+							dataSource={[]}
+							hintText="任务"
+							fullWidth={true}
+							onKeyDown={e=>e.keyCode==13 && add({content:refTask.state.searchText.trim()})
+								.then(refTask.setState({searchText:""}))}
+							/>
+					}
+				/>
+				{React.cloneElement(children,{data})}
+				{print && 
+				<div style={{display:"none"}}>
+					<PrintPad ref={this.printArea} 
+						{...{data,child}} 
+						onReady={()=>this.setState({print:2})}/>
+				</div>
+				}
+			</Fragment>
+		)
+				
+	}
+}
 
 export default compose(
-	getContext({actions:PropTypes.object}),
+	getContext({actions:PropTypes.object,router: PropTypes.object}),
 	connect((state,{actions:{add,setEditing}})=>({
 		add,setEditing,
 		editing: state.superdaddy.childPlanEdit,
