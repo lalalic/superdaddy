@@ -1,7 +1,9 @@
 import React from "react"
 import cheer from "cheerio"
 import ReactDOM from "react-dom/server"
-import {compile, test} from "./code"
+import {test} from "./code"
+
+export {compile} from "./code"
 
 let uuid=0
 
@@ -45,8 +47,7 @@ export default function parse(file){
 					return model
 				switch(model.type){
 				case "object":{
-					const {data, embded}=model
-					code=data
+					test(code=model.data)
 					break
 				}
 				case "property":
@@ -220,12 +221,4 @@ export function toHtml(docx){
 	const doc=docx.render(createElement)
 	const html=ReactDOM.renderToStaticMarkup(doc)
 	return tidy(html)
-}
-
-export function plugin(code){
-	const module=Object.assign({
-		homework(){
-			
-		}
-	},compile(code))
 }

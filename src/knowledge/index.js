@@ -40,7 +40,7 @@ export const ACTION={
 					,thumb: figure
 					,media:{
 						type: Wechat.Type.WEBPAGE
-						,webpageUrl: `http://static.papazai.com/${id}.html`
+						,webpageUrl: `https://static.papazai.com/1/static/knowledge/${id}.html`
 					}
 				}
 			},a=>1,e=>e)
@@ -51,16 +51,14 @@ export const ACTION={
 export const REDUCER=(state={}, {type, payload})=>{
     switch(type){
     case `@@${DOMAIN}/selectedDocx`:
-        if(state.selectedDocx)
+        if(state.selectedDocx && state.selectedDocx.revoke)
             state.selectedDocx.revoke()
         return {...state,selectedDocx:payload}
 	case `@@${DOMAIN}/reset`:
-		if(state.selectedDocx){
+		if(state.selectedDocx && state.selectedDocx.revoke){
             state.selectedDocx.revoke()
-			return {...state, selectedDocx:undefined}
 		}
-		break
-
+		return {...state, selectedDocx:undefined}
     }
 	return state
 }

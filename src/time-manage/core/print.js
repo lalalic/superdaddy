@@ -1,10 +1,10 @@
-import React, {PureComponent,Fragment} from "react"
+import React, {PureComponent,Component,} from "react"
 import PropTypes from "prop-types"
 import {withFragment} from "qili-app"
 
 import {compose, mapProps} from "recompose"
 import Assembler from "publish/assemble";
-import {toHtml, plugin} from "knowledge/parse"
+import {toHtml, compile} from "knowledge/parse"
 
 export default compose(
     withFragment(graphql`
@@ -57,11 +57,25 @@ export default compose(
 			}).filter(a=>!!a)
 		}
 	}),
-)(class Print extends PureComponent{
-    state={show:false}
+)(class Print extends Component{
+    state={homeworks:this.props.todos.filter(a=>!!a.knowledge).filter(a=>!!a.knowledge.hasHomework || !!a.knowledge.code).length}
+
     componentDidMount(){
-        this.props.onReady()
+        if(this.state.homeworks==0){
+            this.props.onReady()
+        }
     }
+
+    shouldComponentUpdate(){
+        return this.state.homeworks!==0
+    }
+
+    componentDidUpdate(){
+        if(this.state.homeworks==0){
+            this.props.onReady()
+        }
+    }
+
     render(){
         const {child, todos,days='日,一,二,三,四,五,六'.split(",")}=this.props
         const tasks=todos.map(({days=[], content:task, dones=[], fields, props},i)=>(
@@ -81,15 +95,15 @@ export default compose(
             <div>
                 <style>{`
                     body{margin:48px}
-                    table{width:100%;border-collapse:collapse;page-break-inside: avoid;}
-                    td{border:1px solid gray;}
-                    thead{text-align:center;background:lightgray}
+                    table.tasks{width:100%;border-collapse:collapse;page-break-inside: avoid;}
+                    table.tasks td{border:1px solid gray;}
+                    table.tasks thead{text-align:center;background:lightgray}
                 `}</style>
                 <div style={{position:"relative",top:-20}}>
                     <span style={{float:'left'}}>{child}</span>
                     <span style={{float:'right'}}>生成日期：{today}</span>
                 </div>
-                <table>
+                <table className="tasks">
                     <caption style={{marginBottom:10}}>本周挑战:每日一省</caption>
                     <thead>
                         <tr>
@@ -108,14 +122,17 @@ export default compose(
                 {classrooms.length>0 && <center style={{marginTop:40, marginBottom:10}}>课堂纪律:每课一省</center>}
                 {classrooms.map(({knowledge:{summary}, content},key)=><Classroom {...{key,content,summary}}/>)}
 
-                {homeworks.map(({knowledge,fields, props}, key)=><Homework {...{knowledge,child, fields:props||fields, key}}/>)}
+                {homeworks.map(({knowledge,fields, props}, key)=><Homework {...{
+                        knowledge,child, fields:props||fields, key,
+                        onReady:()=>this.setState(({homeworks})=>({homeworks:homeworks-1})),
+                    }}/>)}
             </div>
         )
     }
 })
 
 const Classroom=({summary,content})=>(
-    <table style={{marginBottom:40}}>
+    <table style={{marginBottom:40}} className="tasks classroom">
         <caption style={{textAlign:"left"}}>{content}: {summary}</caption>
         <thead>
             <tr>
@@ -131,7 +148,7 @@ const Classroom=({summary,content})=>(
     </table>
 )
 
-class Homework extends PureComponent{
+class Homework extends Component{
     state={}
     componentDidMount(){
         const {knowledge:{template,code,hasHomework},fields,child}=this.props
@@ -139,11 +156,14 @@ class Homework extends PureComponent{
         const homeworks=[]
         const done=()=>this.setState({generated:true,homework:homeworks.filter(a=>!!a).join("")})
         if(code){
-            homeworks.push(plugin(code).homework(data))
+            const plugin=compile(code)
+            if(plugin.homework){
+                homeworks.push(plugin.homework(data))
+            }
         }
 
-        if(hasHomework){
-            new Assembler(knowledge.template, data)
+        if(hasHomework && template){
+            new Assembler(template, data)
                 .assemble()
                 .then(docx=>toHtml(docx))
                 .then(homework=>homeworks.push(homework))
@@ -153,8 +173,18 @@ class Homework extends PureComponent{
         }
     }
 
+    componentDidUpdate(){
+        if(this.state.generated){
+            this.props.onReady()
+        }
+    }
+
+    shouldComponentUpdate(){
+        return !this.state.generated
+    }
+
     render(){
-        const {homeworks, generated}=this.state
+        const {homework, generated}=this.state
         if(!generated)
             return null
         if(!homework)

@@ -1,4 +1,5 @@
 import parse from "./parse"
+import {compile} from "./code"
 
 const reg=/[-,，\s+]/
 function splitKey(data){
@@ -11,7 +12,54 @@ function splitKey(data){
 	},[]).filter(a=>!!a)
 }
 
+function codeToBlob(str){
+	const bytes = new Array(str.length);
+	for (let i = 0; i < str.length; i++) {
+		bytes[i] = str.charCodeAt(i);
+	}
+	const byteArray=new Uint8Array(bytes)
+	return new Blob([byteArray], {type:"text/javascript"})
+}
+
+function extractFromJavascript(file){
+	return new Promise((resolve, reject)=>{
+		const reader=new FileReader()
+		reader.onload=function(e){
+			const data=e.target.result
+			try{
+				const {homework,...plugin}=compile(data)
+				plugin.code=data
+				resolve({
+					toJSON:a=>null,
+					knowledge:plugin,
+					revoke(){
+
+					},
+					getPhotos(){
+						return []
+					},
+					upload(id,upload,files){
+						return Promise.resolve(this.knowledge)
+						return upload(codeToBlob(data),id,"index.js")
+							.then(url=>this.knowledge.code=url)
+							.then(()=>this.knowledge)
+					}
+				})
+			}catch(e){
+				reject(e)
+			}
+		}
+		reader.onerror=reject
+
+		reader.readAsText(file)
+	})
+}
+
 export default function extract(file){
+	if(file.type.endsWith("javascript")){
+		return extractFromJavascript(file)
+	}
+
     return parse(file).then(doc=>{
         let {docx, html:content, properties, id:elId,
 				images, steps, sale, hasPrint, hasHomework,code,fields}=doc
@@ -71,6 +119,7 @@ export default function extract(file){
 					.then(images=>externalizeDocxImage(docx,images))
 					.then(externalizedDocx=>upload(externalizedDocx, id,`template.docx`))
 					.then(url=>this.knowledge.template=url)
+					//.then(()=>code && upload(codeToBlob(data), id, 'index.js').then(url=>this.knowledge.code=url))
 					.then(()=>this.knowledge)
             }
         }
