@@ -14,10 +14,12 @@ import ScorePad from "./score-pad"
 import TaskPad from "./task-pad"
 import TaskPadEditor from "./task-pad-editor"
 import TodoEditor from "./todo-editor"
+import Clock from "../clock"
 
 export {default as ScorePad} from "./score-pad"
 
 export {default as PrintPad} from "./print"
+
 
 export const TimeManage=({minHeight,goal, score, editing,week,reset,data, child})=>(
 	<div style={{minHeight}}>
@@ -57,6 +59,7 @@ export const TimeManage=({minHeight,goal, score, editing,week,reset,data, child}
 				}
 			})(parseInt((d=>d.relativeDate(-1*d.getDay()).toDate())(new Date()).getTime()/1000))
 		}
+		<Clock/>
 	</div>
 )
 
