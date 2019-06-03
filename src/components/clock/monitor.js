@@ -36,12 +36,10 @@ export default class Clock{
                 let draw=()=>{
                     this.animate=requestAnimationFrame(draw)
                     analyser.getByteFrequencyData(dataArrayAlt);
-                    this.handler({time:Date.now(), fr: Math.max(...dataArrayAlt)})
+                    this.handler({time:Date.now(), fr: Math.max(...dataArrayAlt), data:dataArrayAlt})
                 }
 
                 source.connect(analyser)
-
-                analyser.connect(this.context.destination)
                 draw()
             })
     }

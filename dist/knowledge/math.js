@@ -80,8 +80,8 @@ module.exports={
     title:"oral calculation",
     summary:"oral calculation expression generator",
     content:"<div>hello, oral calculation!</div>",
-    keywords:["classroom"],
-    category:["自制力"], 
+    tags:["口算","数学","二年级"],
+    category:["学习能力"], 
     hasHomework:true,
     homework(setting){
         return new OralCalculation(setting).generatePage(100,1)

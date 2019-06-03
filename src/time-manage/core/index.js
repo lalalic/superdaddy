@@ -14,7 +14,7 @@ import ScorePad from "./score-pad"
 import TaskPad from "./task-pad"
 import TaskPadEditor from "./task-pad-editor"
 import TodoEditor from "./todo-editor"
-import Clock from "../clock"
+import Clock from "components/clock"
 
 export {default as ScorePad} from "./score-pad"
 
@@ -59,7 +59,7 @@ export const TimeManage=({minHeight,goal, score, editing,week,reset,data, child}
 				}
 			})(parseInt((d=>d.relativeDate(-1*d.getDay()).toDate())(new Date()).getTime()/1000))
 		}
-		<Clock/>
+		<Clock threshold={30}/>
 	</div>
 )
 
