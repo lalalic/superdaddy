@@ -1,7 +1,17 @@
 export default class Clock{
     constructor(){
-        this.context=new AudioContext()
         this.handler=null
+    }
+
+    get context(){
+        if(!this._context){
+            this._context=new AudioContext()
+        }
+        return this._context
+    }
+
+    get sampleRate(){
+        return this.context.sampleRate
     }
 
     onData(handler){
@@ -28,15 +38,12 @@ export default class Clock{
                 analyser.smoothingTimeConstant = 0.85;
 
                 analyser.fftSize = 2048;
-                const bufferLengthAlt = analyser.frequencyBinCount
-                const dataArrayAlt = new Uint8Array(bufferLengthAlt)
+                const buffer = new Uint8Array(analyser.frequencyBinCount)
 
-                
-                
                 let draw=()=>{
                     this.animate=requestAnimationFrame(draw)
-                    analyser.getByteFrequencyData(dataArrayAlt);
-                    this.handler({time:Date.now(), fr: Math.max(...dataArrayAlt), data:dataArrayAlt})
+                    analyser.getByteFrequencyData(buffer);
+                    this.handler({time:Date.now(), buffer})
                 }
 
                 source.connect(analyser)

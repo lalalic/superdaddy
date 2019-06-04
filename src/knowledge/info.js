@@ -5,8 +5,6 @@ import {compose, getContext} from "recompose"
 import {withMutation, withFragment,wechat,CommandBar, File} from "qili-app"
 import {connect} from "react-redux"
 
-import {Link} from "react-router"
-
 import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation'
 
 import IconCreate from "material-ui/svg-icons/editor/border-color"
@@ -18,6 +16,7 @@ import IconBuy from "material-ui/svg-icons/action/add-shopping-cart"
 import IconPreview from "material-ui/svg-icons/action/print"
 import IconHomework from "material-ui/svg-icons/notification/event-note"
 import IconDownload from "material-ui/svg-icons/file/cloud-download"
+import IconTimer from "material-ui/svg-icons/av/av-timer"
 
 import AD from 'components/ad'
 import AutoForm from "components/auto-form"
@@ -41,8 +40,8 @@ export class KnowledgeEditor extends Component{
     render(){
 		const {
 			knowledge, knowledgeContent, revising=false,
-			selectDocx, update, cancel, task, untask, preview, buy,
-			outputHomework, wechat_session,wechat_timeline,
+			selectDocx, update, cancel, task, untask, preview, buy,startTimer,
+			outputHomework, wechat_session,wechat_timeline, hasWechat,
 			toComment,
 		}=this.props
 
@@ -97,21 +96,25 @@ export class KnowledgeEditor extends Component{
 				toComment={toComment}/>)
         }
 
-		let tools=[
-			<BottomNavigationItem
-			key="wechat.session"
-			label="微信好友"
-			icon={<wechat.Icon/>}
-			onClick={wechat_session}
-			/>,
-			<BottomNavigationItem
-			key="wechat.timeline"
-			label="微信朋友圈"
-			icon={<wechat.IconTimeline/>}
-			onClick={wechat_timeline}
-			/>
-		]
+		let tools=[]
 
+		if(hasWechat){
+			tools.push(<BottomNavigationItem
+				key="wechat.session"
+				label="微信好友"
+				icon={<wechat.Icon/>}
+				onClick={wechat_session}
+				/>)
+			tools.push(
+				<BottomNavigationItem
+				key="wechat.timeline"
+				label="微信朋友圈"
+				icon={<wechat.IconTimeline/>}
+				onClick={wechat_timeline}
+				/>)
+		}
+
+		
 		if(knowledge.sale){
 			tools.push(<BottomNavigationItem
 						key="sale"
@@ -158,6 +161,17 @@ export class KnowledgeEditor extends Component{
 						label="下载"
 						icon={<IconDownload color="black"/>}
 						onClick={()=>this.download(knowledge.template, knowledge.title)}
+						/>
+			)
+		}
+
+		if(knowledge.supportTimer && knowledge.inTask){
+			tools.push(
+				<BottomNavigationItem
+						key="startTimer"
+						label="开始记时"
+						icon={<IconTimer color="black"/>}
+						onClick={()=>startTimer(knowledge)}
 						/>
 			)
 		}
@@ -229,6 +243,7 @@ export default compose(
 			inTask(child:$child)
 			hasHomework
 			hasPrint
+			supportTimer
 			sale
 			title
 			summary
@@ -297,6 +312,10 @@ export default compose(
 			},
 			wechat_session:()=>dispatch(ACTION.WECHAT(knowledge,"SESSION")),
 			wechat_timeline:()=>dispatch(ACTION.WECHAT(knowledge,"TIMELINE")),
+			hasWechat: typeof(Wechat)!="undefined",
+			startTimer(){
+				dispatch(ACTION.TIMER(...arguments))
+			}
 		})
 	),
 

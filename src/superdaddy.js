@@ -12,6 +12,7 @@ import {withInit, withQuery, withPagination, withFragment,
 
 import withCurrent from "components/current-child"
 import withNavigator from "components/navigator"
+import Clock from "components/clock"
 import project from "../package.json"
 import {DOMAIN, reducer, ACTION} from "./state"
 
@@ -26,7 +27,7 @@ import Goods from "./good"
 export const routes=(
 	<Router history={hashHistory}>
 		<Route path="/" component={compose(
-				connect(state=>({hasChild:!!state.superdaddy.current})),
+				connect(state=>({hasChild:!!state.superdaddy.current, timer: !!state.superdaddy.timer})),
 				branch(({hasChild})=>!hasChild,renderComponent(
 					compose(
 						withProps(({dispatch})=>({
@@ -40,7 +41,12 @@ export const routes=(
 							<Child.Creator {...props} style={{margin:"0px 100px"}}/>
 						</Fragment>))
 				))
-			)(({children})=><Fragment>{children}</Fragment>)}>
+				)(({children, timer})=>(
+					<Fragment>
+						{timer && <Clock filter={frs=>Math.max(...frs)} className="sticky bottom left _2"/>}
+						{children}
+					</Fragment>
+				))}>
 
 			<IndexRoute component={compose(
 				withNavigator(),

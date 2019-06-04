@@ -75,6 +75,7 @@ module.exports=others=>`
 		inTask(child:ObjectID): Boolean
 		isMyWork: Boolean
 		is4Classroom: Boolean
+		supportTimer: Boolean
 		files: [File]
 	}
 

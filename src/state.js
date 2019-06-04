@@ -1,5 +1,6 @@
 import {REDUCER as knowledge_reducer} from "knowledge"
 import {reducer as plan_reducer} from "time-manage"
+import { Knowledge } from "./knowledge";
 
 
 export const DOMAIN="superdaddy"
@@ -35,6 +36,5 @@ export function reducer(state={
 	case `@@${DOMAIN}/QUERY`:
 		return {...state, qs:{...state.qs,...payload}}
 	}
-
 	return state
 }

@@ -109,6 +109,7 @@ type Knowledge implements Node {
   inTask(child: ObjectID): Boolean
   isMyWork: Boolean
   is4Classroom: Boolean
+  supportTimer: Boolean
   files: [File]
 }
 

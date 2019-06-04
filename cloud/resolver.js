@@ -520,6 +520,10 @@ module.exports={
 			return !!(tags && ["classroom","课堂纪律"].find(a=>tags.includes(a)))
 		},
 
+		supportTimer({tags=[]}){
+			return !!(tags && ["timer","计时器"].find(a=>tags.includes(a)))
+		},
+
 		summary({content,summary}){
 			if(summary)
 				return summary

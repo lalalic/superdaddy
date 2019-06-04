@@ -46,6 +46,8 @@ export const ACTION={
 			},a=>1,e=>e)
 		return {type:`@@{DOMAIN}/share2wechat`, payload:knowledge}
 	},
+
+	TIMER: knowledge=>({type:`@@${DOMAIN}/timer`, payload:knowledge})
 }
 
 export const REDUCER=(state={}, {type, payload})=>{
@@ -59,6 +61,8 @@ export const REDUCER=(state={}, {type, payload})=>{
             state.selectedDocx.revoke()
 		}
 		return {...state, selectedDocx:undefined}
+	case `@@${DOMAIN}/timer`:
+		return {...state, timer:payload}
     }
 	return state
 }
