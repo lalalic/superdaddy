@@ -4,9 +4,11 @@ import PropTypes from "prop-types"
 import IconStart from "material-ui/svg-icons/av/play-arrow"
 import IconPause from "material-ui/svg-icons/av/pause"
 import IconResume from "material-ui/svg-icons/av/play-arrow"
+import IconClose from "material-ui/svg-icons/navigation/close"
 
 import Monitor from "./monitor"
 import {getNoteKey, getPianoKey, getFrequency} from "./phonic"
+import {ACTION} from "../../state"
 
 export default class Clock extends Component{
     static propTypes={
@@ -27,7 +29,7 @@ export default class Clock extends Component{
 
     constructor(){
         super(...arguments)
-        this.state={data:[{time:Date.now(),fr:0}],start:0, end:0, valid:0}
+        this.state={}
         this.refTimer=React.createRef()
         this.monitor=new Monitor()
     }
@@ -54,7 +56,7 @@ export default class Clock extends Component{
     }
 
     componentDidMount(){
-        const {idle,  onFinish, filter}=this.props
+        const {idle,  onFinish, filter, cheerSound}=this.props
         this.monitor.onData(current=>{
             if(this.state.pausing || this.state.end){
                 return
@@ -78,7 +80,10 @@ export default class Clock extends Component{
 
                 if(valid>=1000*60*timer){
                     this.monitor.stop()
-                    const last={start,end:Date.now(),timer, cheered:false}
+                    if(cheerSound){
+                        this.monitor.play(cheerSound)
+                    }
+                    const last={start,end:Date.now(),timer}
                     if(onFinish){
                         onFinish(last)
                     }
@@ -94,7 +99,7 @@ export default class Clock extends Component{
     }
 
     render(){
-        const {timer, debug=false, idle, filter, threshold:_1, cheerSound, ...props}=this.props
+        const {timer, debug=false, idle, filter, threshold:_1, cheerSound, dispatch, ...props}=this.props
         const {start, pausing,current,data, threshold,last}=this.state
         const {minute, second}=this.leftTime()
         const style={width:40,border:"none",height:24,lineHeight:"24px",background:"black",color:"white"}
@@ -103,10 +108,10 @@ export default class Clock extends Component{
             <div {...props}>
                 {last && <div>{this.lastSummary()}</div>}
 
-                <div>    
+                <div className="primary">    
                     <span style={{display:"inline-flex"}}>
                         {!!start && <span style={style}>{minute}:{second}</span>}
-                        {!!!start && <input style={style} ref={this.refTimer}  defaultValue={timer} type="number" min={10} step={10} max={90}/>}
+                        {!!!start && <input style={style} ref={this.refTimer} title="时间(分)" defaultValue={timer} type="number" min={10} step={10} max={90}/>}
                         <Icon onClick={e=>this.toggleStart()} viewBox="4 0 24 24"/>
 
                         {!!start && debug && (
@@ -118,15 +123,24 @@ export default class Clock extends Component{
                         )}
                     </span>
                 </div>
-                <div>
-                    <audio src={cheerSound} autoPlay={!!(last && !last.cheered && cheerSound)}
-                        style={{position:"absolute",left:-999}} 
-                        onEnded={()=>this.setState({last:{...last, cheered:true}})}/>
-
-                    <input type="number" 
-                        value={threshold} step={5} 
-                        style={{...style,background:"",color:""}}
-                        onChange={e=>this.setState({threshold:parseInt(e.target.value)})}/>
+                <div className="second">
+                    <span style={{display:"inline-flex"}}>
+                        <input type="number" title="阀值"
+                            value={threshold} step={5} 
+                            style={{...style,background:"",color:""}}
+                            onChange={e=>this.setState({threshold:parseInt(e.target.value)})}/>
+                        <IconClose onClick={e=>{
+                                this.monitor.stop()
+                                this.setState({
+                                    data:[{time:Date.now(),fr:0}],
+                                    start:Date.now(),
+                                    timer:this.refTimer.current.value, 
+                                    last:undefined,
+                                    valid:0
+                                })
+                                dispatch && dispatch(ACTION.TIMER(false))
+                            }} viewBox="-4 -10 48 48"/>
+                    </span>
                 </div>
             </div>
         )
@@ -150,7 +164,14 @@ export default class Clock extends Component{
     toggleStart(){
         const {start, pausing}=this.state
         if(!start){
-            this.monitor.start().then(()=>this.setState({start:Date.now(),end:undefined, timer:this.refTimer.current.value, last:undefined}))
+            this.monitor.start()
+                .then(()=>this.setState({
+                    data:[{time:Date.now(),fr:0}],
+                    start:Date.now(),
+                    timer:this.refTimer.current.value, 
+                    last:undefined,
+                    valid:0
+                }))
         }else{
             if(!pausing){
                 this.monitor.pause()

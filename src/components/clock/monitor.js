@@ -27,6 +27,20 @@ export default class Clock{
         return  Promise.resolve(this.stream)
     }
 
+    play(url){
+        return fetch(url)
+        .then(res=>res.arrayBuffer())
+        .then(buffer=>this.context.decodeAudioData(buffer))
+        .then(audio=>{
+            const source=this.context.createBufferSource()
+            source.buffer=audio
+            source.connect(this.context.destination)
+            source.start()
+            return source
+        })
+        .finally(()=>this.stop())
+    }
+
     start(){
         return this.getMediaStream()
             .then(stream=>{
@@ -54,9 +68,11 @@ export default class Clock{
     stop(){
         if(this.animate){
             cancelAnimationFrame(this.animate)
+            delete this.animate
         }
 
         this.context.close()
+        delete this._context
     }
 
     pause(){
