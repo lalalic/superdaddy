@@ -549,6 +549,9 @@ module.exports={
 		},
 		template({_id}){
 			return `knowledges/${_id}/template.docx`
+		},
+		code({_id}){
+			return `knowledges/${_id}/index.js`
 		}
 	},
 

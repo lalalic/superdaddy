@@ -36,7 +36,8 @@ module.exports=others=>`
 		knowledge: Knowledge
 		content: String
 		hidden: Boolean
-		day0: JSON
+		fields: JSON #default fields values
+		day0: JSON #fields values for day0
 		day1: JSON
 		day2: JSON
 		day3: JSON

@@ -13,11 +13,12 @@ export default ({todos=[],current,days, knowledgeTasks, fieldsWithValue})=>(
 			days.map((day,i)=>(
 				<List key={i}>
 					{
-						todos.map(({toKnowledge, days=[], content:task,dones=[],fields, props})=>(
+						todos.map(({toKnowledge, knowledge, days=[], content:task,dones=[],fields,props})=>(
 							<ListItem key={task}
 								primaryText={<TaskTitle {...{toKnowledge,task}}/>}
 								leftCheckbox={<TodoStatus
 												todo={task}
+												knowledge={knowledge ? knowledge.id : undefined}
 												done={-1!=dones.indexOf(i)}
 												day={i}
 												current={current}

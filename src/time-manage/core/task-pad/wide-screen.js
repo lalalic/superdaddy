@@ -15,7 +15,7 @@ export default (({todos=[],current,days, knowledgeTasks, fieldsWithValue})=>(
 		/>
 		<Divider/>
 
-		{todos.map(({toKnowledge, days=[], content:task, dones=[], fields, props},i)=>(
+		{todos.map(({toKnowledge,knowledge, days=[], content:task, dones=[], fields, props},i)=>(
 			<ListItem key={i}
 				primaryText={<TaskTitle {...{toKnowledge,task}}/>}
 				rightIconButton={
@@ -24,6 +24,7 @@ export default (({todos=[],current,days, knowledgeTasks, fieldsWithValue})=>(
 						<span key={a} style={ITEM_STYLE}>
 							<TodoStatus
 								todo={task}
+								knowledge={knowledge ? knowledge.id : undefined}
 								done={-1!=dones.indexOf(a)}
 								day={a}
 								current={current}

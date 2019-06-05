@@ -281,6 +281,7 @@ type Todo {
   knowledge: Knowledge
   content: String
   hidden: Boolean
+  fields: JSON
   day0: JSON
   day1: JSON
   day2: JSON

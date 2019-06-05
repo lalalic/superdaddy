@@ -23,7 +23,7 @@ export default compose(
 )(class Status extends Component{
 	state={info:false}
 	render(){
-		const {todo,done, day, current, fields=[], taskDone, ...others}=this.props
+		const {todo,knowledge,done, day, current, fields=[], taskDone, ...others}=this.props
 		const {info}=this.state
 		if(done){	
 			if(!info && fields.length)
@@ -44,7 +44,7 @@ export default compose(
 							onCancel={e=>this.setState({info:false})}
 							onSubmit={props=>{
 								this.setState({info:false})
-								taskDone({task:todo,day,props})
+								taskDone({task:todo,knowledge,day,props})
 							}}
 							/>
 						{icon}
@@ -62,7 +62,7 @@ export default compose(
 							if(fields.length){
 								this.setState({info:true})
 							}else{
-								taskDone({task:todo,day})
+								taskDone({task:todo,knowledge,day})
 							}
 						}}
 						{...others}/>)
@@ -75,7 +75,7 @@ export default compose(
 							onCancel={e=>this.setState({info:false})}
 							onSubmit={props=>{
 								this.setState({info:false})
-								taskDone({task:todo,day,props})
+								taskDone({task:todo,knowledge,day,props})
 							}}
 							/>
 						{icon}
