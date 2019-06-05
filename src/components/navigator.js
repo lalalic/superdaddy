@@ -34,10 +34,10 @@ export const withNavigator=()=>BaseComponent=>{
 	const factory=createFactory(BaseComponent)
 	const WithNavigator=props=>(
 		<Fragment>
-			<div style={{flex:"1 100%"}}>
+			<div style={{flex:"1 1 100%", overflowY:"scroll"}}>
 				{factory(props)}
 			</div>
-			<div style={{flex:1}}>
+			<div style={{flex:"none"}}>
 				<Navigator/>
 			</div>
 		</Fragment>

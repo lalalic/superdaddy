@@ -1,4 +1,4 @@
-import {File as file} from "qili-app"
+import {File as file, ACTION as qiliACTION} from "qili-app"
 import extract from './extract'
 import Assembler from "publish/assemble"
 
@@ -10,16 +10,24 @@ export {default as Knowledge} from "./info"
 
 const DOMAIN="knowledge"
 export const ACTION={
-    SELECT_DOCX: a=>dispatch=>file.select()
-		.then(file=>extract(file))
-        .then(docx=>dispatch({type:`@@${DOMAIN}/selectedDocx`,payload:docx})),
+    SELECT_DOCX: a=>dispatch=>{
+		return file.select()
+			.then(file=>{
+				dispatch(qiliACTION.LOADING(true))
+				return extract(file)
+			})
+			.then(docx=>dispatch({type:`@@${DOMAIN}/selectedDocx`,payload:docx}))
+			.finally(()=>dispatch(qiliACTION.LOADING(false)))
+	},
 		
 	RESET: ()=>({type:`@@${DOMAIN}/reset`}),
 	
-	PREVIEW: (knowledge, props)=>()=>{
+	PREVIEW: (knowledge, props)=>dispatch=>{
+		dispatch(qiliACTION.LOADING(true))
 		return new Assembler({template:knowledge.template, goal:"print", ...props})
 			.assemble()
 			.then(docx=>docx.save(`打印(${knowledge.title}).docx`))
+			.finally(()=>dispatch(qiliACTION.LOADING(false)))
 	},
 	
 	BUY: ({sale})=>{
@@ -27,9 +35,11 @@ export const ACTION={
 	},
 	
 	HOMEWORK: (knowledge, props)=>()=>{
+		dispatch(qiliACTION.LOADING(true))
 		return new Assembler({template:knowledge.template, goal:"homework", ...props})
 			.assemble()
 			.then(docx=>docx.save(`作业(${knowledge.title}).docx`))
+			.finally(()=>dispatch(qiliACTION.LOADING(false)))
 	},
 	WECHAT: ({title,summary,figure,id},scene)=>{
 		Wechat.share({
@@ -46,8 +56,6 @@ export const ACTION={
 			},a=>1,e=>e)
 		return {type:`@@{DOMAIN}/share2wechat`, payload:knowledge}
 	},
-
-	TIMER: knowledge=>({type:`@@${DOMAIN}/timer`, payload:knowledge})
 }
 
 export const REDUCER=(state={}, {type, payload})=>{
@@ -61,8 +69,6 @@ export const REDUCER=(state={}, {type, payload})=>{
             state.selectedDocx.revoke()
 		}
 		return {...state, selectedDocx:undefined}
-	case `@@${DOMAIN}/timer`:
-		return {...state, timer:payload}
     }
 	return state
 }

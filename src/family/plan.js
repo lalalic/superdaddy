@@ -35,11 +35,11 @@ export class Plan extends Component{
 			addMonthGoal,removeMonthGoal,addMonthTask,removeMonthTask}=this.props
 		return (
 			<Fragment>
-                <div style={{flex:1}}>
+                <div style={{flex:"none"}}>
                     <AppBar title={`年度目标，计划`}/>
                 </div>
 
-                <div style={{flex:"1 100%", overflowY:"scroll"}}>
+                <div style={{flex:"1 1 100%", overflowY:"scroll", overflowY:"scroll"}}>
                     <YearGoal {...{goals,setGoals,caps}}/>
 
     				<Divider/>
@@ -47,7 +47,7 @@ export class Plan extends Component{
     				<MonthGoals {...{pendingKnowledges,searchKnowledges,addMonthGoal,removeMonthGoal,addMonthTask,removeMonthTask,goals,months}}/>
                 </div>
 
-                <CommandBar style={{flex:1}}
+                <CommandBar style={{flex:"none"}}
 					items={[
 						"Back"
 						,{

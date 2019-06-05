@@ -2,7 +2,7 @@ import React, {Component,Fragment} from "react"
 import PropTypes from "prop-types"
 
 import {compose, getContext} from "recompose"
-import {withMutation, withFragment,wechat,CommandBar, File} from "qili-app"
+import {withMutation, withFragment,wechat,CommandBar, File, ACTION as qiliACTION} from "qili-app"
 import {connect} from "react-redux"
 
 import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation'
@@ -24,6 +24,7 @@ import AutoForm from "components/auto-form"
 import {ACTION} from "."
 import FragmentContent,{Content} from "./content"
 import {withPlanActions} from "time-manage"
+import {ACTION as superdaddyACTION} from "../state"
 
 export class KnowledgeEditor extends Component{
 	state={homework:false}
@@ -211,7 +212,7 @@ export class KnowledgeEditor extends Component{
 
         return (
             <Fragment>
-				<div style={{flex:"1 100%"}}>
+				<div style={{flex:"1 1 100%", overflowY:"scroll"}}>
 					<div className="knowledge">
 						{knowledgeContent}
 	                </div>
@@ -229,7 +230,7 @@ export class KnowledgeEditor extends Component{
 					{homeworkForm}
 				</div>
 
-                <CommandBar style={{flex:1}} items={commands}/>
+                <CommandBar style={{flex:"none"}} items={commands}/>
             </Fragment>
         )
     }
@@ -293,10 +294,12 @@ export default compose(
 				<FragmentContent knowledge={knowledge}/>,
 			selectDocx:()=>dispatch(ACTION.SELECT_DOCX()),
 			update(){
+				qiliACTION.LOADING(true)
 				getToken()
 					.then(({token})=>selectedDocx.upload(knowledge.id,upload,files,token))
 					.then(newVersion=>updateKnowledge(newVersion))
 					.then(()=>dispatch(ACTION.RESET()))
+					.finally(()=>qiliACTION.LOADING(false))
 			},
 			cancel(){
 				dispatch(ACTION.RESET())
@@ -314,7 +317,7 @@ export default compose(
 			wechat_timeline:()=>dispatch(ACTION.WECHAT(knowledge,"TIMELINE")),
 			hasWechat: typeof(Wechat)!="undefined",
 			startTimer(){
-				dispatch(ACTION.TIMER(...arguments))
+				dispatch(superdaddyACTION.TIMER(...arguments))
 			}
 		})
 	),

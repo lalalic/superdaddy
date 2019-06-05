@@ -84,10 +84,10 @@ export class Publisher extends Component{
 
         return(
             <Fragment>
-				<div style={{flex:1}}>
+				<div style={{flex:"none"}}>
 					<AppBar title={id ? name : `出版${child.name}的成长历程,留下永久的回忆`} switchable={!!!id}/>
 				</div>
-				<div style={{flex:"1 100%",overflowY:"scroll"}}>
+				<div style={{flex:"1 1 100%", overflowY:"scroll"}}>
 					<center>
 						<TextField
 							floatingLabelText="书名"
@@ -134,7 +134,7 @@ export class Publisher extends Component{
 					</GridList>
 				</div>
 
-                <CommandBar style={{flex:1}} items={actions}/>
+                <CommandBar style={{flex:"none"}} items={actions}/>
             </Fragment>
         )
     }

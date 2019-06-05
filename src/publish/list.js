@@ -28,15 +28,15 @@ export class Publishes extends Component{
 
 		return (
 			<Fragment>
-				<div style={{flex:1}}>
+				<div style={{flex:"none"}}>
 					<AppBar title={"出版列表"}/>
 				</div>
 
-				<div style={{flex:"1 100%", overflowY:"scroll"}}>
+				<div style={{flex:"1 1 100%", overflowY:"scroll"}}>
 					{content}
 				</div>
 				
-				<CommandBar style={{flex:1}}
+				<CommandBar style={{flex:"none"}}
                     items={["Back", {
 						action:"Create",
 						label:"创建",

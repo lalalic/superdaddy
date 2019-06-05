@@ -51,7 +51,7 @@ class Goods extends Component{
         const scoreStyle={textAlign:"left"}
         return (
             <Fragment>
-                <div style={{flex:"1 100%"}}>
+                <div style={{flex:"1 1 100%", overflowY:"scroll"}}>
                     <Editor ref={this.editor} good={goods.find(a=>a.id==active)}/>
                     <table style={{width:"99%"}} ref={this.table}>
                         <thead>
@@ -78,7 +78,7 @@ class Goods extends Component{
                         </tbody>
                     </table>
                 </div>
-                <CommandBar style={{flex:1}}
+                <CommandBar style={{flex:"none"}}
                     className="bottom"
                     items={[
                         "Back",

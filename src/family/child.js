@@ -36,7 +36,7 @@ export class Child extends Component{
 		var newTodo, newGoal
 		return (
 			<Fragment>
-				<div className="form" style={{flex:"1 100%"}}>
+				<div className="form" style={{flex:"1 1 100%", overflowY:"scroll"}}>
 					<div className="child-photo">
 						<Photo size={150} src={photo}
 							autoUpload={{host:id,path:"photo.jpg"}}
@@ -116,7 +116,7 @@ export class Child extends Component{
 					</InfoForm>
 				</div>
 
-				<CommandBar style={{flex:1}}
+				<CommandBar style={{flex:"none"}}
 					items={[
 						"Back"
 						/*,{
@@ -155,7 +155,7 @@ export class Creator extends Component{
 
 		return (
 			<Fragment>
-				<div style={{padding:10,...style, flex:"1 100%"}}>
+				<div style={{padding:10,...style, flex:"1 1 100%", overflowY:"scroll"}}>
 					<TextField
 						floatingLabelText="宝宝名称"
 						errorText={nameError}
@@ -178,7 +178,7 @@ export class Creator extends Component{
 					</RadioButtonGroup>
 				</div>
 
-				<CommandBar style={{flex:1}}
+				<CommandBar style={{flex:"none"}}
 					items={[
 						"Back",
 						{

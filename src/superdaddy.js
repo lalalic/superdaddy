@@ -41,9 +41,14 @@ export const routes=(
 							<Child.Creator {...props} style={{margin:"0px 100px"}}/>
 						</Fragment>))
 				))
-				)(({children, timer})=>(
+				)(({children,dispatch, timer})=>(
 					<Fragment>
-						{timer && <Clock filter={frs=>Math.max(...frs)} className="sticky bottom left _2"/>}
+						{timer && (
+							<Clock className="clock sticky bottom left _2" 
+								dispatch={dispatch}
+								filter={frs=>Math.max(...frs)} 
+								/>
+						)}
 						{children}
 					</Fragment>
 				))}>

@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 
 import {connect} from "react-redux"
 import {compose,branch,renderComponent,getContext} from "recompose"
-import {withMutation, CommandBar, Empty, File} from "qili-app"
+import {withMutation, CommandBar, Empty, File, ACTION as qiliACTION} from "qili-app"
 import {graphql} from "react-relay"
 
 import IconInsertFile from 'material-ui/svg-icons/action/note-add'
@@ -37,11 +37,11 @@ export class CreateKnowledge extends Component{
 
 		return (
 			<Fragment>
-				<div style={{flex:"1 100%", overflowY:"scroll"}}>
+				<div style={{flex:"1 1 100%", overflowY:"scroll"}}>
 					<Content knowledge={knowledge||null}/>
 					{form}
 				</div>
-				<CommandBar style={{flex:1}}
+				<CommandBar style={{flex:"none"}}
 					items={[
 						{
 							action:"Back",
@@ -92,6 +92,7 @@ export default compose(
 	File.withUpload,
 	connect(null,(dispatch,{selectedDocx, knowledge, toKnowledge, mutate, upload,getToken,goBack})=>({
 		create(){
+				qiliACTION.LOADING(true)
 				return getToken()
 					.then(({_id,token})=>selectedDocx.upload(`knowledges:${_id}`,upload,null,token))
 					.then(knowledge=>mutate({knowledge}))
@@ -99,6 +100,7 @@ export default compose(
 						toKnowledge(id)
 						dispatch(ACTION.RESET())
 					})
+					.finally(()=>dispatch(qiliACTION.LOADING(false)))
 		},
 		cancel:()=>{
 			goBack()

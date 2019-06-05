@@ -13,7 +13,8 @@ export const ACTION={
 	QUERY: payload=>({
 		type:`@@${DOMAIN}/QUERY`,
 		payload,
-	})
+	}),
+	TIMER: knowledge=>({type:`@@${DOMAIN}/TIMER`, payload:knowledge})
 }
 
 export function reducer(state={
@@ -35,6 +36,8 @@ export function reducer(state={
 		return {...state, current:payload}
 	case `@@${DOMAIN}/QUERY`:
 		return {...state, qs:{...state.qs,...payload}}
+	case `@@${DOMAIN}/TIMER`:
+		return {...state, timer:payload}
 	}
 	return state
 }
