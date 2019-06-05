@@ -41,7 +41,7 @@ export default class Clock{
         .finally(()=>this.stop())
     }
 
-    start(){
+    start(onStart){
         return this.getMediaStream()
             .then(stream=>{
                 const source=this.context.createMediaStreamSource(stream)
@@ -61,6 +61,9 @@ export default class Clock{
                 }
 
                 source.connect(analyser)
+                if(onStart){
+                    onStart()
+                }
                 draw()
             })
     }

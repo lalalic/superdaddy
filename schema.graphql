@@ -106,6 +106,7 @@ type Knowledge implements Node {
   sale: String
   template: URL
   code: String
+  score: Int
   inTask(child: ObjectID): Boolean
   isMyWork: Boolean
   is4Classroom: Boolean

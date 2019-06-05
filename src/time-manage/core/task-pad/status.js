@@ -20,7 +20,7 @@ export default compose(
 		taskDone,
 		...others
 	}))
-)(class extends Component{
+)(class Status extends Component{
 	state={info:false}
 	render(){
 		const {todo,done, day, current, fields=[], taskDone, ...others}=this.props

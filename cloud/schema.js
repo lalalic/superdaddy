@@ -70,6 +70,7 @@ module.exports=others=>`
 		sale: String
 		template: URL
 		code: String
+		score: Int
 
 
 		inTask(child:ObjectID): Boolean

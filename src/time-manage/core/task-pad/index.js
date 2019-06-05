@@ -98,7 +98,7 @@ function fieldsWithValue(i, fields, props={}){
 			return a
 		})
 	}
-	return fields
+	return fields||[]
 }
 
 function knowledgeTasks({days=[], current, dones=[]}){

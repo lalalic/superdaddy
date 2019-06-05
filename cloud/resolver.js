@@ -224,18 +224,29 @@ module.exports={
 		},
 
 		async plan_task_done(_,{_id,content,knowledge,props,day},{app,user}){
+			props=props||{}
 			let score=1
 			if(knowledge){
 				let kl=await app.get1Entity("knowledges",{_id:knowledge})
+				console.dir(kl)
 				if(kl && kl.score)
 					score=kl.score
 			}
-			let childScore=app.updateEntity("users", {_id}, {$inc:{score:1}})
 			let plan=await app.get1Entity("plans",{_id})
 			let task=plan.todos.find(a=>knowledge ? a.knowledge==knowledge : a.content==content)
-			task[`day${day}`]=props||true
-			let planScore=app.updateEntity("plans",{_id},{$inc:{score:1},$set:{todos:plan.todos}})
-			return Promise.all([childScore,planScore])
+			let key=`day${day}`
+			let dayTask=task[key]
+			let jobs=[]
+			if(dayTask){//update
+				task[key]={...dayTask, ...props}
+				jobs.push(app.updateEntity("plans",{_id},{$set:{todos:plan.todos}}))
+			}else{
+				task[key]=props
+				jobs.push(app.updateEntity("users", {_id}, {$inc:{score}}))
+				jobs.push(app.updateEntity("plans",{_id},{$inc:{score},$set:{todos:plan.todos}}))
+			}
+			
+			return Promise.all(jobs)
 				.then(()=>app.getDataLoader("users").clear(_id).load(_id))
 		},
 
@@ -402,7 +413,6 @@ module.exports={
 				})
 		},
 		plan_auto(_,{_id},{app,user}){
-			debugger
 			return app.get1Entity("plans",{_id})
 				.then(plan=>{
 					let {goals=[], months=[]}=plan

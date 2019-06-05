@@ -65,7 +65,7 @@ export default function extract(file){
 				images, steps, sale, hasPrint, hasHomework,code,fields}=doc
 
         let {name,title, keywords, category, subject,
-				abstract,description, ...others}=properties
+				abstract,description, score, ...others}=properties
 
 		if(keywords)
 			keywords=splitKey(keywords)
@@ -87,6 +87,7 @@ export default function extract(file){
 				hasPrint,
 				hasHomework,
 				fields,
+				score,
 				code,
 				template:file
             },

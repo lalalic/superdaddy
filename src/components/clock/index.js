@@ -34,6 +34,11 @@ export default class Clock extends Component{
         this.monitor=new Monitor()
     }
 
+    initState(){
+
+    }
+
+
     static getDerivedStateFromProps({threshold},state){
         return {threshold:state.threshold||threshold}
     }
@@ -132,9 +137,9 @@ export default class Clock extends Component{
                         <IconClose onClick={e=>{
                                 this.monitor.stop()
                                 this.setState({
-                                    data:[{time:Date.now(),fr:0}],
-                                    start:Date.now(),
-                                    timer:this.refTimer.current.value, 
+                                    data:[],
+                                    start:0,
+                                    timer:0, 
                                     last:undefined,
                                     valid:0
                                 })
@@ -164,14 +169,13 @@ export default class Clock extends Component{
     toggleStart(){
         const {start, pausing}=this.state
         if(!start){
-            this.monitor.start()
-                .then(()=>this.setState({
-                    data:[{time:Date.now(),fr:0}],
-                    start:Date.now(),
-                    timer:this.refTimer.current.value, 
-                    last:undefined,
-                    valid:0
-                }))
+            this.monitor.start(()=>this.setState({
+                data:[{time:Date.now(),fr:0}],
+                start:Date.now(),
+                timer:this.refTimer.current.value, 
+                last:undefined,
+                valid:0
+            }))
         }else{
             if(!pausing){
                 this.monitor.pause()
