@@ -27,19 +27,6 @@ export default class Clock{
         return  Promise.resolve(this.stream)
     }
 
-    play(audioEl){
-        const source=this.context.createMediaElementSource(audioEl)
-        source.connect(this.context.destination)
-        return new Promise((resolve,reject)=>{
-            audioEl.addEventListener("ended",()=>{
-                source.disconnect()
-                this.stop()
-                resolve()
-            })
-            audioEl.play()
-        })
-    }
-
     start(onStart){
         return this.getMediaStream()
             .then(stream=>{

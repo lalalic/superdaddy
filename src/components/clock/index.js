@@ -87,7 +87,8 @@ export default class Clock extends Component{
                 if(valid>=1000*60*timer){
                     this.monitor.stop()
                     if(cheerSound){
-                        this.monitor.play(this.refCheerSound.current)
+                        this.refCheerSound.current.play()
+                        setTimeout(()=>this.refCheerSound.current.pause(),3000)
                     }
                     const last={start,end:Date.now(),timer}
                     if(onFinish){
@@ -130,7 +131,7 @@ export default class Clock extends Component{
                     </span>
                 </div>
                 <div className="second">
-                    <audio src={cheerSound} ref={this.refCheerSound}/>        
+                    <audio src={cheerSound} ref={this.refCheerSound} preload="auto" loop={true}/>        
                     <span style={{display:"inline-flex"}}>
                         <input type="number" title="阀值"
                             value={threshold} step={5} 
