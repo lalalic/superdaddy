@@ -22,7 +22,7 @@ export default class Clock extends Component{
     static defaultProps={
         timer:1,
         idle: 2,
-        threshold:10,
+        threshold:170,
         filter: getFrequency,
         cheerSound: "/timer.wav",
     }
@@ -174,7 +174,7 @@ export default class Clock extends Component{
             this.monitor.start(()=>this.setState({
                 data:[{time:Date.now(),fr:0}],
                 start:Date.now(),
-                timer:0.1,//this.refTimer.current.value, 
+                timer:this.refTimer.current.value, 
                 last:undefined,
                 valid:0
             }))
