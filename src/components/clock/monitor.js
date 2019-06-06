@@ -27,18 +27,17 @@ export default class Clock{
         return  Promise.resolve(this.stream)
     }
 
-    play(url){
-        return fetch(url)
-        .then(res=>res.arrayBuffer())
-        .then(buffer=>this.context.decodeAudioData(buffer))
-        .then(audio=>{
-            const source=this.context.createBufferSource()
-            source.buffer=audio
-            source.connect(this.context.destination)
-            source.start()
-            return source
+    play(audioEl){
+        const source=this.context.createMediaElementSource(audioEl)
+        source.connect(this.context.destination)
+        return new Promise((resolve,reject)=>{
+            audioEl.addEventListener("ended",()=>{
+                source.disconnect()
+                this.stop()
+                resolve()
+            })
+            audioEl.play()
         })
-        .finally(()=>this.stop())
     }
 
     start(onStart){

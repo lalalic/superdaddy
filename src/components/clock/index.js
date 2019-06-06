@@ -22,7 +22,7 @@ export default class Clock extends Component{
     static defaultProps={
         timer:1,
         idle: 2,
-        threshold:170,
+        threshold:10,
         filter: getFrequency,
         cheerSound: "/timer.wav",
     }
@@ -31,6 +31,7 @@ export default class Clock extends Component{
         super(...arguments)
         this.state={}
         this.refTimer=React.createRef()
+        this.refCheerSound=React.createRef()
         this.monitor=new Monitor()
     }
 
@@ -40,7 +41,7 @@ export default class Clock extends Component{
 
 
     static getDerivedStateFromProps({threshold},state){
-        return {threshold:state.threshold||threshold}
+        return {threshold, ...state}
     }
 
     get threshold(){
@@ -72,7 +73,7 @@ export default class Clock extends Component{
                     data.shift()
                 }
 
-                const fr=filter(current.buffer, this.monitor.sampleRate)
+                const fr=filter(current.buffer||[0], this.monitor.sampleRate)
                 if(fr<1)
                     return 
                 data.push(current={time:current.time, fr})
@@ -86,7 +87,7 @@ export default class Clock extends Component{
                 if(valid>=1000*60*timer){
                     this.monitor.stop()
                     if(cheerSound){
-                        this.monitor.play(cheerSound)
+                        this.monitor.play(this.refCheerSound.current)
                     }
                     const last={start,end:Date.now(),timer}
                     if(onFinish){
@@ -129,6 +130,7 @@ export default class Clock extends Component{
                     </span>
                 </div>
                 <div className="second">
+                    <audio src={cheerSound} ref={this.refCheerSound}/>        
                     <span style={{display:"inline-flex"}}>
                         <input type="number" title="阀值"
                             value={threshold} step={5} 
@@ -172,7 +174,7 @@ export default class Clock extends Component{
             this.monitor.start(()=>this.setState({
                 data:[{time:Date.now(),fr:0}],
                 start:Date.now(),
-                timer:this.refTimer.current.value, 
+                timer:0.1,//this.refTimer.current.value, 
                 last:undefined,
                 valid:0
             }))
