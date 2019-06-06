@@ -23,6 +23,7 @@ import Plan from "family/plan"
 import {Creatable as Knowledges,NewKnowledge,Knowledge} from "knowledge"
 import TimeManage, {ScorePad, withPlanActions} from "time-manage"
 import Goods from "./good"
+import Award from "components/award"
 
 export const routes=(
 	<Router history={hashHistory}>
@@ -230,6 +231,25 @@ export const routes=(
 					})),
 
 				)(Comment)}/>
+
+				<Route path=":id/award" component={compose(
+					withQuery(({params:{id:child}})=>({
+						variables:{child},
+						query: graphql`
+							query superdaddy_award_Query($child:ObjectID){
+								me{
+									child(_id:$child){
+										name
+										photo
+									}
+								}
+							}
+						`
+					})),
+					withProps(({me:{child:{name,photo,plan={}}}})=>{
+						return {name,photo, ...plan}
+					}),
+				)(Award)}/>
 			</Route>
 			<Route path="knowledge">
 				<IndexRoute component={compose(

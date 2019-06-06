@@ -10,6 +10,7 @@ import Goods from "components/goods"
 
 import {IconButton,TextField} from 'material-ui'
 import IconComment from "material-ui/svg-icons/communication/comment"
+import IconAward from "material-ui/svg-icons/action/card-giftcard"
 import IconSmile from "icons/task"
 
 import {
@@ -22,7 +23,7 @@ import {
 export const ScorePad=({
 	todo, goal,score,totalPerScreen=goal,
 	width=0, height=0,
-	toComment,setTodoGoal
+	toComment,setTodoGoal,toAward,
 	})=>{
 	let smiles=layout(width,height,score,totalPerScreen)
 
@@ -37,9 +38,14 @@ export const ScorePad=({
 		title=`${todo}(${score}/${goal})`;
 	}
 	let iconElementRight=(
-		<IconButton onClick={toComment}>
-			<IconComment/>
-		</IconButton>
+		<span>
+			<IconButton onClick={toComment}>
+				<IconComment/>
+			</IconButton>
+			<IconButton onClick={toAward}>
+				<IconAward color="white"/>
+			</IconButton>
+		</span>
 	)
 
 	return (
@@ -163,6 +169,7 @@ export default compose(
 		width: width||muiTheme.page.width,
 		height: height||muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height-50,
 		toComment:()=>router.push(`/child/${state.superdaddy.current}/comment`),
+		toAward:()=>router.push(`/child/${state.superdaddy.current}/award`),
 		setTodoGoal(plan){
 			return planUpdate(plan)
 		}

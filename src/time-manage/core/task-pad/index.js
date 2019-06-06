@@ -43,6 +43,7 @@ export default compose(
 					is4Classroom
 					code
 				}
+				fields
 				content
 				hidden
 				day0
@@ -58,6 +59,7 @@ export default compose(
 
 	mapProps(({router,muiTheme, data,current=new Date().getDay(), ...others})=>{
 		const toKnowledge=id=>router.push(`/knowledge/${id}`)
+
 		return {
 			...others,
 			current,
@@ -65,20 +67,20 @@ export default compose(
 			todos: (data.todos||[]).map(a=>{
 				if(a.hidden)
 					return null
-				let todo={...a}
-
-				if(a.knowledge){
-					todo.fields=a.fields||a.knowledge.fields
+				const {fields, day0, day1, day2, day3, day4, day5, day6,...todo}=a
+				
+				if(todo.knowledge){
 					todo.toKnowledge=()=>toKnowledge(a.knowledge.id)
 				}
-				let {dones, props}=[0,1,2,3,4,5,6].reduce((state,i)=>{
-					const {dones,props}=state
-					let prop=props[`${i}`]=a[`day${i}`]
-					if(prop){
-						dones.push(i)
-					}
-					return state
-				}, {dones:[], props:{}})
+
+				const {dones, props}=[0,1,2,3,4,5,6]
+					.reduce((state,i)=>{
+						const {dones,props}=state
+						const prop=a[`day${i}`]
+						prop && dones.push(i)
+						props[`${i}`]=prop||fields
+						return state
+					}, {dones:[], props:{}})
 				todo.dones=dones
 				todo.props=props
 				return todo
@@ -89,8 +91,7 @@ export default compose(
 
 const DAYS=(i,a="日一二三四五六".split(""))=>(i<7 && a.splice(i,1,<b>今天</b>),a)
 
-function fieldsWithValue(i, fields, props={}){
-	let values=props[i+""]
+function fieldsWithValue(values, fields){
 	if(fields && values){
 		return fields.map(a=>{
 			if(typeof(values[a.name])!="undefined")

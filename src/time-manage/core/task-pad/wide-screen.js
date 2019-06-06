@@ -15,29 +15,32 @@ export default (({todos=[],current,days, knowledgeTasks, fieldsWithValue})=>(
 		/>
 		<Divider/>
 
-		{todos.map(({toKnowledge,knowledge, days=[], content:task, dones=[], fields, props},i)=>(
-			<ListItem key={i}
-				primaryText={<TaskTitle {...{toKnowledge,task}}/>}
-				rightIconButton={
-					<Wrapper>
-					{[0,1,2,3,4,5,6].map(a=>(
-						<span key={a} style={ITEM_STYLE}>
-							<TodoStatus
-								todo={task}
-								knowledge={knowledge ? knowledge.id : undefined}
-								done={-1!=dones.indexOf(a)}
-								day={a}
-								current={current}
-								fields={fieldsWithValue(a, fields, props)}
-								/>
-						</span>
-					))}
-					</Wrapper>
-				}
-				open={true}
-				nestedItems={knowledgeTasks({days,dones,current})}
-				/>
-		)).reduce((state,a,i)=>{
+		{todos.map(({toKnowledge,knowledge, days=[], content:task, dones=[], props},j)=>{
+			return (
+				<ListItem key={j}
+					primaryText={<TaskTitle {...{toKnowledge,task}}/>}
+					rightIconButton={
+						<Wrapper>
+						{[0,1,2,3,4,5,6].map(i=>{
+							const status={todo:task, day:i, done:-1!=dones.indexOf(i), current, fields:[]}	
+							if(knowledge){
+								status.knowledge=knowledge.id
+								status.fields=fieldsWithValue(props[i], knowledge.fields)
+							}
+							
+							return (
+								<span key={i} style={ITEM_STYLE}>
+									<TodoStatus {...status}/>
+								</span>
+							)
+						})}
+						</Wrapper>
+					}
+					open={true}
+					nestedItems={knowledgeTasks({days,dones,current})}
+					/>
+			)
+		}).reduce((state,a,i)=>{
 			state.push(a)
 			state.push(<Divider key={`_${i}`}/>)
 			return state

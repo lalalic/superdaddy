@@ -7,13 +7,14 @@ import {compose, getContext} from "recompose"
 import {IconButton, AutoComplete} from "material-ui"
 
 import AppBar from "components/app-bar"
+
 import PrintTrigger from "components/print-trigger"
+import ReactPrint from "react-to-print"
 
 import IconAdd from "material-ui/svg-icons/av/playlist-add"
 import IconEdit from "material-ui/svg-icons/editor/mode-edit"
 import IconDone from "material-ui/svg-icons/file/cloud-done"
 import { PrintPad } from "."
-import ReactPrint from "react-to-print"
 
 
 export class TodoEditor extends Component{

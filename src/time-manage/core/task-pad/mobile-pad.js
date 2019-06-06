@@ -13,20 +13,21 @@ export default ({todos=[],current,days, knowledgeTasks, fieldsWithValue})=>(
 			days.map((day,i)=>(
 				<List key={i}>
 					{
-						todos.map(({toKnowledge, knowledge, days=[], content:task,dones=[],fields,props})=>(
+						todos.map(({toKnowledge, knowledge, days=[], content:task,dones=[],props})=>{
+							const status={todo:task, day:i, done:-1!=dones.indexOf(i), current, fields:[]}	
+							if(knowledge){
+								status.knowledge=knowledge.id
+								status.fields=fieldsWithValue(props[i], knowledge.fields)
+							}
+							return (
 							<ListItem key={task}
 								primaryText={<TaskTitle {...{toKnowledge,task}}/>}
-								leftCheckbox={<TodoStatus
-												todo={task}
-												knowledge={knowledge ? knowledge.id : undefined}
-												done={-1!=dones.indexOf(i)}
-												day={i}
-												current={current}
-												fields={fieldsWithValue(i, fields, props)}/>}
+								leftCheckbox={<TodoStatus {...status}/>}
 								initiallyOpen={true}
 								nestedItems={knowledgeTasks({days,dones,current})}
 							/>
-						))
+						)
+					})
 					}
 				</List>
 			))
