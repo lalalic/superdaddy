@@ -32,6 +32,7 @@ export default class Clock extends Component{
         this.state={}
         this.refTimer=React.createRef()
         this.refCheerSound=React.createRef()
+        this.canvas=React.createRef()
         this.monitor=new Monitor()
     }
 
@@ -40,8 +41,8 @@ export default class Clock extends Component{
     }
 
 
-    static getDerivedStateFromProps({threshold},state){
-        return {threshold, ...state}
+    static getDerivedStateFromProps({threshold,timer},state){
+        return {threshold, timer,...state}
     }
 
     get threshold(){
@@ -61,12 +62,25 @@ export default class Clock extends Component{
         }
     }
 
+    draw(data){
+        const canvasWidth=100, canvasHeight=50
+        const ctx=this.canvas.current.getContext("2d")
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        for (var i = 0; i < data.length; i++) {
+            var value = data[i] / 256;
+            var y = canvasHeight - (canvasHeight * value) - 1;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(i, y, 1, 1);
+        }
+    }
+
     componentDidMount(){
         const {idle,  onFinish, filter, cheerSound}=this.props
         this.monitor.onData(current=>{
             if(this.state.pausing || this.state.end){
                 return
             }
+            this.draw(current.buffer)
             this.setState(({data,valid,start,timer})=>{
                 const last=data[data.length-1]
                 while(data.length>0 && (current.time-data[0].time)>1000*idle){
@@ -106,49 +120,59 @@ export default class Clock extends Component{
     }
 
     render(){
-        const {timer, debug=false, idle, filter, threshold:_1, cheerSound, dispatch, ...props}=this.props
-        const {start, pausing,current,data, threshold,last}=this.state
+        const {debug=false, idle, filter, threshold:_1, cheerSound, dispatch, ...props}=this.props
+        const {start, pausing,current,data, threshold,timer,last}=this.state
         const {minute, second}=this.leftTime()
         const style={width:40,border:"none",height:24,lineHeight:"24px",background:"black",color:"white"}
         const Icon=!!!start ? IconStart : (pausing ?  IconResume : IconPause)
         return (
             <div {...props}>
                 {last && <div>{this.lastSummary()}</div>}
+                <div style={{display:"flex", flexDirection:"row",}}>
+                    <canvas ref={this.canvas} width={100} height={50} style={{background:"black",marginRigth:1}}/>
+                    <div>
+                        <div className="primary">    
+                            <span style={{display:"inline-flex"}}>
+                                {!!start && <span style={style}>{minute}:{second}</span>}
+                                {!!!start && (
+                                    <input style={style} ref={this.refTimer} title="时间(分)" 
+                                        value={timer} 
+                                        type="number" 
+                                        onChange={e=>this.setState({timer:e.target.value})}
+                                        min={10} step={10} max={90}/>
+                                )}
+                                <Icon onClick={e=>this.toggleStart()} viewBox="4 0 24 24"/>
 
-                <div className="primary">    
-                    <span style={{display:"inline-flex"}}>
-                        {!!start && <span style={style}>{minute}:{second}</span>}
-                        {!!!start && <input style={style} ref={this.refTimer} title="时间(分)" defaultValue={timer} type="number" min={10} step={10} max={90}/>}
-                        <Icon onClick={e=>this.toggleStart()} viewBox="4 0 24 24"/>
-
-                        {!!start && debug && (
-                            <span>
-                                {getNoteKey(current ? current.fr : -1).padEnd(3,' ')}
-                                {`${getPianoKey(current ? current.fr : -1)}`.padEnd(2,' ')}
-                                {data.map(a=>a.fr).slice(0,10).join(",")}
+                                {!!start && debug && (
+                                    <span>
+                                        {getNoteKey(current ? current.fr : -1).padEnd(3,' ')}
+                                        {`${getPianoKey(current ? current.fr : -1)}`.padEnd(2,' ')}
+                                        {data.map(a=>a.fr).slice(0,10).join(",")}
+                                    </span>
+                                )}
                             </span>
-                        )}
-                    </span>
-                </div>
-                <div className="second">
-                    <audio src={cheerSound} ref={this.refCheerSound} preload="auto" loop={true}/>        
-                    <span style={{display:"inline-flex"}}>
-                        <input type="number" title="阀值"
-                            value={threshold} step={5} 
-                            style={{...style,background:"",color:""}}
-                            onChange={e=>this.setState({threshold:parseInt(e.target.value)})}/>
-                        <IconClose onClick={e=>{
-                                this.monitor.stop()
-                                this.setState({
-                                    data:[],
-                                    start:0,
-                                    timer:0, 
-                                    last:undefined,
-                                    valid:0
-                                })
-                                dispatch && dispatch(ACTION.TIMER(false))
-                            }} viewBox="-4 -10 48 48"/>
-                    </span>
+                        </div>
+                        <div className="second">
+                            <audio src={cheerSound} ref={this.refCheerSound} preload="auto" loop={true}/>        
+                            <span style={{display:"inline-flex"}}>
+                                <input type="number" title="阀值"
+                                    value={threshold} step={5} 
+                                    style={{...style,background:"",color:""}}
+                                    onChange={e=>this.setState({threshold:parseInt(e.target.value)})}/>
+                                <IconClose onClick={e=>{
+                                        this.monitor.stop()
+                                        this.setState({
+                                            data:[],
+                                            start:0,
+                                            timer:0, 
+                                            last:undefined,
+                                            valid:0
+                                        })
+                                        dispatch && dispatch(ACTION.TIMER(false))
+                                    }} viewBox="-4 -10 48 48"/>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         )
@@ -161,8 +185,7 @@ export default class Clock extends Component{
     }
 
     leftTime(){
-        const {timer}=this.props
-        const {valid}=this.state
+        const {valid,timer}=this.state
         const leftSeconds=parseInt((timer*60*1000-valid)/1000)
         const minutes=parseInt(leftSeconds/60)
         const seconds=leftSeconds-minutes*60
@@ -170,12 +193,12 @@ export default class Clock extends Component{
     }
 
     toggleStart(){
-        const {start, pausing}=this.state
+        const {start, pausing,timer}=this.state
         if(!start){
             this.monitor.start(()=>this.setState({
                 data:[{time:Date.now(),fr:0}],
                 start:Date.now(),
-                timer:this.refTimer.current.value, 
+                timer, 
                 last:undefined,
                 valid:0
             }))
