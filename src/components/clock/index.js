@@ -128,8 +128,8 @@ export default class Clock extends Component{
         return (
             <div {...props}>
                 {last && <div>{this.lastSummary()}</div>}
-                <div style={{display:"flex", flexDirection:"row",}}>
-                    <canvas ref={this.canvas} width={100} height={50} style={{background:"black",marginRigth:1}}/>
+                <div style={{display:"flex", flexDirection:"row"}}>
+                    <canvas ref={this.canvas} width={100} height={50} style={{background:"black",marginRight:1}}/>
                     <div>
                         <div className="primary">    
                             <span style={{display:"inline-flex"}}>
@@ -141,7 +141,7 @@ export default class Clock extends Component{
                                         onChange={e=>this.setState({timer:e.target.value})}
                                         min={10} step={10} max={90}/>
                                 )}
-                                <Icon onClick={e=>this.toggleStart()} viewBox="4 0 24 24"/>
+                                <Icon onClick={e=>this.toggleStart()} viewBox="4 0 24 24" style={{cursor:"default"}}/>
 
                                 {!!start && debug && (
                                     <span>
@@ -169,7 +169,7 @@ export default class Clock extends Component{
                                             valid:0
                                         })
                                         dispatch && dispatch(ACTION.TIMER(false))
-                                    }} viewBox="-4 -10 48 48"/>
+                                    }} viewBox="-4 -10 48 48" style={{cursor:"default"}}/>
                             </span>
                         </div>
                     </div>

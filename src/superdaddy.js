@@ -12,6 +12,7 @@ import {withInit, withQuery, withPagination, withFragment,
 
 import withCurrent from "components/current-child"
 import withNavigator from "components/navigator"
+import Movable from "components/movable"
 import Clock from "components/clock"
 import project from "../package.json"
 import {DOMAIN, reducer, ACTION} from "./state"
@@ -45,10 +46,12 @@ export const routes=(
 				)(({children,dispatch, timer})=>(
 					<Fragment>
 						{timer && (
-							<Clock className="clock sticky bottom left _2" 
-								dispatch={dispatch}
-								filter={frs=>Math.max(...frs)} 
-								/>
+							<Movable className="clock sticky bottom left _2" style={{cursor:"move"}}>
+								<Clock 
+									dispatch={dispatch}
+									filter={frs=>Math.max(...frs)} 
+									/>
+							</Movable>
 						)}
 						{children}
 					</Fragment>
