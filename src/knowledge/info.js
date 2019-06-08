@@ -170,7 +170,7 @@ export class KnowledgeEditor extends Component{
 			tools.push(
 				<BottomNavigationItem
 						key="startTimer"
-						label="开始记时"
+						label="记时器"
 						icon={<IconTimer color="black"/>}
 						onClick={()=>startTimer(knowledge)}
 						/>

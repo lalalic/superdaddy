@@ -47,10 +47,7 @@ export const routes=(
 					<Fragment>
 						{timer && (
 							<Movable className="clock sticky bottom left _2" style={{cursor:"move"}}>
-								<Clock 
-									dispatch={dispatch}
-									filter={frs=>Math.max(...frs)} 
-									/>
+								<Clock dispatch={dispatch}/>
 							</Movable>
 						)}
 						{children}
