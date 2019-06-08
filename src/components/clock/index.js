@@ -7,14 +7,14 @@ import IconResume from "material-ui/svg-icons/av/play-arrow"
 import IconClose from "material-ui/svg-icons/navigation/close"
 
 import Monitor from "./monitor"
-import {getNoteKey, getPianoKey, getFrequency} from "./phonic"
 import {ACTION} from "../../state"
 
 export default class Clock extends Component{
     static propTypes={
         timer: PropTypes.number,
         idle: PropTypes.number,
-        threshold: PropTypes.oneOfType([PropTypes.number,PropTypes.string,PropTypes.func]),
+        threshold: PropTypes.number,
+        focus: PropTypes.number,
         filter: PropTypes.func,
         cheerSound: PropTypes.string,
     }
@@ -23,8 +23,9 @@ export default class Clock extends Component{
         timer:1,
         idle: 2,
         threshold:170,
-        filter: getFrequency,
+        filter: frs=>Math.max(...frs),
         cheerSound: "/timer.wav",
+        focus:30,
     }
 
     constructor(){
@@ -36,30 +37,8 @@ export default class Clock extends Component{
         this.monitor=new Monitor()
     }
 
-    initState(){
-
-    }
-
-
-    static getDerivedStateFromProps({threshold,timer},state){
-        return {threshold, timer,...state}
-    }
-
-    get threshold(){
-        const {threshold}=this.state
-        switch(typeof(threshold)){
-        case "func":
-            return threshold
-        case "number":
-            return frs=>Math.max(...frs)>=threshold
-        case "string":{
-                if(threshold=="panio"){
-                    return frs=>frs.find(fr=>getPianoKey(fr)!=-1)!=-1
-                }
-                const [min=0,max=Number.MAX_SAFE_INTEGER]=threshold.split("-").map(a=>parseInt(a))
-                return frs=>frs.findIndex(a=>a>=min && a<=max)!=-1
-            }
-        }
+    static getDerivedStateFromProps({threshold,timer,focus},state){
+        return {threshold, timer,focus,...state}
     }
 
     draw(data){
@@ -81,18 +60,18 @@ export default class Clock extends Component{
                 return
             }
             this.draw(current.buffer)
-            this.setState(({data,valid,start,timer})=>{
+            this.setState(({data,valid,start,timer,threshold})=>{
                 const last=data[data.length-1]
                 while(data.length>0 && (current.time-data[0].time)>1000*idle){
                     data.shift()
                 }
 
-                const fr=filter(current.buffer||[0], this.monitor.sampleRate)
+                const fr=filter(current.buffer||[0])
                 if(fr<1)
                     return 
                 data.push(current={time:current.time, fr})
                 
-                if(this.threshold(data.map(a=>a.fr))){
+                if(Math.max(...data.map(a=>a.fr))>=threshold){
                     if(last){
                         valid=valid+(current.time-last.time)
                     }
@@ -121,7 +100,7 @@ export default class Clock extends Component{
 
     render(){
         const {debug=false, idle, filter, threshold:_1, cheerSound, dispatch, ...props}=this.props
-        const {start, pausing,current,data, threshold,timer,last}=this.state
+        const {start, pausing, threshold,timer,last}=this.state
         const {minute, second}=this.leftTime()
         const style={width:40,border:"none",height:24,lineHeight:"24px",background:"black",color:"white"}
         const Icon=!!!start ? IconStart : (pausing ?  IconResume : IconPause)
@@ -142,24 +121,17 @@ export default class Clock extends Component{
                                         min={10} step={10} max={90}/>
                                 )}
                                 <Icon onClick={e=>this.toggleStart()} viewBox="4 0 24 24" style={{cursor:"default"}}/>
-
-                                {!!start && debug && (
-                                    <span>
-                                        {getNoteKey(current ? current.fr : -1).padEnd(3,' ')}
-                                        {`${getPianoKey(current ? current.fr : -1)}`.padEnd(2,' ')}
-                                        {data.map(a=>a.fr).slice(0,10).join(",")}
-                                    </span>
-                                )}
                             </span>
                         </div>
                         <div className="second">
                             <audio src={cheerSound} ref={this.refCheerSound} preload="auto" loop={true}/>        
                             <span style={{display:"inline-flex"}}>
-                                <input type="number" title="阀值"
-                                    value={threshold} step={5} 
+                                <input type="number" title="音量"
+                                    value={threshold} step={5}
                                     style={{...style,background:"",color:""}}
                                     onChange={e=>this.setState({threshold:parseInt(e.target.value)})}/>
-                                <IconClose onClick={e=>{
+                                <IconClose 
+                                    onClick={e=>{
                                         this.monitor.stop()
                                         this.setState({
                                             data:[],
@@ -169,7 +141,10 @@ export default class Clock extends Component{
                                             valid:0
                                         })
                                         dispatch && dispatch(ACTION.TIMER(false))
-                                    }} viewBox="-4 -10 48 48" style={{cursor:"default"}}/>
+                                    }} 
+                                    viewBox="-4 -10 48 48" 
+                                    style={{cursor:"default"}}
+                                    />
                             </span>
                         </div>
                     </div>

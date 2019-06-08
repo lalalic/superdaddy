@@ -40,16 +40,17 @@ export default class Clock{
                 analyser.fftSize = 2048;
                 const buffer = new Uint8Array(analyser.frequencyBinCount)
 
-                let draw=()=>{
+                const draw=this.draw=()=>{
                     this.animate=requestAnimationFrame(draw)
-                    analyser.getByteFrequencyData(buffer);
-                    this.handler({time:Date.now(), buffer})
+                    if(this.context.state=="running"){
+                        analyser.getByteFrequencyData(buffer);
+                        this.handler({time:Date.now(), buffer})
+                    }
                 }
 
                 source.connect(analyser)
-                if(onStart){
-                    onStart()
-                }
+                onStart && onStart()
+
                 draw()
             })
     }
@@ -65,10 +66,15 @@ export default class Clock{
     }
 
     pause(){
+        if(this.animate){
+            cancelAnimationFrame(this.animate)
+            delete this.animate
+        }
         this.context.suspend()
     }
 
     resume(){
+        this.draw()
         this.context.resume()
     }
 }
