@@ -82,7 +82,10 @@ module.exports={
     content:"<div>hello, oral calculation!</div>",
     tags:["口算","数学","二年级"],
     category:["学习能力"], 
-    hasHomework:{},
+    fields:[{name:"max",type:"number",value:100}],
+    hasHomework:{
+        max:100
+    },
     hasPrint:null,
     homework(setting){
         return new OralCalculation(setting).generatePage(100,1)

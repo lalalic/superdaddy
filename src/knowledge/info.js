@@ -25,9 +25,16 @@ import {ACTION} from "."
 import FragmentContent,{Content} from "./content"
 import {withPlanActions} from "time-manage"
 import {ACTION as superdaddyACTION} from "../state"
+import {compile} from "./code"
+import {print} from "components/print-trigger"
+
 
 export class KnowledgeEditor extends Component{
-	state={homework:false}
+	constructor(){
+		super(...arguments)
+		this.state={homework:false}
+		this.printArea=React.createRef()
+	}
 
 	download(url,name){
 		const link=document.createElement("a")
@@ -36,6 +43,32 @@ export class KnowledgeEditor extends Component{
 		document.body.appendChild(link)
 		link.click()
 		document.body.removeChild(link)
+	}
+
+	getCode(url){
+		return fetch(url)
+			.then(res=>res.text())
+			.then(compile)
+	}
+
+	preview(knowledge, props){
+		const {preview}=this.props
+		if(knowledge.code){
+			this.getCode(knowledge.code)
+				.then(plugin=>print({html:plugin.preview(props)}))
+		}else if(knowledge.template){
+			preview(...arguments)
+		}
+	}
+
+	outputHomework(knowledge, props){
+		const {outputHomework}=this.props
+		if(knowledge.code){
+			this.getCode(knowledge.code)
+				.then(plugin=>print({html:plugin.homework(props)}))
+		}else if(knowledge.template){
+			outputHomework(...arguments)
+		}
 	}
 
     render(){
@@ -132,7 +165,7 @@ export class KnowledgeEditor extends Component{
 						icon={<IconHomework color="aqua"/>}
 						onClick={()=>{
 							if(!knowledge.hasHomework.fields){
-								outputHomework(knowledge)
+								this.outputHomework(knowledge)
 							}else{
 								this.setState({homework:true})
 							}
@@ -147,7 +180,7 @@ export class KnowledgeEditor extends Component{
 						icon={<IconPreview color="fuchsia"/>}
 						onClick={()=>{
 							if(!knowledge.hasPrint.fields){
-								preview(knowledge)
+								this.preview(knowledge)
 							}else{
 								this.setState({preview:true})
 							}
@@ -189,12 +222,8 @@ export class KnowledgeEditor extends Component{
 				title="参数设置"
 				fields={knowledge.hasHomework.fields}
 				onSubmit={props=>{
+					this.outputHomework(knowledge, props)
 					this.setState({homework:false})
-					if(typeof(homework)=="function"){
-						homework(props)
-					}else{
-						outputHomework(knowledge, props)
-					}
 				}}
 				onCancel={()=>this.setState({homework:false})}
 				/>
@@ -206,8 +235,8 @@ export class KnowledgeEditor extends Component{
 				title="参数设置"
 				fields={knowledge.hasPrint.fields}
 				onSubmit={props=>{
+					this.preview(knowledge, props)
 					this.setState({preview:false})
-					preview(knowledge, props)
 				}}
 				onCancel={()=>this.setState({preview:false})}
 				/>
@@ -232,6 +261,7 @@ export class KnowledgeEditor extends Component{
 					</article>
 
 					{homeworkForm}
+					{previewForm}
 				</div>
 
                 <CommandBar style={{flex:"none"}} items={commands}/>
@@ -254,6 +284,7 @@ export default compose(
 			summary
 			figure
 			template
+			code
 			files{
 				crc
 				url

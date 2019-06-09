@@ -25,35 +25,22 @@ export const ACTION={
 	
 	PREVIEW: (knowledge, props)=>dispatch=>{
 		dispatch(qiliACTION.LOADING(true))
-		if(knowledge.code){
-			
-		}else if(knowledge.template){
-			return new Assembler({template:knowledge.template, goal:"print", ...props})
+		return new Assembler({template:knowledge.template, goal:"print", ...props})
 				.assemble()
 				.then(docx=>docx.save(`打印(${knowledge.title}).docx`))
 				.finally(()=>dispatch(qiliACTION.LOADING(false)))
-		}
 	},
 	
 	BUY: ({sale})=>{
 		window.open(sale,"superdaddy buy")
 	},
 	
-	HOMEWORK: (knowledge, props)=>()=>{
+	HOMEWORK: (knowledge, props)=>dispatch=>{
 		dispatch(qiliACTION.LOADING(true))
-		if(knowledge.code){
-			fetch(knowledge.code)
-				.then(res=>res.text())
-				.then(compile)
-				.then(plugin=>{
-					plugin.homework(props)
-				})
-		}else if(knowledge.template){
-			return new Assembler({template:knowledge.template, goal:"homework", ...props})
+		return new Assembler({template:knowledge.template, goal:"homework", ...props})
 				.assemble()
 				.then(docx=>docx.save(`作业(${knowledge.title}).docx`))
 				.finally(()=>dispatch(qiliACTION.LOADING(false)))
-		}
 	},
 	WECHAT: ({title,summary,figure,id},scene)=>{
 		Wechat.share({
