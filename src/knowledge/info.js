@@ -29,10 +29,10 @@ import {ACTION as superdaddyACTION} from "../state"
 export class KnowledgeEditor extends Component{
 	state={homework:false}
 
-	download(url,title){
+	download(url,name){
 		const link=document.createElement("a")
 		link.href=url
-		link.download=title+".docx"
+		link.download=name
 		document.body.appendChild(link)
 		link.click()
 		document.body.removeChild(link)
@@ -156,14 +156,18 @@ export class KnowledgeEditor extends Component{
 		}
 
 		if(knowledge.isMyWork){
-			tools.push(
-				<BottomNavigationItem
-						key="download"
-						label="下载"
-						icon={<IconDownload color="black"/>}
-						onClick={()=>this.download(knowledge.template, knowledge.title)}
-						/>
-			)
+			const url=knowledge.template||knowledge.code
+			if(url){
+				const ext=knowledge.template ? ".docx" : ".js"
+				tools.push(
+					<BottomNavigationItem
+							key="download"
+							label="下载"
+							icon={<IconDownload color="black"/>}
+							onClick={()=>this.download(url, knowledge.title+ext)}
+							/>
+				)
+			}
 		}
 
 		if(knowledge.supportTimer && knowledge.inTask){
@@ -265,7 +269,7 @@ export default compose(
 		mutation:graphql`
 			mutation info_update_Mutation($id:ObjectID, $info:JSON){
 				knowledge_update(_id:$id, knowledge:$info){
-					...content_knowledge
+					...info_knowledge
 				}
 			}
 		`,

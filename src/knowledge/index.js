@@ -6,6 +6,7 @@ export {default as Knowledges} from "./list"
 export {default as Creatable} from "./list-with-creator"
 export {default as NewKnowledge} from "./create"
 export {default as Knowledge} from "./info"
+import {compile} from "./code"
 
 
 const DOMAIN="knowledge"
@@ -24,10 +25,14 @@ export const ACTION={
 	
 	PREVIEW: (knowledge, props)=>dispatch=>{
 		dispatch(qiliACTION.LOADING(true))
-		return new Assembler({template:knowledge.template, goal:"print", ...props})
-			.assemble()
-			.then(docx=>docx.save(`打印(${knowledge.title}).docx`))
-			.finally(()=>dispatch(qiliACTION.LOADING(false)))
+		if(knowledge.code){
+			
+		}else if(knowledge.template){
+			return new Assembler({template:knowledge.template, goal:"print", ...props})
+				.assemble()
+				.then(docx=>docx.save(`打印(${knowledge.title}).docx`))
+				.finally(()=>dispatch(qiliACTION.LOADING(false)))
+		}
 	},
 	
 	BUY: ({sale})=>{
@@ -36,10 +41,19 @@ export const ACTION={
 	
 	HOMEWORK: (knowledge, props)=>()=>{
 		dispatch(qiliACTION.LOADING(true))
-		return new Assembler({template:knowledge.template, goal:"homework", ...props})
-			.assemble()
-			.then(docx=>docx.save(`作业(${knowledge.title}).docx`))
-			.finally(()=>dispatch(qiliACTION.LOADING(false)))
+		if(knowledge.code){
+			fetch(knowledge.code)
+				.then(res=>res.text())
+				.then(compile)
+				.then(plugin=>{
+					plugin.homework(props)
+				})
+		}else if(knowledge.template){
+			return new Assembler({template:knowledge.template, goal:"homework", ...props})
+				.assemble()
+				.then(docx=>docx.save(`作业(${knowledge.title}).docx`))
+				.finally(()=>dispatch(qiliACTION.LOADING(false)))
+		}
 	},
 	WECHAT: ({title,summary,figure,id},scene)=>{
 		Wechat.share({

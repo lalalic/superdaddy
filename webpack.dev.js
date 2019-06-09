@@ -16,6 +16,10 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 			disableHostCheck:true,
 			before(app){
 				app.get("/app.apk.version",(req, res)=>res.json(require("./package.json").version))
+				app.get("/knowledges/5b7bda887c104a2e3c3da3d2/index.js",(req,res)=>{
+					res.setHeader("content-type", "text/javascript")
+					require("fs").createReadStream("./dist/knowledge/math.js").pipe(res)
+				})
 			}
 		},
 		plugins:[

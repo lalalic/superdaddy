@@ -137,9 +137,10 @@ module.exports={
 				.then(()=>app.createEntity("knowledges", {...knowledge,title, author:user._id}))
 		},
 
-		knowledge_update(_, {_id, knowledge:{title,template,...knowledge}}, {app,user}){
+		knowledge_update(_, {_id, knowledge:{title,...knowledge}}, {app,user}){
 			if(title!=undefined && !title)
 				throw new Error("必须有题目")
+			console.dir(knowledge)
 			return Promise.resolve(title ? app.get1Entity("knowledges",{title,author:user._id})
 					.then(a=>{
 						if(a && a._id!==_id){
@@ -228,7 +229,6 @@ module.exports={
 			let score=1
 			if(knowledge){
 				let kl=await app.get1Entity("knowledges",{_id:knowledge})
-				console.dir(kl)
 				if(kl && kl.score)
 					score=kl.score
 			}
@@ -547,11 +547,15 @@ module.exports={
 				return summary
 			}
 		},
-		template({_id}){
-			return `knowledges/${_id}/template.docx`
+		template({_id,template}){
+			if(template){
+				return `knowledges/${_id}/template.docx`
+			}
 		},
-		code({_id}){
-			return `knowledges/${_id}/index.js`
+		code({_id,code}){
+			if(code){
+				return `knowledges/${_id}/index.js`
+			}
 		}
 	},
 

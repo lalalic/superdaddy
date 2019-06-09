@@ -77,12 +77,13 @@ class OralCalculation{
     }
 }
 module.exports={
-    title:"oral calculation",
+    title:"加减法口算题",
     summary:"oral calculation expression generator",
     content:"<div>hello, oral calculation!</div>",
     tags:["口算","数学","二年级"],
     category:["学习能力"], 
-    hasHomework:true,
+    hasHomework:{},
+    hasPrint:null,
     homework(setting){
         return new OralCalculation(setting).generatePage(100,1)
     }

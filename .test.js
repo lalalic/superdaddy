@@ -3,7 +3,9 @@ import project from "./package.json"
 import {QiliApp, File} from "qili-app"
 
 const _upload=File.upload
-File.upload=function(){
+File.upload=function(data,props){
+	if(props && props.key)
+		return Promise.resolve(props.key)
 	return _upload(...arguments).catch(a=>a).then(a=>"dist/knowledge/math.docx")
 }
 

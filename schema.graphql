@@ -105,7 +105,7 @@ type Knowledge implements Node {
   hasPrint: JSON
   sale: String
   template: URL
-  code: String
+  code: URL
   score: Int
   inTask(child: ObjectID): Boolean
   isMyWork: Boolean

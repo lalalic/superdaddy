@@ -155,22 +155,32 @@ class Homework extends Component{
         const data={...fields,child}
         const homeworks=[]
         const done=()=>this.setState({generated:true,homework:homeworks.filter(a=>!!a).join("")})
+        const jobs=[]
         if(code){
-            const plugin=compile(code)
-            if(plugin.homework){
-                homeworks.push(plugin.homework(data))
-            }
+            jobs.push(
+                fetch(code)
+                    .then(res=>res.text())
+                    .then(compile)
+                    .then(plugin=>{
+                        if(plugin.homework){
+                            homeworks.push(plugin.homework(data))
+                        }
+                    })
+                    .finally()
+            )
         }
 
         if(hasHomework && template){
-            new Assembler(template, data)
-                .assemble()
-                .then(docx=>toHtml(docx))
-                .then(homework=>homeworks.push(homework))
-                .finally(done)
-        }else{
-            done()
+            jobs.push(
+                new Assembler(template, data)
+                    .assemble()
+                    .then(docx=>toHtml(docx))
+                    .then(homework=>homeworks.push(homework))
+                    .finally()
+            )
         }
+
+        Promise.all(jobs).finally(done)
     }
 
     componentDidUpdate(){

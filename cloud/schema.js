@@ -70,7 +70,7 @@ module.exports=others=>`
 		hasPrint: JSON
 		sale: String
 		template: URL
-		code: String
+		code: URL
 		score: Int
 
 
