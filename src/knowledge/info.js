@@ -245,7 +245,7 @@ export class KnowledgeEditor extends Component{
 
         return (
             <Fragment>
-				<div style={{flex:"1 1 100%", overflowY:"scroll"}}>
+				<div className="flexV">
 					<div className="knowledge">
 						{knowledgeContent}
 	                </div>
@@ -294,17 +294,6 @@ export default compose(
 		}
 	`),
 	File.withUpload,
-	withMutation(({knowledge}, info)=>({
-		name:"updateKnowledge",
-		variables:{info,id:knowledge.id},
-		mutation:graphql`
-			mutation info_update_Mutation($id:ObjectID, $info:JSON){
-				knowledge_update(_id:$id, knowledge:$info){
-					...info_knowledge
-				}
-			}
-		`,
-	})),
 	connect(
 		({qili:{user},superdaddy:{current,selectedDocx,}},{knowledge})=>({
 			selectedDocx,
@@ -318,6 +307,18 @@ export default compose(
 					author:{name:""}
 				} : knowledge
 		})),
+	withMutation(({knowledge,child}, info)=>({
+		name:"updateKnowledge",
+		variables:{info,id:knowledge.id,child},
+		mutation:graphql`
+			mutation info_update_Mutation($id:ObjectID, $info:JSON, $child:ObjectID){
+				knowledge_update(_id:$id, knowledge:$info, child:$child){
+					...info_knowledge
+				}
+			}
+		`,
+	})),
+		
 	connect(null,
 		(dispatch, {knowledge, files,selectedDocx,upload,getToken,updateKnowledge})=>({
 			selectedDocx:undefined,
@@ -329,12 +330,12 @@ export default compose(
 				<FragmentContent knowledge={knowledge}/>,
 			selectDocx:()=>dispatch(ACTION.SELECT_DOCX()),
 			update(){
-				qiliACTION.LOADING(true)
+				dispatch(qiliACTION.LOADING(true))
 				getToken()
 					.then(({token})=>selectedDocx.upload(knowledge.id,upload,files,token))
 					.then(newVersion=>updateKnowledge(newVersion))
 					.then(()=>dispatch(ACTION.RESET()))
-					.finally(()=>qiliACTION.LOADING(false))
+					.finally(()=>dispatch(qiliACTION.LOADING(false)))
 			},
 			cancel(){
 				dispatch(ACTION.RESET())

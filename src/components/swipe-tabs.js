@@ -14,14 +14,16 @@ export class SwipeableTabs extends Component{
         const {index}=this.state
         const {tabs,children}=this.props
         return (
-            <Fragment>
-                <Tabs value={index} onChange={index=>this.setState({index})}>
-                    {tabs}
-                </Tabs>
-                <SwipeableViews index={index} onChangeIndex={index=>this.setState({index})}>
+            <div style={{display:"flex", flexDirection:"column", height:"100%"}}>
+                <div style={{flex:"none"}}> 
+                    <Tabs value={index} onChange={index=>this.setState({index})}>
+                        {tabs}
+                    </Tabs>
+                </div>
+                <SwipeableViews index={index} className="flexV" onChangeIndex={index=>this.setState({index})}>
                     {children}
                 </SwipeableViews>
-            </Fragment>
+            </div>
         )
     }
 

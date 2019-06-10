@@ -1,4 +1,4 @@
-import React, {Component} from "react"
+import React, {Fragment} from "react"
 import PropTypes from "prop-types"
 
 import {compose, getContext, branch, renderComponent} from "recompose"
@@ -9,10 +9,10 @@ import Knowledges from "./list"
 import {ACTION} from "."
 
 export const Creatable=({selectDocx, ...props})=>(
-	<div>
+	<Fragment>
 		<FloatingAdd onClick={selectDocx} mini={true}/>
 		<Knowledges {...props}/>
-	</div>
+	</Fragment>
 )
 
 export default compose(

@@ -8,8 +8,8 @@ import IconAccount from 'material-ui/svg-icons/action/account-box'
 import IconTask from "material-ui/svg-icons/editor/format-list-numbered"
 import IconReward from "material-ui/svg-icons/places/child-care"
 
-export const Navigator=()=>(
-	<CommandBar
+export const Navigator=({style})=>(
+	<CommandBar style={style}
 		items={[
 			{label:"任务", action:"tasks",
 				link:"/",
@@ -30,16 +30,12 @@ export const Navigator=()=>(
 
 
 
-export const withNavigator=()=>BaseComponent=>{
+export const withNavigator=({flex}={flex:true})=>BaseComponent=>{
 	const factory=createFactory(BaseComponent)
 	const WithNavigator=props=>(
 		<Fragment>
-			<div style={{flex:"1 1 100%", overflowY:"scroll"}}>
-				{factory(props)}
-			</div>
-			<div style={{flex:"none"}}>
-				<Navigator/>
-			</div>
+			{flex ? <div className="flexV" children={factory(props)}/> : factory(props)}
+			<Navigator style={{flex:"none"}}/>
 		</Fragment>
 	)
 	return WithNavigator

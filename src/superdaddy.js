@@ -55,7 +55,7 @@ export const routes=(
 				))}>
 
 			<IndexRoute component={compose(
-				withNavigator(),
+				withNavigator({flex:false}),
 				connect(state=>({
 					child:state.superdaddy.current,
 				})),
@@ -253,7 +253,7 @@ export const routes=(
 			</Route>
 			<Route path="knowledge">
 				<IndexRoute component={compose(
-					withNavigator(),
+					withNavigator({flex:false}),
 					connect(state=>({qs:state[DOMAIN].qs}),(dispatch)=>({
 						search:cond=>dispatch(ACTION.QUERY(cond))
 					})),
@@ -470,12 +470,14 @@ export const SuperDaddy=compose(
 		`,
 		onSuccess(response,dispatch){
 			const {me:{children, token, id}}=response
+			dispatch(qiliACTION.LOADING(false))
 			dispatch(qiliACTION.CURRENT_USER({id,token}))
 			if(children && children.length>0){
 				dispatch(ACTION.CURRENT_CHILD(children[0].id))
 			}
 		},
 		onError(error,dispatch){
+			dispatch(qiliACTION.LOADING(false))
 			dispatch(qiliACTION.LOGOUT)
 		}
 	}),

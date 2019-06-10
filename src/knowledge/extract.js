@@ -40,7 +40,7 @@ function extractFromJavascript(file){
 					},
 					upload(id,upload,files){
 						return upload(codeToBlob(data),id,"index.js")
-							.then(url=>this.knowledge.code=url)
+							.then(({url})=>this.knowledge.code=url)
 							.then(()=>this.knowledge)
 					}
 				})
@@ -119,7 +119,7 @@ export default function extract(file){
 				return Promise.all(done)
 					.then(images=>externalizeDocxImage(docx,images))
 					.then(externalizedDocx=>upload(externalizedDocx, id,`template.docx`))
-					.then(url=>this.knowledge.template=url)
+					.then(({url})=>this.knowledge.template=url)
 					.then(()=>code && upload(codeToBlob(data), id, 'index.js').then(url=>this.knowledge.code=url))
 					.then(()=>this.knowledge)
             }

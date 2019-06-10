@@ -1,4 +1,4 @@
-import React, {Component} from "react"
+import React, {Component, Fragment} from "react"
 import PropTypes from "prop-types"
 
 import {compose, mapProps, getContext} from "recompose"
@@ -42,53 +42,59 @@ export class Knowledges extends Component{
 			iconElementLeft=(<span/>)
 		}
         return (
-			<div style={{minHeight}}>
-				<AppBar
-					iconElementLeft={iconElementLeft}
+			<Fragment>
+				<div style={{flex:"none"}}>
+					<AppBar
+						iconElementLeft={iconElementLeft}
 
-					iconElementRight={
-						<span>
-							<IconButton onClick={e=>search({title})}>
-								<IconSearch/>
-							</IconButton>
-							<IconButton onClick={e=>this.downloadTemplate()} title="download template">
-								<IconDownload color="white"/>
-							</IconButton>
-						</span>
-					}
+						iconElementRight={
+							<span>
+								<IconButton onClick={e=>search({title})}>
+									<IconSearch/>
+								</IconButton>
+								<IconButton onClick={e=>this.downloadTemplate()} title="download template">
+									<IconDownload color="white"/>
+								</IconButton>
+							</span>
+						}
 
-					title={<TextField
-						hintText={`${toText(qs)}`}
-						name="search"
-						value={title||""}
-						onChange={(e,title)=>this.setState({title})}
-						onKeyDown={e=>e.keyCode==13 && search({title})}
-						onFocus={e=>this.setState({conditionAnchor:e.target})}
-						fullWidth={true}/>
-					}
-					/>
-				<QuickSearch
-					qs={qs}
-					style={{opacity:0.9}}
-					open={!!conditionAnchor}
-					anchorEl={conditionAnchor}
-					anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-					targetOrigin={{horizontal: 'left', vertical: 'top'}}
-					search={condition=>{
-						this.setState({conditionAnchor:undefined})
-						search(condition)
-					}}
-					/>
-				<PullToRefresh
-					onRefresh={refresh}
-					onMore={loadMore}
-					>
-					{
-						knowledges
-							.map(a=>(<Item model={a} key={a.id} toKnowledge={toKnowledge}/>))
-					}
-				</PullToRefresh>
-			</div>
+						title={<TextField
+							hintText={`${toText(qs)}`}
+							name="search"
+							value={title||""}
+							onChange={(e,title)=>this.setState({title})}
+							onKeyDown={e=>e.keyCode==13 && search({title})}
+							onFocus={e=>this.setState({conditionAnchor:e.target})}
+							fullWidth={true}/>
+						}
+						/>
+					<QuickSearch
+						qs={qs}
+						style={{opacity:0.9}}
+						open={!!conditionAnchor}
+						anchorEl={conditionAnchor}
+						anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+						targetOrigin={{horizontal: 'left', vertical: 'top'}}
+						search={condition=>{
+							this.setState({conditionAnchor:undefined})
+							search(condition)
+						}}
+						/>
+				</div>
+				<div className="flexV">
+					<PullToRefresh
+						onRefresh={refresh}
+						onMore={loadMore}
+						>
+						{
+							knowledges
+								.map(a=>(<Item model={a} key={a.id} toKnowledge={toKnowledge}/>))
+						}
+					</PullToRefresh>
+				</div>
+				
+				
+			</Fragment>
 
         )
     }

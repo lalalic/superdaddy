@@ -196,7 +196,14 @@ export const withPlanActions=props=>compose(
 			setEditing(payload){
 				dispatch({type:"child/plan/edit",payload})
 			},
-			taskDone,planUpdate,reset,add,remove,removeNth,up,down,top,bottom,toggle,
+			taskDone,planUpdate,reset,
+			add({content,knowledge}){
+				if(!content && !knowledge){
+					return 
+				}
+				return add(...arguments)
+			},
+			remove,removeNth,up,down,top,bottom,toggle,
 		}
 		if(typeof(props)=="function")
 			return {...others,...props({...others,actions})}

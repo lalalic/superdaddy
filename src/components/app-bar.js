@@ -5,7 +5,7 @@ import {OfflineUI} from "qili-app"
 
 export const MyAppBar=({switchable, ...props})=>(
 	<Fragment>
-		<AppBar {...props} iconElementLeft={<Current switchable={switchable}/>}/>
+		<AppBar {...props} style={{flex:'none'}} iconElementLeft={<Current switchable={switchable}/>}/>
 		<OfflineUI.Notification/>
 	</Fragment>
 )
