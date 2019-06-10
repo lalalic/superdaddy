@@ -20,7 +20,8 @@ export default compose(
 					code
 				}
 				content
-				hidden
+                hidden
+                fields
 				day0
 				day1
 				day2
@@ -40,9 +41,6 @@ export default compose(
 					return null
 				let todo={...a}
 
-				if(a.knowledge){
-					todo.fields=a.fields||a.knowledge.fields
-				}
 				let {dones, props}=[0,1,2,3,4,5,6].reduce((state,i)=>{
 					const {dones,props}=state
 					let prop=props[`${i}`]=a[`day${i}`]

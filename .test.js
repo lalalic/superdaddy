@@ -5,8 +5,8 @@ import {QiliApp, File} from "qili-app"
 const _upload=File.upload
 File.upload=function(data,props){
 	if(props && props.key)
-		return Promise.resolve(props.key)
-	return _upload(...arguments).catch(a=>a).then(a=>"dist/knowledge/math.docx")
+		return Promise.resolve({url:props.key})
+	return _upload(...arguments).catch(a=>a).then(a=>({url:"dist/knowledge/math.docx"}))
 }
 
 project.homepage=`http://localhost:9082`

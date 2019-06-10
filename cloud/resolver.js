@@ -511,12 +511,33 @@ module.exports={
 		},
 
 		inTask({_id},{child},{app,user}){
+			if(!child)
+				return false
 			return app.getDataLoader("plans")
 				.load(child)
 				.then(plan=>{
 					if(!plan || !plan.todos)
 						return false
 					return !!plan.todos.find(({knowledge})=>knowledge==_id)
+				})
+		},
+
+		hasHomework({_id, hasHomework},{child},{app}){
+			console.dir(arguments)
+			if(!child) 
+				return hasHomework
+			return app.getDataLoader("plans")
+				.load(child)
+				.then(plan=>{
+					if(!plan || !plan.todos)
+						return hasHomework
+					const todo=plan.todos.find(({knowledge})=>knowledge==_id)
+					
+					if(todo){
+						return todo.fields
+					}else{
+						return hasHomework
+					}
 				})
 		},
 

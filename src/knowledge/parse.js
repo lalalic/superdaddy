@@ -85,15 +85,21 @@ export default function parse(file){
 							case "print":{
 								hasPrint={}
 								let myFields=fieldsWithin(node)
-								if(myFields)
-									hasPrint.fields=myFields
+								if(myFields){
+									myFields.forEach(({name,value})=>{
+										hasPrint[name]=value
+									})
+								}
 								break
 							}
 							case "homework":{
 								hasHomework={}
 								let myFields=fieldsWithin(node)
-								if(myFields)
-									hasHomework.fields=myFields
+								if(myFields){
+									myFields.forEach(({name,value})=>{
+										hasHomework[name]=value
+									})
+								}
 								break
 							}
 						}

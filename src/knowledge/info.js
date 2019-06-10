@@ -71,6 +71,28 @@ export class KnowledgeEditor extends Component{
 		}
 	}
 
+	get homeworkFields(){
+		const {knowledge:{fields, hasHomework:props}}=this.props
+		if(props){
+			return Object.keys(props)
+				.map(k=>fields.find(a=>a.name==k))
+				.filter(a=>!!a)
+				.map(a=>({...a,value:props[a.name]}))
+		}
+		return []
+	}
+
+	get previewFields(){
+		const {knowledge:{fields, hasPrint:props}}=this.props
+		if(props){
+			return Object.keys(props)
+				.map(k=>fields.find(a=>a.name==k))
+				.filter(a=>!!a)
+				.map(a=>({...a,value:props[a.name]}))
+		}
+		return []
+	}
+
     render(){
 		const {
 			knowledge, knowledgeContent, revising=false,
@@ -115,7 +137,7 @@ export class KnowledgeEditor extends Component{
 					,label:"添加课程"
 					,icon: <IconAddTask/>
 					,onSelect:()=>{
-						if(knowledge.hasHomework.fields){
+						if(this.homeworkFields.length>0){
 							this.setState({homework:task})
 						}else{
 							task()
@@ -164,7 +186,7 @@ export class KnowledgeEditor extends Component{
 						label="作业"
 						icon={<IconHomework color="aqua"/>}
 						onClick={()=>{
-							if(!knowledge.hasHomework.fields){
+							if(this.homeworkFields.length==0){
 								this.outputHomework(knowledge)
 							}else{
 								this.setState({homework:true})
@@ -179,7 +201,7 @@ export class KnowledgeEditor extends Component{
 						label="预览打印"
 						icon={<IconPreview color="fuchsia"/>}
 						onClick={()=>{
-							if(!knowledge.hasPrint.fields){
+							if(this.printFields.length==0){
 								this.preview(knowledge)
 							}else{
 								this.setState({preview:true})
@@ -220,9 +242,14 @@ export class KnowledgeEditor extends Component{
 		if(homework){
 			homeworkForm=(<AutoForm
 				title="参数设置"
-				fields={knowledge.hasHomework.fields}
+				fields={this.homeworkFields}
 				onSubmit={props=>{
-					this.outputHomework(knowledge, props)
+					if(typeof(homework)=="function"){
+						homework(props)
+					}else{
+						this.outputHomework(knowledge, props)
+					}
+					
 					this.setState({homework:false})
 				}}
 				onCancel={()=>this.setState({homework:false})}
@@ -233,7 +260,7 @@ export class KnowledgeEditor extends Component{
 		if(want2Preview){
 			previewForm=(<AutoForm
 				title="参数设置"
-				fields={knowledge.hasPrint.fields}
+				fields={this.printFields}
 				onSubmit={props=>{
 					this.preview(knowledge, props)
 					this.setState({preview:false})
@@ -276,7 +303,7 @@ export default compose(
 			id
 			isMyWork
 			inTask(child:$child)
-			hasHomework
+			hasHomework(child:$child)
 			hasPrint
 			supportTimer
 			sale
@@ -285,6 +312,7 @@ export default compose(
 			figure
 			template
 			code
+			fields
 			files{
 				crc
 				url

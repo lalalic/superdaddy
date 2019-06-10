@@ -66,7 +66,7 @@ module.exports=others=>`
 		tags: [String]
 		fields: [JSON]
 		days: [JSON]
-		hasHomework: JSON
+		hasHomework(child:ObjectID): JSON
 		hasPrint: JSON
 		sale: String
 		template: URL

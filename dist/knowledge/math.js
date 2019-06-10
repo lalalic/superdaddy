@@ -5,7 +5,7 @@ class OralCalculation {
         return Math.floor(Math.random() * (max - min)) + min;
     }
 
-    generate1(max = 100, min = 1) {
+    generate1(max, min) {
         if (this.random(0, 100) % 2 == 1)
             return this.generateAdd(...arguments)
         else
@@ -24,15 +24,7 @@ class OralCalculation {
         return [a, '-', b]
     }
 
-    generateMultiply(max, min) {
-
-    }
-
-    generateDivide(max, min) {
-
-    }
-
-    generatePage(max = 100, min = 1) {
+    generatePage(max, min) {
         var rows = new Array(25).fill(1).map(i => {
             var cells = new Array(4)
                 .fill(1)
@@ -56,18 +48,27 @@ class OralCalculation {
             '</tr>'
         var uuid = `oc_${Date.now()}`
         var style = `
-            #${uuid} td{
-                font-size:12pt;
-                padding: 2.5mm 1.4mm;
-            }
-            
-            #${uuid} td:nth-child(5n+4){
-                width: 4em;
-            }
-            
-            #${uuid} tr:last-child td{
-                padding-top:5mm;
-                padding-bottom:0mm;
+            @media print{
+                #${uuid} td{
+                    font-size:12pt;
+                    padding: 2.5mm 1.4mm;
+                }
+                
+                #${uuid} td:nth-child(5n+4){
+                    width: 4em;
+                }
+                
+                #${uuid} tr:last-child td{
+                    padding-top:5mm;
+                    padding-bottom:0mm;
+                }
+
+                #${uuid}{
+                    page-break-before:always;
+                    page-break-after:always;
+                    page-break-inside:avoid;
+                    margin: 0px auto;
+                }
             }
         `
         return `
@@ -89,7 +90,7 @@ module.exports = {
         max: 100
     },
     hasPrint: null,
-    homework(setting) {
-        return new OralCalculation(setting).generatePage(100, 1)
+    homework({max}) {
+        return new OralCalculation().generatePage(parseInt(max), 1)
     }
 }
