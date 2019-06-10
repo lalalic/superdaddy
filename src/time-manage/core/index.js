@@ -1,4 +1,4 @@
-import React, {Component} from "react"
+import React, {Fragment} from "react"
 import PropTypes from "prop-types"
 
 import {connect} from "react-redux"
@@ -20,8 +20,8 @@ export {default as ScorePad} from "./score-pad"
 export {default as PrintPad} from "./print"
 
 
-export const TimeManage=({minHeight,goal, score, editing,week,reset,data, child})=>(
-	<div style={{minHeight}}>
+export const TimeManage=({goal, score, editing,week,reset,data, child})=>(
+	<Fragment>
 		{
 			(currentWeek=>{
 				if(!goal){
@@ -41,8 +41,9 @@ export const TimeManage=({minHeight,goal, score, editing,week,reset,data, child}
 						}
 					}else{
 						return (
-							<div>
+							<Fragment>
 								<AppBar
+									style={{flex:"none"}}
 									iconElementRight={
 										<IconButton onClick={e=>reset()}>
 											<IconDone color="white"/>
@@ -50,15 +51,16 @@ export const TimeManage=({minHeight,goal, score, editing,week,reset,data, child}
 									}
 									title={`保存前${new Date(currentWeek*1000).relative(new Date(week*1000))/7}周完成情况`}
 								/>
-								
-								<TaskPad data={data} current={99}/>
-							</div>
+								<div className="flexV">
+									<TaskPad data={data} current={99}/>
+								</div>
+							</Fragment>
 						)
 					}
 				}
 			})(parseInt((d=>d.relativeDate(-1*d.getDay()).toDate())(new Date()).getTime()/1000))
 		}
-	</div>
+	</Fragment>
 )
 
 export default compose(

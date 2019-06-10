@@ -59,14 +59,15 @@ export class TodoEditor extends Component{
 							/>
 					}
 				/>
-				{React.cloneElement(children,{data})}
+				<div className="flexV">
+					{React.cloneElement(children,{data})}
+				</div>
 				{print && 
 				<div style={{display:"none"}}>
 					<PrintPad ref={this.printArea} 
 						{...{data,child}} 
 						onReady={()=>this.setState({print:2})}/>
-				</div>
-				}
+				</div>}
 			</Fragment>
 		)
 				

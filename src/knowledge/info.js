@@ -245,7 +245,7 @@ export class KnowledgeEditor extends Component{
 
         return (
             <Fragment>
-				<div style={{flex:"1 1 100%", overflowY:"scroll"}}>
+				<div className="flexV">
 					<div className="knowledge">
 						{knowledgeContent}
 	                </div>
@@ -330,12 +330,12 @@ export default compose(
 				<FragmentContent knowledge={knowledge}/>,
 			selectDocx:()=>dispatch(ACTION.SELECT_DOCX()),
 			update(){
-				qiliACTION.LOADING(true)
+				dispatch(qiliACTION.LOADING(true))
 				getToken()
 					.then(({token})=>selectedDocx.upload(knowledge.id,upload,files,token))
 					.then(newVersion=>updateKnowledge(newVersion))
 					.then(()=>dispatch(ACTION.RESET()))
-					.finally(()=>qiliACTION.LOADING(false))
+					.finally(()=>dispatch(qiliACTION.LOADING(false)))
 			},
 			cancel(){
 				dispatch(ACTION.RESET())

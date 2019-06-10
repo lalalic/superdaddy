@@ -92,7 +92,7 @@ export default compose(
 	File.withUpload,
 	connect(null,(dispatch,{selectedDocx, knowledge, toKnowledge, mutate, upload,getToken,goBack})=>({
 		create(){
-				qiliACTION.LOADING(true)
+				dispatch(qiliACTION.LOADING(true))
 				return getToken()
 					.then(({_id,token})=>selectedDocx.upload(`knowledges:${_id}`,upload,null,token))
 					.then(knowledge=>mutate({knowledge}))

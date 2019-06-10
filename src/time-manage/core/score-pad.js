@@ -52,7 +52,9 @@ export const ScorePad=({
 		<Fragment>
 			<AppBar {...{title,iconElementRight}}/>
 			{action}
-			<Fun smiles={smiles} interval={2000}/>
+			<div className="flexV">
+				<Fun smiles={smiles} interval={2000}/>
+			</div>
 		</Fragment>
 	)
 }
@@ -78,7 +80,7 @@ class Fun extends Component{
 		const {smiles}=this.props
 		const {x,catched}=this.state
 		return (
-			<div>
+			<Fragment>
 				{smiles.length>0 ?
 					(<div className="sticky bottom right _2"
 						style={{fontSize:"xx-large",color:"orange"}}>
@@ -89,7 +91,7 @@ class Fun extends Component{
 					className:`${a.props.className} pulse`,
 					onClick:()=>this.setState(({catched})=>({catched:catched+1}))
 				}) : a)}
-			</div>
+			</Fragment>
 		)
 	}
 }

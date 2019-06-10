@@ -55,7 +55,7 @@ export const routes=(
 				))}>
 
 			<IndexRoute component={compose(
-				withNavigator(),
+				withNavigator({flex:false}),
 				connect(state=>({
 					child:state.superdaddy.current,
 				})),
@@ -253,7 +253,7 @@ export const routes=(
 			</Route>
 			<Route path="knowledge">
 				<IndexRoute component={compose(
-					withNavigator(),
+					withNavigator({flex:false}),
 					connect(state=>({qs:state[DOMAIN].qs}),(dispatch)=>({
 						search:cond=>dispatch(ACTION.QUERY(cond))
 					})),

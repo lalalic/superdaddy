@@ -313,6 +313,9 @@ module.exports={
 		},
 
 		plan_todos_add(_,{_id, content, knowledge, fields},{app,user}){
+			if(!content && !knowledge){
+				return Promise.reject(new Error("任务不能空"))
+			}
 			return app.getDataLoader("plans")
 				.load(_id)
 				.then(plan=>{
