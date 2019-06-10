@@ -155,7 +155,7 @@ module.exports=others=>`
 		plan_auto(_id:ObjectID):Plan
 
 		knowledge_create(knowledge:JSON):Knowledge
-		knowledge_update(_id:ObjectID, knowledge:JSON):Knowledge
+		knowledge_update(_id:ObjectID, knowledge:JSON, child:ObjectID):Knowledge
 
 		publish_create(template:String, child:ObjectID, from: Date, to: Date, name: String, copies: Int):Publish
 		publish_update(_id:ObjectID, template:String, child:ObjectID, from: Date, to: Date, name: String, copies: Int): Date

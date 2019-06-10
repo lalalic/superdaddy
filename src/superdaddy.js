@@ -470,12 +470,14 @@ export const SuperDaddy=compose(
 		`,
 		onSuccess(response,dispatch){
 			const {me:{children, token, id}}=response
+			dispatch(qiliACTION.LOADING(false))
 			dispatch(qiliACTION.CURRENT_USER({id,token}))
 			if(children && children.length>0){
 				dispatch(ACTION.CURRENT_CHILD(children[0].id))
 			}
 		},
 		onError(error,dispatch){
+			dispatch(qiliACTION.LOADING(false))
 			dispatch(qiliACTION.LOGOUT)
 		}
 	}),

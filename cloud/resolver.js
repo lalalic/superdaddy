@@ -547,16 +547,6 @@ module.exports={
 				return summary
 			}
 		},
-		template({_id,template}){
-			if(template){
-				return `knowledges/${_id}/template.docx`
-			}
-		},
-		code({_id,code}){
-			if(code){
-				return `knowledges/${_id}/index.js`
-			}
-		}
 	},
 
 	Publish: {

@@ -6898,9 +6898,9 @@ q@^1.1.2, q@^1.4.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
 
-qili-app@^1.2.46:
-  version "1.2.46"
-  resolved "https://registry.yarnpkg.com/qili-app/-/qili-app-1.2.46.tgz#0e2ef9879c44fb8028a586579125b2d62d5e7268"
+qili-app@^1.2.47:
+  version "1.2.47"
+  resolved "https://registry.yarnpkg.com/qili-app/-/qili-app-1.2.47.tgz#c170895371585f740eacc7680e672f827affafed"
   dependencies:
     babel-polyfill "^6.26.0"
     graphql-tools "^3.0.0"

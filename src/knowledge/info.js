@@ -294,17 +294,6 @@ export default compose(
 		}
 	`),
 	File.withUpload,
-	withMutation(({knowledge}, info)=>({
-		name:"updateKnowledge",
-		variables:{info,id:knowledge.id},
-		mutation:graphql`
-			mutation info_update_Mutation($id:ObjectID, $info:JSON){
-				knowledge_update(_id:$id, knowledge:$info){
-					...info_knowledge
-				}
-			}
-		`,
-	})),
 	connect(
 		({qili:{user},superdaddy:{current,selectedDocx,}},{knowledge})=>({
 			selectedDocx,
@@ -318,6 +307,18 @@ export default compose(
 					author:{name:""}
 				} : knowledge
 		})),
+	withMutation(({knowledge,child}, info)=>({
+		name:"updateKnowledge",
+		variables:{info,id:knowledge.id,child},
+		mutation:graphql`
+			mutation info_update_Mutation($id:ObjectID, $info:JSON, $child:ObjectID){
+				knowledge_update(_id:$id, knowledge:$info, child:$child){
+					...info_knowledge
+				}
+			}
+		`,
+	})),
+		
 	connect(null,
 		(dispatch, {knowledge, files,selectedDocx,upload,getToken,updateKnowledge})=>({
 			selectedDocx:undefined,
