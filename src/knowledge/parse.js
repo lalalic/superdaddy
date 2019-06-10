@@ -9,7 +9,7 @@ let uuid=0
 
 const ARRAY=/^([a-z]+)(\d+)$/i
 export default function parse(file){
-	let properties={},  sale, hasPrint, hasHomework,code
+	let properties={},  sale=null, hasPrint=null, hasHomework=null,code=null
 	let fields=[]
 	return import(/* webpackChunkName: "docx-template" */"docx-template").then(({DocxTemplate})=>{
 		function identify(node, officeDocument){

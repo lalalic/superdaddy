@@ -31,7 +31,7 @@ function extractFromJavascript(file){
 				plugin.code=data
 				resolve({
 					toJSON:a=>null,
-					knowledge:plugin,
+					knowledge:{hasPrint:null, hasHomework:null, fields:[], code:null,sale:null, ...plugin},
 					revoke(){
 
 					},
