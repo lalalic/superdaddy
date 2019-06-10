@@ -188,7 +188,7 @@ export class KnowledgeEditor extends Component{
 						/>)
 		}
 
-		if(knowledge.isMyWork){
+		if(false && knowledge.isMyWork){
 			const url=knowledge.template||knowledge.code
 			if(url){
 				const ext=knowledge.template ? ".docx" : ".js"
