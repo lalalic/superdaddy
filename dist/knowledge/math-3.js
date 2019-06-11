@@ -54,14 +54,15 @@ class Tuple2 extends Calculation{
     }
 
     generate1() {
-        if(this.kind=="*"){
+        switch(this.kind||'+-*/'[this.random(3,0)]){
+        case "*":
             return this.generateMutiply(...arguments)
-        }else if(this.kind=="/"){
+        case "/":
             return this.generateDivide(...arguments)
-        }else if (this.random(0, 100) % 2 == 1){
-            return this.generateMutiply(...arguments)
-        } else {
-            return this.generateDivide(...arguments)
+        case "+":
+            return this.generateAdd(...arguments)
+        case '-':    
+            return this.generateMinus(...arguments)
         }
     }
 
@@ -128,19 +129,29 @@ class Tuple3 extends Tuple2{
     }
 
     generate1(max,min){
+        const remainder=this.remainder
+        delete this.remainder
+        const kind=this.kind
+        delete this.kind
+
+        this.kind=kind[this.random(kind.length-1,0)]
         const [a,o,b]=super.generate1(...arguments)
         const r=eval(`${a}${o}${b}`)
-        var o1=this.kind,c
-        if(o1=="+"){
+        this.kind=kind[this.random(kind.length-1,0)]
+        
+        switch(this.kind){
+        case "+":
             c=this.random(max-r,max-r>0 ? 1 : 0)
-        }else if(o1=="-"){
+            break
+        case "-":
             c=this.random(r,r>0 ? 1 : 0)
-        }else if(r%2==1){
-            o1="+"
-            c=this.random(max-r,max-r>0 ? 1 : 0)
-        }else{
-            o1="-"
-            c=this.random(r,r>0 ? 1 : 0)
+            break
+        case "*":
+            c=Math.floor(max/r)||1
+            break
+        case "/":
+            c=this.random(r,1)
+            break
         }
 
         return [a,o,b,o1,c]
@@ -202,6 +213,10 @@ class Tuple3 extends Tuple2{
 } 
 
 class Priorized extends Tuple3{
+    constructor(kind,...args){
+        super("+-*/",...args)
+    }
+
     generate1(max,min){
         debugger
         var [a,o,b,o1,c]=super.generate1(...arguments)
@@ -231,20 +246,26 @@ module.exports = {
         { name: "tuple", title: "因子个数", value: 2, options:[{value:2},{value:3}]},
         { name: "kind", title: "运算类别", value: ".", options:[
             {value:"+-*/",displayText:"四则运算"},
-            {value:"(+-*/)",displayText:"带括号的四则运算"},
+            {value:"()",displayText:"带括号的四则运算"},
             {value:"*",displayText:"乘法"},
             {value:"/",displayText:"除法"},
-            {value:"*/",displayText:"除法"},
         ]},
+        { name: "remainder", title: "带余数", value: false,options:[
+            {value:true,displayText:"可以"},
+            {value:false,displayText:"不可以"},
+        ] },
     ],
     hasHomework: {
         max: 100,
         tuple: 2,
-        kind:".",
+        kind:"*",
+        remainder:false,
     },
     hasPrint: null,
-    homework({max,tuple,kind}) {
+    homework({max,tuple,kind,remainder}) {
         const Type=kind=="()" ? Priorized : Types[`Tuple${tuple||2}`]
-        return new Type(kind).generatePage(parseInt(max), 1)
+        const creator=new Type(kind)
+        creator.remainder=remainder
+        return creator.generatePage(parseInt(max), 1)
     }
 }
