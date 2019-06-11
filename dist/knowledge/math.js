@@ -62,18 +62,11 @@ class OralCalculation {
                     padding-top:5mm;
                     padding-bottom:0mm;
                 }
-
-                #${uuid}{
-                    page-break-before:always;
-                    page-break-after:always;
-                    page-break-inside:avoid;
-                    margin: 0px auto;
-                }
             }
         `
         return `
                 <style>${style}</style>
-                <table id="${uuid}">${header + rows + footer}</table>
+                <table id="${uuid}" class="print-page">${header + rows + footer}</table>
             `
     }
 }

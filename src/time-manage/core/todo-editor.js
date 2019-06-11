@@ -8,8 +8,7 @@ import {IconButton, AutoComplete} from "material-ui"
 
 import AppBar from "components/app-bar"
 
-import PrintTrigger from "components/print-trigger"
-import ReactPrint from "react-to-print"
+import ReactPrint from "components/print-trigger"
 
 import IconAdd from "material-ui/svg-icons/av/playlist-add"
 import IconEdit from "material-ui/svg-icons/editor/mode-edit"
@@ -41,7 +40,8 @@ export class TodoEditor extends Component{
 							
 							{!editing &&
 							<ReactPrint 
-								trigger={()=>(<PrintTrigger onNativeClick={()=>this.setState({print:1})} printReady={print==2}/>)} 
+								onClick={()=>this.setState({print:1})} 
+								autoPrint={print==2}
 								content={()=>this.printArea.current}
 								onAfterPrint={()=>this.setState({print:false})}
 								/>

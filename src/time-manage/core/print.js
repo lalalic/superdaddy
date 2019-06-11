@@ -76,7 +76,7 @@ export default compose(
 
     render(){
         const {child, todos,days='日,一,二,三,四,五,六'.split(",")}=this.props
-        const tasks=todos.map(({days=[], content:task, dones=[], fields, props},i)=>(
+        const tasks=todos.map(({content:task, dones=[], fields},i)=>(
 			<tr key={i}>
                 <td>{task}</td>
                 {[0,1,2,3,4,5,6].map(a=>(<td key={a}>{-1!=dones.indexOf(a) ? "V" :""}</td>))}
@@ -120,8 +120,8 @@ export default compose(
                 {classrooms.length>0 && <center style={{marginTop:40, marginBottom:10}}>课堂纪律:每课一省</center>}
                 {classrooms.map(({knowledge:{summary}, content},key)=><Classroom {...{key,content,summary}}/>)}
 
-                {homeworks.map(({knowledge,fields, props}, key)=><Homework {...{
-                        knowledge,child, fields:props||fields, key,
+                {homeworks.map(({knowledge,fields}, key)=><Homework {...{
+                        knowledge,child, fields, key,
                         onReady:()=>this.setState(({homeworks})=>({homeworks:homeworks-1})),
                     }}/>)}
             </div>

@@ -1,7 +1,6 @@
 import React, {Component,Fragment} from "react"
 import { CommandBar } from "qili-app"
-import PrintTrigger from "./print-trigger"
-import ReactPrint from "react-to-print"
+import ReactPrint from "./print-trigger"
 
 export default class Award extends Component{
     constructor(){
@@ -30,7 +29,7 @@ export default class Award extends Component{
                 </div>
                 <div style={{flex:"1 1 100%", overflowY:"scroll",position:"relative",textAlign:"center",margin:4}} 
                     ref={this.printArea}>
-                    <svg viewBox="0 0 297 210" style={{maxWidth:"100%",maxHeight:"100%"}}>
+                    <svg viewBox="0 0 297 210" style={{maxWidth:"100%",maxHeight:"100%"}} className="print-page">
                         {photo && (<defs>
                             <pattern id="photo" x="0%" y="0%" height="100%" width="100%" viewBox="0 0 50 50">
                                 <image x="0%" y="0%" xlinkHref={photo} height="50" width="50"/>
@@ -60,10 +59,11 @@ export default class Award extends Component{
                     "back",
 
                     <ReactPrint 
-                        trigger={()=>(<PrintTrigger onNativeClick={()=>this.setState({print:1})} printReady={print==1}/>)} 
+                        onClick={()=>this.setState({print:1})} 
+                        autoPrint={print==1}
                         content={()=>this.printArea.current.querySelector("svg")}
                         pageStyle={`
-                            @page { 
+                            @page{ 
                                 size: A4 landscape;  
                                 margin: 0mm; 
                             } 
@@ -74,7 +74,6 @@ export default class Award extends Component{
                                 }
                             }
                         `}
-
                         onAfterPrint={()=>this.setState({print:undefined})}
                         />
                     ]}/>
