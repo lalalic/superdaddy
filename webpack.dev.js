@@ -16,7 +16,7 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 			disableHostCheck:true,
 			before(app){
 				app.get("/app.apk.version",(req, res)=>res.json(require("./package.json").version))
-				app.get("/knowledges/5cfdc681cda230ef1c396a4e/index.js",(req,res)=>{
+				app.get("/knowledges/5cfdc682e751a7ef1f398cd4/index.js",(req,res)=>{
 					res.setHeader("content-type", "text/javascript")
 					require("fs").createReadStream("./dist/knowledge/math.js").pipe(res)
 				})

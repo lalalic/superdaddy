@@ -27,6 +27,7 @@ import {withPlanActions} from "time-manage"
 import {ACTION as superdaddyACTION} from "../state"
 import {compile} from "./code"
 import {print} from "components/print-trigger"
+import { UV_UDP_REUSEADDR } from "constants";
 
 
 export class KnowledgeEditor extends Component{
@@ -45,10 +46,16 @@ export class KnowledgeEditor extends Component{
 		document.body.removeChild(link)
 	}
 
-	getCode(url){
-		return fetch(url)
-			.then(res=>res.text())
-			.then(compile)
+	getCode(urlOrCode){
+		try{
+			if(urlOrCode.length<256 || new URL(urlOrCode)){
+				return fetch(urlOrCode)
+					.then(res=>res.text())
+					.then(compile)
+			}
+		}catch(e){
+			return Promise.resolve(compile(urlOrCode))
+		}
 	}
 
 	preview(knowledge, props){

@@ -47,15 +47,17 @@ export default class AutoForm extends Component{
 					<SelectField 
 						{...{name,floatingLabelText,key:name}}
 						value={this.state[name]}
+						fullWidth={true}
 						onChange={(e,i,value)=>this.setState({[name]:value})}
 						>
-						{options.map(({displayText,value})=><MenuItem {...{value, primaryText:displayText,key:value}}/>)}
+						{options.map(({value,displayText=value})=><MenuItem {...{value, primaryText:displayText,key:value}}/>)}
 					</SelectField>
 				)
 			}else{
 				return <TextField 
 					{...{name,floatingLabelText,key:name}}
 					value={this.state[name]}
+					fullWidth={true}
 					onChange={(e,value)=>this.setState({[name]:value})}/>
 			}
 		})

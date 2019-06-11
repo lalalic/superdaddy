@@ -522,7 +522,7 @@ module.exports={
 		},
 
 		hasHomework({_id, hasHomework},{child},{app}){
-			if(!child) 
+			if(!child || !hasHomework) 
 				return hasHomework
 			return app.getDataLoader("plans")
 				.load(child)
@@ -532,7 +532,7 @@ module.exports={
 					const todo=plan.todos.find(({knowledge})=>knowledge==_id)
 					
 					if(todo){
-						return todo.fields
+						return {...hasHomework, ...(todo.fields||{})}
 					}else{
 						return hasHomework
 					}

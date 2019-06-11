@@ -84,7 +84,6 @@ module.exports=others=>`
 	type Task implements Node{
 		id:ID!
 		author:User
-
 	}
 
 	type FinishedTask implements Node{
