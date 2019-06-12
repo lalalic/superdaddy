@@ -20,8 +20,7 @@ export function asModule(urlOrCode){
     try{
         if(urlOrCode.length<256 || new URL(urlOrCode)){
             return fetch(urlOrCode)
-                .then(res=>res.arrayBuffer())
-                .then(arrayBuffer=>new Buffer(arrayBuffer,"utf8").toString())
+                .then(res=>res.text())
                 .then(compile)
         }
     }catch(e){

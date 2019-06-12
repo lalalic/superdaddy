@@ -13,12 +13,7 @@ function splitKey(data){
 }
 
 function codeToBlob(str){
-	const bytes = new Array(str.length);
-	for (let i = 0; i < str.length; i++) {
-		bytes[i] = str.charCodeAt(i);
-	}
-	const byteArray=new Uint8Array(bytes)
-	return new Blob([byteArray], {type:"text/javascript"})
+	return new Blob([str], {type:"text/javascript"})
 }
 
 function extractFromJavascript(file){
