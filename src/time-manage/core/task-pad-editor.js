@@ -23,8 +23,8 @@ export const TaskPadEditor=(({todos=[]})=>(
 		<ListItem primaryText="任务"/>
 		<Divider/>
 	{
-	todos.map(({content:task, hidden},i)=>(
-		<ListItem key={i} primaryText={task}
+	todos.map(({content, hidden, knowledge, i={content,knowledge:knowledge&&knowledge.id}},key)=>(
+		<ListItem key={key} primaryText={content}
 			rightIconButton={
 				<Wrapper>
 					<Remover i={i}/>
@@ -47,7 +47,7 @@ const Order=compose(
 	withProps(({actions:{top,bottom,up,down}})=>({
 		top,bottom,up,down
 	}))
-)(({i,top,bottom,up,down})=>(
+)(({top,bottom,up,down,content,knowledge, i={content,knowledge}})=>(
 	<Wrapper>
 		<MediaQuery minWidth={960}>
             <IconButton onClick={e=>top(i)}>
@@ -82,11 +82,11 @@ const Visibility=compose(
 
 const Remover=compose(
 	getContext({actions:PropTypes.object}),
-	withProps(({actions:{removeNth}})=>({
-		removeNth
+	withProps(({actions:{remove}})=>({
+		remove
 	}))
-)(({i,removeNth,style})=>(
-	<IconButton onClick={e=>removeNth(i)} style={style}>
+)(({i,remove,style})=>(
+	<IconButton onClick={e=>remove(i)} style={style}>
 		<IconRemove color={COLOR_ENABLED}/>
 	</IconButton>
 ))
@@ -99,6 +99,9 @@ export default compose(
 			todos{
 				content
 				hidden
+				knowledge{
+					id
+				}
 			}
 		}
 	`),

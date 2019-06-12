@@ -38,7 +38,7 @@ export class TodoEditor extends Component{
 								{editing?<IconDone color="white"/> : <IconEdit color="white"/>}
 							</IconButton>
 							
-							{!editing &&
+							{
 							<ReactPrint 
 								onClick={()=>this.setState({print:1})} 
 								autoPrint={print==2}

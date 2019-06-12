@@ -340,23 +340,14 @@ module.exports={
 						.then(()=>plan)
 				})
 		},
-		plan_todos_removeNth(_,{_id, i},{app,user}){
+		plan_todos_up(_,{_id, content,knowledge},{app,user}){
 			return app.getDataLoader("plans")
 				.load(_id)
-				.then(plan=>{
+				.then((plan,i)=>{
 					let {todos=[]}=plan
-					todos.splice(i,1)
-					plan.todos=todos
-					return app.patchEntity("plans",{_id},{todos})
-						.then(()=>plan)
-				})
-		},
-		plan_todos_up(_,{_id, i},{app,user}){
-			return app.getDataLoader("plans")
-				.load(_id)
-				.then(plan=>{
-					let {todos=[]}=plan
-					let target=todos[i]
+					if(!(i=exists(todos,content,knowledge)))
+						return plan
+					let target=todos[--i]
 					todos.splice(i,1)
 					todos.splice((i-1)%(todos.length+1),0,target)
 					plan.todos=todos
@@ -364,12 +355,14 @@ module.exports={
 						.then(()=>plan)
 				})
 		},
-		plan_todos_down(_,{_id, i},{app,user}){
+		plan_todos_down(_,{_id, content,knowledge},{app,user}){
 			return app.getDataLoader("plans")
 				.load(_id)
-				.then(plan=>{
+				.then((plan,i)=>{
 					let {todos=[]}=plan
-					let target=todos[i]
+					if(!(i=exists(todos,content,knowledge)))
+						return plan
+					let target=todos[--i]
 					todos.splice(i,1)
 					todos.splice((i+1)%(todos.length+1),0,target)
 					plan.todos=todos
@@ -377,12 +370,14 @@ module.exports={
 						.then(()=>plan)
 				})
 		},
-		plan_todos_top(_,{_id, i},{app,user}){
+		plan_todos_top(_,{_id, content, knowledge},{app,user}){
 			return app.getDataLoader("plans")
 				.load(_id)
-				.then(plan=>{
+				.then((plan,i)=>{
 					let {todos=[]}=plan
-					let target=todos[i]
+					if(!(i=exists(todos,content,knowledge)))
+						return plan
+					let target=todos[--i]
 					todos.splice(i,1)
 					todos.unshift(target)
 					plan.todos=todos
@@ -390,12 +385,14 @@ module.exports={
 						.then(()=>plan)
 				})
 		},
-		plan_todos_bottom(_,{_id, i},{app,user}){
+		plan_todos_bottom(_,{_id, content,knowledge},{app,user}){
 			return app.getDataLoader("plans")
 				.load(_id)
-				.then(plan=>{
+				.then((plan,i)=>{
 					let {todos=[]}=plan
-					let target=todos[i]
+					if(!(i=exists(todos,content,knowledge)))
+						return plan
+					let target=todos[--i]
 					todos.splice(i,1)
 					todos.push(target)
 					plan.todos=todos
@@ -403,11 +400,14 @@ module.exports={
 						.then(()=>plan)
 				})
 		},
-		plan_todos_toggle(_,{_id,i},{app,user}){
-			return app.get1Entity("plans",{_id})
-				.then(plan=>{
+		plan_todos_toggle(_,{_id,content,knowledge},{app,user}){
+			return app.getDataLoader("plans")
+				.load(_id)
+				.then((plan,i)=>{
 					let {todos=[]}=plan
-					let target=todos[i]
+					if(!(i=exists(todos,content,knowledge)))
+						return plan
+					let target=todos[--i]
 					target.hidden=!!!target.hidden
 					plan.todos=todos
 					return app.patchEntity("plans",{_id},{todos})
@@ -415,7 +415,8 @@ module.exports={
 				})
 		},
 		plan_auto(_,{_id},{app,user}){
-			return app.get1Entity("plans",{_id})
+			return app.getDataLoader("plans")
+				.load(_id)
 				.then(plan=>{
 					let {goals=[], months=[]}=plan
 					let month=new Date().getMonth()

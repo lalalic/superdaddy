@@ -145,12 +145,12 @@ module.exports=others=>`
 		plan_reset(_id:ObjectID):Plan
 		plan_todos_add(_id:ObjectID, content:String, knowledge:ObjectID, fields:JSON):Plan
 		plan_todos_remove(_id:ObjectID,content:String, knowledge:ObjectID):Plan
-		plan_todos_removeNth(_id:ObjectID,i:Int):Plan
-		plan_todos_up(_id:ObjectID,i:Int):Plan
-		plan_todos_down(_id:ObjectID,i:Int):Plan
-		plan_todos_top(_id:ObjectID,i:Int):Plan
-		plan_todos_bottom(_id:ObjectID,i:Int):Plan
-		plan_todos_toggle(_id:ObjectID,i:Int):Plan
+		plan_todos_removeNth(_id:ObjectID,content:String, knowledge:ObjectID):Plan
+		plan_todos_up(_id:ObjectID,content:String, knowledge:ObjectID):Plan
+		plan_todos_down(_id:ObjectID,content:String, knowledge:ObjectID):Plan
+		plan_todos_top(_id:ObjectID,content:String, knowledge:ObjectID):Plan
+		plan_todos_bottom(_id:ObjectID,content:String, knowledge:ObjectID):Plan
+		plan_todos_toggle(_id:ObjectID,content:String, knowledge:ObjectID):Plan
 		plan_auto(_id:ObjectID):Plan
 
 		knowledge_create(knowledge:JSON):Knowledge
