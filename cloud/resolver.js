@@ -38,7 +38,11 @@ module.exports={
 
 	Plan:{
 		id: ({_id})=>`plans:${_id}`,
-
+		todos: ({todos})=>{
+			if(!todos)
+				return todos
+			return todos.filter(a=>!a.removed)
+		},
 		caps: ()=>CAPS,
 
 		pendingKnowledges({goals},{},ctx){
@@ -255,7 +259,7 @@ module.exports={
 			function saveFinishedTasks(){
 				let {week,todos}=plan
 				let startDate=new Date(week*1000)
-				let tasks=todos.map(({content,knowledge,...others})=>{
+				let tasks=todos.map(({content,knowledge,removed,...others})=>{
 					return [0,1,2,3,4,5,6].map(i=>{
 						let day=others[`day${i}`]
 						if(day){
@@ -282,7 +286,7 @@ module.exports={
 			function reset4CurrentWeek(){
 				let {todos, months}=plan
 				let week=currentWeek()
-				todos=todos.map(({day0,day1,day2,day3,day4,day5,day6,...others})=>others)
+				todos=todos.filter(a=>!a.removed).map(({day0,day1,day2,day3,day4,day5,day6,...others})=>others)
 
 				let applyPlan=null
 				if(months){
@@ -317,11 +321,15 @@ module.exports={
 			}
 			return app.getDataLoader("plans")
 				.load(_id)
-				.then(plan=>{
+				.then((plan,i)=>{
 					let {todos=[]}=plan
-					if(exists(todos,content,knowledge))
-						return plan
-					todos=[...todos,{content,knowledge:knowledge||undefined,fields}]
+					if((i=exists(todos,content,knowledge))){
+						let target=todos[--i]
+						delete target.removed
+						target.fields=fields
+					}else{
+						todos=[...todos,{content,knowledge:knowledge||undefined,fields}]
+					}
 					plan.todos=todos
 					return app.patchEntity("plans",{_id},{todos})
 						.then(()=>plan)
@@ -334,8 +342,12 @@ module.exports={
 					let {todos=[]}=plan
 					if(!(i=exists(todos,content,knowledge)))
 						return plan
-					todos.splice(i-1,1)
+					const [removing]=todos.splice(i-1,1)
 					plan.todos=todos
+					if(new Array(7).fill(true).find((a,i)=>!!removing[`day${i}`])){
+						removing.removed=true
+						todos.push(removing)
+					}
 					return app.patchEntity("plans",{_id},{todos})
 						.then(()=>plan)
 				})
