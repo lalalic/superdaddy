@@ -100,7 +100,7 @@ module.exports={
 						.then(children=>children.map(child=>Child.plan(child,{},context)))
 						.then(plans=>plans.reduce((collected,plan)=>{
 							if(plan.todos){
-								plan.todos.forEach(a=>a.knowledge && collected.push(a.knowledge))
+								plan.todos.filter(a=>!a.removed).forEach(a=>a.knowledge && collected.push(a.knowledge))
 							}
 							return collected
 						},[]))
@@ -530,7 +530,7 @@ module.exports={
 				.then(plan=>{
 					if(!plan || !plan.todos)
 						return false
-					return !!plan.todos.find(({knowledge})=>knowledge==_id)
+					return !!plan.todos.filter(a=>!a.removed).find(({knowledge})=>knowledge==_id)
 				})
 		},
 
@@ -542,7 +542,7 @@ module.exports={
 				.then(plan=>{
 					if(!plan || !plan.todos)
 						return hasHomework
-					const todo=plan.todos.find(({knowledge})=>knowledge==_id)
+					const todo=plan.todos.filter(a=>!a.removed).find(({knowledge})=>knowledge==_id)
 					
 					if(todo){
 						return {...hasHomework, ...(todo.fields||{})}
