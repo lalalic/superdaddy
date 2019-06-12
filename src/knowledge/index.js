@@ -6,7 +6,6 @@ export {default as Knowledges} from "./list"
 export {default as Creatable} from "./list-with-creator"
 export {default as NewKnowledge} from "./create"
 export {default as Knowledge} from "./info"
-import {compile} from "./code"
 
 
 const DOMAIN="knowledge"

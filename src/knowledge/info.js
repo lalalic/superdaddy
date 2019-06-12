@@ -1,5 +1,4 @@
 import React, {Component,Fragment} from "react"
-import PropTypes from "prop-types"
 
 import {compose, getContext} from "recompose"
 import {withMutation, withFragment,wechat,CommandBar, File, ACTION as qiliACTION} from "qili-app"
@@ -25,9 +24,8 @@ import {ACTION} from "."
 import FragmentContent,{Content} from "./content"
 import {withPlanActions} from "time-manage"
 import {ACTION as superdaddyACTION} from "../state"
-import {compile} from "./code"
+import {asModule} from "./code"
 import {print} from "components/print-trigger"
-import { UV_UDP_REUSEADDR } from "constants";
 
 
 export class KnowledgeEditor extends Component{
@@ -46,22 +44,10 @@ export class KnowledgeEditor extends Component{
 		document.body.removeChild(link)
 	}
 
-	getCode(urlOrCode){
-		try{
-			if(urlOrCode.length<256 || new URL(urlOrCode)){
-				return fetch(urlOrCode)
-					.then(res=>res.text())
-					.then(compile)
-			}
-		}catch(e){
-			return Promise.resolve(compile(urlOrCode))
-		}
-	}
-
 	preview(knowledge, props){
 		const {preview}=this.props
 		if(knowledge.code){
-			this.getCode(knowledge.code)
+			asModule(knowledge.code)
 				.then(plugin=>print({html:plugin.preview(props)}))
 		}else if(knowledge.template){
 			preview(...arguments)
@@ -71,7 +57,7 @@ export class KnowledgeEditor extends Component{
 	outputHomework(knowledge, props){
 		const {outputHomework}=this.props
 		if(knowledge.code){
-			this.getCode(knowledge.code)
+			asModule(knowledge.code)
 				.then(plugin=>print({html:plugin.homework(props)}))
 		}else if(knowledge.template){
 			outputHomework(...arguments)

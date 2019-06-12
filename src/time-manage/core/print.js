@@ -4,7 +4,7 @@ import {withFragment} from "qili-app"
 
 import {compose, mapProps} from "recompose"
 import Assembler from "publish/assemble";
-import {toHtml, compile} from "knowledge/parse"
+import {toHtml, asModule} from "knowledge/parse"
 
 export default compose(
     withFragment(graphql`
@@ -156,15 +156,12 @@ class Homework extends Component{
         const jobs=[]
         if(code){
             jobs.push(
-                fetch(code)
-                    .then(res=>res.text())
-                    .then(compile)
-                    .then(plugin=>{
-                        if(plugin.homework){
-                            homeworks.push(plugin.homework(data))
-                        }
-                    })
-                    .finally()
+                asModule(code).then(plugin=>{
+                    if(plugin.homework){
+                        homeworks.push(plugin.homework(data))
+                    }
+                })
+                .finally()
             )
         }
 

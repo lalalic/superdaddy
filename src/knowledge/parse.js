@@ -2,8 +2,7 @@ import React from "react"
 import cheer from "cheerio"
 import ReactDOM from "react-dom/server"
 import {test} from "./code"
-
-export {compile} from "./code"
+export {asModule} from "./code"
 
 let uuid=0
 
