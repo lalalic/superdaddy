@@ -1,6 +1,9 @@
 export default class Clock{
     constructor(){
         this.handler=null
+        if(typeof(window.AudioContext)=="undefined"){
+                window.AudioContext=window.webkitAudioContext
+        }
     }
 
     get context(){
@@ -20,9 +23,8 @@ export default class Clock{
 
     getMediaStream(){
         if(!this.stream){
-            return new Promise((resolve,reject)=>{
-                navigator.getUserMedia({audio:true},stream=>resolve(this.stream=stream), reject)
-            })
+            return navigator.mediaDevices.getUserMedia({audio:true})
+                .then(stream=>this.stream=stream)
         }
         return  Promise.resolve(this.stream)
     }
@@ -30,6 +32,7 @@ export default class Clock{
     start(onStart){
         return this.getMediaStream()
             .then(stream=>{
+                debugger
                 const source=this.context.createMediaStreamSource(stream)
 
                 const analyser = this.context.createAnalyser();
