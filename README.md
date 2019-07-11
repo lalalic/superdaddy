@@ -1,7 +1,7 @@
-superdaddy
+激励馆
 ==========
 
-super daddy app based on echeng
+激励馆 based on qili2.com
 
 docx knowledge structure
 ====================
