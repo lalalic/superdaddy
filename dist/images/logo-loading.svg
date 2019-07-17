@@ -10,7 +10,7 @@
         attributeName="r" from="3" to="1"
         dur="1s" repeatCount="indefinite"/>
     </circle>
-    <text x="5" y="20" font-size="5">P P Z</text>
+    <text x="5" y="20" font-size="5">J L G</text>
     <path d="M 3.5208 10.2525 q 6.95554 7.98853 16.9068 -4.76903"/>
   </g>
 </svg>

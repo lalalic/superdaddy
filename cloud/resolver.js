@@ -234,6 +234,15 @@ module.exports={
 				let kl=await app.get1Entity("knowledges",{_id:knowledge})
 				if(kl && kl.score)
 					score=kl.score
+			}else{//support content:100
+				let [,task_score]=content.split(/[:：]/)
+				if(task_score){
+					try{
+						score=parseInt(task_score)
+					}catch(e){
+
+					}
+				}
 			}
 			let plan=await app.get1Entity("plans",{_id})
 			let task=plan.todos.find(a=>knowledge ? a.knowledge==knowledge : a.content==content)

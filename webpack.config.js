@@ -7,8 +7,8 @@ const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
 
 const HTML={
 	template:'./node_modules/qili-app/index.tmpl',
-	title:"爸爸在",
-	favicon: "./dist/favicon.ico",
+	title:"激励馆",
+	favicon: "./dist/images/logo.svg",
 }
 
 module.exports=env=>{
