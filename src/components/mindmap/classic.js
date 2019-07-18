@@ -23,7 +23,7 @@ export class Scheme extends Component{
                             const colors=[...COLOR]
                             return children.map((node,i)=>
                                 <Level1 key={i} {...node} 
-                                    startOffset={50}
+                                    startOffset={60}
                                     strokeWidths={[20,2]}
                                     color={colors.splice(Math.floor(Math.random()*(colors.length-1)) ,1)[0]}
                                     rotate={angle*i+bias} scope={angle} 
@@ -54,10 +54,10 @@ export class Level1 extends Component{
         return (
             <g transform={`translate(${x} ${y})`} stroke={color}>
                 <g transform={`rotate(${rotate} 0 50)`}>
-                    <Path id={id} fill="none" d="M0,50 q30,5 50,-15 t30,-15" strokeWidths={strokeWidths}/>
+                    <Path id={id} fill="none" d="M0,50 q30,5 50,-15 t30,-15" strokeWidths={strokeWidths} which={rotate>180 ? -1 :1}/>
                     <text rotate={rotate>180 ? "180" : "0"}>
                         <textPath href={`#${id}`} {...others}>
-                            {title}
+                            {rotate>180 ? Array.from(title).reverse().join("") : title}
                         </textPath>
                     </text>
                     {
@@ -89,35 +89,38 @@ class Path extends Component{
     }
 
     render(){
-        const {strokeWidths,pieces=100, ...props}=this.props
-        const {totalLength}=this.state
-        if(!strokeWidths || strokeWidths.length==0 || !totalLength)
-            return <path {...props} ref={this.path}/>
-        
-        const dash=totalLength/pieces
-        const lerp=(p, a, b)=>{
-            debugger
-            return  Number(a)+(b-a)*p
-        }
+        const {strokeWidths=[],pieces=100, id, strokeWidth=0,...props}=this.props
+        const {paths, textPath}=this.state
 
         return (
             <g>
-                {
-                    new Array(pieces).fill(0).map((a,i)=>
-                        <path key={i} {...props} 
-                            strokeWidth={lerp(i/(pieces-1),...strokeWidths)} 
-                            strokeDasharray={`${(i+1)*dash},${totalLength}`}
-                            />
-                    )
-                }
+                <path {...props} ref={this.path} id={textPath ? "" : id}/>
+                {textPath && <path id={id} stroke="transparent" fill="none" d={textPath}/>}
+                {paths && <g>{paths.map((a,i)=><path key={i} {...props} {...a}/>)}</g>}
             </g>
         )
     }
 
     componentDidMount(){
-        const {strokeWidths,pieces=100}=this.props
+        const {strokeWidths,pieces=100,which=1}=this.props
         if(strokeWidths && strokeWidths.length>1){
-            this.setState({totalLength:this.path.current.getTotalLength()})
+            const path=this.path.current
+            const totalLength=path.getTotalLength()
+            const dash=totalLength/pieces
+            const lerp=(p, a, b)=>a+(b-a)*p
+            const padding=10
+            const points=[]
+            const paths=new Array(pieces).fill(0).map((a,i)=>{
+                const strokeWidth=lerp(i/(pieces-1),...strokeWidths)
+                const iDash=(i+1)*dash
+                const strokeDasharray=`${iDash},${totalLength}`
+                const {x,y}=path.getPointAtLength(iDash)
+                points.push({x,y:y-(strokeWidth/2+padding)*which})
+                return {strokeWidth,strokeDasharray}
+            })
+            const {x,y}=this.path.current.getPointAtLength(0)
+            const textPath=`M${x} ${y} L${points.map(({x,y})=>`${x},${y}`).join(" ")}`
+            this.setState({paths,textPath})
         }
     }
 }
