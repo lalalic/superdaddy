@@ -2,13 +2,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
 const {ContextReplacementPlugin, DefinePlugin} = require("webpack")
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
-const HtmlWebpackHarddiskPlugin=require('html-webpack-harddisk-plugin')
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
 
 const HTML={
 	template:'./node_modules/qili-app/index.tmpl',
 	title:"激励馆",
-	favicon: "./dist/images/logo.svg",
+	favicon: "./dist/images/icon.png",
 }
 
 module.exports=env=>{

@@ -25,6 +25,7 @@ script:
  - yarn build
  - rm dist/index.js
  - rm dist/tv.xml
+ - rm dist/phone.xml
  - mv dist/index.html .
  - yarn cordova -- --storePassword=$STORE_PWD --password=$STORE_PWD
 
