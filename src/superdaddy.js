@@ -437,9 +437,12 @@ export const routes=(
 				})),
 			)(Plan)}/>
 
+			<Route path="test" component={MindMap}/>
 		</Route>
 	</Router>
 )
+
+import MindMap from "./components/mindmap"
 
 export const SuperDaddy=compose(
 	withProps(({service="https://api.papazai.com/1/graphql"})=>({
