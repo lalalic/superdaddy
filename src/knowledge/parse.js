@@ -12,6 +12,9 @@ export default function parse(file){
 	let fields=[]
 	return import(/* webpackChunkName: "docx-template" */"docx-template").then(({DocxTemplate})=>{
 		function identify(node, officeDocument){
+			if(node.name=="w:hyperlink" && node.attribs["w:anchor"]){
+				return null
+			}
 			let model=DocxTemplate.identify(...arguments)
 			if(!model)
 				return model
@@ -107,19 +110,28 @@ export default function parse(file){
 				return varDoc.assemble({goal:"knowledge"})
 			})
 			.then(docx=>{
+				const $=docx.officeDocument.content
 				let steps=[], days=[], images=[],id=`_parser${uuid++}`
+				let toc=[]
 				let doc=docx.render((type,props,children)=>{
 					switch(type){
 					case "document":
 						props.id=id
 					break
+					case "control.docPartObj":
 					case "property":
 						return null
-					break
+					case "block":{
+						if($(props.node).find(`w\\:sdtPr>w\\:docPartObj`).length==1){
+							return null
+						}
+						break
+					}
 					case "control.picture":
 					case "picture":
-						images.push({url:props.url,crc32:props.crc32})
-					break
+						if(props.blipFill && props.blipFill.blip){
+							images.push({...props.blipFill.blip})
+						}
 					break
 					case '[step]':
 						steps.push(props.text)
@@ -132,7 +144,10 @@ export default function parse(file){
 					break
 					case "control.text":
 						type="inline"
-						children=docx.officeDocument.content(props.node).text()
+						children=$(props.node).text()
+					break
+					case "heading":
+						tocAppend({outline:props.outline, name:$(props.node).text()}, toc)
 					break
 					}
 					return createElement(type,props,children)
@@ -140,6 +155,10 @@ export default function parse(file){
 
 				let html=ReactDOM.renderToStaticMarkup(doc)
 				html=tidy(html)
+
+				if(toc.length==0){
+					toc=undefined
+				}
 
 				return {
 					docx,
@@ -150,6 +169,7 @@ export default function parse(file){
 					images,
 					sale,
 					code,
+					toc,
 					hasPrint,
 					hasHomework,
 					id,
@@ -189,23 +209,21 @@ const wrapper=({children})=>{
 }
 
 const TYPE={
-	ignore: a=>null
-	,document:"div"
-	,p:"p"
-	,r:"span"
-	,t:"span"
-	,picture:({url})=><img src={url}/>
-	,hyperlink:({url,children})=><a>{children}</a>
-	,tbl:({children})=><table><tbody>{children}</tbody></table>
-	,tr:"tr"
-	,tc:"td"
-	,heading:({level,children})=>{
-		return React.createElement(`h${level}`,{},children)
-	}
-	,list:({numId, level, children})=><ul><li>{children}</li></ul>
-	,block:({children})=><div>{children}</div>
-	,inline:({children})=><span>{children}</span>
-	,"control.text": ({children})=><span>{children}</span>
+	ignore: a=>null,
+	document:"div",
+	p:"p",
+	r:"span",
+	t:"span",
+	tr:"tr",
+	tc:"td",
+	picture:({blipFill:{blip:{url}}})=><img src={url}/>,
+	hyperlink:({url,children})=><a>{children}</a>,
+	tbl:({children})=><table><tbody>{children}</tbody></table>,
+	heading:({outline,children})=>React.createElement(`h${outline}`,{},children),
+	list:({numId, level, children})=><ul><li>{children}</li></ul>,
+	block:({children})=><div>{children}</div>,
+	inline:({children})=><span>{children}</span>,
+	"control.text": ({children})=><span>{children}</span>,
 }
 
 function tidy(html){
@@ -226,4 +244,18 @@ export function toHtml(docx){
 	const doc=docx.render(createElement)
 	const html=ReactDOM.renderToStaticMarkup(doc)
 	return tidy(html)
+}
+
+function tocAppend({outline,name}, toc){
+	if(toc.length==0){
+		toc.push({outline,name})
+	}else if(outline==toc[0].outline){
+		toc.push({outline,name})
+	}else if(outline>toc[0].outline){
+		const current=toc[toc.length-1]
+		if(!current.children){
+			current.children=[]
+		}
+		tocAppend(arguments[0], current.children)
+	}
 }

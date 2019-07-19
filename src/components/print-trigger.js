@@ -32,8 +32,10 @@ export class PrintTrigger extends Component{
 export function print({html, style, onAfterPrint}){
 	const printWindow = document.createElement("iframe");
 	printWindow.style.position = "absolute";
-	printWindow.style.top = "-1000px";
-	printWindow.style.left = "-1000px";
+	printWindow.style.top = "-10000px";
+	printWindow.style.left = "-10000px";
+	printWindow.style.width="100%"
+	printWindow.style.height="100%"
 	printWindow.onload=function(){
 		 /* IE11 support */
 		 if (window.navigator && window.navigator.userAgent.indexOf("Trident/7.0") > -1) {

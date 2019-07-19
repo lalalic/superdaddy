@@ -95,6 +95,7 @@ type Knowledge implements Node {
   updatedAt: Date
   summary: String
   figure: String
+  toc: JSON
   photos: [URL]
   zans: Int
   category: [String]

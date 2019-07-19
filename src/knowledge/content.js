@@ -4,54 +4,37 @@ import PropTypes from "prop-types"
 import {graphql} from "react-relay"
 import {Link} from "react-router"
 
-import {compose, withProps} from "recompose"
+import {compose} from "recompose"
 import {withFragment} from "qili-app"
 
 import {relative} from 'components/calendar'
 import AppBar from "components/app-bar"
+import MindMap from "components/mindmap"
 
 export const Content=({
-		knowledge:{id, title, content, summary, createdAt, category, tags, figure, author,}
+		knowledge:{id, title, content, summary, createdAt, category, tags, figure, author,toc}
 	})=>{
-	category=category||[]
-	tags=tags||[]	
-	content=<div dangerouslySetInnerHTML={{__html:content}}/>
-
-	if(summary){
-		content=(
-			<details open="open">
-				<summary>{summary}</summary>
-				{content}
-			</details>
-		)
-	}
-
-	let notNewStuff=null
-	if(id){
-		notNewStuff=[
-			(<AppBar key="appbar" title={title} />),
-			(<p key="author">
-				{author.name} - <time>{relative(createdAt)}</time>
-			</p>)
-		]
-	}else {
-		notNewStuff=(<AppBar title={title}/>)
-	}
-
-	if(figure)
-		figure=(<img src={figure}/>)
-
+	
 	return (
 		<article>
-			<figure>{figure}</figure>
-			<header  style={{backgroundColor:"transparent"}}>
-				{notNewStuff}
-				<p>
-					{[...category,...tags].join(", ")}
-				</p>
+			<header  style={{backgroundColor:"transparent", height:"auto"}}>
+				<AppBar title={title} />
+				{id && (<p><span>{author.name}</span> - <time>{relative(createdAt)}</time></p>)}
+				<p>{[...(category||[]),...(tags||[])].join(", ")}</p>
 			</header>
+			<figure style={{margin:10}}>
+				{figure ? (<img src={figure}/>) : (
+					toc ? <MindMap data={{title,children:toc}} 
+							width={150} height={150} 
+							viewBox={`0 0 ${toc.length*150} ${toc.length*150}`}
+							/> : null
+				)}
+				</figure>
 			<section>
-				{content}
+				<details open>
+					<summary>{summary}</summary>
+					<div dangerouslySetInnerHTML={{__html:content}}/>
+				</details>
 			</section>
 		</article>
 	)
@@ -64,6 +47,7 @@ export default compose(
 			title
 			content
 			summary
+			toc
 			createdAt
 			category
 			tags 

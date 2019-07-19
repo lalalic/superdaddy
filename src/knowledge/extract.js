@@ -55,7 +55,7 @@ export default function extract(file){
 	}
 
     return parse(file).then(doc=>{
-        let {docx, html:content, properties, id:elId,
+        let {docx, html:content, properties, id:elId, toc,
 				images, steps, sale, hasPrint, hasHomework,code,fields}=doc
 
         let {name,title, keywords, category, subject,
@@ -71,7 +71,8 @@ export default function extract(file){
 			toJSON:a=>undefined,
             knowledge: {
                 content,
-                title:title||name,
+				title:title||name,
+				toc,
                 summary:abstract||description||subject,
 				tags:keywords,
 				category,

@@ -60,6 +60,7 @@ module.exports=others=>`
 		updatedAt:Date
 		summary: String
 		figure: String
+		toc: JSON
 		photos: [URL]
 		zans: Int
 		category: [String]
