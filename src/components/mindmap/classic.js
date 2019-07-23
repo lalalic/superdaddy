@@ -1,9 +1,9 @@
 import React, {Component} from "react"
 import PropTypes from "prop-types"
 import Path from "./path"
-import RefreshIndicator from "material-ui/RefreshIndicator";
 
 var uuid=Date.now()
+const BIAS=-90
 export class Scheme extends Component{
     static childContextTypes={
         measure: PropTypes.shape({
@@ -40,7 +40,7 @@ export class Scheme extends Component{
                                     startOffset={60}
                                     strokeWidths={[20,3]}
                                     color={colors.splice(Math.floor(Math.random()*(colors.length-1)) ,1)[0]}
-                                    rotate={angle*i+30} 
+                                    rotate={BIAS+angle*i+30} 
                                     scope={angle}/>
                             )
                         }
@@ -61,19 +61,6 @@ export class Scheme extends Component{
                 </g>
             </g>
         )
-    }
-
-    componentDidMount(){
-        const root=this.root.current
-        const {width,height}=root.getBBox()
-        const box=root.ownerSVGElement.viewBox.baseVal
-        if((box.width/box.height-1)*(width/height-1)<0){
-            root.setAttr("transform",`${root.getAttr('transform')} rotate(90)`)
-        } 
-    }
-
-    componentDidUpdate(){
-        debugger
     }
 }
 
@@ -101,7 +88,7 @@ export class Level1 extends Component{
                                 const angle=Math.floor(180/children.length)
                                 return children.map((node,i)=>
                                     <Level2 key={i} {...node} 
-                                        rotate={-45+angle*i} 
+                                        rotate={BIAS+angle*i} 
                                         scope={angle} 
                                         measure={measure}/>
                                 )
@@ -142,7 +129,7 @@ export class Level2 extends Component{
                         const angle=Math.floor(180/children.length)
                         return children.map((node,i)=>
                             <Level3 key={i} {...node} 
-                                rotate={-45+angle*i} 
+                                rotate={BIAS+angle*i} 
                                 scope={angle} 
                                 measure={measure}/>
                         )

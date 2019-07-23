@@ -13,30 +13,31 @@ export default class MindMap extends Component{
         const {data=TEST, ...props}=this.props
         const {width,height}=this.state
         return (
-            <svg id="mindmap" ref={this.svg} {...props} onClick={e=>{
-                    const svg=(e.target.ownerSVGElement||e.target)
-                    print({
-                        html:`<html>
-                            <body>
-                                <center>
-                                    <svg width="100%" height="100%">
-                                        ${svg.innerHTML}
-                                    </svg>
-                                </center>
-                            </body>
-                        </html>`,
-                        style:`
-                        @page { 
-                            size: A4; 
-                        } 
-                        `
-                    })
-                }}    
-                >
+            <svg ref={this.svg} fontFamily="" fontSize="11" {...props} onClick={this.print}>
                 <text ref={this.measure} x={-10000} y={-10000}>Ä</text>
                 {width&&height &&<Scheme {...(data)} measure={this.makeMeasure()} strokeLinecap="round" x={width/2} y={height/2}/>}
             </svg>
         )
+    }
+
+    print(e){
+        const svg=(e.target.ownerSVGElement||e.target)
+        print({
+            html:`<html>
+                <body>
+                    <center>
+                        <svg width="100%" height="100%">
+                            ${svg.innerHTML}
+                        </svg>
+                    </center>
+                </body>
+            </html>`,
+            style:`
+            @page { 
+                size: A4; 
+            } 
+            `
+        })
     }
 
     makeMeasure(){
