@@ -437,7 +437,10 @@ export const routes=(
 				})),
 			)(Plan)}/>
 
-			<Route path="test" component={MindMap}/>
+			<Route path="test" component={({
+				routeParams,router, routes, route, params, location, data,
+				...props
+				})=><MindMap {...{width:400,height:500,viewBox:`0 0 400 500`}} {...props}/>}/>
 		</Route>
 	</Router>
 )

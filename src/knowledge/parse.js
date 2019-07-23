@@ -147,7 +147,16 @@ export default function parse(file){
 						children=$(props.node).text()
 					break
 					case "heading":
-						tocAppend({outline:props.outline, name:$(props.node).text()}, toc)
+						if(Array.isArray(toc)){
+							tocAppend({outline:props.outline, name:$(props.node).text()}, toc)
+						}
+					break
+					case "p":
+						const text=$(props.node).text()
+						if(text.startsWith("$mindmap:")){
+							toc=mindmap(text.substring("$mindmap:".length))
+							return null
+						}
 					break
 					}
 					return createElement(type,props,children)
@@ -158,6 +167,8 @@ export default function parse(file){
 
 				if(toc.length==0){
 					toc=undefined
+				}else if(Array.isArray(toc)){
+					toc={name:properties.name||properties.title, children:toc}
 				}
 
 				return {
@@ -258,4 +269,26 @@ function tocAppend({outline,name}, toc){
 		}
 		tocAppend(arguments[0], current.children)
 	}
+	return toc
+}
+
+
+function mindmap(mind=""){
+    let o=0
+    const outline=mind.split(",").reduce((as,a)=>{
+        as.data.splice(as.data.length-1,0,...a.split("(").map((b,i)=>{
+            o=as.outline+i
+            const j=b.indexOf(")")
+            if(j!=-1){
+                const a={name:b.substring(0,j), outline:o}
+				o=o-(b.length-j)
+				return a
+            }
+            return {name:b, outline:o}
+        }))
+        as.outline=o
+        return as
+    },{outline:1,data:[]}).data
+    const toc=outline.reduce((toc,a)=>tocAppend(a,toc),[])
+    return toc[0]
 }

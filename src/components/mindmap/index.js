@@ -1,19 +1,19 @@
 import React,{Component} from "react"
 import {Scheme} from "./classic"
 import {print} from "../print-trigger"
-import withWidth from "material-ui/utils/withWidth";
 
 export default class MindMap extends Component{
     constructor(){
         super(...arguments)
         this.svg=React.createRef()
+        this.measure=React.createRef()
         this.state={}
     }
     render(){
         const {data=TEST, ...props}=this.props
         const {width,height}=this.state
         return (
-            <svg ref={this.svg} xmlns="http://www.w3.org/2000/svg"{...props} onClick={e=>{
+            <svg id="mindmap" ref={this.svg} {...props} onClick={e=>{
                     const svg=(e.target.ownerSVGElement||e.target)
                     print({
                         html:`<html>
@@ -33,20 +33,39 @@ export default class MindMap extends Component{
                     })
                 }}    
                 >
-                {width&&height &&<Scheme {...(data)} fontSize="12" strokeLinecap="round" x={width/2} y={height/2}/>}
+                <text ref={this.measure} x={-10000} y={-10000}>Ä</text>
+                {width&&height &&<Scheme {...(data)} measure={this.makeMeasure()} strokeLinecap="round" x={width/2} y={height/2}/>}
             </svg>
         )
+    }
+
+    makeMeasure(){
+        const r=this.measure
+        return {
+            lineHeight(){
+                return r.current.getBBox().height
+            },
+
+            stringWidth(word){
+                r.current.firstChild.data=word
+                return r.current.getBBox().width
+            }
+        }
     }
 
     componentDidMount(){
         const {width,height}=this.svg.current.viewBox.baseVal
         this.setState({width,height})
     }
+
+    static get parse(){
+        return parse
+    }
 }
 
 const TEST={
     name:"composition",
-    title:"作文",
+    title:"如何写好一篇作文",
     children:[
         {
             name:"目标",
@@ -92,4 +111,3 @@ const TEST={
         }
     ]
 }
-

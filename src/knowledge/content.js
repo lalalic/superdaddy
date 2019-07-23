@@ -14,7 +14,7 @@ import MindMap from "components/mindmap"
 export const Content=({
 		knowledge:{id, title, content, summary, createdAt, category, tags, figure, author,toc}
 	})=>{
-	
+	const tocLen=()=>toc.children ? toc.children.length : 1
 	return (
 		<article>
 			<header  style={{backgroundColor:"transparent", height:"auto"}}>
@@ -24,9 +24,9 @@ export const Content=({
 			</header>
 			<figure style={{margin:10}}>
 				{figure ? (<img src={figure}/>) : (
-					toc ? <MindMap data={{title,children:toc}} 
+					toc ? <MindMap data={toc} 
 							width={150} height={150} 
-							viewBox={`0 0 ${toc.length*150} ${toc.length*150}`}
+							viewBox={`0 0 ${tocLen()*150} ${tocLen()*150}`}
 							/> : null
 				)}
 				</figure>
