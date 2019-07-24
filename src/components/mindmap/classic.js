@@ -24,12 +24,12 @@ export class Scheme extends Component{
     }
 
     render(){
-        const {name,title=name,children=[], x, y, measure, ...props}=this.props
+        const {name,title=name,children=[], measure, ...props}=this.props
         const width=measure.stringWidth(title)
         const height=measure.lineHeight()
         const scale=width>70 ? 70/width : 1
         return (
-            <g ref={this.root} transform={`translate(${x} ${y})`} {...props}>
+            <g ref={this.root} {...props}>
                 {
                     (()=>{
                         if(children.length){
@@ -80,7 +80,7 @@ export class Level1 extends Component{
                     <Path id={id} fill="none" 
                         d={`M0,50 q30,5 50,-15 t${Math.max(30,measure.stringWidth(title)+20)},-15`} 
                         strokeWidths={strokeWidths} 
-                        which={rotate>=180 ? -1 :1}
+                        flip={rotate>=180 ? -1 :1}
                         >
                         {
                         (()=>{

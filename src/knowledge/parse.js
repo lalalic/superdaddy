@@ -113,6 +113,7 @@ export default function parse(file){
 				const $=docx.officeDocument.content
 				let steps=[], days=[], images=[],id=`_parser${uuid++}`
 				let toc=[]
+				let mindmaps=[]
 				let doc=docx.render((type,props,children)=>{
 					switch(type){
 					case "document":
@@ -153,9 +154,10 @@ export default function parse(file){
 					break
 					case "p":
 						const text=$(props.node).text()
-						if(text.startsWith("$mindmap:")){
-							toc=mindmap(text.substring("$mindmap:".length))
-							return null
+						if(text.startsWith("mindmap://")){
+							mindmaps.push(text)
+							//toc=mindmap(text.substring("mindmap://".length))
+							return createElement("mindmap",{...props,type:"mindmap",src:text})
 						}
 					break
 					}
@@ -167,8 +169,12 @@ export default function parse(file){
 
 				if(toc.length==0){
 					toc=undefined
-				}else if(Array.isArray(toc)){
+				}else{
 					toc={name:properties.name||properties.title, children:toc}
+				}
+
+				if(mindmaps.length==0){
+					mindmaps=undefined
 				}
 
 				return {
@@ -181,6 +187,7 @@ export default function parse(file){
 					sale,
 					code,
 					toc,
+					mindmaps,
 					hasPrint,
 					hasHomework,
 					id,
@@ -203,10 +210,15 @@ function extractField(model, node, $){
 }
 
 
-function createElement(type,props,children){
+function createElement(type,props,children=[]){
 	const {pr,node,type:a,...others}=props
 	let Type=TYPE[type]||wrapper
-	return React.createElement(Type, others,...children)
+	try{
+		return React.createElement(Type, others,...children)
+	}catch(e){
+		debugger
+		return null
+	}
 }
 
 const wrapper=({children})=>{
@@ -227,6 +239,7 @@ const TYPE={
 	t:"span",
 	tr:"tr",
 	tc:"td",
+	mindmap:({src})=><center>{React.createElement(`x-mindmap`,{src})}</center>,
 	picture:({blipFill:{blip:{url}}})=><img src={url}/>,
 	hyperlink:({url,children})=><a>{children}</a>,
 	tbl:({children})=><table><tbody>{children}</tbody></table>,
@@ -257,7 +270,7 @@ export function toHtml(docx){
 	return tidy(html)
 }
 
-function tocAppend({outline,name}, toc){
+function tocAppend({outline,name}, toc=[]){
 	if(toc.length==0){
 		toc.push({outline,name})
 	}else if(outline==toc[0].outline){
@@ -270,25 +283,4 @@ function tocAppend({outline,name}, toc){
 		tocAppend(arguments[0], current.children)
 	}
 	return toc
-}
-
-
-function mindmap(mind=""){
-    let o=0
-    const outline=mind.split(",").reduce((as,a)=>{
-        as.data.splice(as.data.length-1,0,...a.split("(").map((b,i)=>{
-            o=as.outline+i
-            const j=b.indexOf(")")
-            if(j!=-1){
-                const a={name:b.substring(0,j), outline:o}
-				o=o-(b.length-j)
-				return a
-            }
-            return {name:b, outline:o}
-        }))
-        as.outline=o
-        return as
-    },{outline:1,data:[]}).data
-    const toc=outline.reduce((toc,a)=>tocAppend(a,toc),[])
-    return toc[0]
 }

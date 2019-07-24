@@ -15,6 +15,7 @@
     "qili-cli": "^1.2.50",
     "react-router": "^3.2.0",
     "react-to-print": "^2.1.2",
+    "remount": "^0.11.0",
     "wechat4u": "^0.6.8"
   },
   "resolutions": {

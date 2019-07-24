@@ -440,7 +440,7 @@ export const routes=(
 			<Route path="test" component={({
 				routeParams,router, routes, route, params, location, data,
 				...props
-				})=><MindMap {...{width:400,height:500,viewBox:`0 0 400 500`}} {...props}/>}/>
+				})=><MindMap {...{style:{width:"100%"},src:"mindmap://如何写好作文(中心(论点,主题),材料(1,2,3,…),结构(开头,1,2,3,…,结尾),表现(象征,对比,衬托,拟人))"}} {...props}/>}/>
 		</Route>
 	</Router>
 )

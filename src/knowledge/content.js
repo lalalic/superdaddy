@@ -24,10 +24,7 @@ export const Content=({
 			</header>
 			<figure style={{margin:10}}>
 				{figure ? (<img src={figure}/>) : (
-					toc ? <MindMap data={toc} 
-							width={150} height={150} 
-							viewBox={`0 0 ${tocLen()*150} ${tocLen()*150}`}
-							/> : null
+					toc ? <MindMap data={toc}/> : null
 				)}
 				</figure>
 			<section>

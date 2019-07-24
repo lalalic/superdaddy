@@ -1,6 +1,8 @@
 import React,{Component} from "react"
 import {Scheme} from "./classic"
 import {print} from "../print-trigger"
+import {define} from "remount"
+
 
 export default class MindMap extends Component{
     constructor(){
@@ -9,13 +11,16 @@ export default class MindMap extends Component{
         this.measure=React.createRef()
         this.state={}
     }
+
     render(){
-        const {data=TEST, ...props}=this.props
-        const {width,height}=this.state
+        const {src, data=parse(src), ...props}=this.props
+        const {measure}=this.state
         return (
-            <svg ref={this.svg} fontFamily="" fontSize="11" {...props} onClick={this.print}>
+            <svg ref={this.svg} fontSize="11"  strokeLinecap="round" {...props} onClick={this.print}>
                 <text ref={this.measure} x={-10000} y={-10000}>Ä</text>
-                {width&&height &&<Scheme {...(data)} measure={this.makeMeasure()} strokeLinecap="round" x={width/2} y={height/2}/>}
+                <g  transform={`translate(-10000 -10000)`}>
+                    {measure && <Scheme {...(data)} measure={measure}/>}
+                </g>
             </svg>
         )
     }
@@ -40,75 +45,69 @@ export default class MindMap extends Component{
         })
     }
 
-    makeMeasure(){
-        const r=this.measure
-        return {
+    componentDidMount(){
+        const r=this.measure.current
+        this.setState({measure:{
             lineHeight(){
-                return r.current.getBBox().height
+                return r.getBBox().height
             },
 
             stringWidth(word){
-                r.current.firstChild.data=word
-                return r.current.getBBox().width
+                r.firstChild.data=word
+                return r.getBBox().width
             }
-        }
+        }}, this.adjustSize.bind(this))
     }
 
-    componentDidMount(){
-        const {width,height}=this.svg.current.viewBox.baseVal
-        this.setState({width,height})
-    }
 
-    static get parse(){
-        return parse
+    adjustSize(){
+        setTimeout(()=>{
+            const svg=this.svg.current
+            const g=svg.querySelector('g')
+            const {x,y,width,height}=g.getBBox()
+            g.setAttribute("transform",`translate(${-x} ${-y})`)
+            svg.setAttribute("width",width)
+            svg.setAttribute("height",height)
+            svg.querySelector('text').remove()
+        },100)
     }
 }
 
-const TEST={
-    name:"composition",
-    title:"如何写好一篇作文",
-    children:[
-        {
-            name:"目标",
-            children:[
-                {
-                    name:"事实",
-                    children:[
-                        {
-                            name:"正叙"
-                        },
-                        {
-                            name:"倒叙"
-                        },
-                        {
-                            name:"虚构"
-                        }
-                    ]
-                },
-                {
-                    name:"情感"
-                },
-                {
-                    name:"虚构"
-                }
-            ]
-        },
-        {
-            name:"结构",
-            children:[
-                {
-                    name:"正叙"
-                },
-                {
-                    name:"倒叙"
-                },
-                {
-                    name:"虚构"
-                }
-            ]
-        },
-        {
-            name:"论点"
-        }
-    ]
+define({"x-mindmap":{component:MindMap, attributes:["src","width","height"]}})
+
+function parse(mind=""){
+    if(mind.startsWith("mindmap://")){
+        mind=mind.substring("mindmap://".length)
+    }
+	function tocAppend({outline,name}, toc=[]){
+		if(toc.length==0){
+			toc.push({outline,name})
+		}else if(outline==toc[0].outline){
+			toc.push({outline,name})
+		}else if(outline>toc[0].outline){
+			const current=toc[toc.length-1]
+			if(!current.children){
+				current.children=[]
+			}
+			tocAppend(arguments[0], current.children)
+		}
+		return toc
+	}
+    let o=0
+    const outline=mind.split(",").reduce((as,a)=>{
+        as.data.splice(as.data.length-1,0,...a.split("(").map((b,i)=>{
+            o=as.outline+i
+            const j=b.indexOf(")")
+            if(j!=-1){
+                const a={name:b.substring(0,j), outline:o}
+				o=o-(b.length-j)
+				return a
+            }
+            return {name:b, outline:o}
+        }))
+        as.outline=o
+        return as
+    },{outline:1,data:[]}).data
+    const toc=outline.reduce((toc,a)=>tocAppend(a,toc),[])
+    return toc[0]
 }
