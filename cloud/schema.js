@@ -22,14 +22,7 @@ module.exports=others=>`
 		score: Int
 		todo: String
 		week: Int
-
 		todos: [Todo]
-
-		caps:[String]
-		goals:[String]
-		months:[MonthPlan]
-
-		pendingKnowledges: [Knowledge]
 	}
 
 	type Todo{
