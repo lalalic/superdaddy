@@ -6,13 +6,16 @@ export default class Path extends Component{
     static propTypes={
         precision:PropTypes.number,
         strokeWidths:PropTypes.arrayOf(PropTypes.number),
-        flip:PropTypes.oneOf([1,0]),
     }
 
     static defaultProps={
         precision:100,
-        flip:1,
     }
+
+    static contextTypes={
+        flip:PropTypes.any,
+    }
+
     constructor(){
         super(...arguments)
         this.path=React.createRef()
@@ -38,11 +41,12 @@ export default class Path extends Component{
     }
 
     componentDidMount(){
-        const {strokeWidth=1, strokeWidths=[],precision,flip,id, children}=this.props
+        const {strokeWidth=1, strokeWidths=[],precision,id, children}=this.props
         const textPadding=strokeWidths.length>0 ? Math.max(...strokeWidths)/2 : strokeWidth
         const path=this.path.current
         const totalLength=path.getTotalLength()
         const dash=totalLength/precision
+        const flip=this.context.flip
 
         var state={}
         if(strokeWidths && strokeWidths.length>1){

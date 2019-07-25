@@ -2,6 +2,7 @@ import React,{Component} from "react"
 import {Scheme} from "./classic"
 import {print} from "../print-trigger"
 import {define} from "remount"
+import parse from "./parse"
 
 
 export default class MindMap extends Component{
@@ -16,7 +17,7 @@ export default class MindMap extends Component{
         const {src, data=parse(src), ...props}=this.props
         const {measure}=this.state
         return (
-            <svg ref={this.svg} fontSize="11"  strokeLinecap="round" {...props} onClick={this.print}>
+            <svg ref={this.svg} fontSize="12"  strokeLinecap="round" {...props} onClick={this.print}>
                 <text ref={this.measure} x={-10000} y={-10000}>Ä</text>
                 <g  transform={`translate(-10000 -10000)`}>
                     {measure && <Scheme {...(data)} measure={measure}/>}
@@ -71,43 +72,8 @@ export default class MindMap extends Component{
             svg.querySelector('text').remove()
         },100)
     }
-}
 
-define({"x-mindmap":{component:MindMap, attributes:["src","width","height"]}})
-
-function parse(mind=""){
-    if(mind.startsWith("mindmap://")){
-        mind=mind.substring("mindmap://".length)
+    static asHtmlElement(){
+        define({"x-mindmap":{component:MindMap, attributes:["src","width","height"]}})
     }
-	function tocAppend({outline,name}, toc=[]){
-		if(toc.length==0){
-			toc.push({outline,name})
-		}else if(outline==toc[0].outline){
-			toc.push({outline,name})
-		}else if(outline>toc[0].outline){
-			const current=toc[toc.length-1]
-			if(!current.children){
-				current.children=[]
-			}
-			tocAppend(arguments[0], current.children)
-		}
-		return toc
-	}
-    let o=0
-    const outline=mind.split(",").reduce((as,a)=>{
-        as.data.splice(as.data.length-1,0,...a.split("(").map((b,i)=>{
-            o=as.outline+i
-            const j=b.indexOf(")")
-            if(j!=-1){
-                const a={name:b.substring(0,j), outline:o}
-				o=o-(b.length-j)
-				return a
-            }
-            return {name:b, outline:o}
-        }))
-        as.outline=o
-        return as
-    },{outline:1,data:[]}).data
-    const toc=outline.reduce((toc,a)=>tocAppend(a,toc),[])
-    return toc[0]
 }

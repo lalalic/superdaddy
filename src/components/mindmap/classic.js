@@ -68,6 +68,20 @@ export class Level1 extends Component{
     static contextTypes={
         measure: PropTypes.any
     }
+    static childContextTypes={
+        flip:PropTypes.oneOf([1,-1]),
+    }
+
+    getChildContext(){
+        return {
+            flip:this.flip
+        }
+    }
+
+    get flip(){
+        return this.props.rotate>=180 ? -1 : 1
+    }
+
     render(){
         const measure=this.context.measure
         const {name,title=name,children=[], id=`${++uuid}`, 
@@ -80,18 +94,12 @@ export class Level1 extends Component{
                     <Path id={id} fill="none" 
                         d={`M0,50 q30,5 50,-15 t${Math.max(30,measure.stringWidth(title)+20)},-15`} 
                         strokeWidths={strokeWidths} 
-                        flip={rotate>=180 ? -1 :1}
                         >
                         {
                         (()=>{
                             if(children.length){
                                 const angle=Math.floor(180/children.length)
-                                return children.map((node,i)=>
-                                    <Level2 key={i} {...node} 
-                                        rotate={BIAS+angle*i} 
-                                        scope={angle} 
-                                        measure={measure}/>
-                                )
+                                return children.map((node,i)=><Level2 key={i} {...node} rotate={BIAS+angle*i} />)
                             }
                             return null
                         })()
@@ -109,7 +117,8 @@ export class Level1 extends Component{
 }
 export class Level2 extends Component{
     static contextTypes={
-        measure: PropTypes.any
+        measure: PropTypes.any,
+        flip: PropTypes.any,
     }
     
     render(){
@@ -127,19 +136,16 @@ export class Level2 extends Component{
                 (()=>{
                     if(children.length){
                         const angle=Math.floor(180/children.length)
-                        return children.map((node,i)=>
-                            <Level3 key={i} {...node} 
-                                rotate={BIAS+angle*i} 
-                                scope={angle} 
-                                measure={measure}/>
-                        )
+                        return children.map((node,i)=><Level3 key={i} {...node} rotate={BIAS+angle*i}/>)
                     }
                     return null
                 })()
                 }
                 </Path>
-                <text>
-                    <textPath href={`#${id}`} startOffset={30} >{title}</textPath>
+                <text rotate={this.context.flip==-1 ? "180" : "0"}>
+                    <textPath href={`#${id}`} startOffset={30}>
+                        {this.context.flip==-1 ? Array.from(title).reverse().join("") : title}
+                    </textPath>
                 </text>
             </g>
         )

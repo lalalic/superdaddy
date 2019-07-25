@@ -55,7 +55,7 @@
   },
   "scripts": {
     "build": "webpack",
-    "test": "jest __tests__",
+    "test": "jest",
     "dev": "yarn relay && yarn persist && webpack-dev-server --env=dev",
     "cordova": "cordova create cordova --link-to=dist && cd cordova && cp www/phone.xml config.xml && cordova platform add android && cordova build android --release -- --keystore=../lalalic.keystore --alias=lalalic",
     "tv": "cordova create tv --link-to=dist && cd tv && cp www/tv.xml config.xml && cordova platform add android && cordova build android",

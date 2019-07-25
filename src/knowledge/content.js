@@ -1,8 +1,6 @@
 import React from "react"
-import PropTypes from "prop-types"
 
 import {graphql} from "react-relay"
-import {Link} from "react-router"
 
 import {compose} from "recompose"
 import {withFragment} from "qili-app"
@@ -10,6 +8,8 @@ import {withFragment} from "qili-app"
 import {relative} from 'components/calendar'
 import AppBar from "components/app-bar"
 import MindMap from "components/mindmap"
+
+MindMap.asHtmlElement()
 
 export const Content=({
 		knowledge:{id, title, content, summary, createdAt, category, tags, figure, author,toc}
