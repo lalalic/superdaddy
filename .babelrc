@@ -22,5 +22,10 @@
 				"family": "./src/family"
 			}
 		}]
-    ]
+	],
+	"env": {
+		"test": {
+		  "plugins": ["dynamic-import-node"]
+		}
+	  }
 }

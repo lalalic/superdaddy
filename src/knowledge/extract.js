@@ -50,7 +50,7 @@ function extractFromJavascript(file){
 }
 
 export default function extract(file){
-	if(file.type.endsWith("javascript")){
+	if(file && file.type && file.type.endsWith("javascript")){
 		return extractFromJavascript(file)
 	}
 

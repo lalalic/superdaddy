@@ -34,6 +34,7 @@
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-transform-class-properties": "^6.6.0",
     "babel-plugin-transform-object-rest-spread": "^6.6.5",
+    "babel-plugin-dynamic-import-node": "^2.3.0",
     "babel-preset-es2015": "^6.6.0",
     "babel-preset-react": "^6.5.0",
     "browserify": "^16.2.0",
@@ -74,12 +75,6 @@
     "node": ">= 8"
   },
   "readme": "README.md",
-  "jest": {
-    "roots": [
-      "__tests__"
-    ],
-    "watchman": false
-  },
   "config": {
     "devPort": 9082,
     "appId": "5746b2c5e4bb3b3700ae1566",
