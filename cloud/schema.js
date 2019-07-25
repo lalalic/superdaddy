@@ -55,7 +55,7 @@ module.exports=others=>`
 		createdAt:Date
 		updatedAt:Date
 		summary: String
-		figure: String
+		figure: URL
 		toc: JSON
 		photos: [URL]
 		zans: Int

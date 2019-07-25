@@ -11,7 +11,7 @@ const currentWeek=()=>{
 function plan_goal_achieved(plan,{_id},{user,app}){
 	if(plan.score>=plan.goal){
 		return app.updateEntity("plans",{_id},{$set:{goal:0,score:plan.score-plan.goal,todo:null}})
-			.then(()=>app.createEntity("achievements",{score:plan.goal,achievement:plan.todo,child:_id,createdDate:new Date()}))
+			.then(()=>app.createEntity("achievements",{score:plan.goal,achievement:plan.todo,child:_id}))
 	}else{
 		return Promise.resolve()
 	}

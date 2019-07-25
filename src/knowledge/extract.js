@@ -113,7 +113,10 @@ export default function extract(file){
 				})
 
 				return Promise.all(done)
-					.then(images=>externalizeDocxImage(docx,images))
+					.then(images=>{
+						this.knowledge.photos=images.map(a=>a.url)
+						return externalizeDocxImage(docx,images)
+					})
 					.then(externalizedDocx=>upload(externalizedDocx, id,`template.docx`))
 					.then(({url})=>this.knowledge.template=url)
 					.then(()=>code && upload(codeToBlob(data), id, 'index.js').then(url=>this.knowledge.code=url))

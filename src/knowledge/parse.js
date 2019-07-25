@@ -155,8 +155,7 @@ export default function parse(file){
 					case "p":
 						const text=$(props.node).text()
 						if(text.startsWith("mindmap://")){
-							mindmaps.push(text)
-							//toc=mindmap(text.substring("mindmap://".length))
+							images.push({url:text})
 							return createElement("mindmap",{...props,type:"mindmap",src:text})
 						}
 					break
