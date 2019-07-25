@@ -26,8 +26,8 @@ export const withPlanActions=props=>compose(
 		patch4: `plans:${child.split(":").pop()}`,
 		variables:{child,plan},
 		mutation: graphql`
-			mutation timeManage_status_Mutation($child:ObjectID, $plan: JSON){
-				plan_update(_id:$child, plan:$plan){
+			mutation timeManage_status_Mutation($child:ObjectID, $goal:Int, $todo:String){
+				plan_reset_achievement(_id:$child, goal:$goal, todo:$todo){
 					...core
 				}
 			}
@@ -56,7 +56,7 @@ export const withPlanActions=props=>compose(
 		variables:{child},
 		mutation: graphql`
 			mutation timeManage_reset_Mutation($child:ObjectID){
-				plan_reset(_id:$child){
+				plan_reset_week(_id:$child){
 					...core
 				}
 			}

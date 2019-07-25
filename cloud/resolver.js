@@ -8,6 +8,15 @@ const currentWeek=()=>{
 	return parseInt(week.getTime()/1000)
 }
 
+function plan_goal_achieved(plan,{_id},{user,app}){
+	if(plan.score>=plan.goal){
+		return app.updateEntity("plans",{_id},{$set:{goal:0,score:plan.score-plan.goal,todo:null}})
+			.then(()=>app.createEntity("achievements",{score:plan.goal,achievement:plan.todo,child:_id,createdDate:new Date()}))
+	}else{
+		return Promise.resolve()
+	}
+}
+
 module.exports={
 	Child:{
 		birthday:({birthday,bd})=>birthday||bd,
@@ -169,10 +178,26 @@ module.exports={
 		publish_remove(_, {_id}, {app,user}){
 			return app.remove1Entity("publishs",{_id, author: user._id, status:{$ne:0}})
 		},
-		plan_update(_,{_id, plan:{score, ...plan}},{app,user}){
-			return app.patchEntity("plans",{_id},{...plan})
+
+		plan_update_icon(_,{_id, icon},{app,user}){
+			return app.patchEntity("plans",{_id},{icon})
 				.then(()=>app.get1Entity("plans",{_id}))
 		},
+
+		plan_reset_achievement(_,{_id, goal,todo},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then(plan=>{
+					if(plan.score>=plan.goal){
+						return plan_goal_achieved(plan,{_id},{app,user})
+							.then(()=>app.get1Entity("plans",{_id}))
+					}else{
+						return plan
+					}
+				})
+				.then(()=>app.patchEntity("plans",{_id},{goal,todo}))
+				.then(()=>app.get1Entity("plans",{_id}))
+		},
+
 		plan_update_goals(_,{_id, goals},{app,user}){
 			return app.patchEntity("plans",{_id},{goals})
 				.then(()=>app.get1Entity("plans",{_id}))
@@ -262,7 +287,7 @@ module.exports={
 				.then(()=>app.getDataLoader("users").clear(_id).load(_id))
 		},
 
-		async plan_reset(_,{_id},{app,user}){
+		async plan_reset_week(_,{_id},{app,user}){
 			let plan=await app.getDataLoader("plans").load(_id)
 
 			function saveFinishedTasks(){

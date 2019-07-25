@@ -84,54 +84,28 @@ export class Child extends Component{
 							value={`${score}${totalScore==score ? "" : `/${totalScore}`}`}
 							/>
 
-						<InfoForm.Field primaryText="目标" value={goal}
-							type="input"
-							onEdit={goal=>updatePlan({goal})}
-							/>
+						<InfoForm.Field primaryText="目标" value={goal}/>
 
-						<InfoForm.Field primaryText="奖励" value={todo}
-							onEdit={()=>{
-								const plan={}
-								if(newTodo)
-									plan.todo=newTodo
-								if(newGoal)
-									plan.goal=newGoal
-
-								updatePlan(plan)
-							}}
-							>
-							<Goods hintText={todo}
-								onChange={(value,index)=>{
-									if(index!=-1){
-										let [goal, ...desc]=value.split(":")
-										newGoal=parseInt(goal)
-										newTodo=desc.join(":")
-									}else{
-										newTodo=value
-									}
-								}}
-								openOnFocus={true}
-								fullWidth={true} />
-						</InfoForm.Field>
+						<InfoForm.Field primaryText="奖励" value={todo}/>
 					</InfoForm>
 				</div>
 
 				<CommandBar style={{flex:"none"}}
 					items={[
-						"Back"
-						/*,{
+						"Back",
+						/*{
 							action:"publish",
 							label:"出版",
 							icon:<IconPublish/>,
 							onSelect:toPublish
-						}*/
-						,{
+						},
+						{
 							action:"plan",
 							label:"年度计划",
 							icon:<IconPlan/>,
 							onSelect:toPlan
-						}
-						,{
+						},*/
+						{
 							action:"Remove",
 							label:"删除",
 							icon:<IconRemove/>,
@@ -244,16 +218,15 @@ export default compose(
 			}
 		`
 	})),
-	withMutation(({id}, plan)=>({
+	withMutation(({id}, {icon})=>({
 		name: "updatePlan",
 		patch4: `plans:${id.split(":").pop()}`,
-		variables:{id,  plan},
+		variables:{id,  icon},
 		mutation:graphql`
-			mutation child_planupdate_Mutation($id:ObjectID,$plan:JSON){
-				plan_update(_id:$id, plan:$plan){
+			mutation child_planupdate_Mutation($id:ObjectID,$icon:String){
+				plan_update_icon(_id:$id, icon:$icon){
 					id
 					icon
-					todo
 				}
 			}
 		`,
