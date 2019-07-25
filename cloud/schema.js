@@ -22,7 +22,10 @@ module.exports=others=>`
 		score: Int
 		todo: String
 		week: Int
+
 		todos: [Todo]
+
+		pendingKnowledges: [Knowledge]
 	}
 
 	type Todo{

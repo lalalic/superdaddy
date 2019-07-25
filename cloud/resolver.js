@@ -52,8 +52,6 @@ module.exports={
 				return todos
 			return todos.filter(a=>!a.removed)
 		},
-		caps: ()=>CAPS,
-
 		pendingKnowledges({goals},{},ctx){
 			return  module.exports.Query.knowledges(null,{categories:goals},ctx)
 				.then(({edges})=>edges)
@@ -184,7 +182,7 @@ module.exports={
 				.then(()=>app.get1Entity("plans",{_id}))
 		},
 
-		plan_task_done(_,{_id,content,knowledge,props,day},{app,user}){
+		async plan_task_done(_,{_id,content,knowledge,props,day},{app,user}){
 			props=props||{}
 			let score=1
 			if(knowledge){
@@ -219,7 +217,7 @@ module.exports={
 				.then(()=>app.getDataLoader("users").clear(_id).load(_id))
 		},
 
-		plan_reset_week(_,{_id},{app,user}){
+		async plan_reset_week(_,{_id},{app,user}){
 			let plan=await app.getDataLoader("plans").load(_id)
 
 			function saveFinishedTasks(){
