@@ -5,6 +5,7 @@ import {compose, getContext, withProps} from "recompose"
 import {withFragment} from "qili-app"
 
 import {relative} from 'components/calendar'
+import MindMap from "components/mindmap"
 
 export class Item extends Component{
     render(){
@@ -42,7 +43,7 @@ export class Item extends Component{
                         {this._more(model)}
                     </div>
                     <div className="photos">
-                        <div><img src={model.photos[0]}/></div>
+                        <div><IMG src={model.photos[0]}/></div>
                     </div>
                 </div>
             </div>
@@ -55,9 +56,9 @@ export class Item extends Component{
             <div className="li inset photo3" style={style}>
                 <div className="title" onClick={()=>toKnowledge(model.id)}>{model.title}</div>
                 <div className="photos">
-                    <div><img src={model.photos[0]}/></div>
-                    <div><img src={model.photos[1]}/></div>
-                    <div><img src={model.photos[2]}/></div>
+                    <div><IMG src={model.photos[0]}/></div>
+                    <div><IMG src={model.photos[1]}/></div>
+                    <div><IMG src={model.photos[2]}/></div>
                 </div>
             {this._more(model)}
             </div>
@@ -74,6 +75,14 @@ export class Item extends Component{
                 {zan}
             </div>
         )
+    }
+}
+
+const IMG=({src})=>{
+    if(src.startsWith("mindmap://")){
+        return <MindMap src={src} width={150} height={150}/>
+    }else{
+        return <img src={src}/>
     }
 }
 
