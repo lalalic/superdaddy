@@ -1,5 +1,4 @@
 import React, {Component,Fragment} from "react"
-import PropTypes from "prop-types"
 
 import {connect} from "react-redux"
 import {compose, setStatic, getContext, withProps} from "recompose"
@@ -10,13 +9,10 @@ import {TextField, RadioButtonGroup, RadioButton,DatePicker,Subheader} from 'mat
 
 import {Icons} from "icons/task"
 
-import Goods from "components/goods"
-
 import {yellow500 as COLOR_DONE} from "material-ui/styles/colors"
 
 import IconRemove from "material-ui/svg-icons/content/remove-circle"
 import IconPublish from "material-ui/svg-icons/action/card-giftcard"
-import IconPlan from "material-ui/svg-icons/editor/linear-scale"
 
 import {ACTION} from "../state"
 
@@ -30,10 +26,9 @@ export class Child extends Component{
 	render(){
 		const {id, name,photo,birthday,gender, totalScore=score,
 				plan:{icon,todo,goal,score=0},
-				update, remove, toPublish, toPlan, updatePlan,
+				update, remove, toPublish, updatePlan,
 				}=this.props
 		const {nameError}=this.state
-		var newTodo, newGoal
 		return (
 			<Fragment>
 				<div className="form" style={{flex:"1 1 100%", overflowY:"scroll"}}>
@@ -99,12 +94,7 @@ export class Child extends Component{
 							icon:<IconPublish/>,
 							onSelect:toPublish
 						},
-						{
-							action:"plan",
-							label:"年度计划",
-							icon:<IconPlan/>,
-							onSelect:toPlan
-						},*/
+						*/
 						{
 							action:"Remove",
 							label:"删除",

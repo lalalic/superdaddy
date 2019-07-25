@@ -20,7 +20,6 @@ import {DOMAIN, reducer, ACTION} from "./state"
 import Child from "family/child"
 import My from "setting/account"
 import Publish, {Publishes} from "publish"
-import Plan from "family/plan"
 import {Creatable as Knowledges,NewKnowledge,Knowledge} from "knowledge"
 import TimeManage, {ScorePad, withPlanActions} from "time-manage"
 import Goods from "./good"
@@ -415,27 +414,6 @@ export const routes=(
 
 
 			</Route>
-
-			<Route path="plan"  component={compose(
-				connect(state=>({child:state.superdaddy.current})),
-				withQuery(({child})=>({
-					variables:{child},
-					query: graphql`
-						query superdaddy_plan_Query($child:ObjectID){
-							me{
-								child(_id:$child){
-									plan{
-										...plan
-									}
-								}
-							}
-						}
-					`,
-				})),
-				withProps(({me})=>({
-					data: me.child.plan
-				})),
-			)(Plan)}/>
 
 			<Route path="test" component={({
 				routeParams,router, routes, route, params, location, data,

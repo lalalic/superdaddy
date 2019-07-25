@@ -184,75 +184,7 @@ module.exports={
 				.then(()=>app.get1Entity("plans",{_id}))
 		},
 
-		plan_reset_achievement(_,{_id, goal,todo},{app,user}){
-			return app.get1Entity("plans",{_id})
-				.then(plan=>{
-					if(plan.score>=plan.goal){
-						return plan_goal_achieved(plan,{_id},{app,user})
-							.then(()=>app.get1Entity("plans",{_id}))
-					}else{
-						return plan
-					}
-				})
-				.then(()=>app.patchEntity("plans",{_id},{goal,todo}))
-				.then(()=>app.get1Entity("plans",{_id}))
-		},
-
-		plan_update_goals(_,{_id, goals},{app,user}){
-			return app.patchEntity("plans",{_id},{goals})
-				.then(()=>app.get1Entity("plans",{_id}))
-		},
-
-		plan_monthgoal_add(_,{_id,month,goal},{app,user}){
-			return app.get1Entity("plans",{_id})
-				.then(plan=>{
-					let months=plan.months
-					let {goals}=months[month]
-					if(goals.includes(goal))
-						return plan
-					goals.push(goal)
-					app.patchEntity("plans",{_id},{months})
-					return plan
-				})
-		},
-		plan_monthgoal_remove(_,{_id,month,goal},{app,user}){
-			return app.get1Entity("plans",{_id})
-				.then(plan=>{
-					let months=plan.months
-					let {goals}=months[month]
-					if(!goals.includes(goal))
-						return plan
-					goals.splice(goals.indexOf(goal),1)
-					app.patchEntity("plans",{_id},{months})
-					return plan
-				})
-		},
-		plan_monthtask_remove(_,{_id,month,knowledge},{app,user}){
-			return app.get1Entity("plans",{_id})
-				.then(plan=>{
-					let months=plan.months
-					let {knowledges}=months[month]
-					if(!knowledges.includes(knowledge))
-						return plan
-					knowledges.splice(knowledges.indexOf(knowledge),1)
-					app.patchEntity("plans",{_id},{months})
-					return plan
-				})
-		},
-		plan_monthtask_add(_,{_id,month,knowledge},{app,user}){
-			return app.get1Entity("plans",{_id})
-				.then(plan=>{
-					let months=plan.months
-					let {knowledges}=months[month]
-					if(knowledges.includes(knowledge))
-						return plan
-					knowledges.push(knowledge)
-					app.patchEntity("plans",{_id},{months})
-					return plan
-				})
-		},
-
-		async plan_task_done(_,{_id,content,knowledge,props,day},{app,user}){
+		plan_task_done(_,{_id,content,knowledge,props,day},{app,user}){
 			props=props||{}
 			let score=1
 			if(knowledge){
@@ -287,7 +219,7 @@ module.exports={
 				.then(()=>app.getDataLoader("users").clear(_id).load(_id))
 		},
 
-		async plan_reset_week(_,{_id},{app,user}){
+		plan_reset_week(_,{_id},{app,user}){
 			let plan=await app.getDataLoader("plans").load(_id)
 
 			function saveFinishedTasks(){
@@ -347,6 +279,20 @@ module.exports={
 			saveFinishedTasks()
 
 			return reset4CurrentWeek()
+		},
+
+		plan_reset_achievement(_,{_id, goal,todo},{app,user}){
+			return app.get1Entity("plans",{_id})
+				.then(plan=>{
+					if(plan.score>=plan.goal){
+						return plan_goal_achieved(plan,{_id},{app,user})
+							.then(()=>app.get1Entity("plans",{_id}))
+					}else{
+						return plan
+					}
+				})
+				.then(()=>app.patchEntity("plans",{_id},{goal,todo}))
+				.then(()=>app.get1Entity("plans",{_id}))
 		},
 
 		plan_todos_add(_,{_id, content, knowledge, fields},{app,user}){
@@ -457,64 +403,6 @@ module.exports={
 					target.hidden=!!!target.hidden
 					plan.todos=todos
 					return app.patchEntity("plans",{_id},{todos})
-						.then(()=>plan)
-				})
-		},
-		plan_auto(_,{_id},{app,user}){
-			return app.getDataLoader("plans")
-				.load(_id)
-				.then(plan=>{
-					let {goals=[], months=[]}=plan
-					let month=new Date().getMonth()
-					let count=12-month
-					if(goals.length==0){
-						goals=CAPS.slice(0,Math.floor(count/3)||1)
-					}
-
-					let pending=new Array(count)
-					pending.fill(1)
-					pending.forEach((a,i)=>{
-						let {goals:currentGoals=[],knowledges=[]}=months[i+month]||{}
-						if(currentGoals.length==0)
-							currentGoals[0]=goals[i%goals.length]
-						months[i+month]={goals:currentGoals, knowledges}
-					})
-
-					let all=pending.map((a,i)=>{
-						return new Promise((resolve, reject)=>{
-							let {goals,knowledges=[]}=months[i+month]
-							if(knowledges.length==0){
-								app.findEntity("knowledges",{categories:{$all:goals}}, (cursor)=>cursor.limit(3))
-									.then(array=>{
-										months[i+month].knowledges=array.map(({_id})=>_id)
-										resolve()
-									},reject)
-							}else{
-								resolve()
-							}
-						})
-					})
-					return Promise.all(all)
-						.then(()=>{
-							plan.months=[...months]
-							plan.goals=[...goals]
-
-							let all=[]
-							if(!plan.todos || plan.todos.length==0){
-								months[month].knowledges
-									.forEach(a=>all.push(app.getDataLoader("knowledges").load(a)))
-							}
-							return Promise.all(all)
-								.then(knowledges=>{
-									if(knowledges)
-										plan.todos=knowledges.map(({_id,title})=>({knowledge:_id,content:title}))
-									return app.updateEntity("plans",{_id},{
-										months:plan.months,
-										goals:plan.goals,
-										todos:plan.todos,
-									})
-								})
-						})
 						.then(()=>plan)
 				})
 		},

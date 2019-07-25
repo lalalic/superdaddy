@@ -132,25 +132,17 @@ module.exports=others=>`
 	}
 
 	extend type Mutation{
-		child_remove(_id:ObjectID!): Boolean
 		child_create(name:String!, photo:URL, birthday:Date,gender:Gender):Child
 		child_update(_id:ObjectID!, photo:URL, name:String, birthday:Date,icon:String, gender:Gender): Date
-
-		plan_update_icon(_id:ObjectID, icon:String):Plan
-		plan_reset_achievement(_id:ObjectID, goal:Int, todo:String):Plan
-		plan_reset_week(_id:ObjectID):Plan
+		child_remove(_id:ObjectID!): Boolean
 		
-		plan_auto(_id:ObjectID):Plan
-		plan_update_goals(_id:ObjectID, goals:[String]):Plan
-		plan_monthgoal_remove(_id:ObjectID,month:Int,goal:String):Plan
-		plan_monthgoal_add(_id:ObjectID,month:Int,goal:String):Plan
-		plan_monthtask_remove(_id:ObjectID,month:Int,knowledge:ObjectID):Plan
-		plan_monthtask_add(_id:ObjectID,month:Int,knowledge:ObjectID):Plan
-
+		plan_update_icon(_id:ObjectID, icon:String):Plan
+		plan_reset_week(_id:ObjectID):Plan
+		plan_reset_achievement(_id:ObjectID, goal:Int, todo:String):Plan
 		plan_task_done(_id:ObjectID, content:String, knowledge:ObjectID, day:Int, props: JSON):Child
+		
 		plan_todos_add(_id:ObjectID, content:String, knowledge:ObjectID, fields:JSON):Plan
 		plan_todos_remove(_id:ObjectID,content:String, knowledge:ObjectID):Plan
-		plan_todos_removeNth(_id:ObjectID,content:String, knowledge:ObjectID):Plan
 		plan_todos_up(_id:ObjectID,content:String, knowledge:ObjectID):Plan
 		plan_todos_down(_id:ObjectID,content:String, knowledge:ObjectID):Plan
 		plan_todos_top(_id:ObjectID,content:String, knowledge:ObjectID):Plan
