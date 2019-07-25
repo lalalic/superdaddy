@@ -21,13 +21,9 @@ describe("knowledge parser", function(){
 		expect(properties.title).toBeTruthy()
 	})
 	
-	it("mindmaps", function(){
-		expect(knowledge.mindmaps.length).toBe(2)
-		expect(knowledge.html.indexOf("<x-mindmap")!=-1).toBe(true)
-	})
-
 	it("html",()=>{
 		expect(knowledge.html.indexOf("<p")!=-1).toBe(true)
+		expect(knowledge.html.indexOf("<x-mindmap")!=-1).toBe(true)
 	})
 
 	it("toc",()=>{

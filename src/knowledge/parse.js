@@ -113,7 +113,6 @@ export default function parse(file){
 				const $=docx.officeDocument.content
 				let steps=[], days=[], images=[],id=`_parser${uuid++}`
 				let toc=[]
-				let mindmaps=[]
 				let doc=docx.render((type,props,children)=>{
 					switch(type){
 					case "document":
@@ -172,10 +171,6 @@ export default function parse(file){
 					toc={name:properties.name||properties.title, children:toc}
 				}
 
-				if(mindmaps.length==0){
-					mindmaps=undefined
-				}
-
 				return {
 					docx,
 					html,
@@ -186,7 +181,6 @@ export default function parse(file){
 					sale,
 					code,
 					toc,
-					mindmaps,
 					hasPrint,
 					hasHomework,
 					id,
