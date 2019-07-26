@@ -113,6 +113,10 @@ type Knowledge implements Node {
   is4Classroom: Boolean
   supportTimer: Boolean
   files: [File]
+  isMyFavorite: Boolean
+  favoriterCount: Int
+  viewed: Int
+  accomplished: Int
 }
 
 type KnowledgeComment implements Comment & Node {
@@ -143,6 +147,18 @@ type KnowledgeConnection {
 type KnowledgeEdge {
   node: Knowledge
   cursor: JSON
+}
+
+type KnowledgeFavorite implements Node {
+  id: ID!
+  author: User!
+  knowledge: Knowledge!
+}
+
+type KnowledgeStatistics implements Node {
+  id: ID!
+  viewed: Int
+  accomplished: Int
 }
 
 type Log implements Node {
@@ -197,6 +213,7 @@ type Mutation {
   good_create(name: String, score: Int, url: URL): User
   good_update(_id: ObjectID, name: String, score: Int, url: URL): Good
   good_remove(ids: [ObjectID!]): User
+  knowledgeFavorite_toggle(_id: ObjectID!): Knowledge
   comment_create(parent: ID, content: String!, type: CommentType, _id: ObjectID): Comment
 }
 
@@ -304,4 +321,5 @@ type User implements Node {
   child(_id: ObjectID): Child
   works: [Knowledge]
   goods: [Good]
+  knowledgeFavorites: [Knowledge]
 }

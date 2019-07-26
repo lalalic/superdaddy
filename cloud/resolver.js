@@ -78,8 +78,15 @@ module.exports={
 		knowledge(_,{_id},{app}){
 			return app.get1Entity("knowledges",{_id})
 		},
-		knowledges(_,{title,categories,tags,mine,favorite,tasked,tasking,first=10,after},context){
+		async knowledges(_,{title,categories,tags,mine,favorite,tasked,tasking,first=10,after},context){
+			const {User,Child}=module.exports
 			const {app,user}=context
+			var myFavorites
+			if(favorite){
+				myFavorites=await app.findEntity("knowledgeFavorites",{author:user._id})
+				myFavorites=myFavorites.map(a=>a._id)
+			}
+
 			return app.nextPage("knowledges",{first,after}, cursor=>{
 				if(title){
 					cursor=cursor.filter({title: new RegExp(`${title}.*`,"i")})
@@ -98,11 +105,10 @@ module.exports={
 				}
 
 				if(favorite){
-
+					cursor=cursor.filter({_id:{$in:myFavorites}})
 				}
 
 				if(tasking){
-					const {User,Child}=module.exports
 					return User.children(user,{},context)
 						.then(children=>children.map(child=>Child.plan(child,{},context)))
 						.then(plans=>plans.reduce((collected,plan)=>{

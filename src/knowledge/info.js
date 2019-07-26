@@ -10,6 +10,8 @@ import IconCreate from "material-ui/svg-icons/editor/border-color"
 import IconCancel from "material-ui/svg-icons/navigation/cancel"
 import IconAddTask from "material-ui/svg-icons/action/alarm-add"
 import IconRemoveTask from "material-ui/svg-icons/action/alarm-off"
+import IconFavorite from "material-ui/svg-icons/action/favorite-border"
+import IconFavorited from "material-ui/svg-icons/action/favorite"
 
 import IconBuy from "material-ui/svg-icons/action/add-shopping-cart"
 import IconPreview from "material-ui/svg-icons/action/print"
@@ -91,10 +93,17 @@ export class KnowledgeEditor extends Component{
 			knowledge, knowledgeContent, revising=false,
 			selectDocx, update, cancel, task, untask, preview, buy,startTimer,
 			outputHomework, wechat_session,wechat_timeline, hasWechat,
-			toComment,
+			toComment,toggleFavorite
 		}=this.props
 
         const commands=["Back"]
+		
+		commands.push({
+			action:"Favorite",
+			label:"收藏",
+			icon:knowledge.isMyFavorite ? <IconFavorited/> : <IconFavorite/>,
+			onSelect:toggleFavorite
+		})
 
         if(knowledge.isMyWork)
             commands.push({
@@ -139,10 +148,12 @@ export class KnowledgeEditor extends Component{
 				})
 
 
-            commands.push(<CommandBar.Comment
-				key="Comment"
-				label="讨论"
-				toComment={toComment}/>)
+            commands.push(
+				<CommandBar.Comment
+					key="Comment"
+					label="讨论"
+					toComment={toComment}/>
+			)
         }
 
 		let tools=[]
@@ -295,6 +306,7 @@ export default compose(
 		fragment info_knowledge on Knowledge{
 			id
 			isMyWork
+			isMyFavorite
 			inTask(child:$child)
 			hasHomework(child:$child)
 			hasPrint
@@ -339,6 +351,17 @@ export default compose(
 			}
 		`,
 	})),
+	withMutation(({knowledge})=>({
+		name:"toggleFavorite",
+		variables:{id:knowledge.id},
+		mutation:graphql`
+			mutation info_favorite_Mutation($id:ObjectID!){
+				knowledgeFavorite_toggle(_id:$id){
+					isMyFavorite
+				}
+			}
+		`,
+	})),
 		
 	connect(null,
 		(dispatch, {knowledge, files,selectedDocx,upload,getToken,updateKnowledge})=>({
@@ -346,9 +369,7 @@ export default compose(
 			getTokens:undefined,
 			updateKnowledge:undefined,
 			files:undefined,
-			knowledgeContent:selectedDocx ?
-				<Content knowledge={knowledge}/> :
-				<FragmentContent knowledge={knowledge}/>,
+			knowledgeContent:selectedDocx ? <Content knowledge={knowledge}/> : <FragmentContent knowledge={knowledge}/>,
 			selectDocx:()=>dispatch(ACTION.SELECT_DOCX()),
 			update(){
 				dispatch(qiliACTION.LOADING(true))
