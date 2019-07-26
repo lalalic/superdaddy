@@ -102,7 +102,7 @@ export class KnowledgeEditor extends Component{
 			action:"Favorite",
 			label:"收藏",
 			icon:knowledge.isMyFavorite ? <IconFavorited/> : <IconFavorite/>,
-			onSelect:toggleFavorite
+			onSelect:()=>toggleFavorite()
 		})
 
         if(knowledge.isMyWork)
@@ -351,17 +351,21 @@ export default compose(
 			}
 		`,
 	})),
-	withMutation(({knowledge})=>({
-		name:"toggleFavorite",
-		variables:{id:knowledge.id},
-		mutation:graphql`
-			mutation info_favorite_Mutation($id:ObjectID!){
-				knowledgeFavorite_toggle(_id:$id){
-					isMyFavorite
+	withMutation(({knowledge})=>{
+		return {
+			name:"toggleFavorite",
+			variables:{id:knowledge.id},
+			patch4:knowledge.id,
+			patchData:{isMyFavorite:!knowledge.isMyFavorite},
+			mutation:graphql`
+				mutation info_favorite_Mutation($id:ObjectID!){
+					knowledgeFavorite_toggle(_id:$id){
+						isMyFavorite
+					}
 				}
-			}
-		`,
-	})),
+			`,
+		}
+	}),
 		
 	connect(null,
 		(dispatch, {knowledge, files,selectedDocx,upload,getToken,updateKnowledge})=>({
