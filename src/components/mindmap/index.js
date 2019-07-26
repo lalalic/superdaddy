@@ -17,9 +17,12 @@ export default class MindMap extends Component{
         const {src, data=parse(src), ...props}=this.props
         const {measure}=this.state
         return (
-            <svg ref={this.svg} fontSize="12"  strokeLinecap="round" {...props} onClick={this.print}>
-                <text ref={this.measure} x={-10000} y={-10000}>Ä</text>
-                <g  transform={`translate(-10000 -10000)`}>
+            <svg ref={this.svg} fontSize="12"  strokeLinecap="round" 
+                viewBox="-1000,-1000,10,10"
+                {...props}
+                onClick={this.print}>
+                <text id="measure" ref={this.measure}>Ä</text>
+                <g>
                     {measure && <Scheme {...(data)} measure={measure}/>}
                 </g>
             </svg>
@@ -28,16 +31,15 @@ export default class MindMap extends Component{
 
     print(e){
         const svg=(e.target.ownerSVGElement||e.target)
+        const g=svg.querySelector('g')
+        const {x,y}=g.getBBox()
         print({
-            html:`<html>
-                <body>
-                    <center>
-                        <svg width="100%" height="100%">
-                            ${svg.innerHTML}
-                        </svg>
-                    </center>
-                </body>
-            </html>`,
+            html:`
+                <svg width="100%" height="100%">
+                    <g transform="translate(${-x} ${-y})">
+                        ${svg.innerHTML}
+                    </g>
+                </svg>`,
             style:`
             @page { 
                 size: A4; 
@@ -48,32 +50,36 @@ export default class MindMap extends Component{
 
     componentDidMount(){
         const r=this.measure.current
-        this.setState({measure:{
-            lineHeight(){
-                return r.getBBox().height
-            },
+        this.setState({
+                measure:{
+                    lineHeight(){
+                        return r.getBBox().height
+                    },
 
-            stringWidth(word){
-                r.firstChild.data=word
-                return r.getBBox().width
-            }
-        }}, this.adjustSize.bind(this))
-    }
-
-
-    adjustSize(){
-        setTimeout(()=>{
-            const svg=this.svg.current
-            const g=svg.querySelector('g')
-            const {x,y,width,height}=g.getBBox()
-            g.setAttribute("transform",`translate(${-x} ${-y})`)
-            svg.setAttribute("width",width)
-            svg.setAttribute("height",height)
-            svg.querySelector('text').remove()
-        },100)
+                    stringWidth(word){
+                        r.firstChild.data=word
+                        return r.getBBox().width
+                    }
+                },
+            }, 
+            ()=>setTimeout(()=>{
+                const svg=this.svg.current
+                svg.querySelector('text#measure').remove()
+                adjustSize(svg)
+                window._mindmapAdjustSize=adjustSize
+            },100)
+        )
     }
 
     static asHtmlElement(){
         define({"x-mindmap":{component:MindMap, attributes:["src","width","height"]}})
     }
+}
+
+function adjustSize(svg){
+    const g=svg.querySelector('g')
+    const {x,y,width,height}=g.getBBox()
+    const {width:clientWidth,height:clientHeight}=svg.getBoundingClientRect()
+    const scale=clientWidth>clientHeight ? clientHeight/height : clientWidth/width
+    svg.setAttribute("viewBox",`${x-(clientWidth/scale-width)/2} ${y-(clientHeight/scale-height)/2} ${clientWidth/scale} ${clientHeight/scale}`)
 }

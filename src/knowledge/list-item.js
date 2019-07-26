@@ -80,7 +80,7 @@ export class Item extends Component{
 
 const IMG=({src})=>{
     if(src.startsWith("mindmap://")){
-        return <MindMap src={src} width={150} height={150}/>
+        return <MindMap className="img" src={src}/>
     }else{
         return <img src={src}/>
     }

@@ -114,6 +114,10 @@ export class Level1 extends Component{
             </g>
         )
     }
+
+    shouldComponentUpdate(){
+        return false
+    }
 }
 export class Level2 extends Component{
     static contextTypes={

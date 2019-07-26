@@ -22,11 +22,11 @@ export const Content=({
 				{id && (<p><span>{author.name}</span> - <time>{relative(createdAt)}</time></p>)}
 				<p>{[...(category||[]),...(tags||[])].join(", ")}</p>
 			</header>
-			<figure style={{margin:10}}>
-				{figure ? (<img src={figure}/>) : (
-					toc ? <MindMap data={toc}/> : null
-				)}
+			{figure && (
+				<figure style={{margin:10}}>
+					<img src={figure}/>
 				</figure>
+			)}
 			<section>
 				<details open>
 					<summary>{summary}</summary>
