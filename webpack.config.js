@@ -42,6 +42,11 @@ module.exports=env=>{
 				use: "imports-loader?Cloud=qili-app/makeOfflineSchema"//path relative to test
 			}]
 		},
+		resolve:{
+			alias:{
+				remount:"remount/dist/remount.es5"
+			}
+		},
 		node:{
 			fs: "empty",
 			net: "empty",
