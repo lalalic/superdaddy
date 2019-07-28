@@ -78,16 +78,42 @@ module.exports={
 		knowledge(_,{_id},{app}){
 			return app.get1Entity("knowledges",{_id})
 		},
-		async knowledges(_,{title,categories,tags,mine,favorite,tasked,tasking,first=10,after},context){
-			const {User,Child}=module.exports
+		knowledges(_,{title,categories,tags,mine,favorite,tasked,tasking,first=10,after},context){
 			const {app,user}=context
-			var myFavorites
-			if(favorite){
-				myFavorites=(await app.findEntity("knowledgeFavorites",{author:user._id})).map(a=>a.knowledge)
-				console.log(myFavorites)
-			}
+			return app.nextPage("knowledges",{first,after}, async cursor=>{
+				if(favorite){
+					const myFavorites=(await app.findEntity("knowledgeFavorites",{author:user._id})).map(a=>a.knowledge)
+					cursor=cursor.filter({_id:{$in:myFavorites}})
+				}
 
-			return app.nextPage("knowledges",{first,after}, cursor=>{
+				const {User,Child}=module.exports
+				if(tasking || tasked){
+					const children=await User.children(user,{},context)
+					if(tasking){
+						const taskingKnowledges=Promise.all(children.map(child=>Child.plan(child,{},context)))
+							.then(plans=>{
+								return plans.reduce((collected,plan)=>{
+									if(plan.todos){
+										plan.todos.filter(a=>!a.removed).forEach(a=>a.knowledge && collected.push(a.knowledge))
+									}
+									return collected
+								},[])
+							})
+						cursor=cursor.filter({_id:{$in:taskingKnowledges}})
+					}
+
+					if(tasked){
+						const taksedKnowledges=await app.findEntity("historys",{
+									knowledge:{$ne:null},
+									owner:{$in:children.map(a=>Child.id(a))}
+								},undefined,{knowledge:1})
+							.then(historys=>Array.from(new Set(historys.map(a=>a.knowledge))))
+						console.log(taksedKnowledges)
+						cursor=cursor.filter({_id:{$in:taksedKnowledges}})
+					}
+				}
+
+				
 				if(title){
 					cursor=cursor.filter({title: new RegExp(`${title}.*`,"i")})
 				}
@@ -102,25 +128,8 @@ module.exports={
 
 				if(mine){
 					cursor=cursor.filter({author:user._id})
-				}
+				}				
 
-				if(favorite){
-					cursor=cursor.filter({_id:{$in:myFavorites}})
-				}
-
-				if(tasking && false){
-					return User.children(user,{},context)
-						.then(children=>children.map(child=>Child.plan(child,{},context)))
-						.then(plans=>plans.reduce((collected,plan)=>{
-							if(plan.todos){
-								plan.todos.filter(a=>!a.removed).forEach(a=>a.knowledge && collected.push(a.knowledge))
-							}
-							return collected
-						},[]))
-						.then(knowledges=>cursor.filter({_id:{$in:knowledges}}))
-				}else if(tasked){
-
-				}
 				return cursor
 			})
 		},
