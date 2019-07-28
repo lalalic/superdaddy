@@ -12,8 +12,8 @@ const TAGS=["数学","语文","英语","二年级"]
 const CONDS=[
 	{label:"自己写的",key:"mine"},
 	{label:"收藏的",key:"favorite"},
-	{label:"作为任务的",key:"tasking"},
-	{label:"曾经作为任务的",key:"tasked"}
+	//{label:"作为任务的",key:"tasking"},
+	//{label:"曾经作为任务的",key:"tasked"}
 ]
 const style={
 	 chip: {

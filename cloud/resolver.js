@@ -83,8 +83,8 @@ module.exports={
 			const {app,user}=context
 			var myFavorites
 			if(favorite){
-				myFavorites=await app.findEntity("knowledgeFavorites",{author:user._id})
-				myFavorites=myFavorites.map(a=>a._id)
+				myFavorites=(await app.findEntity("knowledgeFavorites",{author:user._id})).map(a=>a.knowledge)
+				console.log(myFavorites)
 			}
 
 			return app.nextPage("knowledges",{first,after}, cursor=>{
@@ -108,7 +108,7 @@ module.exports={
 					cursor=cursor.filter({_id:{$in:myFavorites}})
 				}
 
-				if(tasking){
+				if(tasking && false){
 					return User.children(user,{},context)
 						.then(children=>children.map(child=>Child.plan(child,{},context)))
 						.then(plans=>plans.reduce((collected,plan)=>{

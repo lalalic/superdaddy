@@ -123,10 +123,10 @@ export default compose(
 	getContext({
 		muiTheme: PropTypes.object,
 	}),
-	mapProps(({data:{knowledges:{edges}}, relay, muiTheme:{page:{height}, footbar},...others})=>{
+	mapProps(({data:{knowledges}, relay, muiTheme:{page:{height}, footbar},...others})=>{
 		return {
 			...others,
-			knowledges:edges.map(a=>a.node),
+			knowledges:knowledges ? knowledges.edges.map(a=>a.node) :  [],
 			minHeight: height-footbar.height,
 			refresh(ok){
 				ok()
