@@ -98,20 +98,21 @@ export class KnowledgeEditor extends Component{
 
         const commands=["Back"]
 		
-		commands.push({
-			action:"Favorite",
-			label:"收藏",
-			icon:knowledge.isMyFavorite ? <IconFavorited/> : <IconFavorite/>,
-			onSelect:()=>toggleFavorite()
-		})
-
-        if(knowledge.isMyWork)
+        if(knowledge.isMyWork){
             commands.push({
 				action:"New Version"
                 ,label:"新版本"
 				,icon:<IconCreate/>
 				,onSelect:selectDocx
 			})
+		}else{
+			commands.push({
+				action:"Favorite",
+				label:"收藏",
+				icon:knowledge.isMyFavorite ? <IconFavorited/> : <IconFavorite/>,
+				onSelect:()=>toggleFavorite()
+			})
+		}
 
         if(revising){
             commands.push({
