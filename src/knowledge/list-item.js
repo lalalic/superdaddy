@@ -68,7 +68,7 @@ export class Item extends Component{
     _more(model){
         var time=relative(model.createdAt||model.updatedAt)
 
-        var zan=model.zans ? (<div><IconThumbup/>{model.zans}</div>) : null
+        var zan=model.favoriterCount ? (<div><IconThumbup/>{model.favoriterCount}</div>) : null
         return (
             <div className="more">
                 <time>{time}</time>
@@ -94,7 +94,7 @@ export default compose(
 				title
 				summary
 				photos
-				zans
+				favoriterCount
 				createdAt
 				updatedAt
 			}
