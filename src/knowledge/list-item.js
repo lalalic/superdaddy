@@ -1,11 +1,11 @@
 import React, {Component} from "react"
-import PropTypes from "prop-types"
 
-import {compose, getContext, withProps} from "recompose"
+import {compose} from "recompose"
 import {withFragment} from "qili-app"
 
 import {relative} from 'components/calendar'
 import MindMap from "components/mindmap"
+import IconFavorited from "material-ui/svg-icons/action/favorite"
 
 export class Item extends Component{
     render(){
@@ -67,12 +67,24 @@ export class Item extends Component{
 
     _more(model){
         var time=relative(model.createdAt||model.updatedAt)
-
-        var zan=model.favoriterCount ? (<div><IconThumbup/>{model.favoriterCount}</div>) : null
         return (
             <div className="more">
-                <time>{time}</time>
-                {zan}
+                <span>{time}</span>
+                {!!model.favoriterCount && (
+                    <span>
+                        {model.favoriterCount}收藏
+                    </span>
+                )}
+                {!!model.viewed && (
+                    <span>
+                        {model.viewed}围观
+                    </span>
+                )}
+                {!!model.accomplished && (
+                    <span>
+                        {model.accomplished}完成
+                    </span>
+                )}
             </div>
         )
     }
@@ -94,9 +106,12 @@ export default compose(
 				title
 				summary
 				photos
-				favoriterCount
 				createdAt
 				updatedAt
+
+                favoriterCount
+				viewed
+                accomplished
 			}
 		`}
 	)
