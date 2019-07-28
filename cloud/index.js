@@ -29,6 +29,4 @@ Cloud.typeDefs=require("./schema")([
 	ChildComment.typeDefs,
 ])
 
-//Cloud.canRunInCore=false
-
 module.exports=Cloud

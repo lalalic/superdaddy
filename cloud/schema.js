@@ -58,7 +58,6 @@ module.exports=others=>`
 		figure: URL
 		toc: JSON
 		photos: [URL]
-		zans: Int
 		category: [String]
 		tags: [String]
 		fields: [JSON]
