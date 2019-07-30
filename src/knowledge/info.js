@@ -105,7 +105,7 @@ export class KnowledgeEditor extends Component{
 				,icon:<IconCreate/>
 				,onSelect:selectDocx
 			})
-		}else{
+		} else {
 			commands.push({
 				action:"Favorite",
 				label:"收藏",

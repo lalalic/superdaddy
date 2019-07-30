@@ -9,17 +9,50 @@ import {relative} from 'components/calendar'
 import AppBar from "components/app-bar"
 import MindMap from "components/mindmap"
 
+import IconFavorited from "material-ui/svg-icons/action/favorite"
+import IconViewed from "material-ui/svg-icons/action/visibility"
+import IconAccomplished from "material-ui/svg-icons/notification/event-available"
+import IconTasking from "material-ui/svg-icons/notification/event-note"
+
+import smartNum from "../tools/number"
+
 MindMap.asHtmlElement()
 
 export const Content=({
-		knowledge:{id, title, content, summary, createdAt, category, tags, figure, author,toc}
+		knowledge:{id, title, content, summary, createdAt, category, tags, figure, author,favorited,viewed,accomplished,tasking}
 	})=>{
-	const tocLen=()=>toc.children ? toc.children.length : 1
+	const iconStyle={width:10,height:10}
 	return (
 		<article>
 			<header  style={{backgroundColor:"transparent", height:"auto"}}>
 				<AppBar title={title} />
-				{id && (<p><span>{author.name}</span> - <time>{relative(createdAt)}</time></p>)}
+				{id && (
+					<p>
+						<span>{author.name}</span>
+						{author.name && "-"} 
+						<time>{relative(createdAt)}</time>
+						{!!favorited && (
+							<span>
+								{smartNum(favorited)}<IconFavorited style={iconStyle}/>
+							</span>
+						)}
+						{!!viewed && (
+							<span>
+								{smartNum(viewed)}<IconViewed  style={iconStyle}/>
+							</span>
+						)}
+						{!!accomplished && (
+							<span>
+								{smartNum(accomplished)}<IconAccomplished  style={iconStyle}/>
+							</span>
+						)}
+						{!!tasking && (
+							<span>
+								{smartNum(tasking)}<IconTasking  style={iconStyle}/>
+							</span>
+						)}
+					</p>
+				)}
 				<p>{[...(category||[]),...(tags||[])].join(", ")}</p>
 			</header>
 			{figure && (
@@ -44,7 +77,6 @@ export default compose(
 			title
 			content
 			summary
-			toc
 			createdAt
 			category
 			tags 
@@ -52,6 +84,11 @@ export default compose(
 			author{
 				name
 			}
+
+			favorited
+			viewed
+			accomplished
+			tasking
 		}
 	`),
 )(Content)

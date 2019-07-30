@@ -305,6 +305,7 @@ export const routes=(
 							query superdaddy_knowledge_Query($id:ObjectID, $child: ObjectID){
 								knowledge(_id:$id){
 									...info_knowledge
+									_viewed
 								}
 							}
 						`,

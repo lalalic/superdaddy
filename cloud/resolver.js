@@ -204,6 +204,7 @@ module.exports={
 				let kl=await app.get1Entity("knowledges",{_id:knowledge})
 				if(kl && kl.score)
 					score=kl.score
+				Cloud.statistics("knowledges",{_id:knowledge,accomplished:1},{app,user})
 			}else{//support content:100
 				let [,task_score]=content.split(/[:：]/)
 				if(task_score){
@@ -322,6 +323,9 @@ module.exports={
 						target.fields=fields
 					}else{
 						todos=[...todos,{content,knowledge:knowledge||undefined,fields}]
+						if(knowledge){
+							Cloud.statistics("knowledges",{_id:knowledge,tasking:1},{app})
+						}
 					}
 					plan.todos=todos
 					return app.patchEntity("plans",{_id},{todos})
@@ -340,6 +344,9 @@ module.exports={
 					if(new Array(7).fill(true).find((a,i)=>!!removing[`day${i}`])){
 						removing.removed=true
 						todos.push(removing)
+					}
+					if(removing.knowledge){
+						Cloud.statistics("knowledges",{_id:removing.knowledge,tasking:-1},{app})
 					}
 					return app.patchEntity("plans",{_id},{todos})
 						.then(()=>plan)

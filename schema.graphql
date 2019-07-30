@@ -113,9 +113,14 @@ type Knowledge implements Node {
   supportTimer: Boolean
   files: [File]
   isMyFavorite: Boolean
-  favoriterCount: Int
   viewed: Int
   accomplished: Int
+  tasking: Int
+  favorited: Int
+  _viewed: Boolean
+  _accomplished: Boolean
+  _tasking: Boolean
+  _favorited: Boolean
 }
 
 type KnowledgeComment implements Comment & Node {
@@ -158,6 +163,8 @@ type KnowledgeStatistics implements Node {
   id: ID!
   viewed: Int
   accomplished: Int
+  tasking: Int
+  favorited: Int
 }
 
 type Log implements Node {

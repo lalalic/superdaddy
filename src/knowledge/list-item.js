@@ -5,7 +5,13 @@ import {withFragment} from "qili-app"
 
 import {relative} from 'components/calendar'
 import MindMap from "components/mindmap"
+
 import IconFavorited from "material-ui/svg-icons/action/favorite"
+import IconViewed from "material-ui/svg-icons/action/visibility"
+import IconAccomplished from "material-ui/svg-icons/notification/event-available"
+import IconTasking from "material-ui/svg-icons/notification/event-note"
+
+import smartNum from "../tools/number"
 
 export class Item extends Component{
     render(){
@@ -67,22 +73,28 @@ export class Item extends Component{
 
     _more(model){
         var time=relative(model.createdAt||model.updatedAt)
+        const iconStyle={width:10,height:10}
         return (
             <div className="more">
                 <span>{time}</span>
-                {!!model.favoriterCount && (
+                {!!model.favorited && (
                     <span>
-                        {model.favoriterCount}收藏
+                        {smartNum(model.favorited)}<IconFavorited  style={iconStyle}/>
                     </span>
                 )}
                 {!!model.viewed && (
                     <span>
-                        {model.viewed}围观
+                        {smartNum(model.viewed)}<IconViewed  style={iconStyle}/>
                     </span>
                 )}
                 {!!model.accomplished && (
                     <span>
-                        {model.accomplished}完成
+                        {smartNum(model.accomplished)}<IconAccomplished style={iconStyle}/>
+                    </span>
+                )}
+                {!!model.tasking && (
+                    <span>
+                        {smartNum(model.tasking)}<IconTasking style={iconStyle}/>
                     </span>
                 )}
             </div>
@@ -109,9 +121,10 @@ export default compose(
 				createdAt
 				updatedAt
 
-                favoriterCount
+                favorited
 				viewed
                 accomplished
+                tasking
 			}
 		`}
 	)
