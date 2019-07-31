@@ -1,8 +1,6 @@
-language: android
-android:
- components:
-  - build-tools-23.0.2
-  - android-22
+language: node_js
+node_js:
+ - 10
 
 addons:
  apt:
@@ -25,11 +23,11 @@ script:
  - yarn build
  - rm dist/index.js
  - mv dist/index.html .
- - yarn cordova -- --storePassword=$STORE_PWD --password=$STORE_PWD
+# - yarn cordova -- --storePassword=$STORE_PWD --password=$STORE_PWD
 
 after_success:
- - mv cordova/platforms/android/build/outputs/apk/android-release.apk ./app.apk
- - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./app.apk "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$APP_NAME"
+# - mv cordova/platforms/android/build/outputs/apk/android-release.apk ./app.apk
+# - travis_wait sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./app.apk "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$APP_NAME"
 
  - rm dist/config.xml
  - rm dist/cordova.html

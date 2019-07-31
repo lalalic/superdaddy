@@ -117,6 +117,10 @@ type Knowledge implements Node {
   accomplished: Int
   tasking: Int
   favorited: Int
+
+  """
+  use query to auto count: _viewed in your query to inc viewed automatically
+  """
   _viewed: Boolean
   _accomplished: Boolean
   _tasking: Boolean
