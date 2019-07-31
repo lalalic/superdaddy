@@ -179,7 +179,7 @@ export default compose(
 		create(){
 				dispatch(qiliACTION.LOADING(true))
 				return getToken()
-					.then(({_id,token})=>selectedDocx.upload(`knowledges:${_id}`,upload,null,token))
+					.then(({_id,token})=>selectedDocx.upload(`Knowledge:${_id}`,upload,null,token))
 					.then(knowledge=>mutate({knowledge}))
 					.then(({id})=>{
 						toKnowledge(id)

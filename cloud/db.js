@@ -1,5 +1,5 @@
 module.exports={
-	knowledges:[
+	Knowledge:[
 		{author:1},
 		{title:"text"},
 		{category:"text"},
@@ -8,18 +8,15 @@ module.exports={
 		{updatedAt:-1},
 		{createdAt:-1,author:1, title:"text",category:"text",tags:"text"},
 	],
-	logs:[
+	Log:[
 		[{createdAt:-1},{ expireAfterSeconds: 24*60*60*30 }]
 	],
-	users:[
+	User:[
 		{author:1},
 		{phone:1},
 		{email:1},
 	],
-	historys:[
+	History:[
 		{owner:1},
 	],
-	knowledgeFavorites:[
-		{author:1}
-	]
 }

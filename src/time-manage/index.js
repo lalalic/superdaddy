@@ -23,7 +23,7 @@ export const withPlanActions=props=>compose(
 	withMutation(({child}, plan)=>({
 		promise:true,
 		name:"planUpdate",
-		patch4: `plans:${child.split(":").pop()}`,
+		patch4: `Plan:${child.split(":").pop()}`,
 		variables:{child,plan},
 		mutation: graphql`
 			mutation timeManage_status_Mutation($child:ObjectID, $goal:Int, $todo:String){

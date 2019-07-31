@@ -210,7 +210,7 @@ export default compose(
 	})),
 	withMutation(({id}, {icon})=>({
 		name: "updatePlan",
-		patch4: `plans:${id.split(":").pop()}`,
+		patch4: `Plan:${id.split(":").pop()}`,
 		variables:{id,  icon},
 		mutation:graphql`
 			mutation child_planupdate_Mutation($id:ObjectID,$icon:String){
