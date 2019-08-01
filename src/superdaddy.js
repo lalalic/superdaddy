@@ -22,7 +22,7 @@ import My from "setting/account"
 import Publish, {Publishes} from "publish"
 import {Creatable as Knowledges,NewKnowledge,Knowledge} from "knowledge"
 import TimeManage, {ScorePad, withPlanActions} from "time-manage"
-import Goods from "./good"
+import Merchandises from "./merchandise"
 import Award from "components/award"
 
 export const routes=(
@@ -108,20 +108,20 @@ export const routes=(
 
 			)(ScorePad)}/>
 
-			<Route path="my/goods" component={compose(
+			<Route path="my/merchandises" component={compose(
 				withQuery(()=>({
 					query: graphql`
-						query superdaddy_good_Query{
+						query superdaddy_merchandise_Query{
 							me{
-								goods{
-									...good
+								merchandises{
+									...merchandise
 								}
 							}
 						}
 					`
 				})),
-				withProps(({me})=>({data:me.goods})),
-			)(Goods)}/>
+				withProps(({me})=>({data:me.merchandises})),
+			)(Merchandises)}/>
 
 			{Account.routes({
 				account:compose(
@@ -144,7 +144,7 @@ export const routes=(
 							toChild: id=>router.push(`/child/${id}`),
 							toSetting: ()=>router.push('/my/setting'),
 							toProfile: ()=>router.push('/my/profile'),
-							toGoals: ()=>router.push('/my/goods'),
+							toGoals: ()=>router.push('/my/merchandises'),
 						}
 						return props
 					})
@@ -452,8 +452,8 @@ export const SuperDaddy=compose(
 						name
 						photo
 					}
-					goods{
-						...good
+					merchandises{
+						...merchandise
 					}
 				}
 			}

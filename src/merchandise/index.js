@@ -27,12 +27,12 @@ class Editor extends Component{
         )
     }
 
-    static getDerivedStateFromProps({good:{name,score=1,url}={}}){
+    static getDerivedStateFromProps({merchandise:{name,score=1,url}={}}){
         return {name,score,url}
     }
 }
 
-class Goods extends Component{
+class Merchandises extends Component{
     constructor(){
         super(...arguments)
         this.state={}
@@ -41,7 +41,7 @@ class Goods extends Component{
     }
 
     render(){
-        const {goods, create, update, remove}=this.props
+        const {merchandises, create, update, remove}=this.props
         const {active}=this.state
         const save=()=>{
             const {name,score,url}=this.editor.current.state
@@ -52,7 +52,7 @@ class Goods extends Component{
         return (
             <Fragment>
                 <div style={{flex:"1 1 100%", overflowY:"scroll"}}>
-                    <Editor ref={this.editor} good={goods.find(a=>a.id==active)}/>
+                    <Editor ref={this.editor} merchandise={merchandises.find(a=>a.id==active)}/>
                     <table style={{width:"99%"}} ref={this.table}>
                         <thead>
                             <tr style={{background:"lightgray"}}>
@@ -62,7 +62,7 @@ class Goods extends Component{
                             </tr>
                         </thead>
                         <tbody>
-                            {goods.map(({id,name,score,url})=>(
+                            {merchandises.map(({id,name,score,url})=>(
                                 <tr key={id}
                                     style={{background:active==id ? "lightblue" : ""}}
                                     onClick={()=>{
@@ -107,22 +107,22 @@ class Goods extends Component{
 export default compose(
 
     withFragment(graphql`
-        fragment good on Good @relay(plural: true){
+        fragment merchandise on Merchandise @relay(plural: true){
             id
             name
             score
             url
         }
     `),
-    withProps(({data, ...others})=>({...others,goods:data})),
+    withProps(({data, ...others})=>({...others,merchandises:data})),
     withMutation({
         name:"create",
         promise:true,
         mutation:graphql`
-            mutation good_create_Mutation($name:String!,$score:Int, $url:URL){
-                good_create(name:$name,score:$score,url:$url){
-                    goods{
-                        ...good
+            mutation merchandise_create_Mutation($name:String!,$score:Int, $url:URL){
+                merchandise_create(name:$name,score:$score,url:$url){
+                    merchandises{
+                        ...merchandise
                     }
                 }
             }
@@ -134,9 +134,9 @@ export default compose(
         patch4:id,
         variables:{id},
         mutation:graphql`
-            mutation good_update_Mutation($id:ObjectID!, $name:String!,$score:Int,$url:URL){
-                good_update(_id:$id, name:$name,score:$score,url:$url){
-                    ...good
+            mutation merchandise_update_Mutation($id:ObjectID!, $name:String!,$score:Int,$url:URL){
+                merchandise_update(_id:$id, name:$name,score:$score,url:$url){
+                    ...merchandise
                 }
             }
         `,
@@ -144,13 +144,13 @@ export default compose(
     withMutation(({ids})=>({
         name:"remove",
         mutation:graphql`
-            mutation good_remove_Mutation($ids:[ObjectID!]){
-                good_remove(ids:$ids){
-                    goods{
-                        ...good
+            mutation merchandise_remove_Mutation($ids:[ObjectID!]){
+                merchandise_remove(ids:$ids){
+                    merchandises{
+                        ...merchandise
                     }
                 }
             }
         `
     }))
-)(Goods)
+)(Merchandises)

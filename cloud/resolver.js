@@ -69,8 +69,8 @@ module.exports={
 			return app.findEntity("User", {author:user._id})
 		},
 
-		goods(me,{},{app,user}){
-			return app.findEntity("Good",{author:user._id})
+		merchandises(me,{},{app,user}){
+			return app.findEntity("Merchandise",{author:user._id})
 		}
 	},
 
@@ -427,32 +427,32 @@ module.exports={
 				})
 		},
 
-		good_create(_,{name,url,...$set},{app,user}){
-			return app.get1Entity("Good",{author:user._id,name})
+		merchandise_create(_,{name,url,...$set},{app,user}){
+			return app.get1Entity("Merchandise",{author:user._id,name})
 				.then(existing=>{
 					if(existing){
-						throw new Error(`good[${name}] already exists`)
+						throw new Error(`merchandise[${name}] already exists`)
 					}else{
-						return app.createEntity("Good",{name,url,...$set,author:user._id})
+						return app.createEntity("Merchandise",{name,url,...$set,author:user._id})
 							.then(()=>user)
 					}
 				})
 		},
 
-		good_update(_,{_id,name,url,...$set},{app,user}){
-			return app.get1Entity("Good",{author:user._id,name})
+		merchandise_update(_,{_id,name,url,...$set},{app,user}){
+			return app.get1Entity("Merchandise",{author:user._id,name})
 				.then(existing=>{
 					if(existing && _id!=existing._id){
-						throw new Error(`good[${name}] already exists`)
+						throw new Error(`merchandise[${name}] already exists`)
 					}else{
-						return app.patchEntity("Good",{_id,author:user._id},{name,url,...$set})
-							.then(()=>app.get1Entity("Good",{_id}))
+						return app.patchEntity("Merchandise",{_id,author:user._id},{name,url,...$set})
+							.then(()=>app.get1Entity("Merchandise",{_id}))
 					}
 				})
 		},
 
-		good_remove(_,{ids=[]},{app,user}){
-			return Promise.all(ids.map(_id=>app.remove1Entity("Good", {author:user._id,_id})))
+		merchandise_remove(_,{ids=[]},{app,user}){
+			return Promise.all(ids.map(_id=>app.remove1Entity("Merchandise", {author:user._id,_id})))
 				.then(()=>user)
 		}
 	},
@@ -553,7 +553,7 @@ module.exports={
 				return app.getDataLoader("Knowledge").load(knowledge)
 		}
 	},
-	Good: {
+	Merchandise: {
 		id: Cloud.ID,
 	},
 }

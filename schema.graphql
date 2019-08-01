@@ -71,16 +71,6 @@ enum Gender {
   boy
 }
 
-type Good implements Node {
-  id: ID!
-  author: User
-  name: String!
-  score: Int
-  url: URL
-  createdAt: Date
-  updatedAt: Date
-}
-
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -183,6 +173,16 @@ type Log implements Node {
   author: User
 }
 
+type Merchandise implements Node {
+  id: ID!
+  author: User
+  name: String!
+  score: Int
+  url: URL
+  createdAt: Date
+  updatedAt: Date
+}
+
 type MonthPlan {
   goals: [String]
   knowledges: [Knowledge]
@@ -221,9 +221,9 @@ type Mutation {
   publish_update(_id: ObjectID, template: String, child: ObjectID, from: Date, to: Date, name: String, copies: Int): Date
   publish_done(_id: ObjectID): Date
   publish_remove(_id: ObjectID): Boolean
-  good_create(name: String, score: Int, url: URL): User
-  good_update(_id: ObjectID, name: String, score: Int, url: URL): Good
-  good_remove(ids: [ObjectID!]): User
+  merchandise_create(name: String, score: Int, url: URL): User
+  merchandise_update(_id: ObjectID, name: String, score: Int, url: URL): Merchandise
+  merchandise_remove(ids: [ObjectID!]): User
   knowledgeFavorite_toggle(_id: ObjectID!): Knowledge
 }
 
@@ -330,6 +330,6 @@ type User implements Node {
   children: [Child]
   child(_id: ObjectID): Child
   works: [Knowledge]
-  goods: [Good]
+  merchandises: [Merchandise]
   knowledgeFavorites: [Knowledge]
 }

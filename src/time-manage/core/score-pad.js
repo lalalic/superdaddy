@@ -6,7 +6,7 @@ import {compose,getContext,withProps,withState} from "recompose"
 import {withFragment} from "qili-app"
 
 import AppBar from "components/app-bar"
-import Goods from "components/goods"
+import Merchandises from "components/merchandises"
 
 import {IconButton,TextField} from 'material-ui'
 import IconComment from "material-ui/svg-icons/communication/comment"
@@ -150,7 +150,7 @@ export const Editor=withState("errorText","setError")(({lastScore,setError,error
 		setTodoGoal({goal,todo:desc.join(":")})
 	}
 	return (
-		<Goods onChange={add}
+		<Merchandises onChange={add}
 			openOnFocus={true}
 			errorText={errorText}
 			floatingLabelText="目标"
