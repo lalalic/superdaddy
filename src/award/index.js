@@ -27,12 +27,12 @@ class Editor extends Component{
         )
     }
 
-    static getDerivedStateFromProps({merchandise:{name,score=1,url}={}}){
+    static getDerivedStateFromProps({award:{name,score=1,url}={}}){
         return {name,score,url}
     }
 }
 
-class Merchandises extends Component{
+class Awards extends Component{
     constructor(){
         super(...arguments)
         this.state={}
@@ -41,7 +41,7 @@ class Merchandises extends Component{
     }
 
     render(){
-        const {merchandises, create, update, remove}=this.props
+        const {awards, create, update, remove}=this.props
         const {active}=this.state
         const save=()=>{
             const {name,score,url}=this.editor.current.state
@@ -52,7 +52,7 @@ class Merchandises extends Component{
         return (
             <Fragment>
                 <div style={{flex:"1 1 100%", overflowY:"scroll"}}>
-                    <Editor ref={this.editor} merchandise={merchandises.find(a=>a.id==active)}/>
+                    <Editor ref={this.editor} award={awards.find(a=>a.id==active)}/>
                     <table style={{width:"99%"}} ref={this.table}>
                         <thead>
                             <tr style={{background:"lightgray"}}>
@@ -62,7 +62,7 @@ class Merchandises extends Component{
                             </tr>
                         </thead>
                         <tbody>
-                            {merchandises.map(({id,name,score,url})=>(
+                            {awards.map(({id,name,score,url})=>(
                                 <tr key={id}
                                     style={{background:active==id ? "lightblue" : ""}}
                                     onClick={()=>{
@@ -107,22 +107,22 @@ class Merchandises extends Component{
 export default compose(
 
     withFragment(graphql`
-        fragment merchandise on Merchandise @relay(plural: true){
+        fragment award on Award @relay(plural: true){
             id
             name
             score
             url
         }
     `),
-    withProps(({data, ...others})=>({...others,merchandises:data})),
+    withProps(({data, ...others})=>({...others,awards:data})),
     withMutation({
         name:"create",
         promise:true,
         mutation:graphql`
-            mutation merchandise_create_Mutation($name:String!,$score:Int, $url:URL){
-                merchandise_create(name:$name,score:$score,url:$url){
-                    merchandises{
-                        ...merchandise
+            mutation award_create_Mutation($name:String!,$score:Int, $url:URL){
+                award_create(name:$name,score:$score,url:$url){
+                    awards{
+                        ...award
                     }
                 }
             }
@@ -134,9 +134,9 @@ export default compose(
         patch4:id,
         variables:{id},
         mutation:graphql`
-            mutation merchandise_update_Mutation($id:ObjectID!, $name:String!,$score:Int,$url:URL){
-                merchandise_update(_id:$id, name:$name,score:$score,url:$url){
-                    ...merchandise
+            mutation award_update_Mutation($id:ObjectID!, $name:String!,$score:Int,$url:URL){
+                award_update(_id:$id, name:$name,score:$score,url:$url){
+                    ...award
                 }
             }
         `,
@@ -144,13 +144,13 @@ export default compose(
     withMutation(({ids})=>({
         name:"remove",
         mutation:graphql`
-            mutation merchandise_remove_Mutation($ids:[ObjectID!]){
-                merchandise_remove(ids:$ids){
-                    merchandises{
-                        ...merchandise
+            mutation award_remove_Mutation($ids:[ObjectID!]){
+                award_remove(ids:$ids){
+                    awards{
+                        ...award
                     }
                 }
             }
         `
     }))
-)(Merchandises)
+)(Awards)

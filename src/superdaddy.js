@@ -22,8 +22,8 @@ import My from "setting/account"
 import Publish, {Publishes} from "publish"
 import {Creatable as Knowledges,NewKnowledge,Knowledge} from "knowledge"
 import TimeManage, {ScorePad, withPlanActions} from "time-manage"
-import Merchandises from "./merchandise"
-import Award from "components/award"
+import Awards from "./award"
+import AwardPaper from "components/award-paper"
 
 export const routes=(
 	<Router history={hashHistory}>
@@ -108,20 +108,20 @@ export const routes=(
 
 			)(ScorePad)}/>
 
-			<Route path="my/merchandises" component={compose(
+			<Route path="my/awards" component={compose(
 				withQuery(()=>({
 					query: graphql`
-						query superdaddy_merchandise_Query{
+						query superdaddy_awards_Query{
 							me{
-								merchandises{
-									...merchandise
+								awards{
+									...award
 								}
 							}
 						}
 					`
 				})),
-				withProps(({me})=>({data:me.merchandises})),
-			)(Merchandises)}/>
+				withProps(({me})=>({data:me.awards})),
+			)(Awards)}/>
 
 			{Account.routes({
 				account:compose(
@@ -144,7 +144,7 @@ export const routes=(
 							toChild: id=>router.push(`/child/${id}`),
 							toSetting: ()=>router.push('/my/setting'),
 							toProfile: ()=>router.push('/my/profile'),
-							toGoals: ()=>router.push('/my/merchandises'),
+							toGoals: ()=>router.push('/my/awards'),
 						}
 						return props
 					})
@@ -231,11 +231,11 @@ export const routes=(
 
 				)(Comment)}/>
 
-				<Route path=":id/award" component={compose(
+				<Route path=":id/award-paper" component={compose(
 					withQuery(({params:{id:child}})=>({
 						variables:{child},
 						query: graphql`
-							query superdaddy_award_Query($child:ObjectID){
+							query superdaddy_awardpaper_Query($child:ObjectID){
 								me{
 									child(_id:$child){
 										name
@@ -248,7 +248,7 @@ export const routes=(
 					withProps(({me:{child:{name,photo,plan={}}}})=>{
 						return {name,photo, ...plan}
 					}),
-				)(Award)}/>
+				)(AwardPaper)}/>
 			</Route>
 			<Route path="knowledge">
 				<IndexRoute component={compose(
@@ -452,8 +452,8 @@ export const SuperDaddy=compose(
 						name
 						photo
 					}
-					merchandises{
-						...merchandise
+					awards{
+						...award
 					}
 				}
 			}

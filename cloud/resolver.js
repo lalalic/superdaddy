@@ -69,8 +69,8 @@ module.exports={
 			return app.findEntity("User", {author:user._id})
 		},
 
-		merchandises(me,{},{app,user}){
-			return app.findEntity("Merchandise",{author:user._id})
+		awards(me,{},{app,user}){
+			return app.findEntity("Award",{author:user._id})
 		}
 	},
 
@@ -427,32 +427,32 @@ module.exports={
 				})
 		},
 
-		merchandise_create(_,{name,url,...$set},{app,user}){
-			return app.get1Entity("Merchandise",{author:user._id,name})
+		award_create(_,{name,url,...$set},{app,user}){
+			return app.get1Entity("Award",{author:user._id,name})
 				.then(existing=>{
 					if(existing){
-						throw new Error(`merchandise[${name}] already exists`)
+						throw new Error(`award[${name}] already exists`)
 					}else{
-						return app.createEntity("Merchandise",{name,url,...$set,author:user._id})
+						return app.createEntity("Award",{name,url,...$set,author:user._id})
 							.then(()=>user)
 					}
 				})
 		},
 
-		merchandise_update(_,{_id,name,url,...$set},{app,user}){
-			return app.get1Entity("Merchandise",{author:user._id,name})
+		award_update(_,{_id,name,url,...$set},{app,user}){
+			return app.get1Entity("Award",{author:user._id,name})
 				.then(existing=>{
 					if(existing && _id!=existing._id){
-						throw new Error(`merchandise[${name}] already exists`)
+						throw new Error(`award[${name}] already exists`)
 					}else{
-						return app.patchEntity("Merchandise",{_id,author:user._id},{name,url,...$set})
-							.then(()=>app.get1Entity("Merchandise",{_id}))
+						return app.patchEntity("Award",{_id,author:user._id},{name,url,...$set})
+							.then(()=>app.get1Entity("Award",{_id}))
 					}
 				})
 		},
 
-		merchandise_remove(_,{ids=[]},{app,user}){
-			return Promise.all(ids.map(_id=>app.remove1Entity("Merchandise", {author:user._id,_id})))
+		award_remove(_,{ids=[]},{app,user}){
+			return Promise.all(ids.map(_id=>app.remove1Entity("Award", {author:user._id,_id})))
 				.then(()=>user)
 		}
 	},
@@ -553,7 +553,7 @@ module.exports={
 				return app.getDataLoader("Knowledge").load(knowledge)
 		}
 	},
-	Merchandise: {
+	Award: {
 		id: Cloud.ID,
 	},
 }

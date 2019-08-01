@@ -4,19 +4,19 @@ import {compose, getContext, mapProps, setDisplayName} from "recompose"
 import {AutoComplete} from "material-ui"
 
 export default compose(
-	  setDisplayName("MyMerchandise"),
+	  setDisplayName("MyAward"),
     getContext({client: PropTypes.object}),
     mapProps(({client,onChange,value,fullWidth,floatingLabelText,hintText,openOnFocus})=>{
 		return {
-            merchandises:client.getAll("Merchandise").map(({score,name})=>`${score}:${name}`),
+            awards:client.getAll("Award").map(({score,name})=>`${score}:${name}`),
             onChange,value,fullWidth,floatingLabelText,hintText,openOnFocus,
         }
 	})
-)(({merchandises, onChange=a=>a, ...props})=>(
+)(({awards, onChange=a=>a, ...props})=>(
     <AutoComplete
 		openOnFocus={true}
         filter={AutoComplete.caseInsensitiveFilter}
-        dataSource={merchandises}
+        dataSource={awards}
         onNewRequest={onChange}
         {...props}
      />

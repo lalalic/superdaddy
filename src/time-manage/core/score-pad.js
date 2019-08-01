@@ -6,7 +6,7 @@ import {compose,getContext,withProps,withState} from "recompose"
 import {withFragment} from "qili-app"
 
 import AppBar from "components/app-bar"
-import Merchandises from "components/merchandises"
+import Awards from "components/awards"
 
 import {IconButton,TextField} from 'material-ui'
 import IconComment from "material-ui/svg-icons/communication/comment"
@@ -23,7 +23,7 @@ import {
 export const ScorePad=({
 	todo, goal,score,totalPerScreen=goal,
 	width=0, height=0,
-	toComment,setTodoGoal,toAward,
+	toComment,setTodoGoal,toAwardPaper,
 	})=>{
 	let smiles=layout(width,height,score,totalPerScreen)
 
@@ -42,7 +42,7 @@ export const ScorePad=({
 			<IconButton onClick={toComment}>
 				<IconComment/>
 			</IconButton>
-			<IconButton onClick={toAward}>
+			<IconButton onClick={toAwardPaper}>
 				<IconAward color="white"/>
 			</IconButton>
 		</span>
@@ -150,7 +150,7 @@ export const Editor=withState("errorText","setError")(({lastScore,setError,error
 		setTodoGoal({goal,todo:desc.join(":")})
 	}
 	return (
-		<Merchandises onChange={add}
+		<Awards onChange={add}
 			openOnFocus={true}
 			errorText={errorText}
 			floatingLabelText="目标"
@@ -171,7 +171,7 @@ export default compose(
 		width: width||muiTheme.page.width,
 		height: height||muiTheme.page.height-muiTheme.appBar.height-muiTheme.footbar.height-50,
 		toComment:()=>router.push(`/child/${state.superdaddy.current}/comment`),
-		toAward:()=>router.push(`/child/${state.superdaddy.current}/award`),
+		toAwardPaper:()=>router.push(`/child/${state.superdaddy.current}/award-paper`),
 		setTodoGoal(plan){
 			return planUpdate(plan)
 		}

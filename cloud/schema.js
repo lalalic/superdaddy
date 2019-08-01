@@ -101,7 +101,7 @@ module.exports=others=>`
 		status: Int
 	}
 
-	type Merchandise implements Node{
+	type Award implements Node{
 		id: ID!
 		author: User
 		name: String!
@@ -115,7 +115,7 @@ module.exports=others=>`
 		children: [Child]
 		child(_id:ObjectID): Child
 		works: [Knowledge]
-		merchandises: [Merchandise]
+		awards: [Award]
 	}
 
 	extend type Query{
@@ -152,9 +152,9 @@ module.exports=others=>`
 		publish_done(_id:ObjectID):Date
 		publish_remove(_id:ObjectID):Boolean
 
-		merchandise_create(name:String, score:Int, url: URL):User
-		merchandise_update(_id:ObjectID, name:String, score:Int, url: URL):Merchandise
-		merchandise_remove(ids:[ObjectID!]):User
+		award_create(name:String, score:Int, url: URL):User
+		award_update(_id:ObjectID, name:String, score:Int, url: URL):Award
+		award_remove(ids:[ObjectID!]):User
 	}
 
 	${others.join("\r\n")}

@@ -2,8 +2,10 @@ const KnowledgeComment=Cloud.buildComment("Knowledge")
 const KnowledgePagination=Cloud.buildPagination("Knowledge")
 const ChildComment=Cloud.buildComment("Child")
 
-const KnowledgeStatistics=Cloud.buildStatistics("Knowledge",["viewed","accomplished","tasking","favorited"])
+const KnowledgeStatistics=Cloud.buildStatistics("Knowledge",["viewed","accomplished","tasking","favorited","selled","sell$"])
 const KnowledgeFavorite=Cloud.buildFavorite("Knowledge","favorited")
+
+Cloud.addModule(require("./market"))
 
 Cloud.addModule({
 	typeDefs:require("./schema")([
@@ -27,4 +29,24 @@ Cloud.addModule({
 	static:require("./static"),
 })
 
+Cloud.addModule({
+	typeDefs:`
+		extend type Award{
+			merchandise: Merchandise
+		}
 
+		extend type Merchandise{
+			knowledge: Knowledge
+		}
+	`,
+	Award:{
+		merchandise({merchandise},_,{app}){
+			return app.get1Entity("Merchandise",{_id:merchandise})
+		},
+	},
+	Merchandise:{
+		knowledge({knowledge},_,{app}){
+			return app.get1Entity("Knowledge",{_id:knowledge})
+		}
+	}
+})
