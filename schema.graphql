@@ -6,6 +6,7 @@ type Award implements Node {
   url: URL
   createdAt: Date
   updatedAt: Date
+  merchandise: Merchandise
 }
 
 type Child implements Node {
@@ -117,6 +118,8 @@ type Knowledge implements Node {
   accomplished: Int
   tasking: Int
   favorited: Int
+  selled: Int
+  sellSum: Int
 
   """
   use query to auto count: _viewed in your query to inc viewed automatically
@@ -125,6 +128,8 @@ type Knowledge implements Node {
   _accomplished: Boolean
   _tasking: Boolean
   _favorited: Boolean
+  _selled: Boolean
+  _sellSum: Boolean
 }
 
 type KnowledgeComment implements Comment & Node {
@@ -169,6 +174,8 @@ type KnowledgeStatistics implements Node {
   accomplished: Int
   tasking: Int
   favorited: Int
+  selled: Int
+  sellSum: Int
 }
 
 type Log implements Node {
@@ -194,6 +201,7 @@ type Merchandise implements Node {
   target: URL
   createdAt: Date
   updatedAt: Date
+  knowledge: Knowledge
 }
 
 type MonthPlan {

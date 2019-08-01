@@ -2,7 +2,7 @@ const KnowledgeComment=Cloud.buildComment("Knowledge")
 const KnowledgePagination=Cloud.buildPagination("Knowledge")
 const ChildComment=Cloud.buildComment("Child")
 
-const KnowledgeStatistics=Cloud.buildStatistics("Knowledge",["viewed","accomplished","tasking","favorited","selled","sell$"])
+const KnowledgeStatistics=Cloud.buildStatistics("Knowledge",["viewed","accomplished","tasking","favorited","selled","sellSum"])
 const KnowledgeFavorite=Cloud.buildFavorite("Knowledge","favorited")
 
 Cloud.addModule(require("./market"))
