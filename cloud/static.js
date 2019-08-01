@@ -1,7 +1,6 @@
-exports.extend=function(service){
+module.exports=function(service){
 	service.on(/knowledge/,function({path,app}, {reply:send}){
-		let infos=path.split(/[\/\.]/)
-		let id=infos.pop()
+		const [,,id]=path.split(/[\/\.]/)
 		app.runQL(`query knowledge($id:String){
 					knowledge(_id:$id){
 						title

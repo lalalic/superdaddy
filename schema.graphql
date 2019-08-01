@@ -200,6 +200,7 @@ type Mutation {
   role_user_remove(_id: ObjectID!, users: [String!]!): Date
   file_create(_id: String!, host: ID!, bucket: String, size: Int, crc: Int, mimeType: String, imageInfo: JSON): File
   file_clean(host: ID!): Boolean
+  comment_create(parent: ID, content: String!, type: CommentType, _id: ObjectID): Comment
   child_create(name: String!, photo: URL, birthday: Date, gender: Gender): Child
   child_update(_id: ObjectID!, photo: URL, name: String, birthday: Date, icon: String, gender: Gender): Date
   child_remove(_id: ObjectID!): Boolean
@@ -224,7 +225,6 @@ type Mutation {
   good_update(_id: ObjectID, name: String, score: Int, url: URL): Good
   good_remove(ids: [ObjectID!]): User
   knowledgeFavorite_toggle(_id: ObjectID!): Knowledge
-  comment_create(parent: ID, content: String!, type: CommentType, _id: ObjectID): Comment
 }
 
 interface Node {
