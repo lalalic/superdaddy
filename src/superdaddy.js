@@ -432,7 +432,7 @@ export const routes=(
 import MindMap from "./components/mindmap"
 
 export const SuperDaddy=compose(
-	withProps(({service="https://api.papazai.com/1/graphql"})=>({
+	withProps(({service="https://api.jiliguan.com/1/graphql"})=>({
 		project,
 		service,
 		appId:project.config.appId,
