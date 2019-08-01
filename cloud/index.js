@@ -2,8 +2,10 @@ const KnowledgeComment=Cloud.buildComment("Knowledge")
 const KnowledgePagination=Cloud.buildPagination("Knowledge")
 const ChildComment=Cloud.buildComment("Child")
 
-const KnowledgeStatistics=Cloud.buildStatistics("Knowledge",["viewed","accomplished","tasking","favorited","selled","sellSum"])
+const KnowledgeStatistics=Cloud.buildStatistics("Knowledge",["viewed","accomplished","tasking","favorited","selled","sells"])
 const KnowledgeFavorite=Cloud.buildFavorite("Knowledge","favorited")
+
+const UserStatistics=Cloud.buildStatistics("User",["knowledges", "sells", "contribution"])
 
 Cloud.addModule(require("./market"))
 
@@ -13,6 +15,7 @@ Cloud.addModule({
 		KnowledgeComment.typeDefs,
 		KnowledgeFavorite.typeDefs,
 		KnowledgeStatistics.typeDefs,
+		UserStatistics.typeDefs,
 	
 		ChildComment.typeDefs,
 	]),
@@ -22,6 +25,7 @@ Cloud.addModule({
 		ChildComment.resolver,
 		KnowledgeFavorite.resolver,
 		KnowledgeStatistics.resolver,
+		UserStatistics.resolver,
 		require("./resolver")
 	),
 	persistedQuery:require("./persisted-query"),
