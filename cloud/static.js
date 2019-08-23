@@ -1,4 +1,9 @@
 module.exports=function(service){
+	service.on(/.*/,function(req,res){
+		require("../src/www/server")(req,res)
+	})
+
+/*
 	service.on(/knowledge/,function({path,app}, {reply:send}){
 		const [,,id]=path.split(/[\/\.]/)
 		app.runQL(`query knowledge($id:String){
@@ -122,6 +127,8 @@ module.exports=function(service){
 			</html>
 			`)
 		}).catch(send)
+		
 	})
+	*/
 }
 	

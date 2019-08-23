@@ -1,3 +1,5 @@
+require("babel-register")
+
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const {ContextReplacementPlugin} = require("webpack")
@@ -6,11 +8,13 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 	return {
 		...base,
 		entry:{
-			index: ["babel-polyfill","./.test.js","./src/index.js"],
+			...base.entry,
+			index:["babel-polyfill","./.test.js","./src/index.js"],
 		},
 		devtool: 'source-map',
 		devServer:{
 			contentBase: path.join(__dirname, "dist"),
+			publicPath:"",
 			port,
 			host:"0.0.0.0",
 			disableHostCheck:true,
@@ -20,7 +24,16 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 					res.setHeader("content-type", "text/javascript")
 					require("fs").createReadStream("./dist/knowledge/math-float.js").pipe(res)
 				})
-			}
+
+				app.use("/ad",(req, res)=>{
+					require("./src/www/server")(req.url, {
+						reply(){
+							res.send(...arguments)
+						}
+					})
+				})
+			},
+			historyApiFallback:true
 		},
 		plugins:[
 			new ContextReplacementPlugin(/graphql-language-service-interface[\/\\]dist/, /\.js$/),
@@ -28,7 +41,8 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 			new ContextReplacementPlugin(/source-map[\/\\]lib/, /\.js$/),
 
 			new HtmlWebpackPlugin({
-				...HTML
+				...HTML,
+				chunks:["index"]
 			}),
 
 			new HtmlWebpackPlugin({
@@ -36,7 +50,6 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 				extra:'<script type="text/javascript" src="cordova.js"></script>',
 				filename:"cordova.html",
 			})
-
 		]
 	}
 }

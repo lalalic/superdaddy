@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from "react"
 import PropTypes from "prop-types"
 
-import {compose, mapProps, getContext} from "recompose"
+import {compose, mapProps, getContext, setDisplayName} from "recompose"
 import {withFragment} from "qili-app"
 
 import {IconButton, TextField} from 'material-ui'
@@ -101,6 +101,7 @@ export class Knowledges extends Component{
 }
 
 export default compose(
+	setDisplayName("knowledges"),
 	withFragment(graphql`
 		fragment list on Query{
 			knowledges(title:$title,categories:$categories,tags:$tags,

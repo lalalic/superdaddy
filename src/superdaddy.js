@@ -2,7 +2,7 @@ import React ,{Fragment}from "react"
 import PropTypes from "prop-types"
 import {connect} from "react-redux"
 import {graphql} from "react-relay"
-import {Router, Route, IndexRoute, hashHistory} from "react-router"
+import {Router, Route, IndexRoute, hashHistory, browserHistory} from "react-router"
 
 import {compose, getContext, withProps, mapProps,
 	withContext,branch,renderComponent} from "recompose"
@@ -26,7 +26,7 @@ import Awards from "./award"
 import AwardPaper from "components/award-paper"
 
 export const routes=(
-	<Router history={hashHistory}>
+	<Router history={browserHistory}>
 		<Route path="/" component={compose(
 				connect(state=>({hasChild:!!state.superdaddy.current, timer: !!state.superdaddy.timer})),
 				branch(({hasChild})=>!hasChild,renderComponent(
@@ -272,7 +272,7 @@ export const routes=(
 						title,
 						qs,
 						goBack:()=>router.goBack(),
-						toKnowledge: id=>router.push(`/knowledge/${id}`),
+						toKnowledge: id=>router.push(`/knowledge/${id.split(":").pop()}.html`),
 						toCreate: ()=>router.push(`/knowledge/create`),
 					})),
 
@@ -285,18 +285,18 @@ export const routes=(
 					})),
 					getContext({router:PropTypes.object}),
 					withProps(({router})=>({
-						toKnowledge: id=>router.replace(`/knowledge/${id}`),
+						toKnowledge: id=>router.replace(`/knowledge/${id.split(":").pop()}.html`),
 						goBack(){
 							router.goBack()
 						}
 					}))
 				)(NewKnowledge)}/>
 
-				<Route path=":id" component={compose(
+				<Route path=":id.html" component={compose(
 					getContext({router:PropTypes.object}),
 					connect((state,{router,params:{id}})=>({
 						child:state.superdaddy.current,
-						toComment:()=>router.push(`knowledge/${id}/comment`),
+						toComment:()=>router.push(`knowledge/${id.split(":").pop()}/comment`),
 						router:undefined,
 					})),
 					withQuery(({params:{id},child})=>({
@@ -314,8 +314,8 @@ export const routes=(
 
 				<Route path=":id/comment" component={compose(
 					withCurrent(),
-					withPagination(({params:{id:parent}})=>({
-						variables:{parent},
+					withPagination(({params:{id}})=>({
+						variables:{parent:`Knowledge:${id}`},
 						query: graphql`
 							query superdaddy_comment_Query($parent:ObjectID!, $count: Int=10, $cursor: JSON){
 								...superdaddy_knowledgeComments
@@ -337,8 +337,8 @@ export const routes=(
 							}
 						}
 					`}),
-					withProps(({params:{id:parent}})=>({
-						parent,
+					withProps(({params:{id}})=>({
+						parent:`Knowledge:${id}`,
 						connection:"knowledge_comments"
 					})),
 
