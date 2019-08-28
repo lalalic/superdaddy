@@ -1,13 +1,11 @@
 import React ,{Fragment}from "react"
 import PropTypes from "prop-types"
 import {connect} from "react-redux"
-import {Router, Route, IndexRoute, hashHistory, browserHistory} from "react-router"
+import {Router, Route, IndexRoute, browserHistory} from "react-router"
 
-import {compose, getContext, withProps, mapProps,
-	withContext,branch,renderComponent} from "recompose"
-import {withInit, withQuery, withPagination, withFragment,
-	Account, Comment,
-	QiliApp, ACTION as qiliACTION} from "qili-app"
+import {compose, getContext, withProps, mapProps, withContext,branch,renderComponent} from "recompose"
+import {withInit, withQuery, withPagination, withFragment,} from "qili-app/graphql"
+import {Account, Comment,QiliApp, ACTION as qiliACTION} from "qili-app"
 
 import withCurrent from "components/current-child"
 import withNavigator from "components/navigator"
@@ -23,6 +21,8 @@ import {Creatable as Knowledges,NewKnowledge,Knowledge} from "knowledge"
 import TimeManage, {ScorePad, withPlanActions} from "time-manage"
 import Awards from "./award"
 import AwardPaper from "components/award-paper"
+
+const _=id=>id.split(":").pop()
 
 export const routes=(
 	<Router history={browserHistory}>
@@ -141,7 +141,7 @@ export const routes=(
 						let props={
 							user:data.user,
 							toCreate:()=>router.push("/child"),
-							toChild: id=>router.push(`/child/${id}`),
+							toChild: id=>router.push(`/child/${_(id)}`),
 							toSetting: ()=>router.push('/my/setting'),
 							toProfile: ()=>router.push('/my/profile'),
 							toGoals: ()=>router.push('/my/awards'),
@@ -162,7 +162,7 @@ export const routes=(
 				<IndexRoute component={compose(
 					getContext({router: PropTypes.object}),
 					withProps(({router})=>({
-						toChild:id=>router.replace(`/child/${id}`)
+						toChild:id=>router.replace(`/child/${_(id)}`)
 					})),
 				)(Child.Creator)}/>
 
@@ -250,7 +250,7 @@ export const routes=(
 					}),
 				)(AwardPaper)}/>
 			</Route>
-			<Route path="knowledge">
+			<Route path="knowledges">
 				<IndexRoute component={compose(
 					withNavigator({flex:false}),
 					connect(state=>({qs:state[DOMAIN].qs}),(dispatch)=>({
@@ -261,7 +261,7 @@ export const routes=(
 						query: graphql`
 							query superdaddy_knowleges_Query($title:String,$categories:[String],$tags:[String],
 								$mine:Boolean, $favorite:Boolean, $tasked:Boolean, $tasking:Boolean,
-								$count:Int,$cursor:JSON){
+								$count:Int=20,$cursor:JSON){
 								...list
 							}
 						`
@@ -272,8 +272,8 @@ export const routes=(
 						title,
 						qs,
 						goBack:()=>router.goBack(),
-						toKnowledge: id=>router.push(`/knowledge/${id.split(":").pop()}.html`),
-						toCreate: ()=>router.push(`/knowledge/create`),
+						toKnowledge: id=>`/knowledges/${_(id)}`,
+						toCreate: ()=>router.push(`/knowledges/create`),
 					})),
 
 				)(Knowledges)}/>
@@ -285,18 +285,18 @@ export const routes=(
 					})),
 					getContext({router:PropTypes.object}),
 					withProps(({router})=>({
-						toKnowledge: id=>router.replace(`/knowledge/${id.split(":").pop()}.html`),
+						toKnowledge: id=>router.replace(`/knowledges/${_(id)}`),
 						goBack(){
 							router.goBack()
 						}
 					}))
 				)(NewKnowledge)}/>
 
-				<Route path=":id.html" component={compose(
+				<Route path=":id" component={compose(
 					getContext({router:PropTypes.object}),
 					connect((state,{router,params:{id}})=>({
 						child:state.superdaddy.current,
-						toComment:()=>router.push(`knowledge/${id.split(":").pop()}/comment`),
+						toComment:()=>router.push(`knowledges/${_(id)}/comment`),
 						router:undefined,
 					})),
 					withQuery(({params:{id},child})=>({
@@ -310,6 +310,7 @@ export const routes=(
 							}
 						`,
 					})),
+					withProps(({data})=>({knowledge:data.knowledge})),
 				)(Knowledge)}/>
 
 				<Route path=":id/comment" component={compose(

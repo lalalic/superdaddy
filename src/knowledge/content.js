@@ -1,10 +1,9 @@
 import React from "react"
 
 import {compose} from "recompose"
-import {withFragment} from "qili-app"
+import {withFragment} from "qili-app/graphql"
 
 import {relative} from 'components/calendar'
-import AppBar from "components/app-bar"
 import MindMap from "components/mindmap"
 
 import IconFavorited from "material-ui/svg-icons/action/favorite"
@@ -17,13 +16,14 @@ import smartNum from "../tools/number"
 MindMap.asHtmlElement()
 
 export const Content=({
-		knowledge:{id, title, content, summary, createdAt, category, tags, figure, author,favorited,viewed,accomplished,tasking}
+		knowledge:{id, title, content, summary, createdAt, category, tags, figure, author,favorited,viewed,accomplished,tasking},
+		titleBar
 	})=>{
 	const iconStyle={width:10,height:10}
 	return (
 		<article>
 			<header  style={{backgroundColor:"transparent", height:"auto"}}>
-				<AppBar title={title} />
+				{titleBar && React.cloneElement(titleBar, {title})}
 				{id && (
 					<p>
 						<span>{author.name}</span>

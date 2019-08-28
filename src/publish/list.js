@@ -1,6 +1,7 @@
 import React, {Component,Fragment} from "react"
 import {compose, mapProps,branch, renderComponent} from "recompose"
-import {withFragment, withMutation, CommandBar, Empty} from "qili-app"
+import {withFragment} from "qili-app/graphql"
+import {CommandBar, Empty} from "qili-app"
 
 import {FlatButton, List, ListItem, Toggle} from "material-ui"
 

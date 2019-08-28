@@ -2,7 +2,7 @@ import React, {Component, Fragment} from "react"
 import PropTypes from "prop-types"
 
 import {compose, mapProps, getContext, setDisplayName} from "recompose"
-import {withFragment} from "qili-app"
+import {withFragment} from "qili-app/graphql"
 
 import {IconButton, TextField} from 'material-ui'
 

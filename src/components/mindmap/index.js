@@ -64,15 +64,23 @@ export default class MindMap extends Component{
             }, 
             ()=>setTimeout(()=>{
                 const svg=this.svg.current
-                svg.querySelector('text#measure').remove()
-                adjustSize(svg)
-                window._mindmapAdjustSize=adjustSize
+                if(svg){
+                    svg.querySelector('text#measure').remove()
+                    adjustSize(svg)
+                    window._mindmapAdjustSize=adjustSize
+                }
             },100)
         )
     }
 
     static asHtmlElement(){
-        define({"x-mindmap":{component:MindMap, attributes:["src","width","height"]}})
+        try{
+            if(typeof(window)!=="undefined"){
+                define({"x-mindmap":{component:MindMap, attributes:["src","width","height"]}})
+            }
+        }catch(e){
+            
+        }
     }
 }
 

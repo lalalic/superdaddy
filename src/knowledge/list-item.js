@@ -1,7 +1,7 @@
 import React, {Component} from "react"
-
+import {Link} from "react-router"
 import {compose} from "recompose"
-import {withFragment} from "qili-app"
+import {withFragment} from "qili-app/graphql"
 
 import {relative} from 'components/calendar'
 import MindMap from "components/mindmap"
@@ -32,7 +32,7 @@ export class Item extends Component{
         var {model,toKnowledge,style,}=this.props
         return (
             <div className="li inset photo0" style={style}>
-                <div className="title"  onClick={()=>toKnowledge(model.id)}>{model.title}</div>
+                <div className="title"><Link to={toKnowledge(model.id)}>{model.title}</Link></div>
                 <div className="summary">{model.summary}</div>
                 {this._more(model)}
             </div>
@@ -45,7 +45,7 @@ export class Item extends Component{
             <div className="li inset photo1" style={style}>
                 <div className="layout">
                     <div>
-                        <div className="title" onClick={()=>toKnowledge(model.id)}>{model.title}</div>
+                        <div className="title"><Link to={toKnowledge(model.id)}>{model.title}</Link></div>
                         {this._more(model)}
                     </div>
                     <div className="photos">
@@ -60,7 +60,7 @@ export class Item extends Component{
         var {model,toKnowledge,style,}=this.props
         return (
             <div className="li inset photo3" style={style}>
-                <div className="title" onClick={()=>toKnowledge(model.id)}>{model.title}</div>
+                <div className="title"><Link to={toKnowledge(model.id)}>{model.title}</Link></div>
                 <div className="photos">
                     <div><IMG src={model.photos[0]}/></div>
                     <div><IMG src={model.photos[1]}/></div>
@@ -74,6 +74,7 @@ export class Item extends Component{
     _more(model){
         var time=relative(model.createdAt||model.updatedAt)
         const iconStyle={width:10,height:10}
+        const {children}=this.props
         return (
             <div className="more">
                 <span>{time}</span>
@@ -97,6 +98,7 @@ export class Item extends Component{
                         {smartNum(model.tasking)}<IconTasking style={iconStyle}/>
                     </span>
                 )}
+                {children}
             </div>
         )
     }

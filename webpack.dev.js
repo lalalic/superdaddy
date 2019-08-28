@@ -14,7 +14,6 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 		devtool: 'source-map',
 		devServer:{
 			contentBase: path.join(__dirname, "dist"),
-			publicPath:"",
 			port,
 			host:"0.0.0.0",
 			disableHostCheck:true,
@@ -26,11 +25,12 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 				})
 			},
 			historyApiFallback:true,
+			
 			proxy:{
 				"/www":{
 					target:"http://localhost:9080",
 					pathRewrite:{
-						"/www":"/1/5746b2c5e4bb3b3700ae1566/static"
+						"/www":"/1/5746b2c5e4bb3b3700ae1566/static",
 					},
 					changeOrigin:true
 				}

@@ -1,18 +1,11 @@
 import React, {Component} from "react"
-import PropTypes from "prop-types"
 
-import {compose, getContext, withProps} from "recompose"
-import {withMutation, withFragment, Photo, Account} from "qili-app"
+import {compose} from "recompose"
+import {Photo, Account} from "qili-app"
+import {withMutation, withFragment} from "qili-app/graphql"
 import {ListItem} from "material-ui"
 
 import IconAdd from "material-ui/svg-icons/content/add-circle-outline"
-import IconRightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right'
-import IconSetting from 'material-ui/svg-icons/action/settings'
-import IconInvite from 'material-ui/svg-icons/social/group-add'
-import IconPublish from "material-ui/svg-icons/image/camera-roll"
-import IconChild from "material-ui/svg-icons/places/child-care"
-
-import Child from "family/child"
 
 export default compose(
 	withFragment(graphql`

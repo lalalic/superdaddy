@@ -1,7 +1,8 @@
 import React, {Component,Fragment} from "react"
 
 import {compose, getContext} from "recompose"
-import {withMutation, withFragment,wechat,CommandBar, File, ACTION as qiliACTION} from "qili-app"
+import {wechat,CommandBar, File, ACTION as qiliACTION} from "qili-app"
+import {withMutation, withFragment} from "qili-app/graphql"
 import {connect} from "react-redux"
 
 import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation'
@@ -21,6 +22,7 @@ import IconTimer from "material-ui/svg-icons/av/av-timer"
 
 import AD from 'components/ad'
 import AutoForm from "components/auto-form"
+import AppBar from "components/app-bar"
 
 import {ACTION} from "."
 import FragmentContent,{Content} from "./content"
@@ -77,7 +79,7 @@ export class KnowledgeEditor extends Component{
 		return []
 	}
 
-	get previewFields(){
+	get printFields(){
 		const {knowledge:{fields, hasPrint:props}}=this.props
 		if(props){
 			return Object.keys(props)
@@ -279,7 +281,7 @@ export class KnowledgeEditor extends Component{
             <Fragment>
 				<div className="flexV">
 					<div className="knowledge">
-						{knowledgeContent}
+						{React.cloneElement(knowledgeContent,{titleBar:<AppBar/>})}
 	                </div>
 
 					<article>
@@ -328,8 +330,8 @@ export default compose(
 		}
 	`),
 	File.withUpload,
-	connect(
-		({qili:{user},superdaddy:{current,selectedDocx,}},{knowledge})=>({
+	connect(({qili:{user},superdaddy:{current,selectedDocx,}},{knowledge})=>{
+		return {
 			selectedDocx,
 			revising:!!selectedDocx,
 			child:current,
@@ -340,7 +342,8 @@ export default compose(
 					id:knowledge.id,
 					author:{name:""}
 				} : knowledge
-		})),
+		}
+	}),
 	withMutation(({knowledge,child}, info)=>({
 		name:"updateKnowledge",
 		variables:{info,id:knowledge.id,child},

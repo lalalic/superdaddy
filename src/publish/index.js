@@ -2,7 +2,6 @@ import React, {Component,Fragment} from "react"
 import PropTypes from "prop-types"
 
 import {compose, getContext,withProps,setPropTypes} from "recompose"
-import {connect} from "react-redux"
 
 import pick from "lodash.pick"
 
@@ -16,7 +15,8 @@ import IconRemove from "material-ui/svg-icons/action/alarm-off"
 
 
 import AppBar from "components/app-bar"
-import {CommandBar,withMutation,withFragment} from "qili-app"
+import {CommandBar} from "qili-app"
+import {withMutation,withFragment} from "qili-app/graphql"
 
 import Assembler from "./assemble"
 

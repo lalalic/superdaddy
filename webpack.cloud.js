@@ -12,8 +12,6 @@ module.exports=()=>({
                     return callback(null, 'commonjs '+request)
             }
 
-            if(request.startsWith("material"))
-                return callback(null, 'commonjs '+request)
             callback()
         }
     ],

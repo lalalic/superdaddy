@@ -1,6 +1,5 @@
-import React, {PureComponent,Component,} from "react"
-import PropTypes from "prop-types"
-import {withFragment} from "qili-app"
+import React, {Component,} from "react"
+import {withFragment} from "qili-app/graphql"
 
 import {compose, mapProps} from "recompose"
 import Assembler from "publish/assemble";

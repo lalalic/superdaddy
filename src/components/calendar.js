@@ -1,5 +1,3 @@
-import _Calendar from 'material-ui/DatePicker/Calendar'
-
 import {isEqualDate, cloneAsDate, getDaysInMonth,dateTimeFormat} from "material-ui/DatePicker/dateUtils"
 
 export function getLastDayOfMonth(d){
@@ -40,8 +38,4 @@ export function cnDateTimeFormat(locale, options) {
           return dayAbbreviation[date.getDay()]
         return a.format(...arguments)
     };
-}
-
-export default class Calendar extends _Calendar{
-
 }

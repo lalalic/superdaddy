@@ -1,6 +1,7 @@
 import React, {Component,Fragment} from "react"
 import {compose,withProps} from "recompose"
-import {withFragment, withMutation,CommandBar} from "qili-app"
+import {CommandBar} from "qili-app"
+import {withFragment, withMutation} from "qili-app/graphql"
 
 import {TextField} from "material-ui"
 

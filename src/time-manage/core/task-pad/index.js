@@ -2,7 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 
 import {compose, getContext, mapProps} from "recompose"
-import {withFragment} from "qili-app"
+import {withFragment} from "qili-app/graphql"
 
 import MediaQuery from "react-responsive"
 import {ListItem,Avatar} from "material-ui"

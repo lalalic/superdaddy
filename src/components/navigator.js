@@ -18,7 +18,7 @@ export const Navigator=({style})=>(
 				link:'/score',
 				icon:<IconReward/>},
 			{label:"发现", action:"knowledges",
-				link:'/knowledge',
+				link:'/knowledges',
 				icon:<IconKnowledges/>},
 
 			{label:"我", action:"my",

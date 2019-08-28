@@ -4,7 +4,8 @@ import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigati
 
 import {connect} from "react-redux"
 import {compose,branch,renderComponent} from "recompose"
-import {withMutation, CommandBar, Empty, File, ACTION as qiliACTION} from "qili-app"
+import { CommandBar, Empty, File, ACTION as qiliACTION} from "qili-app"
+import {withMutation} from "qili-app/graphql"
 
 import IconInsertFile from 'material-ui/svg-icons/action/note-add'
 import IconCreate from "material-ui/svg-icons/editor/border-color"
