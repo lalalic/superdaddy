@@ -1,7 +1,6 @@
 import React from "react"
 import {renderToString} from "react-dom/server"
 import {match, RouterContext} from "react-router"
-import {fetchQuery} from "react-relay"
 import routes from "./routes"
 import template from "./template"
 import {withGraphql, createEnvironment} from "qili-app/graphql"

@@ -3,7 +3,6 @@ import PropTypes from "prop-types"
 
 import {compose, getContext, withProps} from "recompose"
 import {withMutation, withFragment, Photo, Account} from "qili-app"
-import {graphql} from "react-relay"
 import {ListItem} from "material-ui"
 
 import IconAdd from "material-ui/svg-icons/content/add-circle-outline"

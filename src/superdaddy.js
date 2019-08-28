@@ -1,7 +1,6 @@
 import React ,{Fragment}from "react"
 import PropTypes from "prop-types"
 import {connect} from "react-redux"
-import {graphql} from "react-relay"
 import {Router, Route, IndexRoute, hashHistory, browserHistory} from "react-router"
 
 import {compose, getContext, withProps, mapProps,
@@ -74,8 +73,8 @@ export const routes=(
 					`,
 				})),
 
-				withProps(({me})=>({
-					data: me.child.plan,
+				withProps(({data})=>({
+					data: data.me.child.plan,
 				})),
 				withPlanActions(),
 				withContext({actions:PropTypes.object},({actions})=>({actions})),
@@ -100,8 +99,8 @@ export const routes=(
 						}
 					`,
 				})),
-				withProps(({me})=>({
-					data: me.child.plan,
+				withProps(({data})=>({
+					data: data.me.child.plan,
 				})),
 				withPlanActions(),
 				withContext({actions:PropTypes.object},({actions})=>({actions})),
@@ -120,7 +119,7 @@ export const routes=(
 						}
 					`
 				})),
-				withProps(({me})=>({data:me.awards})),
+				withProps(({data})=>({data:data.me.awards})),
 			)(Awards)}/>
 
 			{Account.routes({
@@ -138,8 +137,9 @@ export const routes=(
 					getContext({
 						router: PropTypes.object,
 					}),
-					withProps(({router})=>{
+					withProps(({router, data})=>{
 						let props={
+							user:data.user,
 							toCreate:()=>router.push("/child"),
 							toChild: id=>router.push(`/child/${id}`),
 							toSetting: ()=>router.push('/my/setting'),
@@ -184,9 +184,9 @@ export const routes=(
 						router:PropTypes.object,
 						store: PropTypes.object
 					}),
-					withProps(({me,client,store, router,params:{id}})=>({
+					withProps(({data,client,store, router,params:{id}})=>({
 						id,
-						data:me.child,
+						data:data.me.child,
 						switchChild(){
 							let all=client.getAll("Child")
 							store.dispatch(ACTION.CURRENT_CHILD(all.length ? all[0].id : null))
@@ -245,7 +245,7 @@ export const routes=(
 							}
 						`
 					})),
-					withProps(({me:{child:{name,photo,plan={}}}})=>{
+					withProps(({data:{me:{child:{name,photo,plan={}}}}})=>{
 						return {name,photo, ...plan}
 					}),
 				)(AwardPaper)}/>

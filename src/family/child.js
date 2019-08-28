@@ -3,7 +3,6 @@ import React, {Component,Fragment} from "react"
 import {connect} from "react-redux"
 import {compose, setStatic, getContext, withProps} from "recompose"
 import {withMutation, withFragment,InfoForm, CommandBar, Photo} from "qili-app"
-import {graphql} from "react-relay"
 
 import {TextField, RadioButtonGroup, RadioButton,DatePicker,Subheader} from 'material-ui'
 

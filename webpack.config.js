@@ -13,8 +13,8 @@ const HTML={
 module.exports=env=>{
 	const base={
 		entry:{
-			index:["babel-polyfill","./src/index.js"],
-			bundle:["babel-polyfill","./src/www/browser.js"]
+			app:["babel-polyfill","./src/index.js"],
+			www:["babel-polyfill","./src/www/browser.js"]
 		},
 		output:{
 			filename:"[name].js",

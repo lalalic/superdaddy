@@ -17,8 +17,7 @@ export default ({content,_init})=>`
 	<script>
 		window._initRelay=${_init ? JSON.stringify(_init) : "undefined"}
 	</script>
-	<script src="http://localhost:9082/bundle.js"></script>
-
+	<script src="www.js" defer></script>
 </html>
 
 `

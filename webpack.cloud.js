@@ -17,7 +17,6 @@ module.exports=()=>({
             callback()
         }
     ],
-    //["react","react-dom","react-router",],
     output:{
         path:`${__dirname}/cloud`,
         filename:"__generated.js",

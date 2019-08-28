@@ -1,7 +1,5 @@
 import React from "react"
 
-import {graphql} from "react-relay"
-
 import {compose} from "recompose"
 import {withFragment} from "qili-app"
 
