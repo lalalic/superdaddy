@@ -20,7 +20,7 @@ install:
 
 script:
  - yarn relay
- - yarn build
+ - yarn build -p
  - rm dist/app.js
 # - yarn cordova -- --storePassword=$STORE_PWD --password=$STORE_PWD
 

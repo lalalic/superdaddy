@@ -9,6 +9,7 @@
       "babel-plugin-transform-class-properties",
 	  "babel-plugin-relay",
 	  "babel-plugin-syntax-dynamic-import",
+	  "babel-plugin-transform-async-to-generator",
 	  ["module-resolver",{
 			"root": ["."],
 			"alias":{
