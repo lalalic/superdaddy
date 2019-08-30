@@ -21,8 +21,7 @@ install:
 script:
  - yarn relay
  - yarn build
- - rm dist/index.js
- - mv dist/index.html .
+ - rm dist/app.js
 # - yarn cordova -- --storePassword=$STORE_PWD --password=$STORE_PWD
 
 after_success:
@@ -33,7 +32,6 @@ after_success:
  - rm dist/cordova.html
  - rm dist/phone.xml
  - rm dist/tv.xml
- - mv index.html dist
 
  - node -p "require('./package.json').version" > dist/app.apk.version
  - mv dist $APP_NAME

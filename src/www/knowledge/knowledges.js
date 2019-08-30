@@ -35,15 +35,17 @@ export default compose(
                 pageInfo{
                     hasNextPage
                     endCursor
+                    hasPreviousPage
+                    startCursor
                 }
             }
         }
     `),
-    mapProps(({data, toKnowledge, relay})=>{
+    mapProps(({data, toKnowledge, pagination})=>{
         return {
             knowledges:data.knowledges.edges.map(a=>a.node),
             toKnowledge,
-            relay
+            pagination
         }
     })
 )(KnowledgeList)

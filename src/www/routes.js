@@ -1,6 +1,6 @@
 import React,{Fragment} from "react"
 import {Route,IndexRoute} from "react-router"
-import {withQuery, withFragment, withPagination} from "qili-app/graphql"
+import {withQuery, withPagination} from "qili-app/graphql"
 import {compose, mapProps, withProps} from "recompose"
 
 import KnowledgeList from "./knowledge/knowledges"
@@ -13,7 +13,11 @@ export const App=({children, req, ...theme})=>{
     if(req && req.headers){
         theme.userAgent=req.headers['user-agent']||"all"
     }
-    return (<MuiThemeProvider muiTheme={getMuiTheme(theme)} children={children}/>)
+    return (
+        <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
+            {children}
+        </MuiThemeProvider> 
+    )
 }
 
 const _=id=>id.split(":").pop()
@@ -21,15 +25,17 @@ const _=id=>id.split(":").pop()
 export default (
     <Route path="/" component={({children})=><Fragment>{children}</Fragment>}>
         <IndexRoute component={compose(
-            withPagination({
-                variables:{},
-                query:graphql`
-                    query routes_knowledges_Query($title:String,$categories:[String],$tags:[String],
-                        $mine:Boolean, $favorite:Boolean, $tasked:Boolean, $tasking:Boolean,
-                        $count:Int=20,$cursor:JSON){
-                            ...knowledges
-                    }
-                `
+            withPagination(({location:{query:{q}}})=>{
+                return {
+                    variables:JSON.parse(q||"{}")||{},
+                    query:graphql`
+                        query routes_knowledges_Query($title:String,$categories:[String],$tags:[String],
+                            $mine:Boolean, $favorite:Boolean, $tasked:Boolean, $tasking:Boolean,
+                            $count:Int=5,$cursor:JSON){
+                                ...knowledges
+                        }
+                    `
+                }
             }),
             withProps(props=>({
                 toKnowledge:id=>`knowledges/${_(id)}`

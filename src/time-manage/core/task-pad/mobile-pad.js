@@ -1,5 +1,6 @@
 import React from "react"
-import {List,ListItem,Tab} from "material-ui"
+import {List,ListItem} from "material-ui/List"
+import {Tab} from "material-ui/Tabs"
 
 import SwipeableTabs from "components/swipe-tabs"
 import TodoStatus from "./status"

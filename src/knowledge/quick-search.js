@@ -3,9 +3,11 @@ import PropTypes from "prop-types"
 import {connect} from "react-redux"
 import {compose, getContext, withProps, withStateHandlers} from "recompose"
 
-import {Popover, Menu, MenuItem, Divider, Chip, Subheader} from "material-ui"
-import IconArrowDropRight from 'material-ui/svg-icons/navigation-arrow-drop-right'
-import {blue300 as SELECTED, indigo900} from 'material-ui/styles/colors'
+import Popover from "material-ui/Popover"
+import Chip from "material-ui/Chip"
+import Subheader from "material-ui/Subheader"
+
+import {blue300 as SELECTED} from 'material-ui/styles/colors'
 
 const CAPS=["观察能力","自制力","专注力","记忆力"]
 const TAGS=["数学","语文","英语","二年级"]

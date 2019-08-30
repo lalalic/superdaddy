@@ -5,7 +5,7 @@ import {connect} from "react-redux"
 import {compose,getContext,withProps} from "recompose"
 import {withFragment} from "qili-app/graphql"
 
-import {IconButton} from "material-ui"
+import IconButton from "material-ui/IconButton"
 
 import IconDone from "material-ui/svg-icons/file/cloud-done"
 

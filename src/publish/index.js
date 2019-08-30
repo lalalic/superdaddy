@@ -5,7 +5,11 @@ import {compose, getContext,withProps,setPropTypes} from "recompose"
 
 import pick from "lodash.pick"
 
-import {TextField, DatePicker, IconButton, GridList, GridTile, Subheader} from "material-ui"
+import TextField from "material-ui/TextField"
+import DatePicker from "material-ui/DatePicker"
+import IconButton from "material-ui/IconButton"
+import {GridList,GridTile} from "material-ui/GridList"
+import Subheader from "material-ui/Subheader"
 
 import IconUnSelected from 'material-ui/svg-icons/toggle/star-border'
 import IconSelected from 'material-ui/svg-icons/toggle/star'

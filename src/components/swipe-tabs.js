@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from "react"
-import {Tabs} from "material-ui"
+import Tabs from "material-ui/Tabs"
 import SwipeableViews from 'react-swipeable-views'
 
 export class SwipeableTabs extends Component{

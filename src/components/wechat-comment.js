@@ -4,7 +4,8 @@ import PropTypes from "prop-types"
 import {Comment} from "qili-app"
 
 import AppBar from "components/app-bar"
-import {FlatButton, Avatar} from "material-ui"
+import FlatButton from "material-ui/FlatButton"
+import Avatar from "material-ui/Avatar"
 
 import Wechat from "wechat4u"
 

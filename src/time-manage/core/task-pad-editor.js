@@ -4,7 +4,10 @@ import PropTypes from "prop-types"
 import {compose, getContext,withProps} from "recompose"
 import {withFragment} from "qili-app/graphql"
 
-import {List,ListItem, Subheader,Divider,Tab, IconButton} from "material-ui"
+import {List,ListItem} from "material-ui/List"
+import Divider from "material-ui/Divider"
+import IconButton from "material-ui/IconButton"
+
 import MediaQuery from "react-responsive"
 
 import {lightBlue100 as COLOR_ENABLED} from "material-ui/styles/colors"

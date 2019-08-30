@@ -1,5 +1,5 @@
 import React,{Fragment} from "react"
-import {AppBar} from "material-ui"
+import AppBar from "material-ui/AppBar"
 import {Current} from "components/current-child"
 import {OfflineUI} from "qili-app"
 

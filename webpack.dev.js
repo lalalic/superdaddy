@@ -8,7 +8,7 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 	return {
 		...base,
 		entry:{
-			www:["babel-polyfill","./src/www/browser.js"],
+			index:["babel-polyfill","./.test.www.js"],
 			app:["babel-polyfill","./.test.js","./src/index.js"],
 		},
 		devtool: 'source-map',
@@ -25,7 +25,6 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 				})
 			},
 			historyApiFallback:true,
-			
 			proxy:{
 				"/www":{
 					target:"http://localhost:9080",

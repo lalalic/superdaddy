@@ -3,7 +3,7 @@ import {compose, mapProps,branch, renderComponent} from "recompose"
 import {withFragment} from "qili-app/graphql"
 import {CommandBar, Empty} from "qili-app"
 
-import {FlatButton, List, ListItem, Toggle} from "material-ui"
+import {List, ListItem} from "material-ui/List"
 
 import AppBar from "components/app-bar"
 

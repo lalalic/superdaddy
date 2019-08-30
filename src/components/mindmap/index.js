@@ -76,7 +76,7 @@ export default class MindMap extends Component{
     static asHtmlElement(){
         try{
             if(typeof(window)!=="undefined"){
-                define({"x-mindmap":{component:MindMap, attributes:["src","width","height"]}})
+                define({"x-mindmap":{component:MindMap, attributes:["src","width","height","className","style"]}})
             }
         }catch(e){
             

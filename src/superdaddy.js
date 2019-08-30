@@ -257,20 +257,18 @@ export const routes=(
 						search:cond=>dispatch(ACTION.QUERY(cond))
 					})),
 					withPagination(({qs})=>({
-						variables:qs,
+						variables:{...qs},
 						query: graphql`
 							query superdaddy_knowleges_Query($title:String,$categories:[String],$tags:[String],
 								$mine:Boolean, $favorite:Boolean, $tasked:Boolean, $tasking:Boolean,
-								$count:Int=20,$cursor:JSON){
+								$count:Int=5,$cursor:JSON){
 								...list
 							}
-						`
+						`,
 					})),
 					getContext({router:PropTypes.object}),
-					mapProps(({router,qs:{title, ...qs},...others})=>({
+					mapProps(({router,...others})=>({
 						...others,
-						title,
-						qs,
 						goBack:()=>router.goBack(),
 						toKnowledge: id=>`/knowledges/${_(id)}`,
 						toCreate: ()=>router.push(`/knowledges/create`),

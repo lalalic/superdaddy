@@ -3,7 +3,7 @@ import React, {Component} from "react"
 import {compose} from "recompose"
 import {Photo, Account} from "qili-app"
 import {withMutation, withFragment} from "qili-app/graphql"
-import {ListItem} from "material-ui"
+import {ListItem} from "material-ui/List"
 
 import IconAdd from "material-ui/svg-icons/content/add-circle-outline"
 

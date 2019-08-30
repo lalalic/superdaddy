@@ -3,11 +3,9 @@ import {compose,withProps} from "recompose"
 import {CommandBar} from "qili-app"
 import {withFragment, withMutation} from "qili-app/graphql"
 
-import {TextField} from "material-ui"
+import TextField from "material-ui/TextField"
 
 import IconRemove from "material-ui/svg-icons/content/remove-circle"
-import IconSave from "material-ui/svg-icons/editor/linear-scale"
-
 
 class Editor extends Component{
     state={}

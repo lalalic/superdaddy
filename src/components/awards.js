@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import {compose, getContext, mapProps, setDisplayName} from "recompose"
-import {AutoComplete} from "material-ui"
+import AutoComplete from "material-ui/AutoComplete"
 
 export default compose(
 	  setDisplayName("MyAward"),

@@ -1,5 +1,6 @@
 import React from "react"
-import {List,ListItem,Divider} from "material-ui"
+import {List,ListItem} from "material-ui/List"
+import Divider from "material-ui/Divider"
 import TodoStatus from "./status"
 import TaskTitle from "./title"
 

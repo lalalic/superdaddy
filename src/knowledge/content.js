@@ -10,6 +10,7 @@ import IconFavorited from "material-ui/svg-icons/action/favorite"
 import IconViewed from "material-ui/svg-icons/action/visibility"
 import IconAccomplished from "material-ui/svg-icons/notification/event-available"
 import IconTasking from "material-ui/svg-icons/notification/event-note"
+import Helmet from "react-helmet"
 
 import smartNum from "../tools/number"
 
@@ -20,8 +21,14 @@ export const Content=({
 		titleBar
 	})=>{
 	const iconStyle={width:10,height:10}
+	const keywords=[...(category||[]),...(tags||[])].join(", ")
 	return (
 		<article>
+			<Helmet titleTemplate="激励馆 - %s">
+				<title>{title}</title>
+				{summary && <meta name="description" content={summary}/>}
+				{keywords && <meta name="keywords" content={keywords}/>}
+			</Helmet>
 			<header  style={{backgroundColor:"transparent", height:"auto"}}>
 				{titleBar && React.cloneElement(titleBar, {title})}
 				{id && (
@@ -51,7 +58,7 @@ export const Content=({
 						)}
 					</p>
 				)}
-				<p>{[...(category||[]),...(tags||[])].join(", ")}</p>
+				<p>{keywords}</p>
 			</header>
 			{figure && (
 				<figure style={{margin:10}}>

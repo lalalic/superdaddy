@@ -1,10 +1,16 @@
+import Helmet from "react-helmet"
+
 export default function({content, data}){
-    return `<!doctype html><html>
+    var helmet=Helmet.renderStatic()
+
+    return `<!doctype html><html ${helmet.htmlAttributes.toString()}>
         <head>
             <meta charset="utf-8" />
-            <base href="/www"/>
-            <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
             <title>激励馆</title>
+            <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+            ${helmet.title.toString()}
+            ${helmet.meta.toString()}
+            ${helmet.link.toString()}
             <style>
                 @media screen and (min-width:960px){
                     section{
@@ -14,7 +20,7 @@ export default function({content, data}){
                 }
             </style>
         </head>
-        <body style="margin:0;background:lightgray;">
+        <body style="margin:0;background:lightgray;" ${helmet.bodyAttributes.toString()}>
             <header style="z-index:2;position:fixed;top:0px;width:100%;height:50px;line-height:50px;display:flex;flex-direction:row;background-color:#303848;color:white;">
                 <center style="flex:none;padding-left:20px;margin:auto">
                     <strong>激励馆</strong>
@@ -45,6 +51,6 @@ export default function({content, data}){
         <script>
             window.__RELAY_BOOTSTRAP_DATA__ = ${JSON.stringify(data)};
         </script>
-        <script src="/www.js" defer></script>
+        <script src="index.js" defer></script>
     </html>`
 }

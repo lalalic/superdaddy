@@ -5,7 +5,8 @@ import {compose, getContext, mapProps} from "recompose"
 import {withFragment} from "qili-app/graphql"
 
 import MediaQuery from "react-responsive"
-import {ListItem,Avatar} from "material-ui"
+import {ListItem} from "material-ui/List"
+import Avatar from "material-ui/Avatar"
 
 import {
 	yellow500 as COLOR_DONE

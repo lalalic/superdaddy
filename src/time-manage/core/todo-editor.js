@@ -4,7 +4,8 @@ import PropTypes from "prop-types"
 import {connect} from "react-redux"
 import {compose, getContext} from "recompose"
 
-import {IconButton, AutoComplete} from "material-ui"
+import IconButton from "material-ui/IconButton"
+import AutoComplete from "material-ui/AutoComplete"
 
 import AppBar from "components/app-bar"
 

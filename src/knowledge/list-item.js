@@ -106,7 +106,7 @@ export class Item extends Component{
 
 const IMG=({src})=>{
     if(src.startsWith("mindmap://")){
-        return <MindMap className="img" src={src}/>
+        return <x-mindmap className="img" src={src}/>
     }else{
         return <img src={src}/>
     }

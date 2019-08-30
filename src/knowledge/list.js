@@ -18,7 +18,16 @@ import Item from "./list-item"
 import QuickSearch,{toText} from "./quick-search"
 
 export class Knowledges extends Component{
-	state={title:this.props.title}
+	constructor(){
+		super(...arguments)
+		this.state={}
+	}
+
+	static getDerivedStateFromProps(props, state){
+		return {title:props.title, ...state}
+	}
+
+
 	downloadTemplate(){
 		const link=document.createElement("a")
 		link.href="/knowledge/template.docx"
@@ -29,7 +38,7 @@ export class Knowledges extends Component{
 	}
 
 	render(){
-        const {knowledges=[],search,qs,minHeight,refresh, loadMore, canBack, goBack, toKnowledge}=this.props
+        const {knowledges=[],search,qs,refresh, loadMore, canBack, goBack, toKnowledge, pagination}=this.props
 		const {conditionAnchor, title}=this.state
 		let iconElementLeft=null
 		if(canBack){
@@ -91,6 +100,7 @@ export class Knowledges extends Component{
 								.map(a=>(<Item model={a} key={a.id} toKnowledge={toKnowledge}/>))
 						}
 					</PullToRefresh>
+					{pagination}
 				</div>
 				
 				
@@ -117,24 +127,24 @@ export default compose(
 				pageInfo{
 					hasNextPage
 					endCursor
+					hasPreviousPage
+					startCursor
 				}
 			}
 		}
 	`),
-	getContext({
-		muiTheme: PropTypes.object,
-	}),
-	mapProps(({data:{knowledges}, relay, muiTheme:{page:{height}, footbar},...others})=>{
+	mapProps(({data:{knowledges}, qs:{title, ...qs},relay,pagination,...others})=>{
 		return {
 			...others,
+			title,
+			qs,
 			knowledges:knowledges ? knowledges.edges.map(a=>a.node) :  [],
-			minHeight: height-footbar.height,
 			refresh(ok){
 				ok()
 			},
 			loadMore(ok){
 				if(relay.hasMore() && !relay.isLoading()){
-					relay.loadMore(10, e=>{
+					relay.loadMore(5,e=>{
 						ok()
 						if(e){
 							console.error(e)

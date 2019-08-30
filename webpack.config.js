@@ -14,7 +14,7 @@ module.exports=env=>{
 	const base={
 		entry:{
 			app:["babel-polyfill","./src/index.js"],
-			www:["babel-polyfill","./src/www/browser.js"]
+			index:["babel-polyfill","./src/www/browser.js"]
 		},
 		output:{
 			filename:"[name].js",

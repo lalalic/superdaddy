@@ -1,8 +1,6 @@
 import React, {Component} from "react"
-import PropTypes from "prop-types"
 
-
-import {FloatingActionButton} from "material-ui"
+import FloatingActionButton from "material-ui/FloatingActionButton"
 import IconAdd from "material-ui/svg-icons/content/add"
 
 export default class FloatingAdd extends Component{

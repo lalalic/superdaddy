@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {IconButton} from "material-ui"
+import IconButton from "material-ui/IconButton"
 import IconPrint from "material-ui/svg-icons/action/print"
 import Print from "react-to-print"
 

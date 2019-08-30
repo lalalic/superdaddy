@@ -2,8 +2,8 @@ import React, {createFactory,Fragment} from "react"
 import PropTypes from "prop-types"
 import {compose, branch, getContext, withProps, renderNothing, setDisplayName} from "recompose"
 import {connect} from "react-redux"
-import {FloatingActionButton,Avatar} from "material-ui"
-
+import FloatingActionButton from "material-ui/FloatingActionButton"
+import Avatar from "material-ui/Avatar"
 import {ACTION} from "../state"
 
 
