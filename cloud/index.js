@@ -31,7 +31,7 @@ Cloud.addModule({
 	persistedQuery:require("./persisted-query"),
 	indexes:require("./db"),
 	static(service){
-		service.on(/.*/,require("../src/www/server"))
+		service.on(/.*/,require("../src/www/server").default)
 	},
 })
 
@@ -58,3 +58,5 @@ Cloud.addModule({
 })
 
 Cloud.supportAnonymous=true
+
+module.exports=Cloud

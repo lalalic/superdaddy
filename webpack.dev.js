@@ -35,6 +35,7 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 				}
 			}
 		},
+		mode:"development",
 		plugins:[
 			new ContextReplacementPlugin(/graphql-language-service-interface[\/\\]dist/, /\.js$/),
 			new ContextReplacementPlugin(/transformation[\/\\]file/, /\.js$/),

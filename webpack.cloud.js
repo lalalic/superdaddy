@@ -1,7 +1,7 @@
 const {DefinePlugin} = require("webpack")
 
 module.exports=()=>({
-    entry:["./cloud/index.js"],
+    entry:["@babel/polyfill","./cloud/index.js"],
     target:"node",
     externals: [
         function(context, request, callback){
@@ -29,5 +29,5 @@ module.exports=()=>({
             'process.env.NODE_ENV': JSON.stringify('production')
         }),
     ],
-
+    mode:"development",
 })
