@@ -1,12 +1,11 @@
 import React, {Component, Fragment} from "react"
-import PropTypes from "prop-types"
 
-import {compose, mapProps, getContext, setDisplayName} from "recompose"
+import {compose, mapProps, setDisplayName} from "recompose"
 import {withFragment} from "qili-app/graphql"
 
 import {IconButton, TextField} from 'material-ui'
 
-import PullToRefresh from "pull-to-refresh2"
+import {Pull2Refresh} from "qili-app"
 
 import IconSearch from "material-ui/svg-icons/action/search"
 import IconDownload from "material-ui/svg-icons/file/cloud-download"
@@ -91,7 +90,7 @@ export class Knowledges extends Component{
 						/>
 				</div>
 				<div className="flexV">
-					<PullToRefresh
+					<Pull2Refresh
 						onRefresh={refresh}
 						onMore={loadMore}
 						>
@@ -99,7 +98,7 @@ export class Knowledges extends Component{
 							knowledges
 								.map(a=>(<Item model={a} key={a.id} toKnowledge={toKnowledge}/>))
 						}
-					</PullToRefresh>
+					</Pull2Refresh>
 					{pagination}
 				</div>
 				
@@ -133,26 +132,14 @@ export default compose(
 			}
 		}
 	`),
-	mapProps(({data:{knowledges}, qs:{title, ...qs},relay,pagination,...others})=>{
+	mapProps(({data:{knowledges}, qs:{title, ...qs},loadMore,pagination,...others})=>{
 		return {
 			...others,
 			title,
 			qs,
 			knowledges:knowledges ? knowledges.edges.map(a=>a.node) :  [],
-			refresh(ok){
-				ok()
-			},
-			loadMore(ok){
-				if(relay.hasMore() && !relay.isLoading()){
-					relay.loadMore(5,e=>{
-						ok()
-						if(e){
-							console.error(e)
-						}
-					})
-				}else
-					ok()
-			}
+			refresh: ok=>ok(),
+			loadMore,
 		}
 	}),
 )(Knowledges)

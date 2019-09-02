@@ -23,6 +23,9 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 					res.setHeader("content-type", "text/javascript")
 					require("fs").createReadStream("./dist/knowledge/math-float.js").pipe(res)
 				})
+				app.get("/www/index.js", (req, res)=>{
+					res.redirect("/index.js")
+				})
 			},
 			historyApiFallback:true,
 			proxy:{
@@ -30,6 +33,11 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 					target:"http://localhost:9080",
 					pathRewrite:{
 						"/www":"/1/5746b2c5e4bb3b3700ae1566/static",
+					},
+					bypass(req){
+						if(req.path.endsWith("index.js")){
+							return "/index.js"
+						}
 					},
 					changeOrigin:true
 				}

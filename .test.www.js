@@ -14,3 +14,7 @@ render(
     },
     App
 )
+
+const base=document.createElement('base')
+base.setAttribute("href","/www")
+document.querySelector("head").appendChild(base)

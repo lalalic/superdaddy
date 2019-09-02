@@ -305,7 +305,7 @@ export class KnowledgeEditor extends Component{
 }
 
 export default compose(
-	withFragment(graphql`
+	withFragment({knowledge:graphql`
 		fragment info_knowledge on Knowledge{
 			id
 			isMyWork
@@ -328,7 +328,7 @@ export default compose(
 
 			...content_knowledge
 		}
-	`),
+	`}),
 	File.withUpload,
 	connect(({qili:{user},superdaddy:{current,selectedDocx,}},{knowledge})=>{
 		return {

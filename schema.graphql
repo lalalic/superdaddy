@@ -1,8 +1,3 @@
-"""
-error:Cannot assign to read only property 'exports' of object '#<Object>'
-"""
-scalar AAError
-
 type Award implements Node {
   id: ID!
   author: User
@@ -87,9 +82,6 @@ enum Gender {
   boy
 }
 
-"""
-The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
 scalar JSON
 
 type Knowledge implements Node {

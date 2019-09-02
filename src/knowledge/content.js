@@ -76,7 +76,7 @@ export const Content=({
 }
 
 export default compose(
-	withFragment(graphql`
+	withFragment({knowledge:graphql`
 		fragment content_knowledge on Knowledge{
 			id
 			title
@@ -95,5 +95,5 @@ export default compose(
 			accomplished
 			tasking
 		}
-	`),
+	`}),
 )(Content)

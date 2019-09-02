@@ -38,7 +38,7 @@ export default (
                 }
             }),
             withProps(props=>({
-                toKnowledge:id=>`knowledges/${_(id)}`
+                toKnowledge:id=>`./knowledges/${_(id)}`
             }))
         )(KnowledgeList)}/>
         
