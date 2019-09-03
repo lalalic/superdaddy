@@ -7,8 +7,7 @@ import routes, {App} from "./src/www/routes"
 import {config} from "./package.json"
 
 render(
-    routes,
-    //React.cloneElement(routes,{path:"/www"}),
+    React.cloneElement(routes,{path:"/www/"}),
     document.querySelector('#app'),
     {
         service:config.service,

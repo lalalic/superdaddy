@@ -37,8 +37,8 @@ export default (
                     `
                 }
             }),
-            withProps(props=>({
-                toKnowledge:id=>`/knowledges/${_(id)}.html`
+            withProps(({routes:[root]})=>({
+                toKnowledge:id=>`${root.path}knowledges/${_(id)}.html`
             }))
         )(KnowledgeList)}/>
         
