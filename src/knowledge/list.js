@@ -6,6 +6,7 @@ import {withFragment} from "qili-app/graphql"
 import {IconButton, TextField} from 'material-ui'
 
 import {Pull2Refresh} from "qili-app"
+import {Waypoint} from "react-waypoint"
 
 import IconSearch from "material-ui/svg-icons/action/search"
 import IconDownload from "material-ui/svg-icons/file/cloud-download"
@@ -98,11 +99,9 @@ export class Knowledges extends Component{
 							knowledges
 								.map(a=>(<Item model={a} key={a.id} toKnowledge={toKnowledge}/>))
 						}
+						{pagination}
 					</Pull2Refresh>
-					{pagination}
 				</div>
-				
-				
 			</Fragment>
 
         )

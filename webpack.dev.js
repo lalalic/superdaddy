@@ -23,9 +23,6 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 					res.setHeader("content-type", "text/javascript")
 					require("fs").createReadStream("./dist/knowledge/math-float.js").pipe(res)
 				})
-				app.get("/www/index.js", (req, res)=>{
-					res.redirect("/index.js")
-				})
 			},
 			historyApiFallback:true,
 			proxy:{

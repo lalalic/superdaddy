@@ -31,14 +31,14 @@ export default (
                     query:graphql`
                         query routes_knowledges_Query($title:String,$categories:[String],$tags:[String],
                             $mine:Boolean, $favorite:Boolean, $tasked:Boolean, $tasking:Boolean,
-                            $count:Int=5,$cursor:JSON){
+                            $count:Int=10,$cursor:JSON){
                                 ...knowledges
                         }
                     `
                 }
             }),
             withProps(({routes:[root]})=>({
-                toKnowledge:id=>`${root.path}knowledges/${_(id)}.html`
+                toKnowledge:id=>`${root.path}knowledges/${_(id)}.html`//support test to redefine root
             }))
         )(KnowledgeList)}/>
         
