@@ -17,7 +17,7 @@ const TitleBar=({title})=><h1><center>{title}</center></h1>
 
 export class Knowledge extends React.Component{
     goApp(){
-        window.location.href=`https://app.jiliguan.com/${location.pathname}`
+        window.location.href=`https://app.jiliguan.com${location.pathname}`
     }
 
     render (){
