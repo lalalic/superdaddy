@@ -34,11 +34,6 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 					pathRewrite:{
 						"/www":"/1/5746b2c5e4bb3b3700ae1566/static",
 					},
-					bypass(req){
-						if(req.path.endsWith("index.js")){
-							return "/index.js"
-						}
-					},
 					changeOrigin:true
 				}
 			}

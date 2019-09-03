@@ -38,11 +38,11 @@ export default (
                 }
             }),
             withProps(props=>({
-                toKnowledge:id=>`./knowledges/${_(id)}`
+                toKnowledge:id=>`/knowledges/${_(id)}.html`
             }))
         )(KnowledgeList)}/>
         
-        <Route path="knowledges/:id" component={
+        <Route path="knowledges/:id.html" component={
             compose(
                 withQuery(({params:{id}})=>({
                     variables:{id},

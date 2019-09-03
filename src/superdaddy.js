@@ -270,7 +270,7 @@ export const routes=(
 					mapProps(({router,...others})=>({
 						...others,
 						goBack:()=>router.goBack(),
-						toKnowledge: id=>`/knowledges/${_(id)}`,
+						toKnowledge: id=>`/knowledges/${_(id)}.html`,
 						toCreate: ()=>router.push(`/knowledges/create`),
 					})),
 
@@ -283,14 +283,14 @@ export const routes=(
 					})),
 					getContext({router:PropTypes.object}),
 					withProps(({router})=>({
-						toKnowledge: id=>router.replace(`/knowledges/${_(id)}`),
+						toKnowledge: id=>router.replace(`/knowledges/${_(id)}.html`),
 						goBack(){
 							router.goBack()
 						}
 					}))
 				)(NewKnowledge)}/>
 
-				<Route path=":id" component={compose(
+				<Route path=":id.html" component={compose(
 					getContext({router:PropTypes.object}),
 					connect((state,{router,params:{id}})=>({
 						child:state.superdaddy.current,

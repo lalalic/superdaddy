@@ -1,12 +1,14 @@
 import "qili-app/index.less"
 import "./src/style/index.less"
 
+import React from "react"
 import render from "qili-app/www/client"
 import routes, {App} from "./src/www/routes"
 import {config} from "./package.json"
 
 render(
     routes,
+    //React.cloneElement(routes,{path:"/www"}),
     document.querySelector('#app'),
     {
         service:config.service,
@@ -14,7 +16,3 @@ render(
     },
     App
 )
-
-const base=document.createElement('base')
-base.setAttribute("href","/www")
-document.querySelector("head").appendChild(base)

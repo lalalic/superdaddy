@@ -51,6 +51,6 @@ export default function({content, data}){
         <script>
             window.__RELAY_BOOTSTRAP_DATA__ = ${JSON.stringify(data)};
         </script>
-        <script src="index.js" defer></script>
+        <script src="/index.js" defer></script>
     </html>`
 }

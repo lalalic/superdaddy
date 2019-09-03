@@ -4,7 +4,6 @@ import {compose} from "recompose"
 import {withFragment} from "qili-app/graphql"
 
 import {relative} from 'components/calendar'
-import MindMap from "components/mindmap"
 
 import IconFavorited from "material-ui/svg-icons/action/favorite"
 import IconViewed from "material-ui/svg-icons/action/visibility"
