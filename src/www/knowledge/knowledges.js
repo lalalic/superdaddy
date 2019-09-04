@@ -23,7 +23,8 @@ export default compose(
     withFragment(graphql`
         fragment knowledges on Query{
             knowledges(title:$title,categories:$categories,tags:$tags,
-                mine:$mine, favorite:$favorite, tasked: $tasked, tasking:$tasking,
+                hasHomework:$hasHomework, hasPrint:$hasPrint, hasSale:$hasSale,
+                mine:$mine, favorite:$favorite, tasked:$tasked, tasking:$tasking,
                 first:$count,after:$cursor) @connection(key:"knowledges_knowledges"){
                 edges{
                     node{

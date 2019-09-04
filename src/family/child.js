@@ -2,7 +2,10 @@ import React, {Component,Fragment} from "react"
 
 import {connect} from "react-redux"
 import {compose, setStatic, withProps} from "recompose"
-import {InfoForm, CommandBar, Photo} from "qili-app"
+import CommandBar from "qili-app/components/command-bar"
+import InfoForm from "qili-app/components/info-form"
+import Photo from "qili-app/components/photo"
+
 import {withMutation, withFragment} from "qili-app/graphql"
 
 import {TextField, RadioButtonGroup, RadioButton,DatePicker,Subheader} from 'material-ui'

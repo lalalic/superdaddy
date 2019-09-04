@@ -1,5 +1,5 @@
 import React, {Component,Fragment} from "react"
-import { CommandBar } from "qili-app"
+import CommandBar from "qili-app/components/command-bar"
 import ReactPrint from "./print-trigger"
 
 export default class Award extends Component{

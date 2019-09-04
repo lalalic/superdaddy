@@ -1,7 +1,7 @@
 import React,{Fragment} from "react"
 import AppBar from "material-ui/AppBar"
 import {Current} from "components/current-child"
-import {OfflineUI} from "qili-app"
+import * as OfflineUI from "qili-app/components/offline"
 
 export const MyAppBar=({switchable, ...props})=>(
 	<Fragment>

@@ -1,7 +1,8 @@
 import React,{createFactory,Fragment} from "react"
-import PropTypes from "prop-types"
 
-import {CheckUpdate,CommandBar} from "qili-app"
+import CommandBar from "qili-app/components/command-bar"
+import CheckUpdate from "qili-app/components/check-update"
+
 
 import IconKnowledges from "material-ui/svg-icons/communication/dialpad"
 import IconAccount from 'material-ui/svg-icons/action/account-box'
@@ -17,8 +18,8 @@ export const Navigator=({style})=>(
 			{label:"状态", action:"score",
 				link:'/score',
 				icon:<IconReward/>},
-			{label:"发现", action:"knowledges",
-				link:'/knowledges',
+			{label:"发现", action:"knowledge",
+				link:'/knowledge',
 				icon:<IconKnowledges/>},
 
 			{label:"我", action:"my",

@@ -1,7 +1,11 @@
 import React, {Component,Fragment} from "react"
 
-import {compose, getContext} from "recompose"
-import {wechat,CommandBar, File, ACTION as qiliACTION} from "qili-app"
+import {compose} from "recompose"
+import {ACTION as qiliACTION} from "qili-app"
+import CommandBar from "qili-app/components/command-bar"
+import wechat from "qili-app/components/wechat"
+import File from "qili-app/components/file"
+
 import {withMutation, withFragment} from "qili-app/graphql"
 import {connect} from "react-redux"
 

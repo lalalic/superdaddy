@@ -5,7 +5,10 @@ import {Router, Route, IndexRoute, browserHistory} from "react-router"
 
 import {compose, getContext, withProps, mapProps, withContext,branch,renderComponent} from "recompose"
 import {withInit, withQuery, withPagination, withFragment,} from "qili-app/graphql"
-import {Account, Comment,QiliApp, ACTION as qiliACTION} from "qili-app"
+import {QiliApp, ACTION as qiliACTION} from "qili-app"
+import Account from "qili-app/components/account"
+import Comment from "qili-app/components/comment"
+
 
 import withCurrent from "components/current-child"
 import withNavigator from "components/navigator"
@@ -250,7 +253,7 @@ export const routes=(
 					}),
 				)(AwardPaper)}/>
 			</Route>
-			<Route path="knowledges">
+			<Route path="knowledge">
 				<IndexRoute component={compose(
 					withNavigator({flex:false}),
 					connect(state=>({qs:state[DOMAIN].qs}),(dispatch)=>({
@@ -270,8 +273,8 @@ export const routes=(
 					mapProps(({router,...others})=>({
 						...others,
 						goBack:()=>router.goBack(),
-						toKnowledge: id=>`/knowledges/${_(id)}.html`,
-						toCreate: ()=>router.push(`/knowledges/create`),
+						toKnowledge: id=>`/knowledge/${_(id)}.html`,
+						toCreate: ()=>router.push(`/knowledge/create`),
 					})),
 
 				)(Knowledges)}/>
@@ -283,7 +286,7 @@ export const routes=(
 					})),
 					getContext({router:PropTypes.object}),
 					withProps(({router})=>({
-						toKnowledge: id=>router.replace(`/knowledges/${_(id)}.html`),
+						toKnowledge: id=>router.replace(`/knowledge/${_(id)}.html`),
 						goBack(){
 							router.goBack()
 						}
@@ -294,7 +297,7 @@ export const routes=(
 					getContext({router:PropTypes.object}),
 					connect((state,{router,params:{id}})=>({
 						child:state.superdaddy.current,
-						toComment:()=>router.push(`knowledges/${_(id)}/comment`),
+						toComment:()=>router.push(`knowledge/${_(id)}/comment`),
 						router:undefined,
 					})),
 					withQuery(({params:{id},child})=>({

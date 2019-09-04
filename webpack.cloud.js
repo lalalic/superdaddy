@@ -21,7 +21,14 @@ module.exports=()=>({
     },
     module: {
         rules: [
-          { test: /\.(js)$/, use: 'babel-loader' }
+          { test: /\.(js)$/, use: 'babel-loader' },
+          {
+            test:/.less?$/,
+            use: [
+                'css-loader',
+                'less-loader',
+            ]
+        }
         ]
     },
     plugins:[

@@ -1,4 +1,6 @@
-import {File as file, ACTION as qiliACTION} from "qili-app"
+import {ACTION as qiliACTION} from "qili-app"
+import file from "qili-app/components/file"
+
 import extract from './extract'
 import Assembler from "publish/assemble"
 

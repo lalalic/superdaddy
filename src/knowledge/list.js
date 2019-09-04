@@ -5,8 +5,7 @@ import {withFragment} from "qili-app/graphql"
 
 import {IconButton, TextField} from 'material-ui'
 
-import {Pull2Refresh} from "qili-app"
-import {Waypoint} from "react-waypoint"
+import Pull2Refresh from "qili-app/components/pull-to-refresh"
 
 import IconSearch from "material-ui/svg-icons/action/search"
 import IconDownload from "material-ui/svg-icons/file/cloud-download"

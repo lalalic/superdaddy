@@ -7640,9 +7640,9 @@ q@^1.1.2, q@^1.4.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
 
-qili-app@^1.6.4:
-  version "1.6.4"
-  resolved "https://registry.yarnpkg.com/qili-app/-/qili-app-1.6.4.tgz#0b587d6b27ba01fb1e179779a2f7c2b7b4617794"
+qili-app@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/qili-app/-/qili-app-1.7.0.tgz#aa40b77e219d158bdfa0ee322af2ae1c57711209"
   dependencies:
     graphql-tools "^4.0.0"
     graphql-type-json "^0.3.0"

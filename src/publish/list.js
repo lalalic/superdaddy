@@ -1,13 +1,14 @@
 import React, {Component,Fragment} from "react"
 import {compose, mapProps,branch, renderComponent} from "recompose"
 import {withFragment} from "qili-app/graphql"
-import {CommandBar, Empty} from "qili-app"
+import CommandBar from "qili-app/components/command-bar"
+import Empty from "qili-app/components/empty"
+
 
 import {List, ListItem} from "material-ui/List"
 
 import AppBar from "components/app-bar"
 
-import IconEdit from "material-ui/svg-icons/image/edit"
 import IconArrowRight from "material-ui/svg-icons/hardware/keyboard-arrow-right"
 import IconCreate from "material-ui/svg-icons/editor/border-color"
 

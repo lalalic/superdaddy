@@ -3,10 +3,8 @@ import PropTypes from "prop-types"
 
 import {UI} from "qili-app"
 import ReactDOM from "react-dom"
-import {TextField, IconButton, Avatar} from 'material-ui'
-import PlusIcon from 'material-ui/svg-icons/action/alarm-add'
-import ForwardIcon from "material-ui/svg-icons/navigation/arrow-forward"
-import {Family as dbFamily, Reward as dbReward, Goal as dbGoal} from 'db'
+import {TextField, Avatar} from 'material-ui'
+import {Reward as dbReward, Goal as dbGoal} from 'db'
 
 export default class Rewards extends Component{
 	static defaultProps={

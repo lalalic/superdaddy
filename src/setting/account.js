@@ -1,14 +1,17 @@
-import React, {Component} from "react"
+import React from "react"
 
 import {compose} from "recompose"
-import {Photo, Account} from "qili-app"
+import Photo from "qili-app/components/photo"
+import Account from "qili-app/components/account"
+
 import {withMutation, withFragment} from "qili-app/graphql"
 import {ListItem} from "material-ui/List"
 
 import IconAdd from "material-ui/svg-icons/content/add-circle-outline"
 
 export default compose(
-	withFragment(graphql`
+	withFragment({
+		user:graphql`
 		fragment account_user on User{
 			...qili_account_user
 			children{
@@ -17,7 +20,7 @@ export default compose(
 				name
 			}
 		}
-	`),
+	`}),
 	withMutation(({},{id})=>({
 		name:"update",
 		patch4:id,

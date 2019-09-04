@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from "react"
 import PropTypes from "prop-types"
 
-import {Comment} from "qili-app"
+import Comment from "qili-app/components/comment"
 
 import AppBar from "components/app-bar"
 import FlatButton from "material-ui/FlatButton"

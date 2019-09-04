@@ -78,7 +78,7 @@ module.exports={
 		knowledge(_,{_id},{app}){
 			return app.get1Entity("Knowledge",{_id})
 		},
-		knowledges(_,{title,categories,tags,mine,favorite,tasked,tasking,first=10,after},context){
+		knowledges(_,{title,categories,tags,mine,favorite,tasked,tasking,hasHomework, hasPrint, hasSale, first=10,after},context){
 			const {app,user}=context
 			return app.nextPage("Knowledge",{first,after}, async cursor=>{
 				if(favorite){
@@ -128,7 +128,19 @@ module.exports={
 
 				if(mine){
 					cursor=cursor.filter({author:user._id})
-				}				
+				}	
+				
+				if(hasHomework){
+					cursor=cursor.filter({hasHomework:{$exists:true}})
+				}
+
+				if(hasPrint){
+					cursor=cursor.filter({hasPrint:{$exists:true}})
+				}
+
+				if(hasSale){
+					cursor=cursor.filter({sale:{$exists:true}})
+				}
 
 				return cursor
 			})
