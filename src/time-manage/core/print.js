@@ -1,7 +1,7 @@
 import React, {Component,} from "react"
 import {withFragment} from "qili-app/graphql"
 
-import {compose, mapProps} from "recompose"
+import {compose, mapProps, toClass} from "recompose"
 import Assembler from "publish/assemble";
 import {toHtml, asModule} from "knowledge/parse"
 
