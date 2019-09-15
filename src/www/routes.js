@@ -5,7 +5,7 @@ import {compose, mapProps, withProps} from "recompose"
 
 import KnowledgeList from "./knowledge/knowledges"
 import Knowledge from "./knowledge/knowledge"
-import Dashboard from "./Dashboard"
+import Dashboard from "./dashboard"
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
