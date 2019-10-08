@@ -13,7 +13,7 @@
     "graphql": "^14.0.0",
     "lodash.pick": "^4.4.0",
     "material-ui": "^0.19.0",
-    "qili-app": "^1.7.1",
+    "qili-app": "^1.7.3",
     "react": "16.7.0",
     "react-dom": "16.7.0",
     "react-helmet": "^5.2.1",
@@ -34,7 +34,6 @@
     "*/minimatch": "^3.0.0"
   },
   "devDependencies": {
-    "qili-cli": "^1.4.3",
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
@@ -53,6 +52,7 @@
     "jest": "^21.2.1",
     "less": "2.7.2",
     "less-loader": "^5.0.0",
+    "qili-cli": "^1.4.3",
     "relay-compiler": "^5.0.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.0.0",
