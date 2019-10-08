@@ -8,8 +8,8 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 	return {
 		...base,
 		entry:{
-			index:["babel-polyfill","./.test.www.js"],
-			app:["babel-polyfill","./.test.js","./src/index.js"],
+			index:["@babel/polyfill","./.test.www.js"],
+			app:["@babel/polyfill","./.test.js","./src/index.js"],
 		},
 		devtool: 'source-map',
 		devServer:{

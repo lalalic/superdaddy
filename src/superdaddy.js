@@ -434,14 +434,15 @@ export const routes=(
 import MindMap from "./components/mindmap"
 
 export const SuperDaddy=compose(
-	withProps(({service="https://api.jiliguan.com/1/graphql"})=>({
+	withProps(props=>({
 		project,
-		service,
+		service:"https://api.jiliguan.com/1/graphql",
 		appId:project.config.appId,
 		reducers:{
 			[DOMAIN]:reducer
 		},
 		notifyOffline:false,
+		...props
 	})),
 	withInit({
 		query:graphql`
