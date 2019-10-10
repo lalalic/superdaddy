@@ -52,7 +52,7 @@
     "jest": "^21.2.1",
     "less": "2.7.2",
     "less-loader": "^5.0.0",
-    "qili-cli": "^1.4.3",
+    "qili-cli": "^1.4.5",
     "relay-compiler": "^5.0.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.0.0",

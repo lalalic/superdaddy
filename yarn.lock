@@ -7664,9 +7664,9 @@ qili-app@^1.7.3:
   optionalDependencies:
     react-router "^3.0.0"
 
-qili-cli@^1.4.3:
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/qili-cli/-/qili-cli-1.4.3.tgz#6ee40183b3b918b328f85129dd56e173d8713574"
+qili-cli@^1.4.5:
+  version "1.4.5"
+  resolved "https://registry.npm.taobao.org/qili-cli/download/qili-cli-1.4.5.tgz#f7515a869b00cb19eb3fbac76218dd159a6b10ae"
   dependencies:
     chalk "^2.4.0"
     commander "^2.15.1"

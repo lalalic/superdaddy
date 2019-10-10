@@ -18,7 +18,7 @@ module.exports=()=>({
         filename:"__generated.js",
         libraryTarget:"commonjs2",
     },
-    mode:"development",
+    mode:"production",
     //devtool:"inline-source-map",
     plugins:[
         //must not have devtool on options, and mode must be development
