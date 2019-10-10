@@ -27,7 +27,7 @@ var KnowledgeContainer=null
 export default (
     <Route path="/" component={Dashboard}>
 
-        <path path="knowledge" component={compose(
+        <Route path="knowledge" component={compose(
             withPagination(({location:{query:{q}}})=>{
                 return {
                     variables:JSON.parse(q||"{}")||{},
@@ -42,7 +42,7 @@ export default (
                 }
             }),
             withProps(({routes:[root]})=>({
-                toKnowledge:id=>`${root.path}knowledge/${_(id)}.html`//support test to redefine root
+                toKnowledge:id=>`${root.path}/knowledge/${_(id)}.html`//support test to redefine root
             }))
         )(KnowledgeList)}/>
         
@@ -79,7 +79,7 @@ export default (
                 }
             }),
             withProps(({routes:[root]})=>({
-                toKnowledge:id=>`${root.path}tool/${_(id)}.html`//support test to redefine root
+                toKnowledge:id=>`${root.path}/tool/${_(id)}.html`//support test to redefine root
             }))
         )(KnowledgeList)}/>
 
@@ -100,7 +100,7 @@ export default (
                 }
             }),
             withProps(({routes:[root]})=>({
-                toKnowledge:id=>`${root.path}daka/${_(id)}.html`//support test to redefine root
+                toKnowledge:id=>`${root.path}/daka/${_(id)}.html`//support test to redefine root
             }))
         )(KnowledgeList)}/>
 

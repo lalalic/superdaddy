@@ -1,5 +1,3 @@
-const {DefinePlugin} = require("webpack")
-
 module.exports=()=>({
     entry:["@babel/polyfill","./cloud/index.js"],
     target:"node",
@@ -18,23 +16,34 @@ module.exports=()=>({
     output:{
         path:`${__dirname}/cloud`,
         filename:"__generated.js",
+        libraryTarget:"commonjs2",
     },
+    mode:"development",
+    //devtool:"inline-source-map",
+    plugins:[
+        //must not have devtool on options, and mode must be development
+        new (require("webpack").SourceMapDevToolPlugin)({
+            filename:'../dist/cloud.js.map',
+            module:false,
+            append: `\n//# sourceMappingURL=http://localhost:${require("./package.json").config.devPort}/cloud.js.map`
+        })
+    ],
     module: {
-        rules: [
-          { test: /\.(js)$/, use: 'babel-loader' },
-          {
+        rules: [{
+            test: /.js?$/,
+            use: ['source-map-loader'],
+            enforce:"pre",
+        },
+        { 
+            test: /\.(js)$/, 
+            use: "babel-loader",
+            exclude: /node_modules/, 
+        },{
             test:/.less?$/,
             use: [
                 'css-loader',
                 'less-loader',
             ]
-        }
-        ]
+        }]
     },
-    plugins:[
-        new DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('production')
-        }),
-    ],
-    mode:"production",
 })
