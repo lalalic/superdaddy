@@ -6,7 +6,6 @@ export default function({content, data}){
     return `<!doctype html><html ${helmet.htmlAttributes.toString()}>
         <head>
             <meta charset="utf-8" />
-            <title>激励馆</title>
             <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
             ${helmet.title.toString()}
             ${helmet.meta.toString()}

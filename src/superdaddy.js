@@ -428,6 +428,7 @@ export const routes=(
 				}} {...props}/> 
 			}/>
 		</Route>
+		<Route path="*" exact={true} component={()=><div>404 error</div>}/>
 	</Router>
 )
 

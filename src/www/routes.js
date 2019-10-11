@@ -1,5 +1,5 @@
 import React from "react"
-import {Route} from "react-router"
+import {Route, IndexRedirect} from "react-router"
 import {withQuery, withPagination} from "qili-app/graphql"
 import {compose, mapProps, withProps} from "recompose"
 
@@ -26,6 +26,7 @@ var KnowledgeContainer=null
 
 export default (
     <Route path="/" component={Dashboard}>
+        <IndexRedirect to="knowledge"/>
 
         <Route path="knowledge" component={compose(
             withPagination(({location:{query:{q}}})=>{
@@ -106,7 +107,7 @@ export default (
 
         <Route path="daka/:id.html" component={KnowledgeContainer}/>
 
-        <Route component={()=><div>404 错误</div>}/>
+        <Route path="*" exact={true} component={()=><div>404 错误</div>}/>
     </Route>
 )
 
