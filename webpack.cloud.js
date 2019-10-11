@@ -15,8 +15,7 @@ module.exports=()=>({
     ],
     output:{
         path:`${__dirname}/cloud`,
-        filename:"__generated.js",
-        libraryTarget:"commonjs2"
+        filename:"__generated.js"
     },
     mode:"production",
     //devtool:"eval-source-map",
