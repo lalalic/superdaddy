@@ -18,12 +18,12 @@ module.exports=()=>({
         filename:"__generated.js"
     },
     mode:"production",
-    //devtool:"eval-source-map",
     module: {
         rules: [{
-            test: /.js?$/,
-            use: ['source-map-loader'],
+            test: /\.js$/,
+            use: 'source-map-loader',
             enforce:"pre",
+            include: /qili\-app/
         },
         { 
             test: /\.(js)$/, 
@@ -36,5 +36,5 @@ module.exports=()=>({
                 'less-loader',
             ]
         }]
-    },
+    }
 })
