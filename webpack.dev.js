@@ -52,6 +52,9 @@ module.exports=(base,HTML,port=require("./package.json").config.devPort)=>{
 				filename:"cordova.html",
 				chunks:["app"],
 			})
-		]
+		],
+		watchOptions:{
+			ignored: /node_modules(?!qili\-app)/
+		}
 	}
 }

@@ -26,8 +26,6 @@ var KnowledgeContainer=null
 
 export default (
     <Route path="/" component={Dashboard}>
-        <IndexRedirect to="knowledge"/>
-
         <Route path="knowledge" component={compose(
             withPagination(({location:{query:{q}}})=>{
                 return {

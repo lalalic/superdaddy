@@ -25,7 +25,7 @@ export default ({children, routes:[root],location:{pathname},...props})=>{
                 </div>
             </header>
 
-            {pathname==root.path && <Tutorial 
+            <Tutorial 
                     style={{height:500,zIndex:"initial",position:"initial",marginTop:50}}
                     label={null}
                     slides={
@@ -54,7 +54,7 @@ export default ({children, routes:[root],location:{pathname},...props})=>{
                         ]
                     }
                     {...props}/>
-            }
+            
                     
             <section style={{background:"white",marginTop:55}}>
                 <div style={{minHeight:"500px"}} id="app">{children}</div>

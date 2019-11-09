@@ -18,7 +18,8 @@ module.exports=env=>{
 		output:{
 			filename:"[name].js",
 			path:path.resolve(__dirname, 'dist'),
-			chunkFilename: '[name].js'
+			chunkFilename: '[name].js',
+			devtoolNamespace:"superdaddy"
 		},
 		devtool:false,
 		module:{

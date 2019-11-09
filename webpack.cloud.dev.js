@@ -3,7 +3,8 @@ module.exports=()=>({
     ...cloud(),
     plugins:[
         new (require("webpack")).EvalSourceMapDevToolPlugin({
-            exclude:/node_modules(?!\/qili\-app)/
+            exclude:/node_modules(?!\/qili\-app)/,
+            moduleFilenameTemplate: 'webpack://superdaddy/[resource-path]?[loaders]'
         })
     ]
 })
