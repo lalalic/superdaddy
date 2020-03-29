@@ -59,7 +59,7 @@ export default compose(
 	`),
 
 	mapProps(({router,muiTheme, data,current=new Date().getDay(), ...others})=>{
-		const toKnowledge=id=>router.push(`/knowledge/${id}`)
+		const toKnowledge=id=>router.push(`/knowledge/${id.split(":").pop()}.html`)
 
 		return {
 			...others,
