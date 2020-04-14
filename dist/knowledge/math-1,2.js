@@ -200,6 +200,28 @@ class Priorized extends Tuple3{
     }
 }
 
+class Ten extends Tuple2{
+    generateAdd(){
+        const a=this.random(9,5)
+        const b=this.random(9,Math.max(6,10-a))
+        return [a,'+',b]
+    }
+
+    generateMinus(){
+        const a=this.random(19, 11)
+        const b=this.random(9,Math.min(9,a-10+1))
+        return [a,'-',b]
+    }
+
+    generate1(){
+        if (this.random(0, 100) % 2 == 1){
+            return this.generateAdd()
+        } else {
+            return this.generateMinus()
+        }
+    }
+}
+
 const Types={Tuple2, Tuple3}
 
 module.exports = {
@@ -215,7 +237,8 @@ module.exports = {
             {value:".",displayText:"加减混合"},
             {value:"()",displayText:"带括号的加减混合"},
             {value:"+",displayText:"加法"},
-            {value:"-",displayText:"减法"}
+            {value:"-",displayText:"减法"},
+            {value:"10",displayText:"凑/拆十法"},
         ]},
     ],
     hasHomework: {
@@ -225,7 +248,7 @@ module.exports = {
     },
     hasPrint: null,
     homework({max,tuple,kind}) {
-        const Type=kind=="()" ? Priorized : Types[`Tuple${tuple||2}`]
+        const Type=kind=="10" ? Ten : ("()" ? Priorized : Types[`Tuple${tuple||2}`])
         return new Type(kind).generatePage(parseInt(max), 1)
     }
 }
