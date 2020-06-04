@@ -31,9 +31,10 @@ export default compose(
 			}
 		}
     `),
-    mapProps(({data, child, onReady=a=>a})=>{
+    mapProps(({data, child, onReady=a=>a, printContentRef})=>{
 		return {
             child,
+            printContentRef,
             onReady,
 			todos: (data.todos||[]).map(a=>{
 				if(a.hidden)
@@ -74,7 +75,7 @@ export default compose(
     }
 
     render(){
-        const {child, todos,days='日,一,二,三,四,五,六'.split(",")}=this.props
+        const {printContentRef,child, todos,days='日,一,二,三,四,五,六'.split(",")}=this.props
         const tasks=todos.map(({content:task, dones=[], fields},i)=>(
 			<tr key={i}>
                 <td>{task}</td>
@@ -89,7 +90,7 @@ export default compose(
         const now=new Date(), today=`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()+1}`
 
         return (
-            <div>
+            <div ref={printContentRef}>
                 <style>{`
                     body{margin:48px}
                     table.tasks{width:100%;border-collapse:collapse;page-break-inside: avoid;}

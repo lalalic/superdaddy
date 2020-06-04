@@ -43,7 +43,11 @@ export class TodoEditor extends Component{
 							<ReactPrint 
 								onClick={()=>this.setState({print:1})} 
 								autoPrint={print==2}
-								content={()=>this.printArea.current}
+								content={()=>{
+									debugger
+									console.log(print)
+									return this.printArea.current
+								}}
 								onAfterPrint={()=>this.setState({print:false})}
 								/>
 							}
@@ -65,9 +69,13 @@ export class TodoEditor extends Component{
 				</div>
 				{print && 
 				<div style={{display:"none"}}>
-					<PrintPad ref={this.printArea} 
+					<PrintPad 
+						printContentRef={this.printArea} 
 						{...{data,child}} 
-						onReady={()=>this.setState({print:2})}/>
+						onReady={()=>{
+							debugger
+							this.setState({print:2})
+						}}/>
 				</div>}
 			</Fragment>
 		)
