@@ -26,11 +26,19 @@ export class Knowledges extends Component{
 		return {title:props.title, ...state}
 	}
 
-
-	downloadTemplate(){
+	downloadDocxTemplate(){
 		const link=document.createElement("a")
 		link.href="/knowledge/template.docx"
 		link.download="knowledge-template.docx"
+		document.body.appendChild(link)
+		link.click()
+		document.body.removeChild(link)
+	}
+
+	downloadJSTemplate(){
+		const link=document.createElement("a")
+		link.href="/knowledge/template.js"
+		link.download="knowledge-template.js"
 		document.body.appendChild(link)
 		link.click()
 		document.body.removeChild(link)
@@ -60,8 +68,11 @@ export class Knowledges extends Component{
 								<IconButton onClick={e=>search({title})}>
 									<IconSearch/>
 								</IconButton>
-								<IconButton onClick={e=>this.downloadTemplate()} title="download template">
+								<IconButton onClick={e=>this.downloadDocxTemplate()} title="download docx template">
 									<IconDownload color="white"/>
+								</IconButton>
+								<IconButton onClick={e=>this.downloadJSTemplate()} title="download javascript template">
+									<IconDownload color="red"/>
 								</IconButton>
 							</span>
 						}

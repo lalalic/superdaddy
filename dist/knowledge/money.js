@@ -111,7 +111,7 @@ module.exports = {
     hasHomework: {
         max: 100,
         tuple: 2,
-        kind:".",
+        kind:10,
     },
     hasPrint: null,
     homework({kind}) {
