@@ -105,7 +105,7 @@ export default function extract(file){
 					}
 
 					return upload(url, id,`image/${crc}.jpg`,{crc},token)
-						.then(remoteURL=>{
+						.then(({url:remoteURL})=>{
 							this.knowledge.content=this.knowledge.content.replace(url,image.url=remoteURL)
 							window.document.querySelector(`#${elId} img[src~='${url}']`).setAttribute("src",remoteURL)
 							return {url: remoteURL, crc}

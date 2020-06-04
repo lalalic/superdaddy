@@ -248,7 +248,7 @@ module.exports = {
     },
     hasPrint: null,
     homework({max,tuple,kind}) {
-        const Type=kind=="10" ? Ten : ("()" ? Priorized : Types[`Tuple${tuple||2}`])
+        const Type=kind=="10" ? Ten : (kind=="()" ? Priorized : Types[`Tuple${tuple||2}`])
         return new Type(kind).generatePage(parseInt(max), 1)
     }
 }

@@ -36,7 +36,7 @@ export class CreateKnowledge extends Component{
 		return []
 	}
 
-	get previewFields(){
+	get printFields(){
 		const {knowledge:{fields, hasPrint:props}}=this.props
 		if(props){
 			return Object.keys(props)
