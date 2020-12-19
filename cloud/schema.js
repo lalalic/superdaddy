@@ -125,6 +125,7 @@ module.exports=others=>`
 			first:Int, after:JSON):KnowledgeConnection
 		knowledge(_id:ObjectID):Knowledge
 		plan(_id:ObjectID):Plan
+		crawl(url:String!, code:String, option:JSON):JSON
 	}
 
 	extend type Mutation{

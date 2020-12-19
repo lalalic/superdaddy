@@ -7,6 +7,7 @@ module.exports=()=>({
                 case "react":
                 case "react-dom/server":
                 case "react-router":
+                case "simplecrawler":
                     return callback(null, 'commonjs '+request)
             }
 

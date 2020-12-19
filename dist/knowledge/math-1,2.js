@@ -50,8 +50,8 @@ class Tuple2 extends Calculation{
     generatePage(){
         const rows=this.generatePageData(...arguments)
             .map(cols=>
-                "<tr>"+cols.map(([a,o,b])=>
-                        `<td>${a}</td><td>${o}</td><td>${b}</td><td>=</td>`//4td
+                "<tr>"+cols.map(([a,o,b,d="="])=>
+                        `<td>${a}</td><td>${o}</td><td>${b}</td><td>${d}</td>`//4td
                     ).join("")+
                 "</tr>"
             ).join("")
@@ -191,9 +191,15 @@ class Priorized extends Tuple3{
             if(eval(`${b}${o1}${c}`)>=0){
                 b=`(${b}`
                 c=`${c})`
+                if(eval(`${a}${o}${b}${o1}${c}`)<0){
+                    return [b,o1,c,o,a]
+                }
             }else if(eval(`${a}${o}${b}`)>=0){
                 a=`(${a}`
                 b=`${b})`
+                if(eval(`${a}${o}${b}${o1}${c}`)<0){
+                    return [c,o1,a,o,b]
+                }
             }
         }
         return [a,o,b,o1,c]
@@ -222,6 +228,16 @@ class Ten extends Tuple2{
     }
 }
 
+class Reverse extends Tuple2{
+    generate1(){
+        const [a,o,b]=super.generate1(...arguments)
+        const data=[a,b,"="+eval(`${a}${o}${b}`)]
+        data[this.random(0,100)%2]=`___`
+        data.splice(1,0,o)
+       return data
+    }
+}
+
 const Types={Tuple2, Tuple3}
 
 module.exports = {
@@ -235,6 +251,7 @@ module.exports = {
         { name: "tuple", title: "因子个数", value: 2, options:[{value:2},{value:3}]},
         { name: "kind", title: "运算类别", value: ".", options:[
             {value:".",displayText:"加减混合"},
+            {value:"Reverse",displayText:"逆运算"},
             {value:"()",displayText:"带括号的加减混合"},
             {value:"+",displayText:"加法"},
             {value:"-",displayText:"减法"},
@@ -248,7 +265,7 @@ module.exports = {
     },
     hasPrint: null,
     homework({max,tuple,kind}) {
-        const Type=kind=="10" ? Ten : (kind=="()" ? Priorized : Types[`Tuple${tuple||2}`])
+        const Type=kind=="Reverse" ? Reverse : (kind=="10" ? Ten : (kind=="()" ? Priorized : Types[`Tuple${tuple||2}`]))
         return new Type(kind).generatePage(parseInt(max), 1)
     }
 }

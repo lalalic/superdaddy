@@ -19,7 +19,7 @@ export default function parse(mind=""){
 		return toc
 	}
     let o=0
-    const outline=mind.split(",").reduce((as,a)=>{
+    const outline=mind.split(/[,，]/g).reduce((as,a)=>{
         as.data.splice(as.data.length,0,...a.split("(").map((b,i)=>{
             o=as.outline+i
             const j=b.indexOf(")")

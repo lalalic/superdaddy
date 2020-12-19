@@ -25,6 +25,7 @@
     "recompose": "^0.30.0",
     "redux": "^3.6.0",
     "remount": "^0.11.0",
+    "simplecrawler": "^1.1.9",
     "wechat4u": "^0.6.8"
   },
   "resolutions": {
@@ -70,7 +71,7 @@
     "tv.win": "cordova create tv --link-to=dist && cd tv && copy www\\tv.xml config.xml && cordova platform add android && cordova build android",
     "relay": "relay-compiler --src ./src --schema ./schema.graphql",
     "persist": "qili persist src cloud",
-    "cloud": "webpack --env=cloud",
+    "cloud": "webpack --env=cloud.dev",
     "sync": "qili publish --service https://api.qili2.com/1/graphql",
     "sync.dev": "webpack --env=cloud.dev && qili publish --no-build-cloud --service http://localhost:9080/1/graphql"
   },

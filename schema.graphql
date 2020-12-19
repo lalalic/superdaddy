@@ -308,6 +308,7 @@ type Query {
   knowledges(title: String, categories: [String], tags: [String], mine: Boolean, favorite: Boolean, tasked: Boolean, tasking: Boolean, hasHomework: Boolean, hasPrint: Boolean, hasSale: Boolean, first: Int, after: JSON): KnowledgeConnection
   knowledge(_id: ObjectID): Knowledge
   plan(_id: ObjectID): Plan
+  crawl(url: String!, code: String, option: JSON): JSON
   knowledge_comments(parent: ObjectID, last: Int, before: JSON): KnowledgeCommentConnection
   child_comments(parent: ObjectID, last: Int, before: JSON): ChildCommentConnection
 }

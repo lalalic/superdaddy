@@ -147,6 +147,33 @@ module.exports={
 		},
 		plan(_,{_id},{app}){
 			return app.get1Entity("Plan",{_id})
+		},
+		crawl(_,{url,code, option={maxDepth:1,decodeResponses:true}},{app}){
+			return new Promise((resolve, reject)=>{
+				try{
+					const Crawler=require("simplecrawler")
+					const cheerio=require("cheerio")
+					const crawler=new Crawler(url)
+						.on("fetchcomplete",({url},buffer)=>{
+							try{
+								if(code){
+									const $=cheerio.load(buffer)
+									const f=eval(code)
+									const data=f($)
+									resolve(data)
+								}else{
+									resolve({raw:buffer})
+								}
+							}catch(e){
+								reject(e)
+							}
+						})
+					Object.assign(crawler,option)
+					crawler.start()
+				}catch(e){
+					reject(e)
+				}
+			}) 
 		}
 	},
 

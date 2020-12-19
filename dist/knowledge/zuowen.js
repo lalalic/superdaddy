@@ -3,9 +3,9 @@
  * a classic nodejs module
  */
 module.exports = {
-    title: "我的课程",
-    summary: "介绍解决的问题",
-    content: `<div>详细内容</div>`,
+    title: "作文",
+    summary: "作文的基本问题",
+    content: `<div>作文</div>`,
     tags: ["二年级","一年级"],//任何标签
     category: ["观察能力","自制力","专注力","记忆力"],//解决的能力
     fields: [/**作业支持的参数，homework({...})可以根据参数调整作业*/
@@ -25,8 +25,28 @@ module.exports = {
         tuple: 2,
         kind:10,
     },
-    homework({kind,max,tuple}) {/**作业生成:生成的内容会包在<html><body>....</body></html>*/
-        return `<h1><center>开始创建课程</center></h1>`
+    homework({kind,max,tuple,crawl}) {/**作业生成:生成的内容会包在<html><body>....</body></html>*/
+        const url="http://www.eduxiao.com/"
+        crawl(url,$=>{
+            const extract=(i,a)=>{
+                const $a=$(a)
+                return {href:$a.attr("href").replace(/http\:\/\/www\.eduxiao\.com/gi,""), name:$a.text()}
+            }
+        
+            const grades=$('.navmet').find("a").map(extract).get()
+                        
+            const tags=$('.search .tags').find("a").map(extract).get()
+        
+            const cates=$('.zhuanti .zt_r').find("a").map(extract).get()
+        
+            const commends=$('.pright .commend .c1').find('a').map(extract).get()
+        
+            const hots=$('.pright .hot .c1').find('a').map(extract).get()
+            return {grades, tags,cates,commends,hots}
+        }).then(data=>{
+            console.log(data)
+        })
+        return 
     },
     print(){/**出版功能，future*/
         

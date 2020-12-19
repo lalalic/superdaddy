@@ -11,41 +11,22 @@ class Calculation {
         return Math.floor(Math.random() * (max - min)) + min;
     }
 
-    generateAdd(max, min) {
+    generateAdd(max, min,digit) {
+        debugger
         var a = this.random(min, max)
         var b = this.random(min, max - a)
-        return [a, '+', b]
+        return [a/digit, '+', b/digit]
     }
 
-    generateMinus(max, min) {
+    generateMinus(max, min,digit) {
         var b = this.random(min, max)
         var a = this.random(b, max)
-        return [a, '-', b]
+        return [a/digit, '-', b/digit]
     }
 
-    generateMutiply(max,min){
-        max=Math.ceil(Math.sqrt(max))+1
-        var b = this.random(max, min)
-        var a = this.random(max,min)
-        return [a, '*', b]
-    }
-
-    generateDivide(max,min){
-        var [a,,b]=this.generateMutiply(...arguments)
-        a=a*b
-        if(this.remainder){
-            if (this.random(0, 100) % 2 == 1){
-                a=a+this.random(Math.min(max-a, b, c),0)
-            }
-        }
-        return [a,"/",b]
-    }
-
-    generatePageData(){
+    generatePageData(max,min,digit){
         return new Array(this.rowCount).fill(1)
-            .map(i=>new Array(this.colCount).fill(1).map(()=>
-                this.generate1(...arguments).map(o=>o=='*' ? '&times;' : (o=='/' ? '&divide;' : o))
-            ))
+            .map(i=>new Array(this.colCount).fill(1).map(()=>this.generate1(...arguments)))
     }
 
 }
@@ -56,14 +37,13 @@ class Tuple2 extends Calculation{
     }
 
     generate1() {
-        switch(this.kind[this.random(this.kind.length,0)]){
-        case "*":
-            return this.generateMutiply(...arguments)
-        case "/":
-            return this.generateDivide(...arguments)
-        case "+":
+        if(this.kind=="+"){
             return this.generateAdd(...arguments)
-        case '-':    
+        }else if(this.kind=="-"){
+            return this.generateMinus(...arguments)
+        }else if (this.random(0, 100) % 2 == 1){
+            return this.generateAdd(...arguments)
+        } else {
             return this.generateMinus(...arguments)
         }
     }
@@ -130,61 +110,23 @@ class Tuple3 extends Tuple2{
         super(kind, rows||25,cols||3)
     }
 
-    generate1(max,min){
-        const remainder=this.remainder
-        delete this.remainder
-        const kind=this.kind
-        delete this.kind
-
-        this.kind=kind[this.random(kind.length,0)]
-        var [a,o,b]=super.generate1(max/3,min)
+    generate1(max,min, digit){
+        const [a,o,b]=super.generate1(...arguments)
         const r=eval(`${a}${o}${b}`)
-        this.remainder=remainder
-        var o1=this.kind=kind[this.random(kind.length,0)]
-
-        var c
-        
-        switch(this.kind){
-        case "+":
+        var o1=this.kind,c
+        if(o1=="+"){
             c=this.random(max-r,max-r>0 ? 1 : 0)
-            if(this.random(10,1)==1){
-                a=`(${a}`
-                b=`${b})`
-            }
-            if(this.random(10,1)==1){
-                ({a,o,b,o1,c}={a:c,o:o1,b:a,o1:o,c:b});
-            }
-            break
-        case "-":
+        }else if(o1=="-"){
             c=this.random(r,r>0 ? 1 : 0)
-            if(this.random(10,1)==1){
-                a=`(${a}`
-                b=`${b})`
-            }
-            break
-        case "*":
-            c=this.random(Math.ceil(max/r),1)
-            if(o=="+" || o=="-"){
-                a=`(${a}`
-                b=`${b})`
-            }
-            if(this.random(10,1)==1){
-                ({a,o,b,o1,c}={a:c,o:o1,b:a,o1:o,c:b});
-            }
-            break
-        case "/":
-            c=this.random(r,1)
-            if(o=="+" || o=="-" || this.random(10,1)==1){
-                a=`(${a}`
-                b=`${b})`
-            }
-            
-            break
+        }else if(r%2==1){
+            o1="+"
+            c=this.random(max-r,max-r>0 ? 1 : 0)
+        }else{
+            o1="-"
+            c=this.random(r,r>0 ? 1 : 0)
         }
 
-        this.kind=kind
-
-        return [a,o,b,o1,c]
+        return [a,o,b,o1,c/digit]
     }
 
     generatePage(){
@@ -240,43 +182,54 @@ class Tuple3 extends Tuple2{
                     <table id="${uuid}" class="print-page">${header + rows + footer}</table>
                 `
     }
-} 
+}
 
+class Priorized extends Tuple3{
+    generate1(max,min){
+        var [a,o,b,o1,c]=super.generate1(...arguments)
+        if(this.random(10,1)%2==1){
+            if(eval(`${b}${o1}${c}`)>=0){
+                b=`(${b}`
+                c=`${c})`
+            }else if(eval(`${a}${o}${b}`)>=0){
+                a=`(${a}`
+                b=`${b})`
+            }
+        }
+        return [a,o,b,o1,c]
+    }
+}
 
 const Types={Tuple2, Tuple3}
 
 module.exports = {
-    title: "加减乘除法口算题",
-    summary: "三年级加减乘除法口算题",
-    content: "<div>三年级加减乘除法口算题，支持自定义最大数,因子个数(2或3),运算类别(混合运算，加法，减法)!</div>",
+    title: "小数加减法口算题",
+    summary: "三年级小数加减法口算题",
+    content: "<div>三年级加减法口算题，支持自定义最大数,因子个数(2或3),运算类别(混合运算，加法，减法)!</div>",
     tags: ["口算", "数学", "三年级"],
     category: ["学习能力"],
     fields: [
         { name: "max", title: "最大数", value: 100 },
-        { name: "min", title: "最小数", value: 1 },
         { name: "tuple", title: "因子个数", value: 2, options:[{value:2},{value:3}]},
+        { name: "digit", title: "小数位数", value: 1, options:[{value:1},{value:2}]},
         { name: "kind", title: "运算类别", value: ".", options:[
-            {value:"+-*/",displayText:"四则运算"},
-            {value:"*",displayText:"乘法"},
-            {value:"/",displayText:"除法"},
+            {value:".",displayText:"加减混合"},
+            {value:"()",displayText:"带括号的加减混合"},
+            {value:"+",displayText:"加法"},
+            {value:"-",displayText:"减法"}
         ]},
-        { name: "remainder", title: "带余数", value: false,options:[
-            {value:true,displayText:"可以"},
-            {value:false,displayText:"不可以"},
-        ] },
     ],
     hasHomework: {
         max: 100,
-        min: 1,
         tuple: 2,
-        kind:"*",
-        remainder:false,
+        kind:".",
+        digit:1,
     },
     hasPrint: null,
-    homework({max,min, tuple,kind,remainder}) {
-        const Type=Types[`Tuple${tuple||2}`]
-        const creator=new Type(kind)
-        creator.remainder=remainder
-        return creator.generatePage(parseInt(max), parseInt(min))
+    homework({max,tuple,kind,digit}) {
+        debugger
+        const Type=kind=="()" ? Priorized : Types[`Tuple${tuple||2}`]
+        digit=parseInt("10000".substring(0,parseInt(digit+1)))
+        return new Type(kind).generatePage(parseInt(max)*digit, 1, digit)
     }
 }

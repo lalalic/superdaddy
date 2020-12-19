@@ -1,4 +1,5 @@
 import React, {Component,Fragment} from "react"
+import PropTypes from "prop-types"
 
 import {compose} from "recompose"
 import {ACTION as qiliACTION} from "qili-app"
@@ -37,10 +38,27 @@ import {print} from "components/print-trigger"
 
 
 export class KnowledgeEditor extends Component{
+	static contextTypes={
+		client: PropTypes.object
+	}
+
 	constructor(){
 		super(...arguments)
 		this.state={homework:false}
 		this.printArea=React.createRef()
+		this.crawl=this.crawl.bind(this)
+	}
+
+	crawl(url,code, option){
+		code=typeof(code)=="function" ? code.toString() : code
+		const {client}=this.context
+		return client.runQL({
+			id:"info_crawl_Query",
+			variables:{url,code,option},
+			query: graphql` query info_crawl_Query($url:String!, $code:String, $option:JSON){
+				crawl(url:$url, code:$code, option:$option)
+			}`
+		}).then(({data:{crawl,error}})=>crawl)
 	}
 
 	download(url,name){
@@ -53,22 +71,26 @@ export class KnowledgeEditor extends Component{
 	}
 
 	preview(knowledge, props){
+		props={...props, crawl:this.crawl}
 		const {preview}=this.props
 		if(knowledge.code){
 			asModule(knowledge.code)
-				.then(plugin=>print({html:plugin.preview(props)}))
+				.then(plugin=>plugin.preview(props))
+				.then(html=>html && print({html}))
 		}else if(knowledge.template){
-			preview(...arguments)
+			preview(knowledge,props)
 		}
 	}
 
 	outputHomework(knowledge, props){
+		props={...props, crawl:this.crawl}
 		const {outputHomework}=this.props
 		if(knowledge.code){
 			asModule(knowledge.code)
-				.then(plugin=>print({html:plugin.homework(props)}))
+				.then(plugin=>plugin.homework(props))
+				.then(html=>html && print({html}))
 		}else if(knowledge.template){
-			outputHomework(...arguments)
+			outputHomework(knowledge,props)
 		}
 	}
 
@@ -256,7 +278,7 @@ export class KnowledgeEditor extends Component{
 				fields={this.homeworkFields}
 				onSubmit={props=>{
 					if(typeof(homework)=="function"){
-						homework(props)
+						homework({...props,crawl:this.crawl})
 					}else{
 						this.outputHomework(knowledge, props)
 					}
