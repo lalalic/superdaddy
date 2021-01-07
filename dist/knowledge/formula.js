@@ -72,6 +72,7 @@ module.exports = {
     content: "<div>五年级方程,简单,复杂,!</div>",
     tags: ["数学", "五年级"],
     category: ["学习能力"],
+    score:4,
     fields: [
         { name: "i", title: "最大数", value: 3, type:"number", min:2, max:5 },
         { name: "bracket", title: "括号", value: 1, options:[

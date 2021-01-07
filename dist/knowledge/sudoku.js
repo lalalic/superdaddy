@@ -1,5 +1,5 @@
 function generate(level="easy",num=9){
-    const diffs={easy:0.4, middle:0.3, hard:0.25, hard1:0.2}
+    const diffs={easy:0.7, middle:0.6, hard:0.5, hard1:0.4}
     const emptyFlag=level=>Math.random()>diffs[level]
 
     function generateAll() {
@@ -159,7 +159,8 @@ module.exports={
         ]},
     ],
     hasHomework: {
-        kind:32,
+        kind:"middle",
+        num: 9,
     },
     hasPrint: null,
     homework({kind,num}) {

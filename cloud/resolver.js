@@ -78,72 +78,68 @@ module.exports={
 		knowledge(_,{_id},{app}){
 			return app.get1Entity("Knowledge",{_id})
 		},
-		knowledges(_,{title,categories,tags,mine,favorite,tasked,tasking,hasHomework, hasPrint, hasSale, first=10,after},context){
+		async knowledges(_,{title,categories,tags,mine,favorite,tasked,tasking,hasHomework, hasPrint, hasSale, first=10,after},context){
 			const {app,user}=context
-			return app.nextPage("Knowledge",{first,after}, async cursor=>{
-				if(favorite){
-					const myFavorites=(await app.findEntity("KnowledgeFavorites",{author:user._id})).map(a=>a.knowledge)
-					cursor=cursor.filter({_id:{$in:myFavorites}})
+			const query={first,after}, ids=[]
+			if(favorite){
+				(await app.findEntity("KnowledgeFavorites",{author:user._id}))
+					.forEach(a=>ids.push(a.knowledge))
+			}
+
+			const {User,Child}=module.exports
+			if(tasking || tasked){
+				const children=await User.children(user,{},context)
+				if(tasking){
+					children.map(async child=>await Child.plan(child,{},context))
+						.reduce((ids,plan)=>{
+							if(plan.todos){
+								plan.todos.filter(a=>!a.removed).forEach(a=>a.knowledge && ids.push(a.knowledge))
+							}
+							return ids
+						},ids)
 				}
 
-				const {User,Child}=module.exports
-				if(tasking || tasked){
-					const children=await User.children(user,{},context)
-					if(tasking){
-						const taskingKnowledges=Promise.all(children.map(child=>Child.plan(child,{},context)))
-							.then(plans=>{
-								return plans.reduce((collected,plan)=>{
-									if(plan.todos){
-										plan.todos.filter(a=>!a.removed).forEach(a=>a.knowledge && collected.push(a.knowledge))
-									}
-									return collected
-								},[])
-							})
-						cursor=cursor.filter({_id:{$in:taskingKnowledges}})
-					}
-
-					if(tasked){
-						const taksedKnowledges=await app.findEntity("History",{
-									knowledge:{$ne:null},
-									owner:{$in:children.map(a=>Child.id(a))}
-								},undefined,{knowledge:1})
-							.then(historys=>Array.from(new Set(historys.map(a=>a.knowledge))))
-						console.log(taksedKnowledges)
-						cursor=cursor.filter({_id:{$in:taksedKnowledges}})
-					}
+				if(tasked){
+					(await app.findEntity("History",{
+						knowledge:{$ne:null},
+						owner:{$in:children.map(a=>Child.id(a))}
+					},undefined,{knowledge:1}))
+						.forEach(a=>ids.push(a.knowledge))
 				}
+			}
 
-				
-				if(title){
-					cursor=cursor.filter({title: new RegExp(`${title}.*`,"i")})
-				}
+			if(ids.length){
+				query._id={$in:Array.from(new Set(ids))}
+			}
 
-				if(categories && categories.length){
-					cursor=cursor.filter({category:{$all:categories}})
-				}
+			if(title){
+				query.title=new RegExp(`${title}.*`,"i")
+			}
 
-				if(tags && tags.length){
-					cursor=cursor.filter({tags:{$all:tags}})
-				}
+			if(categories && categories.length){
+				query.category={$all:categories}
+			}
 
-				if(mine){
-					cursor=cursor.filter({author:user._id})
-				}	
-				
-				if(hasHomework){
-					cursor=cursor.filter({hasHomework:{$exists:true}})
-				}
+			if(tags && tags.length){
+				query.tags={$all:tags}
+			}
 
-				if(hasPrint){
-					cursor=cursor.filter({hasPrint:{$exists:true}})
-				}
+			if(mine){
+				query.author=user._id
+			}	
+			
+			if(hasHomework){
+				query.hasHomework={$exists:true}
+			}
 
-				if(hasSale){
-					cursor=cursor.filter({sale:{$exists:true}})
-				}
+			if(hasPrint){
+				query.hasPrint={$exists:true}
+			}
 
-				return cursor
-			})
+			if(hasSale){
+				query.sale={$exists:true}
+			}
+			return app.nextPage("Knowledge",query)
 		},
 		plan(_,{_id},{app}){
 			return app.get1Entity("Plan",{_id})
