@@ -100,11 +100,10 @@ module.exports={
 				}
 
 				if(tasked){
-					(await app.findEntity("History",{
-						knowledge:{$ne:null},
-						owner:{$in:children.map(a=>Child.id(a))}
-					},undefined,{knowledge:1}))
-						.forEach(a=>ids.push(a.knowledge))
+					(await app.findEntity("History",
+						{knowledge:{$ne:null},owner:{$in:children.map(a=>Child.id(a))}},
+						{knowledge:1}
+					)).forEach(a=>ids.push(a.knowledge))
 				}
 			}
 
